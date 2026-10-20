@@ -1,0 +1,26 @@
+# configs/ingestion.yaml
+# ──────────────────────────────────────────────────────────────────────────
+# Cấu hình pipeline ingestion cho ChronoReg.
+# Tất cả đường dẫn tương đối so với thư mục gốc repo.
+
+ingestion:
+  # Thư mục đầu vào và đầu ra
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+
+  # OCR settings
+  ocr:
+    enabled: true             # Dùng OCR fallback cho PDF scan
+    language: "vie"           # Ngôn ngữ Tesseract (vie = tiếng Việt)
+    dpi: 300                  # DPI khi convert PDF → image
+    min_chars_per_page: 50    # Ngưỡng ký tự tối thiểu để bỏ qua OCR
+
+  # Cấu hình phân tích cấu trúc
+  structure:
+    # Regex có thể override để phù hợp với từng nguồn văn bản
+    chuong_pattern: '^(Chương\s+[IVXLCDM\d]+[\.:]?\s*.*)$'
+    dieu_pattern: '^(Điều\s+\d+[\.:\-]?\s*.*)$'
+
+  # Logging
+  log_level: "INFO"
+
