@@ -6,9 +6,8 @@
 
 # **1. Đối với chương trình đào tạo chuẩn** 
 
-|**ó**|**Mức học**|**bổng/sinh viê**|**n/tháng**|
-|---|---|---|---|
-|**Kha học**|**Loại Xuất sắc**|**Loại Giỏi**|**Loại Khá**|
+| Khóa học | Loại Xuất sắc (đồng/tháng) | Loại Giỏi (đồng/tháng) | Loại Khá (đồng/tháng) |
+|---|---:|---:|---:|
 |Các khóa từ QH-2021 trở về trước|1.590.000đ|1.520.000đ|1.450.000đ|
 |Khóa QH-2022 (ngành CNNN)|1.880.000đ|1.810.000đ|1.740.000đ|
 |Khóa QH-2022 (ngành XDGT, HKVT)|2.315.000đ|2.245.000đ|2.175.000đ|
@@ -19,9 +18,8 @@
 
 # **2. Đối với lớp chất lượng cao thuộc ngành Công nghệ thông tin** 
 
-|**Khó h**|**Mức học bổng/sin**|**h viên/tháng**|
-|---|---|---|
-|**a ọc**|**Loại Xuất sắc**|**Loại Giỏi**|
+| Khóa học | Loại Xuất sắc (đồng/tháng) | Loại Giỏi (đồng/tháng) |
+|---|---:|---:|
 |Các khóa từ QH-2021 trở về trước|2.070.000đ|1.980.000đ|
 |Khóa QH-2022|3.580.000đ|3.490.000đ|
 |Khóa QH-2023|3.890.000đ|3.800.000đ|
@@ -30,9 +28,8 @@
 
 **3. Đối với** chương **trình đào tạo chất lượng cao theo thông tư 23/2014/TT-BGDĐT và chương trình đào tạo theo định mức Kinh tế kỹ thuật:** 
 
-|**Khó h**|**Mức học bổng/s**|**inh viên/tháng**|
-|---|---|---|
-|**a ọc**|**Loại Xuất sắc**|**Loại Giỏi**|
+| Khóa học | Loại Xuất sắc (đồng/tháng) | Loại Giỏi (đồng/tháng) |
+|---|---:|---:|
 |QH-2019 đến QH-2023|3.700.000đ|3.500.000đ|
 
 

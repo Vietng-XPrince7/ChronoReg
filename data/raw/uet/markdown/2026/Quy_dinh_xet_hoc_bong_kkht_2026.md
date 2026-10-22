@@ -80,7 +80,7 @@ Sinh viên thuộc diện hưởng học bổng chính sách, trợ cấp xã h�
 
 # **Điều 9. Hiệu lực thi hành** 
 
-Quy định này có hiệu lực thi hành kể từ ngày ký, áp dụng từ học kỳ I năm học 20262027 (xét kết quả học tập của học kỳ II năm học 2025-2026), và thay thế cho các văn bản được ban hành trước đó. 
+Quy định này có hiệu lực thi hành kể từ ngày ký, áp dụng từ học kỳ I năm học 2026-2027 (xét kết quả học tập của học kỳ II năm học 2025-2026), và thay thế cho các văn bản được ban hành trước đó. 
 
 **Điều 10. Tổ chức thực hiện** 
 
