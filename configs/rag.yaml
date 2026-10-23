@@ -1,0 +1,21 @@
+# Cấu hình pipeline RAG có quản lý phiên bản (nhánh feature/rag-versioned)
+# Đường dẫn tính từ thư mục gốc của repo.
+
+data_dir: data/processed          # nơi Việt lưu các file .md đã xử lý
+vector_db_path: data/vectordb     # nơi lưu vector DB (nên thêm vào .gitignore)
+collection: regulations
+
+# Model embedding (đổi được). BAAI/bge-m3 chạy tốt tiếng Việt nhưng nặng (~2GB).
+# Máy yếu có thể thử: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+embedding_model: BAAI/bge-m3
+
+top_k: 5
+
+# as_of_year -> ngày T dùng để lọc phiên bản. "12-31": năm 2023 nghĩa là 31/12/2023.
+# CẦN THỐNG NHẤT với benchmark của Việt (năm học bắt đầu 01/09 hay năm dương lịch).
+year_to_date: "12-31"
+
+llm:
+  provider: none                  # none = trả thẳng Điều tìm được (chưa cần API) | anthropic
+  model: claude-sonnet-5-5        # chỉ dùng khi provider = anthropic (cần biến môi trường ANTHROPIC_API_KEY)
+  max_tokens: 800
