@@ -10,6 +10,7 @@ from .candidates import propose
 from .evaluate import evaluate_stages
 from .modeling import LoRAAnswerer, train_stage
 from .prepare import prepare
+from .review import review_template, finalize_review
 
 
 def config(path: Path) -> dict:
@@ -36,6 +37,20 @@ def main(argv: list[str] | None = None) -> None:
     p = commands.add_parser('propose', help='Create source-grounded DRAFT QA from verified registry')
     p.add_argument('--registry', type=Path, default=Path('data/versioning/documents.jsonl'))
     p.add_argument('--output', type=Path, default=Path('src/lora/runs/candidates.jsonl'))
+    p = commands.add_parser('review-template', help='Generate PENDING reviewer decisions and per-year coverage')
+    p.add_argument('--candidates', type=Path, default=Path('src/lora/runs/candidates.jsonl'))
+    p.add_argument('--registry', type=Path, default=Path('data/versioning/documents.jsonl'))
+    p.add_argument('--holds', type=Path, default=Path('data/versioning/publication_holds.jsonl'))
+    p.add_argument('--output', type=Path, default=Path('src/lora/runs/review_decisions.jsonl'))
+    p.add_argument('--coverage', type=Path, default=Path('src/lora/runs/review_coverage.csv'))
+    p = commands.add_parser('review-finalize', help='Validate signed human review and export approved QA subset')
+    p.add_argument('--candidates', type=Path, default=Path('src/lora/runs/candidates.jsonl'))
+    p.add_argument('--decisions', type=Path, default=Path('src/lora/runs/review_decisions.jsonl'))
+    p.add_argument('--registry', type=Path, default=Path('data/versioning/documents.jsonl'))
+    p.add_argument('--holds', type=Path, default=Path('data/versioning/publication_holds.jsonl'))
+    p.add_argument('--benchmark', type=Path, help='Optional official held-out benchmark; do NOT create a fake one')
+    p.add_argument('--output', type=Path, default=Path('src/lora/runs/approved_qa.jsonl'))
+    p.add_argument('--coverage', type=Path, default=Path('src/lora/runs/review_coverage.csv'))
     p = commands.add_parser('prepare', help='Validate MANUALLY APPROVED QA and benchmark separation')
     p.add_argument('--train', type=Path)
     p.add_argument('--benchmark', type=Path)
@@ -64,6 +79,13 @@ def main(argv: list[str] | None = None) -> None:
         return path if path.is_absolute() else root / path
     if args.command == 'propose':
         output = propose(root, resolve(args.registry), resolve(args.output))
+    elif args.command == 'review-template':
+        output = review_template(root, resolve(args.candidates), resolve(args.registry),
+                                 resolve(args.holds), resolve(args.output), resolve(args.coverage))
+    elif args.command == 'review-finalize':
+        output = finalize_review(root, resolve(args.candidates), resolve(args.decisions),
+                                 resolve(args.registry), resolve(args.holds), resolve(args.output),
+                                 resolve(args.coverage), resolve(args.benchmark) if args.benchmark else None)
     elif args.command == 'prepare':
         output = prepare(root, resolve(args.train or cfg['train_qa']),
                          resolve(args.benchmark or cfg['benchmark']),
