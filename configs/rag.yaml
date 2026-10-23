@@ -1,0 +1,23 @@
+# RAG config (branch feature/rag-versioned). Paths are relative to the repo root.
+# Chunks exported by: python -m src.versioning.cli export-chunks --include-unreviewed --max-chars 1500
+#   rag_chunks.jsonl        reviewed documents only (use for real evaluation)
+#   rag_chunks_draft.jsonl  includes unreviewed documents (development only)
+chunks_file: data/versioning/rag_chunks_draft.jsonl
+reviewed_documents_file: data/versioning/reviewed_documents.jsonl
+
+vector_db_path: data/vectordb
+collection: regulations
+
+# Small model for quick tests. For real runs use BAAI/bge-m3 (about 2GB).
+embedding_model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+
+top_k: 5
+
+# A question with a single year (e.g. "nam 2023"): which academic year?
+#   start: 2023 -> 2023-2024     end: 2023 -> 2022-2023
+single_year_means: start
+
+llm:
+  provider: none
+  model: claude-sonnet-5-5
+  max_tokens: 800
