@@ -1,0 +1,8 @@
+# Install compatible PyTorch for your GPU/OS first: https://pytorch.org/get-started/locally/
+# Keep this isolated from the shared repository requirements.txt.
+transformers>=4.46.3,<5
+peft>=0.13.2,<1
+accelerate>=1.1.1,<2
+safetensors>=0.4.5
+PyYAML>=6.0
+pytest>=8
