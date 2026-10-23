@@ -1,15 +1,15 @@
 """Điểm vào của RAG: answer(question, as_of_year) -> {"answer", "sources"}.
 
 Cùng chữ ký với phía LoRA để src/eval/ chạy được cho cả hai.
-Thử nhanh:  python -m src.rag.pipeline "Điều kiện tốt nghiệp?" --year 2022
+Thử nhanh:  python -m src.rag.pipeline "Học phí năm học 2023-2024 là bao nhiêu?"
 """
 from __future__ import annotations
 
 import argparse
 
 from .config import load_config
-from .generate import fmt_ts, generate
-from .retrieve import retrieve
+from .generate import generate
+from .retriever import retrieve
 from .versioning import plan_version
 
 _cfg: dict | None = None
@@ -18,25 +18,24 @@ _cfg: dict | None = None
 def answer(question: str, as_of_year: int | None = None) -> dict:
     global _cfg
     _cfg = _cfg or load_config()
-    plan = plan_version(question, as_of_year, _cfg.get("year_to_date", "12-31"))
-    hits = retrieve(question, plan, _cfg)
+    plan = plan_version(question, as_of_year, _cfg.get("single_year_means", "start"))
+    hits, plan = retrieve(question, plan, _cfg)
 
     if not hits:
-        text = "Không tìm thấy quy định phù hợp có hiệu lực tại thời điểm được hỏi."
+        text = "Không tìm thấy quy định phù hợp với năm học được hỏi."
     else:
         text = generate(question, hits, plan, _cfg)
 
     sources = [{
         "doc_id": h["metadata"]["doc_id"],
-        "dieu_so": h["metadata"]["dieu_so"],
-        "title": h["metadata"]["title"],
-        "effective_date": fmt_ts(h["metadata"]["effective_ts"]),
-        "expired_date": None if h["metadata"]["expired_ts"] == 99991231
-        else fmt_ts(h["metadata"]["expired_ts"]),
+        "academic_year": h["metadata"]["academic_year"],
+        "year_status": h["metadata"]["year_status"],
+        "review_status": h["metadata"]["review_status"],
+        "topic": h["metadata"]["topic_hint"],
     } for h in hits]
     # "debug" là trường phụ để kiểm tra việc chọn phiên bản; bỏ đi nếu eval không cần.
     return {"answer": text, "sources": sources,
-            "debug": {"mode": plan.mode, "t": plan.t, "reason": plan.reason}}
+            "debug": {"mode": plan.mode, "academic_year": plan.label(), "reason": plan.reason}}
 
 
 if __name__ == "__main__":
@@ -46,5 +45,6 @@ if __name__ == "__main__":
     a = ap.parse_args()
     out = answer(a.question, a.year)
     print(out["debug"])
-    print([f"{s['doc_id']} {s['dieu_so']}" for s in out["sources"]])
+    for s in out["sources"]:
+        print(" -", s["doc_id"], s["academic_year"], s["year_status"])
     print(out["answer"])

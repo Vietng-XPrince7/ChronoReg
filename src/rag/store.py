@@ -1,23 +1,9 @@
-"""Embedding model và vector DB (ChromaDB), tạo một lần rồi dùng lại."""
+"""Vector DB (ChromaDB)."""
 from __future__ import annotations
 
 from .config import resolve
 
-_model = None
 _client = None
-
-
-def get_model(cfg: dict):
-    global _model
-    if _model is None:
-        from sentence_transformers import SentenceTransformer
-        _model = SentenceTransformer(cfg["embedding_model"])
-    return _model
-
-
-def embed(cfg: dict, texts: list[str]) -> list[list[float]]:
-    vecs = get_model(cfg).encode(texts, normalize_embeddings=True, show_progress_bar=False)
-    return vecs.tolist()
 
 
 def get_collection(cfg: dict, reset: bool = False):

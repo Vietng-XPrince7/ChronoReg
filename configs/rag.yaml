@@ -1,21 +1,23 @@
-# Cấu hình pipeline RAG có quản lý phiên bản (nhánh feature/rag-versioned)
-# Đường dẫn tính từ thư mục gốc của repo.
+# RAG config (branch feature/rag-versioned). Paths are relative to the repo root.
+# Chunks exported by: python -m src.versioning.cli export-chunks --include-unreviewed --max-chars 1500
+#   rag_chunks.jsonl        reviewed documents only (use for real evaluation)
+#   rag_chunks_draft.jsonl  includes unreviewed documents (development only)
+chunks_file: data/versioning/rag_chunks_draft.jsonl
+reviewed_documents_file: data/versioning/reviewed_documents.jsonl
 
-data_dir: data/processed          # nơi Việt lưu các file .md đã xử lý
-vector_db_path: data/vectordb     # nơi lưu vector DB (nên thêm vào .gitignore)
+vector_db_path: data/vectordb
 collection: regulations
 
-# Model embedding (đổi được). BAAI/bge-m3 chạy tốt tiếng Việt nhưng nặng (~2GB).
-# Máy yếu có thể thử: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
-embedding_model: BAAI/bge-m3
+# Small model for quick tests. For real runs use BAAI/bge-m3 (about 2GB).
+embedding_model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
 
 top_k: 5
 
-# as_of_year -> ngày T dùng để lọc phiên bản. "12-31": năm 2023 nghĩa là 31/12/2023.
-# CẦN THỐNG NHẤT với benchmark của Việt (năm học bắt đầu 01/09 hay năm dương lịch).
-year_to_date: "12-31"
+# A question with a single year (e.g. "nam 2023"): which academic year?
+#   start: 2023 -> 2023-2024     end: 2023 -> 2022-2023
+single_year_means: start
 
 llm:
-  provider: none                  # none = trả thẳng Điều tìm được (chưa cần API) | anthropic
-  model: claude-sonnet-5-5        # chỉ dùng khi provider = anthropic (cần biến môi trường ANTHROPIC_API_KEY)
+  provider: none
+  model: claude-sonnet-5-5
   max_tokens: 800

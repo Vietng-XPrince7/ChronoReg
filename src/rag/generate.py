@@ -3,32 +3,25 @@ from __future__ import annotations
 
 from .versioning import VersionPlan
 
-OPEN_END = 99991231
-
-
-def fmt_ts(ts: int) -> str:
-    s = str(ts)
-    return "nay" if ts == OPEN_END else f"{s[:4]}-{s[4:6]}-{s[6:]}"
-
 
 def _header(m: dict) -> str:
-    return (f"{m['title']} ({m['doc_id']}) - {m['dieu_so']} - "
-            f"hiệu lực {fmt_ts(m['effective_ts'])} đến {fmt_ts(m['expired_ts'])}")
+    year = m["academic_year"] or "chưa rõ năm học"
+    note = "" if m["year_status"] == "verified" else f" [năm học: {m['year_status']}, chưa duyệt]"
+    return f"{m['doc_id']} - năm học {year}{note}"
 
 
 def build_prompt(question: str, hits: list[dict], plan: VersionPlan) -> str:
     ctx = "\n\n".join(f"[{_header(h['metadata'])}]\n{h['document']}" for h in hits)
-    if plan.mode == "as_of":
-        scope = f"Chỉ xét quy định có hiệu lực tại ngày {fmt_ts(plan.t)}."
-    elif plan.mode == "current":
-        scope = "Chỉ xét quy định đang có hiệu lực hiện nay."
+    if plan.mode in ("year", "latest") and plan.start_year:
+        scope = f"Chỉ xét quy định của năm học {plan.label()}."
     else:
-        scope = ("Ngữ cảnh có thể gồm nhiều phiên bản. Nêu rõ từng phiên bản "
-                 "(năm hiệu lực) và quy định nào là cũ, quy định nào là mới.")
+        scope = ("Ngữ cảnh có thể gồm nhiều năm học. Nêu rõ từng năm học và "
+                 "quy định nào cũ, quy định nào mới.")
     return (
         "Bạn là trợ lý hỏi đáp quy chế của trường đại học. Trả lời bằng tiếng Việt, "
-        "chỉ dựa vào các điều khoản dưới đây, nêu rõ Điều và văn bản được trích dẫn. "
-        "Nếu ngữ cảnh không đủ thông tin thì nói rõ là không tìm thấy.\n"
+        "chỉ dựa vào các đoạn văn bản dưới đây, nêu rõ văn bản và năm học được trích dẫn. "
+        "Nếu đoạn nào ghi 'chưa duyệt' thì nói rõ thông tin chưa được xác minh. "
+        "Nếu ngữ cảnh không đủ thì nói rõ là không tìm thấy.\n"
         f"{scope}\n\n=== NGỮ CẢNH ===\n{ctx}\n\n=== CÂU HỎI ===\n{question}"
     )
 
@@ -44,5 +37,5 @@ def generate(question: str, hits: list[dict], plan: VersionPlan, cfg: dict) -> s
             messages=[{"role": "user", "content": build_prompt(question, hits, plan)}],
         )
         return "".join(b.text for b in msg.content if b.type == "text")
-    # provider "none": trả thẳng các Điều tìm được, để kiểm tra truy xuất/phiên bản
-    return "\n\n".join(f"[{_header(h['metadata'])}]\n{h['document']}" for h in hits[:2])
+    # provider "none": trả thẳng các đoạn tìm được để kiểm tra truy xuất/phiên bản
+    return "\n\n".join(f"[{_header(h['metadata'])}]\n{h['document'][:600]}" for h in hits[:2])
