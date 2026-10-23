@@ -3,9 +3,11 @@ lora:
   base_model: Qwen/Qwen2.5-0.5B-Instruct
   model_revision: main # For final experiments, replace with a pinned Hugging Face commit SHA.
   strategy: sequential # Same LoRA adapter updated in chronological order.
+  model_dtype: float16 # Explicit, tested on NVIDIA Turing T1000; never 'auto'.
+  gradient_checkpointing: true # Reduce activation VRAM; use non-reentrant mode.
   years: [2022, 2023, 2024, 2025, 2026]
   seed: 42
-  max_seq_length: 1024
+  max_seq_length: 512 # Conservative first-run ceiling; smoke only validated at 105 tokens.
   learning_rate: 0.0001
   epochs: 2
   train_batch_size: 1

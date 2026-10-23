@@ -119,6 +119,7 @@ def test_mutated_prepared_file_cannot_train(tmp_path):
 def test_previous_adapter_contract(tmp_path):
     p = tmp_path/'year-2024'; p.mkdir()
     (p/'adapter_config.json').write_text('{}')
+    (p/'adapter_model.safetensors').write_bytes(b'fixture-only')
     (p/'stage.json').write_text(json.dumps({'year':2024,'model':'x','model_revision':'main','strategy':'sequential'}))
     check_previous(p,2025,{'base_model':'x'})
     with pytest.raises(ValueError,match='previous year'):

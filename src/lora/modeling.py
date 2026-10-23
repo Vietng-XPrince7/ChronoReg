@@ -70,9 +70,26 @@ def _libraries():
     return torch, LoraConfig, PeftConfig, PeftModel, get_peft_model, AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
 
 
+def model_loading_kwargs(cfg: dict, torch: Any, *, on_cuda: bool) -> dict:
+    """Explicit dtype/backend tested on the Turing T1000; fail on unsupported BF16."""
+    requested = cfg.get('model_dtype', 'float16')
+    choices = {'float16': torch.float16, 'float32': torch.float32,
+               'bfloat16': torch.bfloat16}
+    if requested not in choices:
+        raise ValueError(f'Unsupported model_dtype={requested!r}; expected float16, bfloat16 or float32')
+    if on_cuda and requested == 'bfloat16' and not torch.cuda.is_bf16_supported():
+        raise ValueError('Configured bfloat16 on a CUDA GPU without BF16 support; use float16 on Quadro T1000')
+    # CPU smoke testing is permitted only with FP32, regardless of the CUDA preference.
+    dtype = choices[requested] if on_cuda else torch.float32
+    return {'dtype': dtype, 'trust_remote_code': False,
+            'low_cpu_mem_usage': True, 'use_safetensors': True,
+            'attn_implementation': 'eager'}
+
+
 def check_previous(previous: Path, year: int, cfg: dict) -> dict:
     meta_path = previous / 'stage.json'
-    if not meta_path.is_file() or not (previous / 'adapter_config.json').is_file():
+    weight = previous / 'adapter_model.safetensors'
+    if not meta_path.is_file() or not (previous / 'adapter_config.json').is_file() or not weight.is_file() or weight.stat().st_size == 0:
         raise ValueError(f'Missing complete previous adapter checkpoint: {previous}')
     meta = json.loads(meta_path.read_text(encoding='utf-8'))
     if meta['year'] != year - 1:
@@ -83,6 +100,8 @@ def check_previous(previous: Path, year: int, cfg: dict) -> dict:
         raise ValueError('Model revision changed between stages')
     if meta.get('strategy') != 'sequential':
         raise ValueError('Previous adapter was not trained sequentially')
+    if meta.get('model_dtype', 'float16') != cfg.get('model_dtype', 'float16'):
+        raise ValueError('Model dtype changed between stages')
     return meta
 
 
@@ -109,6 +128,8 @@ def train_stage(cfg: dict, prepared_dir: Path, year: int,
     plan = {'year': year, 'model': cfg['base_model'],
             'model_revision': cfg.get('model_revision') or 'main',
             'strategy': 'sequential',
+            'model_dtype': cfg.get('model_dtype', 'float16'),
+            'gradient_checkpointing': bool(cfg.get('gradient_checkpointing', True)),
             'training_rows': len(rows), 'training_sha256': sha256(train_path),
             'previous_checkpoint': str(previous) if previous else None,
             'checkpoint': str(checkpoint)}
@@ -124,9 +145,12 @@ def train_stage(cfg: dict, prepared_dir: Path, year: int,
     tokenizer = AutoTokenizer.from_pretrained(cfg['base_model'], revision=revision, trust_remote_code=False)
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token = tokenizer.eos_token
-    base = AutoModelForCausalLM.from_pretrained(cfg['base_model'], revision=revision,
-                                               trust_remote_code=False, torch_dtype='auto')
-    if torch.cuda.is_available():
+    on_cuda = torch.cuda.is_available()
+    dtype = model_loading_kwargs(cfg, torch, on_cuda=on_cuda)['dtype']
+    base = AutoModelForCausalLM.from_pretrained(
+        cfg['base_model'], revision=revision,
+        **model_loading_kwargs(cfg, torch, on_cuda=on_cuda))
+    if on_cuda:
         base = base.to('cuda')
     if previous:
         adapter_cfg = PeftConfig.from_pretrained(str(previous))
@@ -150,8 +174,10 @@ def train_stage(cfg: dict, prepared_dir: Path, year: int,
         num_train_epochs=cfg['epochs'], learning_rate=float(cfg['learning_rate']),
         seed=cfg['seed'], report_to='none', save_strategy='no',
         logging_steps=10, remove_unused_columns=False,
-        bf16=bool(torch.cuda.is_available() and torch.cuda.is_bf16_supported()),
-        fp16=bool(torch.cuda.is_available() and not torch.cuda.is_bf16_supported()),
+        bf16=bool(on_cuda and dtype == torch.bfloat16),
+        fp16=bool(on_cuda and dtype == torch.float16),
+        gradient_checkpointing=bool(cfg.get('gradient_checkpointing', True)),
+        gradient_checkpointing_kwargs={'use_reentrant': False},
         dataloader_num_workers=0,
     )
     trainer = Trainer(model=model, args=args, train_dataset=dataset,
@@ -167,6 +193,11 @@ def train_stage(cfg: dict, prepared_dir: Path, year: int,
     try:
         model.save_pretrained(str(temp_checkpoint), safe_serialization=True)
         tokenizer.save_pretrained(str(temp_checkpoint))
+        if not (temp_checkpoint / 'adapter_config.json').is_file():
+            raise RuntimeError('Adapter config was not saved')
+        saved_weights = temp_checkpoint / 'adapter_model.safetensors'
+        if not saved_weights.is_file() or saved_weights.stat().st_size == 0:
+            raise RuntimeError('Serialized adapter weights missing/empty')
         (temp_checkpoint / 'stage.json').write_text(
             json.dumps(plan, ensure_ascii=False, indent=2, sort_keys=True) + '\n',
             encoding='utf-8')
@@ -192,10 +223,11 @@ class LoRAAnswerer:
                                                        trust_remote_code=False)
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
-        base = AutoModelForCausalLM.from_pretrained(cfg['base_model'],
-                                                   revision=cfg.get('model_revision') or 'main',
-                                                   trust_remote_code=False, torch_dtype='auto')
-        if torch.cuda.is_available():
+        on_cuda = torch.cuda.is_available()
+        base = AutoModelForCausalLM.from_pretrained(
+            cfg['base_model'], revision=cfg.get('model_revision') or 'main',
+            **model_loading_kwargs(cfg, torch, on_cuda=on_cuda))
+        if on_cuda:
             base = base.to('cuda')
         self.model = PeftModel.from_pretrained(base, str(adapter)) if adapter else base
         self.model.eval()

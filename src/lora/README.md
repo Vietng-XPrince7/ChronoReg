@@ -93,7 +93,7 @@ py -m src.lora.cli train --year 2026 --previous src/lora/runs/checkpoints/year-2
 
 Every stage reads **only that year's** approved QA and resumes the **same trainable adapter** from the prior year. Its local `stage.json` records previous checkpoint, base model, revision, year, and QA fingerprint. The stage refuses an overwritten or missing checkpoint, nonconsecutive years, a different model, or a changed prepared training file. Checkpoint files remain untracked in `src/lora/runs/`.
 
-`--allow-cpu` exists only for tiny smoke tests; multi-epoch continual training on CPU is not recommended. This first implementation uses full-precision/automatic model dtype plus LoRA, **not** QLoRA; memory requirements must be measured, not assumed.
+`--allow-cpu` exists only for tiny smoke tests; multi-epoch continual training on CPU is not recommended. The Qwen baseline now loads with an explicit FP16 dtype on CUDA (and FP32 for CPU smoke tests), uses eager attention and optional non-reentrant gradient checkpointing. This is ordinary LoRA, **not** QLoRA. The GPU smoke reached 1,151 MiB allocated / 1,252 MiB reserved at 105 tokens; this does not prove 512-token full Trainer fits 4 GB.
 
 ## Step 4: Interface and forgetting diagnostics
 
@@ -115,3 +115,41 @@ Forgetting at checkpoint `t` for an earlier year `y` is measured as `max(0, max_
 - Before publishing results, add an *independent adapter per year* baseline and a *replay* baseline if the course allows. The provided implementation is the requested sequential strategy.
 - Potential source exclusions (temporary tuition notices, superseded documents, unsafe tables) must be decided by the data owner. The LoRA candidate generator only reads `policy_qa_ready` and `verified_against_source` flags.
 - Confirm with the group whether a single answer can have several supporting `gold_doc_id`s and whether `as_of_year` means calendar or academic year. These are interface decisions owned by the data/eval branch, not changes to make locally.
+
+
+## Quadro T1000 GPU validation (Ubuntu WSL2)
+
+On 2026-10-23, the Windows host's Code Integrity policy blocked a PyTorch DLL.
+The same Quadro T1000 GPU successfully executed FP16 CUDA under Ubuntu WSL2
+with Python 3.13.17, torch 2.9.1+cu126, transformers 4.57.6, PEFT 0.21.2,
+and accelerate 1.15.0. An isolated synthetic 105-token optimizer step used
+1,151 MiB allocated / 1,252 MiB reserved. These numbers are **not** a training
+benchmark and do not justify accuracy/forgetting claims.
+
+The `model_dtype: float16` setting avoids automatically reloading Qwen's BF16
+weights onto a Turing GPU that lacks native BF16. CUDA BF16 is rejected unless
+supported. For tiny CPU smoke tests, model weights are loaded as FP32.
+
+The default first-run maximum length has been reduced to 512 tokens, batch size 1.
+Memory remains workload dependent; explicitly inspect peak allocated/reserved
+memory and reduce length if needed. Stage code saves a PEFT adapter to a partial
+folder and publishes only after the serialized safetensors file is verified.
+
+Once GPU dependencies are installed and the smoke model weights are cached,
+run **only the synthetic end-to-end stage test**, without touching real QA:
+
+```bash
+cd /mnt/c/HaiAnh/ChronoReg-LoRA
+"$HOME/.local/share/chronoreg-lora/py313/bin/python" -m src.lora.smoke_stage
+```
+
+It creates an isolated temporary workspace, generates exactly two synthetic QAs,
+executes one Trainer step each for 2025 and 2026, checks adapter artifacts and
+loads the final adapter for one synthetic inference. It is NOT a full five-year
+experiment; a failure must be diagnosed before using the real `train` command.
+The synthetic source is not UET policy and temporary checkpoints are removed.
+
+The course's real five-year run requires independent approved source-backed QAs,
+a held-out benchmark owned by the data/eval branch, and a signed-off year
+convention. Do not commit `src/lora/runs/` or publish synthetic scores as
+regulatory QA accuracy.
