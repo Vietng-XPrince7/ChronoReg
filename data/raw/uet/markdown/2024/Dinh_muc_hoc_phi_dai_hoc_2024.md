@@ -1,38 +1,34 @@
-**TRƯỜNG ĐẠI HỌC CÔNG NGHỆ / ĐẠI HỌC QUỐC GIA HÀ NỘI** 
+**TRƯỜNG ĐẠI HỌC CÔNG NGHỆ / ĐẠI HỌC QUỐC GIA HÀ NỘI**
 
-# **Quy định định mức học phí đào tạo đại học năm học 2024-2025** 
+# **Quy định định mức học phí đào tạo đại học năm học 2024-2025**
 
-Nguồn: https://uet.vnu.edu.vn/dinh-muc-hoc-phi-dao-tao-dai-hoc-nam-hoc-2024-2025/ 
+Nguồn: https://uet.vnu.edu.vn/dinh-muc-hoc-phi-dao-tao-dai-hoc-nam-hoc-2024-2025/
 
-_Căn cứ Quyết định số 3568/QĐ-ĐHQGHN ngày 08 tháng 10 năm 2014 của Giám đốc Đại học Quốc gia Hà Nội (ĐHQGHN) quy định về Tổ chức và hoạt động của các đơn vị thành viên và đơn vị trực thuộc ĐHQGHN;_ 
+_Căn cứ Quyết định số 3568/QĐ-ĐHQGHN ngày 08 tháng 10 năm 2014 của Giám đốc Đại học Quốc gia Hà Nội (ĐHQGHN) quy định về Tổ chức và hoạt động của các đơn vị thành viên và đơn vị trực thuộc ĐHQGHN;_
 
-_Căn cứ Nghị quyết số 985/NQ-HĐT ngày 08 tháng 11 năm 2022 của Hội đồng trường Trường Đại học Công nghệ (ĐHCN) về việc ban hành Quy chế tạm thời về tổ chức và hoạt động của Trường ĐHCN;_ 
+_Căn cứ Nghị quyết số 985/NQ-HĐT ngày 08 tháng 11 năm 2022 của Hội đồng trường Trường Đại học Công nghệ (ĐHCN) về việc ban hành Quy chế tạm thời về tổ chức và hoạt động của Trường ĐHCN;_
 
-_Căn cứ Nghị định số 81/2021/NĐ-CP ngày 27 tháng 08 năm 2021 của Thủ tướng Chính phủ Quy định về cơ chế thu, quản lý học phí đối với cơ sở giáo dục thuộc hệ thống giáo dục quốc dân và chính sách miễn, giảm học phí, hỗ trợ chi phí học tập; giá dịch vụ trong lĩnh vực giáo dục, đào tạo;_ 
+_Căn cứ Nghị định số 81/2021/NĐ-CP ngày 27 tháng 08 năm 2021 của Thủ tướng Chính phủ Quy định về cơ chế thu, quản lý học phí đối với cơ sở giáo dục thuộc hệ thống giáo dục quốc dân và chính sách miễn, giảm học phí, hỗ trợ chi phí học tập; giá dịch vụ trong lĩnh vực giáo dục, đào tạo;_
 
-_Căn cứ Nghị định số 97/2023/NĐ-CP ngày 31 tháng 12 năm 2023 của Thủ tướng Chính phủ sửa đổi, bổ sung một số điều của Ngh_ ị _định số 81/2021/NĐ-CP ngày 27/08/2021 của Thủ tướng Chính phủ Quy định về cơ chế thu, quản lý học phí đối với cơ sở giáo dục thuộc hệ thống giáo dục quốc dân và chính sách miễn, giảm học phí, hỗ trợ chi phí học tập; giá dịch vụ trong lĩnh vực giáo dục, đào tạo;_ 
+_Căn cứ Nghị định số 97/2023/NĐ-CP ngày 31 tháng 12 năm 2023 của Thủ tướng Chính phủ sửa đổi, bổ sung một số điều của Nghị định số 81/2021/NĐ-CP ngày 27/08/2021 của Thủ tướng Chính phủ Quy định về cơ chế thu, quản lý học phí đối với cơ sở giáo dục thuộc hệ thống giáo dục quốc dân và chính sách miễn, giảm học phí, hỗ trợ chi phí học tập; giá dịch vụ trong lĩnh vực giáo dục, đào tạo;_
 
-_Căn cứ Nghị định 60/2021/NĐ-CP ngày 21 tháng 06 năm 2021 của Thủ tướng Chính phủ quy định cơ chế tự chủ tài chính của đơn vị sự nghiệp công lập;_ 
+_Căn cứ Nghị định 60/2021/NĐ-CP ngày 21 tháng 06 năm 2021 của Thủ tướng Chính phủ quy định cơ chế tự chủ tài chính của đơn vị sự nghiệp công lập;_
 
-_Căn cứ Quyết định số 4207/QĐ-ĐHQGHN ngày 21 tháng 12 năm 2021 của Giám ĐHQGHN về việc phê duyệt cơ chế tự đảm bảo chi thường xuyên của Trường ĐHCN;_ 
+_Căn cứ Quyết định số 4207/QĐ-ĐHQGHN ngày 21 tháng 12 năm 2021 của Giám ĐHQGHN về việc phê duyệt cơ chế tự đảm bảo chi thường xuyên của Trường ĐHCN;_
 
-_Căn cứ Quyết định số 3499/QĐ-ĐHQGHN ngày 20 tháng 9 năm 2023 của Giám đốc ĐHQGHN về việc giao quyền tự chủ, tự chịu trách nhiệm về tài chính đối với đơn vị sự nghiệp công lập giai đoạn 2023-2025;_ 
+_Căn cứ Quyết định số 3499/QĐ-ĐHQGHN ngày 20 tháng 9 năm 2023 của Giám đốc ĐHQGHN về việc giao quyền tự chủ, tự chịu trách nhiệm về tài chính đối với đơn vị sự nghiệp công lập giai đoạn 2023-2025;_
 
-_Căn cứ vào khung chương trình đào tạo bậc đại học tại Trường ĐHCN đã được phê duyệt và áp dụng;_ 
+_Căn cứ vào khung chương trình đào tạo bậc đại học tại Trường ĐHCN đã được phê duyệt và áp dụng;_
 
-_Căn cứ Tờ trình ngày 23 tháng 9 năm 2024 về định mức thu học phí bậc đào tạo đại học tại trường ĐHCN trong năm học 2024 -2025 của các phòng Kế hoạch – Tài chính, Công tác Sinh viên, Đào tạo; Theo đề nghị của Trưởng phòng Kế hoạch – Tài chính._ 
+_Căn cứ Tờ trình ngày 23 tháng 9 năm 2024 về định mức thu học phí bậc đào tạo đại học tại trường ĐHCN trong năm học 2024 -2025 của các phòng Kế hoạch – Tài chính, Công tác Sinh viên, Đào tạo; Theo đề nghị của Trưởng phòng Kế hoạch – Tài chính._
 
-### **HIỆU TRƯỞNG** 
+### **HIỆU TRƯỞNG**
 
-### **TRƯỜNG ĐẠI HỌC CÔNG NGHỆ QUYẾT ĐỊNH:** 
+### **TRƯỜNG ĐẠI HỌC CÔNG NGHỆ QUYẾT ĐỊNH:**
 
-## **Điều 1. Định mức học phí đào tạo đại học các khoá tuyển sinh từ năm 2021 trở về trước là:** 
+## **Điều 1. Định mức học phí đào tạo đại học các khoá tuyển sinh từ năm 2021 trở về trước là:**
 
-- Định mức học phí đào tạo đại học hệ chính quy đối với các chương trình đào tạo chuẩn, chất lượng cao (ngành CNTT): 
-
-Trường Đại học Công nghệ · ĐHQGHN 
-
-1 
+- Định mức học phí đào tạo đại học hệ chính quy đối với các chương trình đào tạo chuẩn, chất lượng cao (ngành CNTT):
 
 |**STT**|**Hình thức học**|**đồng/1 năm**|**đồng/1 tín chỉ**|
 |---|---|---|---|
@@ -40,67 +36,60 @@ Trường Đại học Công nghệ · ĐHQGHN
 
 
 
-– Định mức học phí chương trình đào tạo bằng kép là: 450.000 đồng/tín chỉ, áp dụng cho các hình thức: học lần đầu, học lại, học cải thiện điểm, học tự chọn tự do. 
+– Định mức học phí chương trình đào tạo bằng kép là: 450.000 đồng/tín chỉ, áp dụng cho các hình thức: học lần đầu, học lại, học cải thiện điểm, học tự chọn tự do.
 
-- Định mức học phí chương trình đào tạo chuẩn cho các sinh viên đại học có quốc tịch Lào/ Campuchia cùng định mức như sinh viên Việt Nam. 
+- Định mức học phí chương trình đào tạo chuẩn cho các sinh viên đại học có quốc tịch Lào/ Campuchia cùng định mức như sinh viên Việt Nam.
 
-- Định mức học phí chương trình đào tạo chuẩn cho các sinh viên đại học có quốc tịch nước ngoài không phải Lào/Campuchia là: 1.126.000 đồng/tín chỉ, áp dụng cho các hình thức: học lần đầu, học lại, học cải thiện điểm, học tự chọn tự do. 
+- Định mức học phí chương trình đào tạo chuẩn cho các sinh viên đại học có quốc tịch nước ngoài không phải Lào/Campuchia là: 1.126.000 đồng/tín chỉ, áp dụng cho các hình thức: học lần đầu, học lại, học cải thiện điểm, học tự chọn tự do.
 
-   - Định mức học phí đào tạo đại học hệ chính quy đối với các chương trình chất lượng cao theo Thông tư 23: 
+   - Định mức học phí đào tạo đại học hệ chính quy đối với các chương trình chất lượng cao theo Thông tư 23:
 
 |**STT**|**Khóa tuyển sinh**|**Học lần đầu (đồng/1**<br>**năm học, 10 tháng)**|**Học lại, cải thiện**<br>**điểm, tự chọn tự do**<br>**(đồng/1 tín chỉ)**|
 |---|---|---|---|
 |1|Khóa QH-2018-I/CQ|35.000.000|700.000|
-|2|Khóa QH-2019 đến|35.000.000|800.000|
-||2021-I/CQ|||
+|2|Khóa QH-2019 đến 2021-I/CQ|35.000.000|800.000|
 
 
 
-- Định mức học phí đào tạo đối với sinh viên có quốc tịch nước ngoài có cùng định mức như sinh viên Việt Nam. 
+- Định mức học phí đào tạo đối với sinh viên có quốc tịch nước ngoài có cùng định mức như sinh viên Việt Nam.
 
-## **Điều 2. Định mức học phí đào tạo đại học các khoá tuyển sinh trong năm 2022 là:** 
+## **Điều 2. Định mức học phí đào tạo đại học các khoá tuyển sinh trong năm 2022 là:**
 
-- Định mức học phí đào tạo đại học hệ chính quy đối với các chương trình đào tạo chuẩn, chất lượng cao (ngành CNTT): 
+- Định mức học phí đào tạo đại học hệ chính quy đối với các chương trình đào tạo chuẩn, chất lượng cao (ngành CNTT):
 
 |**STT**|**Khóa tuyển**<br>**sinh**|**Học lần đầu**<br>**(đồng/1 năm**<br>**học, 10 tháng)**|**(đồng/1 tín chỉ)**|**Học lại, cải**<br>**thiện điểm, tự**<br>**chọn tự do**<br>**(đồng/1 tín chỉ)**|
 |---|---|---|---|---|
-|1|Khóa QH-2022-I/<br>CQ nhóm 1|28.100.000|765.000|765.000|
-|2|Khóa QH-2022-I/<br>CQ nhóm 2|23.400.000|634.000|765.000|
-|3|Khóa QH-2022-I/<br>CQ nhóm 3|18.700.000|510.000|765.000|
+|1|Khóa QH-2022-I/CQ nhóm 1|28.100.000|765.000|765.000|
+|2|Khóa QH-2022-I/CQ nhóm 2|23.400.000|634.000|765.000|
+|3|Khóa QH-2022-I/CQ nhóm 3|18.700.000|510.000|765.000|
 
 
 
-Trường Đại học Công nghệ · ĐHQGHN 
+- Định mức học phí chương trình đào tạo bằng kép là: 765.000 đồng/tín chỉ, áp dụng cho các hình thức: học lần đầu, học lại, học cải thiện điểm, học tự chọn tự do.
 
-2 
+   - Định mức học phí chương trình đào tạo chuẩn cho các sinh viên đại học có quốc tịch Lào/ Campuchia cùng định mức như sinh viên Việt Nam.
 
-- Định mức học phí chương trình đào tạo bằng kép là: 765.000 đồng/tín chỉ, áp dụng cho các hình thức: học lần đầu, học lại, học cải thiện điểm, học tự chọn tự do. 
+   - Định mức học phí chương trình đào tạo chuẩn cho các sinh viên đại học có quốc tịch nước ngoài không phải Lào/Campuchia là: 765.000 đồng/tín chỉ, áp dụng cho các hình thức: học lần đầu, học lại, học cải thiện điểm, học tự chọn tự do.
 
-   - Định mức học phí chương trình đào tạo chuẩn cho các sinh viên đại học có quốc tịch Lào/ Campuchia cùng định mức như sinh viên Việt Nam. 
+**Chú thích:**
 
-   - Định mức học phí chương trình đào tạo chuẩn cho các sinh viên đại học có quốc tịch nước ngoài không phải Lào/Campuchia là: 765.000 đồng/tín chỉ, áp dụng cho các hình thức: học lần đầu, học lại, học cải thiện điểm, học tự chọn tự do. 
+Nhóm 1 gồm các ngành: CNTT, CKT, KTĐT & TĐH, KTMT, KTNL, KTRB, VLKT, TTNT.
 
-### *** Chú thích:** 
+Nhóm 2 gồm các ngành: CNHKVT, CNKTXDGT.
 
-Nhóm 1 gồm các ngành: CNTT, CKT, KTĐT & TĐH, KTMT, KTNL, KTRB, VLKT, TTNT. 
+Nhóm 3: ngành CNNN.
 
-Nhóm 2 gồm các ngành: CNHKVT, CNKTXDGT. 
+- Định mức học phí đào tạo đại học hệ chính quy đối với các chương trình chất lượng cao theo Thông tư 23:
 
-Nhóm 3: ngành CNNN. 
-
-- Định mức học phí đào tạo đại học hệ chính quy đối với các chương trình chất lượng cao theo Thông tư 23: 
-
-|**STT**|**Khóa tuyển sinh**|**Học lần đầu (đồng/1**|**Học lại, cải thiện**|
+|STT|Khóa tuyển sinh|Học lần đầu (đồng/năm học, 10 tháng)|Học lại, cải thiện điểm, tự chọn tự do (đồng/tín chỉ)|
 |---|---|---|---|
-|||**năm học, 10 tháng)**|**điểm, tự chọn tự do**|
-||||**(đồng/1 tín chỉ)**|
 |1|Khóa QH-2022-I/CQ|35.000.000|800.000|
 
 
 
-- Định mức học phí đào tạo đối với sinh viên có quốc tịch nước ngoài có cùng định mức như sinh viên Việt Nam. 
+- Định mức học phí đào tạo đối với sinh viên có quốc tịch nước ngoài có cùng định mức như sinh viên Việt Nam.
 
-## **Điều 3. Định mức học phí đào tạo đại học các khoá tuyển sinh trong năm 2023 và năm 2024** 
+## **Điều 3. Định mức học phí đào tạo đại học các khoá tuyển sinh trong năm 2023 và năm 2024**
 
 |**STT**|**Khóa tuyển sinh**|**Học lần đầu (đồng/1**<br>**năm học, 10 tháng)**|**Học lại, cải thiện**<br>**điểm, tự chọn tự do**<br>**(đồng/1 tín chỉ)**|
 |---|---|---|---|
@@ -109,25 +98,16 @@ Nhóm 3: ngành CNNN.
 
 
 
-- Định mức học phí chương trình đào tạo bằng kép là: 869.000 đồng/tín chỉ, áp dụng cho các hình thức: học lần đầu, học lại, học cải thiện điểm, học tự chọn tự do. 
+- Định mức học phí chương trình đào tạo bằng kép là: 869.000 đồng/tín chỉ, áp dụng cho các hình thức: học lần đầu, học lại, học cải thiện điểm, học tự chọn tự do.
 
-   - Định mức học phí chương trình đào tạo chuẩn cho các sinh viên đại học có quốc tịch nước ngoài cùng định mức như sinh viên Việt Nam. 
+   - Định mức học phí chương trình đào tạo chuẩn cho các sinh viên đại học có quốc tịch nước ngoài cùng định mức như sinh viên Việt Nam.
 
-Trường Đại học Công nghệ · ĐHQGHN 
+**Chú thích:**
 
-3 
+Khóa QH-2023: Chương trình đào tạo theo ĐM KTKT gồm các ngành: MMT&TTDL, CNKT ĐTVT, KHMT, HTTT, CNKT CĐT; Chương trình đào tạo chuẩn/chất lượng cao gồm các ngành còn lại.
 
-### *** Chú thích:** 
+Khóa QH-2024: Chương trình đào tạo chuẩn/chất lượng cao gồm các ngành: CNNN, TTNT, KTĐK&TĐH; Chương trình đào tạo theo ĐM KTKT gồm các ngành còn lại.
 
-Khóa QH-2023: Chương trình đào tạo theo ĐM KTKT gồm các ngành: MMT&TTDL, CNKT ĐTVT, KHMT, HTTT, CNKT CĐT; Chương trình đào tạo chuẩn/chất lượng cao gồm các ngành còn lại. 
+**Điều 4.** Định mức học phí trên áp dụng cho năm học 2024-2025.
 
-Khóa QH-2024: Chương trình đào tạo chuẩn/chất lượng cao gồm các ngành: CNNN, TTNT, KTĐK&TĐH; Chương trình đào tạo theo ĐM KTKT gồm các ngành còn lại. 
-
-**Điều 4.** Định mức học phí trên áp dụng cho năm học 2024-2025. 
-
-**Điều 5.** Các Trưởng phòng Hành chính – Quản trị, Kế hoạch – Tài chính, Công tác Sinh viên, Đào tạo; học viên cao học, nghiên cứu sinh; Thủ trưởng các đơn vị và cá nhân liên quan chịu trách nhiệm thực hiện Quyết định này./. 
-
-Trường Đại học Công nghệ · ĐHQGHN 
-
-4 
-
+**Điều 5.** Các Trưởng phòng Hành chính – Quản trị, Kế hoạch – Tài chính, Công tác Sinh viên, Đào tạo; học viên cao học, nghiên cứu sinh; Thủ trưởng các đơn vị và cá nhân liên quan chịu trách nhiệm thực hiện Quyết định này./.
