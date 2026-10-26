@@ -218,3 +218,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# Versioning generated build artifacts
+data/versioning/build_report.json
+data/versioning/coverage_by_folder.csv
+data/versioning/documents.jsonl
+data/versioning/relation_review_queue.jsonl
+data/versioning/relations.jsonl
+data/versioning/review_worklist.csv
+data/versioning/rag_chunks_draft.jsonl
