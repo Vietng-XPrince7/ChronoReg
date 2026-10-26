@@ -35,12 +35,12 @@ def retrieve(question: str, plan: VersionPlan, cfg: dict) -> tuple[list[dict], V
     if plan.mode != "latest":
         return _query(cfg, question, plan.where(), k), plan
 
-    # "latest": đoán chủ đề từ các kết quả gần nhất (không lọc), rồi lấy năm học mới nhất của chủ đề đó
+    # "latest": đoán chủ đề từ kết quả gần nhất (không lọc), rồi lấy năm học mới nhất của chủ đề đó
     probe = _query(cfg, question, None, max(k * 3, 10))
     if not probe:
         return [], plan
     by_topic, overall = latest_by_topic(cfg)
-    topic = Counter(h["metadata"]["topic_hint"] for h in probe[:3]).most_common(1)[0][0]
+    topic = probe[0]["metadata"]["topic_hint"]
     year = by_topic.get(topic) or overall
     if not year:   # chưa chunk nào biết năm học
         return probe[:k], VersionPlan("latest", None, plan.reason + " (không chunk nào biết năm học)")

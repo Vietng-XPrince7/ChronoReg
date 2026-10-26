@@ -1,0 +1,29 @@
+{
+  "benchmark_sha256": "528e4d11d11a3e37c6b1072bd5952912ca1d8ee0347a7397e8c514612519f7af",
+  "counts": {
+    "2022": 40,
+    "2023": 40,
+    "2024": 40,
+    "2025": 40,
+    "2026": 40
+  },
+  "held_out_questions_excluded": true,
+  "no_future_data": true,
+  "total": 200,
+  "train_sha256": "5868ec30ff2498a39d48356a296e0c7518e918b4a8ff53b370b3070141d4fff7",
+  "year_convention": "academic_year_start",
+  "year_sha256": {
+    "2022": "f5f16d41f6948e5d109fa3358b9ea482664850e34f9caba2b7af060d80da5578",
+    "2023": "6236f51b1bea339d96622370e2a50a7095d8dc329e87a01d7da35cc3c3e31f75",
+    "2024": "335116cdfa05e2909c92d31ef60856162dfce81a4f98c21f1aaac5af8afb54be",
+    "2025": "31576e2782c2c4cc352a26d791323fdf209e4495780953a58546270a98f0052c",
+    "2026": "1e0841a1344322bec1029bd0cc2d6832dab7ace6a5940b3c523a7c6f41881fe4"
+  },
+  "years": [
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ]
+}

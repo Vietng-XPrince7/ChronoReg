@@ -1,2 +1,5 @@
-# Trained adapters, cached datasets, model outputs, private or provisional QA.
-runs/
+# Trained adapters, checkpoints, temporary model outputs
+runs/*
+!runs/approved_qa.jsonl
+!runs/prepared/
+!runs/prepared/**
