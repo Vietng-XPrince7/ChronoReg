@@ -7,6 +7,7 @@ from __future__ import annotations
 import hashlib
 import json
 import random
+import math
 from pathlib import Path
 from typing import Any
 
@@ -105,6 +106,58 @@ def check_previous(previous: Path, year: int, cfg: dict) -> dict:
     return meta
 
 
+def _training_adapter_snapshot(model, torch) -> dict:
+    """CPU-side baseline for trainable LoRA weights; never used before release."""
+    original = {name: param.detach().float().cpu().clone()
+                for name, param in model.named_parameters()
+                if param.requires_grad and 'lora_' in name}
+    if not original:
+        raise RuntimeError('TRAINING_NUMERIC_BLOCKED: no trainable LoRA parameters')
+    if any(not bool(torch.isfinite(w).all()) for w in original.values()):
+        raise RuntimeError('TRAINING_NUMERIC_BLOCKED: nonfinite adapter before training')
+    return original
+
+
+def _verify_training_numerics(model, torch, before: dict,
+                              history: list[dict], train_loss: float,
+                              optimizer_steps: int) -> dict:
+    """Reject NaN/Inf gradients, skipped optimizer steps and no-op LoRA updates."""
+    if optimizer_steps < 1 or not math.isfinite(float(train_loss)):
+        raise RuntimeError('TRAINING_NUMERIC_BLOCKED: missing step or nonfinite train loss')
+    logged = [entry for entry in history if 'grad_norm' in entry]
+    if not logged:
+        raise RuntimeError('TRAINING_NUMERIC_BLOCKED: no optimizer-step diagnostics')
+    for entry in logged:
+        loss = entry.get('loss')
+        grad = entry.get('grad_norm')
+        if (not isinstance(loss, (int, float)) or not math.isfinite(float(loss))
+                or not isinstance(grad, (int, float)) or not math.isfinite(float(grad))
+                or float(grad) <= 0):
+            raise RuntimeError('TRAINING_NUMERIC_BLOCKED: nonfinite or zero gradient/loss')
+    after = {name: param for name, param in model.named_parameters()
+             if param.requires_grad and 'lora_' in name}
+    if set(after) != set(before):
+        raise RuntimeError('TRAINING_NUMERIC_BLOCKED: adapter parameter set changed')
+    updates, max_delta = 0, 0.0
+    for name, original in before.items():
+        current = after[name].detach().float().cpu()
+        if not bool(torch.isfinite(current).all()):
+            raise RuntimeError(f'TRAINING_NUMERIC_BLOCKED: nonfinite adapter {name}')
+        delta = float((current - original).abs().max().item())
+        if not math.isfinite(delta):
+            raise RuntimeError(f'TRAINING_NUMERIC_BLOCKED: nonfinite update {name}')
+        if delta > 0:
+            updates += 1
+        max_delta = max(max_delta, delta)
+    if not updates:
+        raise RuntimeError('TRAINING_NUMERIC_BLOCKED: no adapter update')
+    return {'optimizer_steps': optimizer_steps,
+            'training_loss': float(train_loss),
+            'last_grad_norm': float(logged[-1]['grad_norm']),
+            'updated_adapter_tensors': updates,
+            'max_abs_adapter_update': max_delta}
+
+
 def train_stage(cfg: dict, prepared_dir: Path, year: int,
                 checkpoint_root: Path, previous: Path | None = None,
                 allow_cpu: bool = False, dry_run: bool = False,
@@ -178,7 +231,7 @@ def train_stage(cfg: dict, prepared_dir: Path, year: int,
         gradient_accumulation_steps=cfg['gradient_accumulation_steps'],
         num_train_epochs=cfg['epochs'], learning_rate=float(cfg['learning_rate']),
         seed=cfg['seed'], report_to='none', save_strategy='no',
-        logging_steps=10, remove_unused_columns=False,
+        logging_steps=1, remove_unused_columns=False,
         bf16=bool(on_cuda and dtype == torch.bfloat16),
         fp16=bool(on_cuda and dtype == torch.float16),
         gradient_checkpointing=bool(cfg.get('gradient_checkpointing', True)),
@@ -189,7 +242,11 @@ def train_stage(cfg: dict, prepared_dir: Path, year: int,
                       data_collator=lambda features: pad_batch(features, tokenizer.pad_token_id),
                       processing_class=tokenizer)
     checkpoint_root.mkdir(parents=True, exist_ok=True)
-    trainer.train()
+    starting_adapters = _training_adapter_snapshot(model, torch)
+    training_result = trainer.train()
+    plan['numeric_evidence'] = _verify_training_numerics(
+        model, torch, starting_adapters, trainer.state.log_history,
+        training_result.training_loss, trainer.state.global_step)
     # Write into a temporary folder and publish it atomically only after save succeeds.
     temp_checkpoint = checkpoint_root / f'.year-{year}.partial'
     if temp_checkpoint.exists():

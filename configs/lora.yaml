@@ -1,13 +1,13 @@
 # ChronoReg continual LoRA experiment. Paths are relative to repository root.
 lora:
   base_model: Qwen/Qwen2.5-0.5B-Instruct
-  model_revision: main # For final experiments, replace with a pinned Hugging Face commit SHA.
+  model_revision: main # Pin to a Hugging Face commit SHA before final experiments.
   strategy: sequential # Same LoRA adapter updated in chronological order.
-  model_dtype: float16 # Explicit, tested on NVIDIA Turing T1000; never 'auto'.
+  model_dtype: float32 # Verified on Quadro T1000 4 GiB at 510 tokens, accumulation 8, 2 epochs.
   gradient_checkpointing: true # Reduce activation VRAM; use non-reentrant mode.
   years: [2022, 2023, 2024, 2025, 2026]
   seed: 42
-  max_seq_length: 512 # Conservative first-run ceiling; smoke only validated at 105 tokens.
+  max_seq_length: 512 # 510-token synthetic stress passed on 2026-10-27; live QA still needs length audit.
   learning_rate: 0.0001
   epochs: 2
   train_batch_size: 1
