@@ -62,6 +62,7 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument('--checkpoints', type=Path, default=Path('src/lora/runs/checkpoints'))
     p.add_argument('--dry-run', action='store_true')
     p.add_argument('--allow-cpu', action='store_true')
+    p.add_argument('--release', type=Path, help='Required owner-reviewed release dossier for live training')
     p = commands.add_parser('answer', help='Call shared answer(question, as_of_year) interface')
     p.add_argument('--question', required=True)
     p.add_argument('--as-of-year', type=int)
@@ -93,7 +94,9 @@ def main(argv: list[str] | None = None) -> None:
     elif args.command == 'train':
         output = train_stage(cfg, resolve(args.prepared), args.year,
                              resolve(args.checkpoints), resolve(args.previous) if args.previous else None,
-                             allow_cpu=args.allow_cpu, dry_run=args.dry_run)
+                             allow_cpu=args.allow_cpu, dry_run=args.dry_run,
+                             release_path=resolve(args.release) if args.release else None,
+                             repo=root)
     elif args.command == 'answer':
         output = LoRAAnswerer(cfg, resolve(args.adapter) if args.adapter else None).answer(
             args.question, args.as_of_year)
