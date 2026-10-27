@@ -8,6 +8,7 @@ from pathlib import Path
 
 from .contracts import (read_jsonl, sha256, validate_benchmark,
                         validate_training, write_jsonl)
+from .intake_audit import ensure_curated
 
 
 def prepare(repo: Path, train_path: Path, benchmark_path: Path,
@@ -17,6 +18,7 @@ def prepare(repo: Path, train_path: Path, benchmark_path: Path,
     if not benchmark:
         raise ValueError('Held-out benchmark is empty. Request the validated benchmark from the data/eval owner.')
     training = validate_training(train_raw, repo, benchmark)
+    ensure_curated(train_raw)
     known = set(years)
     if len(known) != len(years) or years != sorted(years) or any(y not in range(2022, 2027) for y in years):
         raise ValueError('years must be sorted, unique, in [2022, 2026]')
