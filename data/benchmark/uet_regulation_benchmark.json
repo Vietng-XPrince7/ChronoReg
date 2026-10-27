@@ -282,35 +282,36 @@
   },
   {
     "id": "BENCH_ACT_017",
-    "question": "Sinh viên cần đạt điều kiện gì về số tín chỉ tích lũy trong kỳ để được đưa vào diện xét học bổng KKHT theo quy định mới?",
+    "question": "Theo Điều 7 của quy định xét học bổng KKHT UET ban hành năm 2026, sinh viên cần hoàn thành tối thiểu bao nhiêu tín chỉ trong học kỳ xét?",
     "category": "active_rule",
     "topic": "hoc_bong",
     "target_year": 2026,
-    "ground_truth_answer": "Sinh viên phải đăng ký và tích lũy tối thiểu 14 tín chỉ trong học kỳ xét (trừ học kỳ cuối khóa có thể ít hơn theo kế hoạch học tập) và không có học phần nào bị điểm F hoặc dưới điểm D tùy quy định cụ thể.",
+    "ground_truth_answer": "Theo khoản 3 Điều 7, sinh viên phải hoàn thành ít nhất 15 tín chỉ trong học kỳ xét học bổng. Học kỳ cuối cùng được xét theo cơ chế riêng ở khoản 4; trường hợp đặc biệt do Hiệu trưởng xem xét.",
     "key_facts": [
-      "tối thiểu 14 tín chỉ",
-      "không có học phần bị điểm F",
-      "học kỳ xét"
+      "ít nhất 15 tín chỉ",
+      "Điều 7",
+      "học kỳ cuối cùng có cơ chế riêng"
     ],
-    "outdated_trap_answer": "Chỉ cần 10 tín chỉ hoặc không quy định số tín chỉ tối thiểu.",
+    "outdated_trap_answer": "Tối thiểu 14 tín chỉ trong mọi học kỳ.",
     "source_doc_id": "uet-2026-quy-dinh-xet-hoc-bong-kkht-2026-17a091722e",
-    "source_clause": "Điều kiện xét học bổng",
+    "source_clause": "Điều 7, khoản 3 và 4",
     "source_sha256": "e1ec32e90a93b940dab8c73dc90c5f50d1f16f2b3e00b701d42af0eda312dfaf"
   },
   {
     "id": "BENCH_ACT_018",
-    "question": "Điểm rèn luyện tối thiểu để sinh viên đạt học bổng KKHT loại Khá theo quy định là bao nhiêu?",
+    "question": "Theo Điều 4 quy định xét học bổng KKHT UET năm 2026, yêu cầu về xếp loại kết quả học tập và rèn luyện của sinh viên là gì?",
     "category": "active_rule",
     "topic": "hoc_bong",
     "target_year": 2026,
-    "ground_truth_answer": "Điểm rèn luyện của sinh viên phải đạt từ loại Khá trở lên (từ 70 điểm trở lên trên thang 100).",
+    "ground_truth_answer": "Sinh viên đại học hệ chính quy trong thời gian đào tạo chuẩn phải có kết quả học tập và rèn luyện từ loại khá trở lên, đồng thời không bị kỷ luật từ mức khiển trách trở lên trong học kỳ xét.",
     "key_facts": [
-      "loại Khá trở lên",
-      "từ 70 điểm trở lên"
+      "học tập từ loại khá",
+      "rèn luyện từ loại khá",
+      "không bị kỷ luật từ khiển trách"
     ],
-    "outdated_trap_answer": "Chỉ xét điểm trung bình chung học tập mà không xét điểm rèn luyện.",
+    "outdated_trap_answer": "Chỉ cần xếp loại học tập khá, không xét rèn luyện.",
     "source_doc_id": "uet-2026-quy-dinh-xet-hoc-bong-kkht-2026-17a091722e",
-    "source_clause": "Tiêu chuẩn phân loại học bổng",
+    "source_clause": "Điều 4, đối tượng và tiêu chí",
     "source_sha256": "e1ec32e90a93b940dab8c73dc90c5f50d1f16f2b3e00b701d42af0eda312dfaf"
   },
   {
@@ -332,19 +333,18 @@
   },
   {
     "id": "BENCH_ACT_020",
-    "question": "Theo quy chế ĐHQGHN ban hành ngày 07/10/2024, học bổng tại ĐHQGHN gồm những nguồn nào?",
+    "question": "Quy định về công tác quản lý và sử dụng học bổng tại ĐHQGHN ban hành ngày 07/10/2024 kèm theo quyết định số nào?",
     "category": "active_rule",
     "topic": "hoc_bong",
     "target_year": 2024,
-    "ground_truth_answer": "Theo Quyết định số 3968/QĐ-ĐHQGHN ngày 07/10/2024, học bổng tại ĐHQGHN bao gồm: Học bổng từ nguồn ngân sách nhà nước (học bổng KKHT, chính sách) và Học bổng ngoài ngân sách nhà nước (từ các tổ chức, cá nhân, doanh nghiệp tài trợ).",
+    "ground_truth_answer": "Quy định về công tác quản lý và sử dụng học bổng tại ĐHQGHN được ban hành kèm Quyết định số 4618/QĐ-ĐHQGHN ngày 07/10/2024.",
     "key_facts": [
-      "nguồn ngân sách nhà nước",
-      "ngoài ngân sách nhà nước",
-      "Quyết định số 3968/QĐ-ĐHQGHN"
+      "4618/QĐ-ĐHQGHN",
+      "07/10/2024"
     ],
-    "outdated_trap_answer": "Chỉ có duy nhất học bổng khuyến khích học tập từ học phí của nhà trường.",
+    "outdated_trap_answer": "Quyết định 3968/QĐ-ĐHQGHN (số hiệu không khớp nguồn).",
     "source_doc_id": "uet-2024-quy-dinh-ve-hoc-bong-2024-6291b27e51",
-    "source_clause": "Điều 3, Phân loại nguồn học bổng",
+    "source_clause": "Phần đầu văn bản, tên quyết định",
     "source_sha256": "aea624fe612513a58a269f889b1d7adc9bd8490f4eb1b3e471b90f4550a05cc3"
   },
   {
@@ -365,20 +365,19 @@
   },
   {
     "id": "BENCH_ACT_022",
-    "question": "Trường hợp nào người học bị thu hồi học bổng theo quy định về quản lý học bổng của ĐHQGHN?",
+    "question": "Theo Điều 17 của quy định quản lý học bổng ĐHQGHN ban hành năm 2024, người nhận học bổng không thực hiện tốt trách nhiệm có thể chịu hậu quả gì?",
     "category": "active_rule",
     "topic": "hoc_bong",
     "target_year": 2024,
-    "ground_truth_answer": "Người học bị thu hồi học bổng nếu phát hiện có hành vi gian lận hồ sơ, man khai thông tin cá nhân, vi phạm pháp luật hoặc vi phạm quy chế đào tạo đến mức bị kỷ luật trong thời gian hưởng học bổng.",
+    "ground_truth_answer": "Theo khoản 4 Điều 17, cá nhân không thực hiện tốt các trách nhiệm được nêu tại điều này sẽ bị thu hồi học bổng đã cấp hoặc không được đưa vào diện xét, cấp học bổng trong những lần tiếp theo.",
     "key_facts": [
+      "Điều 17",
       "thu hồi học bổng",
-      "gian lận hồ sơ",
-      "man khai thông tin",
-      "bị kỷ luật"
+      "không được xét lần tiếp theo"
     ],
-    "outdated_trap_answer": "Học bổng đã cấp vào tài khoản thì không bao giờ bị thu hồi.",
+    "outdated_trap_answer": "Tự động thu hồi chỉ vì vi phạm một điều kiện không nêu tại Điều 17.",
     "source_doc_id": "uet-2024-quy-dinh-ve-hoc-bong-2024-6291b27e51",
-    "source_clause": "Điều 14, Xử lý vi phạm và thu hồi học bổng",
+    "source_clause": "Điều 17, khoản 4",
     "source_sha256": "aea624fe612513a58a269f889b1d7adc9bd8490f4eb1b3e471b90f4550a05cc3"
   },
   {
@@ -400,70 +399,71 @@
   },
   {
     "id": "BENCH_ACT_024",
-    "question": "Số lượng thành viên tối đa trong một nhóm sinh viên tham gia đề tài NCKH cấp trường là bao nhiêu?",
+    "question": "Thông báo số 1 về SVNCKH cấp Trường năm học 2025–2026 dẫn chiếu quyết định nào về hoạt động NCKH của người học?",
     "category": "active_rule",
     "topic": "nckh",
     "target_year": 2025,
-    "ground_truth_answer": "Theo quy định hướng dẫn NCKH sinh viên, mỗi công trình nghiên cứu khoa học của sinh viên có không quá 05 sinh viên tham gia, trong đó có 01 sinh viên chịu trách nhiệm chính (chủ nhiệm đề tài).",
+    "ground_truth_answer": "Thông báo số 1 dẫn chiếu Quyết định số 447/QĐ-ĐHCN ngày 07/03/2025, ban hành Quy định về hoạt động nghiên cứu khoa học của người học tại Trường Đại học Công nghệ. Thông báo không xác lập số thành viên tối đa cho mỗi nhóm.",
     "key_facts": [
-      "không quá 05 sinh viên",
-      "01 sinh viên chịu trách nhiệm chính"
+      "447/QĐ-ĐHCN",
+      "07/03/2025",
+      "dẫn chiếu",
+      "không quy định số thành viên"
     ],
-    "outdated_trap_answer": "Tối đa 10 sinh viên hoặc chỉ cho phép cá nhân thực hiện.",
+    "outdated_trap_answer": "Không quá 05 sinh viên/nhóm là giới hạn chưa có trong thông báo này.",
     "source_doc_id": "uet-2025-nckh-thong-bao-cap-truong-2025-f5d6ba8fea",
-    "source_clause": "Mục II, Điều kiện tham gia",
+    "source_clause": "Đoạn mở đầu, trang 1",
     "source_sha256": "7a1d8b1169324b04c682aed4fe7be436bcdd063904c5b59b57cacfdd24596e60"
   },
   {
     "id": "BENCH_ACT_025",
-    "question": "Sinh viên đạt giải Nhất Hội nghị NCKH sinh viên cấp trường được hưởng quyền lợi ưu tiên gì trong học tập?",
+    "question": "Theo Thông báo số 1 về SVNCKH cấp Trường năm học 2025–2026, hạn nộp file poster và video giới thiệu đề tài là khi nào?",
     "category": "active_rule",
     "topic": "nckh",
     "target_year": 2025,
-    "ground_truth_answer": "Sinh viên đạt giải Nhất NCKH cấp trường được khen thưởng tiền mặt, giấy khen của Hiệu trưởng, được cộng điểm rèn luyện, ưu tiên xét các học bổng tài trợ và được đề cử tham gia giải thưởng NCKH sinh viên cấp ĐHQGHN và cấp Bộ.",
+    "ground_truth_answer": "Theo mục II của thông báo cấp Trường, file poster và video giới thiệu đề tài phải nộp trước ngày 22/04/2026. Đây là yêu cầu chuẩn bị hội nghị, không phải cam kết trao học bổng hoặc khen thưởng.",
     "key_facts": [
-      "khen thưởng",
-      "cộng điểm rèn luyện",
-      "ưu tiên xét học bổng tài trợ",
-      "tham gia giải cấp ĐHQGHN"
+      "trước 22/04/2026",
+      "poster",
+      "video"
     ],
-    "outdated_trap_answer": "Được tự động miễn toàn bộ học phí năm học kế tiếp.",
+    "outdated_trap_answer": "Người đạt giải Nhất tự động nhận học bổng và ưu tiên đào tạo (không được thông báo này xác nhận).",
     "source_doc_id": "uet-2025-nckh-thong-bao-cap-truong-2025-f5d6ba8fea",
-    "source_clause": "Mục IV, Khen thưởng và quyền lợi",
+    "source_clause": "Mục II, trang 2",
     "source_sha256": "7a1d8b1169324b04c682aed4fe7be436bcdd063904c5b59b57cacfdd24596e60"
   },
   {
     "id": "BENCH_ACT_026",
-    "question": "Thời gian hoàn thành học phí học kỳ I năm học 2026-2027 được thông báo trong kế hoạch đào tạo là vào khoảng thời gian nào?",
+    "question": "Theo kế hoạch học tập UET 2026–2027, học kỳ I được bố trí trong khoảng ngày nào?",
     "category": "active_rule",
     "topic": "dao_tao",
     "target_year": 2026,
-    "ground_truth_answer": "Theo Kế hoạch học tập năm học 2026-2027, sinh viên nộp học phí học kỳ I theo thông báo cụ thể của Phòng Kế hoạch - Tài chính, thường diễn ra trong tháng 10 và tháng 11 của học kỳ I.",
+    "ground_truth_answer": "Kế hoạch học tập bậc đại học năm học 2026–2027 ghi học kỳ I từ 03/09/2026 đến 14/02/2027.",
     "key_facts": [
-      "Kế hoạch học tập năm học 2026-2027",
-      "tháng 10 và tháng 11",
-      "Phòng Kế hoạch - Tài chính"
+      "03/09/2026",
+      "14/02/2027",
+      "học kỳ I"
     ],
-    "outdated_trap_answer": "Phải nộp ngay trong ngày đầu tiên nhập học trước khi được xếp thời khóa biểu.",
+    "outdated_trap_answer": "Kế hoạch quy định sinh viên bắt buộc nộp xong học phí trong tháng 10 hoặc 11 (không có mốc đó trong lịch).",
     "source_doc_id": "uet-2026-ke-hoach-hoc-tap-2026-413e3e36cd",
-    "source_clause": "Kế hoạch Học kỳ I, Các công tác khác",
+    "source_clause": "Tiêu đề Học kỳ I, trang đầu",
     "source_sha256": "5bfa3bef29029ff4e2ed4a81d8a05aaaa7d4e6a698655a032678d8c64478d2ec"
   },
   {
     "id": "BENCH_ACT_027",
-    "question": "Quy định về việc đăng ký học phần bổ sung/hủy học phần đầu học kỳ diễn ra trong tuần thứ mấy của kỳ học?",
+    "question": "Theo kế hoạch học tập UET 2026–2027, tuần 1 học chuyên môn của các khóa K67–K70 bắt đầu khi nào?",
     "category": "active_rule",
     "topic": "dao_tao",
     "target_year": 2026,
-    "ground_truth_answer": "Theo kế hoạch đào tạo chuẩn của Trường ĐHCN, sinh viên được thực hiện điều chỉnh học phần (đăng ký thêm, rút/hủy học phần) trên cổng thông tin đào tạo vào tuần thứ 1 của học kỳ chính.",
+    "ground_truth_answer": "Đối với K67–K70, tuần 1 học chuyên môn được bố trí trong khoảng 07/09–13/09/2026. K71 học GDQP và GDTC trong giai đoạn này.",
     "key_facts": [
-      "tuần thứ 1",
-      "cổng thông tin đào tạo",
-      "điều chỉnh học phần"
+      "07/09–13/09/2026",
+      "K67–K70",
+      "K71 GDQP và GDTC"
     ],
-    "outdated_trap_answer": "Được điều chỉnh tự do suốt 8 tuần đầu của học kỳ.",
+    "outdated_trap_answer": "Mọi khóa đều được đăng ký thêm/hủy học phần trong tuần 1 (không xác lập bởi bảng kế hoạch này).",
     "source_doc_id": "uet-2026-ke-hoach-hoc-tap-2026-413e3e36cd",
-    "source_clause": "Tuần 1 học kỳ I và Tuần 1 học kỳ II",
+    "source_clause": "Học kỳ I, bảng lịch tuần 2",
     "source_sha256": "5bfa3bef29029ff4e2ed4a81d8a05aaaa7d4e6a698655a032678d8c64478d2ec"
   },
   {
@@ -505,87 +505,90 @@
   },
   {
     "id": "BENCH_ACT_030",
-    "question": "Mức học bổng KKHT loại Xuất sắc của sinh viên ngành Công nghệ thông tin hệ chuẩn năm học 2025-2026 là bao nhiêu?",
+    "question": "Theo bảng học bổng KKHT năm học 2025–2026, mức Xuất sắc của sinh viên CTĐT chuẩn khóa QH-2022 thuộc nhóm các ngành còn lại (gồm CNTT) là bao nhiêu?",
     "category": "active_rule",
     "topic": "hoc_bong",
     "target_year": 2025,
-    "ground_truth_answer": "Theo Quyết định số 1968/QĐ-ĐHCN ngày 18/09/2025 quy định mức học bổng KKHT năm học 2025-2026, mức học bổng loại Xuất sắc cho sinh viên ngành CNTT hệ chuẩn là 3.000.000 đồng/tháng (đối với khóa tuyển sinh tương ứng).",
+    "ground_truth_answer": "Bảng định mức học bổng KKHT 2025–2026 ghi mức Xuất sắc là 3.200.000 đồng/tháng đối với CTĐT chuẩn khóa QH-2022 thuộc nhóm các ngành còn lại.",
     "key_facts": [
-      "loại Xuất sắc",
-      "ngành CNTT chuẩn",
-      "3.000.000 đồng/tháng"
+      "3.200.000 đồng/tháng",
+      "Xuất sắc",
+      "chuẩn QH-2022",
+      "các ngành còn lại"
     ],
-    "outdated_trap_answer": "2.610.000 đồng/tháng theo mức học bổng năm học 2023-2024.",
+    "outdated_trap_answer": "3.000.000 đồng/tháng là mức loại Khá, không phải Xuất sắc của nhóm này.",
     "source_doc_id": "uet-2025-quy-dinh-muc-hoc-bong-2025-2c0c46d3fe",
-    "source_clause": "Bảng định mức học bổng KKHT",
+    "source_clause": "Điều 1, bảng mức học bổng",
     "source_sha256": "46c665cb743b7723af594dd780fdad7b1b90004a8737f4f3f50734e1311fe26b"
   },
   {
     "id": "BENCH_ACT_031",
-    "question": "Mức học bổng KKHT loại Giỏi được tính tương đương với bao nhiêu phần trăm so với loại Xuất sắc hoặc định mức theo quy định?",
+    "question": "Theo bảng định mức học bổng KKHT UET năm học 2025–2026, sinh viên CTĐT chuẩn khóa QH-2022 thuộc nhóm các ngành còn lại nhận mức loại Giỏi bao nhiêu?",
     "category": "active_rule",
     "topic": "hoc_bong",
     "target_year": 2025,
-    "ground_truth_answer": "Theo bảng định mức học bổng KKHT UET, mức học bổng loại Giỏi thường được xác định tương đương khoảng 110% đến 120% mức trần học phí hoặc có bảng số tiền quy định cụ thể cho từng ngành (thấp hơn loại Xuất sắc và cao hơn loại Khá).",
+    "ground_truth_answer": "Đối với CTĐT chuẩn khóa QH-2022 các ngành còn lại, mức học bổng loại Giỏi là 3.100.000 đồng/tháng, nằm giữa loại Xuất sắc 3.200.000 đồng/tháng và loại Khá 3.000.000 đồng/tháng.",
     "key_facts": [
-      "loại Giỏi",
-      "bảng số tiền quy định cụ thể",
-      "thấp hơn Xuất sắc, cao hơn Khá"
+      "3.100.000 đồng/tháng",
+      "Giỏi",
+      "QH-2022",
+      "3.200.000",
+      "3.000.000"
     ],
-    "outdated_trap_answer": "Bằng 50% mức học bổng loại Xuất sắc.",
+    "outdated_trap_answer": "Mức loại Giỏi mặc định bằng 110–120% học phí cho tất cả ngành và khóa (không có tỷ lệ chung như vậy).",
     "source_doc_id": "uet-2025-quy-dinh-muc-hoc-bong-2025-2c0c46d3fe",
-    "source_clause": "Bảng định mức học bổng KKHT",
+    "source_clause": "Điều 1, bảng mức học bổng",
     "source_sha256": "46c665cb743b7723af594dd780fdad7b1b90004a8737f4f3f50734e1311fe26b"
   },
   {
     "id": "BENCH_ACT_032",
-    "question": "Sinh viên ngành Công nghệ Nông nghiệp khóa QH-2022 có được hưởng chính sách ưu đãi về định mức học phí không?",
+    "question": "Theo quy định học phí UET 2026–2027, học phí lần đầu ngành Công nghệ Nông nghiệp khóa QH-2022 hệ chuẩn thấp hơn các ngành còn lại cùng khóa ở mức nào?",
     "category": "active_rule",
     "topic": "hoc_phi",
     "target_year": 2026,
-    "ground_truth_answer": "Có. Ngành Công nghệ Nông nghiệp khóa QH-2022 thuộc danh mục ngành được hỗ trợ nâng cao điều kiện đảm bảo chất lượng và ưu đãi học phí, với mức thu học lần đầu là 2.150.000 đ/tháng, thấp hơn đáng kể so với mức 3.200.000 đ/tháng của các ngành kỹ thuật khác cùng khóa.",
+    "ground_truth_answer": "Khóa QH-2022 hệ chuẩn ngành Công nghệ Nông nghiệp có học phí lần đầu 2.150.000 đồng/tháng; các ngành còn lại cùng khóa áp dụng mức 3.200.000 đồng/tháng. Đây là sự phân biệt định mức trong bảng, không tự suy ra một chế độ ưu đãi riêng.",
     "key_facts": [
-      "có ưu đãi",
-      "2.150.000 đ/tháng",
-      "thấp hơn các ngành khác (3.200.000 đ/tháng)"
+      "2.150.000 đồng/tháng",
+      "3.200.000 đồng/tháng",
+      "QH-2022",
+      "CNNN"
     ],
-    "outdated_trap_answer": "Đóng cùng mức 3.200.000 đ/tháng như tất cả các ngành kỹ thuật khác.",
+    "outdated_trap_answer": "Mọi ngành QH-2022 đều cùng mức 3.200.000 đồng/tháng.",
     "source_doc_id": "uet-2026-quy-dinh-muc-thu-hoc-phi-2026-cdebf4adc3",
-    "source_clause": "Mục A, Khoản I.2.1",
+    "source_clause": "Mục A, bảng QH-2022",
     "source_sha256": "db8d31730c62caa7e9cdedb5ca5462a76696aee0245afd87648f5baceb6e5e32"
   },
   {
     "id": "BENCH_ACT_033",
-    "question": "Thủ tục xin cấp giấy chứng nhận sinh viên hoặc bảng điểm tại Trường ĐH Công nghệ thực hiện qua đâu?",
+    "question": "Theo kế hoạch học tập UET 2026–2027, đợt xét tốt nghiệp tháng 9/2026 được bố trí vào tuần nào?",
     "category": "active_rule",
     "topic": "cong_tac_sinh_vien",
     "target_year": 2026,
-    "ground_truth_answer": "Sinh viên thực hiện đăng ký xin cấp giấy chứng nhận, bảng điểm hoặc giấy giới thiệu trực tuyến qua cổng thông tin sinh viên / dịch vụ hành chính một cửa của Trường ĐH Công nghệ hoặc liên hệ Bộ phận một cửa (Phòng CTSV, Phòng ĐT).",
+    "ground_truth_answer": "Kế hoạch bố trí xét tốt nghiệp đợt tháng 9/2026 trong tuần 21/09–27/09/2026.",
     "key_facts": [
-      "trực tuyến qua cổng thông tin",
-      "Bộ phận một cửa",
-      "Phòng CTSV / Phòng ĐT"
+      "21/09–27/09/2026",
+      "xét tốt nghiệp tháng 9/2026"
     ],
-    "outdated_trap_answer": "Bắt buộc phải viết đơn tay và xin chữ ký trực tiếp của Trưởng khoa trước.",
+    "outdated_trap_answer": "Bảng kế hoạch năm học hướng dẫn xin bảng điểm và giấy chứng nhận sinh viên tại cổng một cửa (không nêu trong tài liệu này).",
     "source_doc_id": "uet-2026-ke-hoach-hoc-tap-2026-413e3e36cd",
-    "source_clause": "Quy trình hành chính sinh viên",
+    "source_clause": "Học kỳ I, tuần 21/09–27/09/2026",
     "source_sha256": "5bfa3bef29029ff4e2ed4a81d8a05aaaa7d4e6a698655a032678d8c64478d2ec"
   },
   {
     "id": "BENCH_ACT_034",
-    "question": "Thời gian nghỉ Tết Nguyên đán của sinh viên Trường ĐH Công nghệ theo kế hoạch học tập hàng năm thường kéo dài bao nhiêu tuần?",
+    "question": "Theo kế hoạch học tập bậc đại học năm học 2026–2027, lịch nghỉ Tết Nguyên đán được bố trí trong bao nhiêu tuần và từ ngày nào đến ngày nào?",
     "category": "active_rule",
     "topic": "dao_tao",
     "target_year": 2026,
-    "ground_truth_answer": "Theo kế hoạch học tập chính thức hàng năm của UET, thời gian nghỉ Tết Nguyên đán của sinh viên thường kéo dài 02 tuần liên tiếp trong học kỳ II.",
+    "ground_truth_answer": "Theo kế hoạch 2026–2027, nghỉ Tết Nguyên đán được bố trí trong hai tuần 01/02–07/02/2027 và 08/02–14/02/2027.",
     "key_facts": [
-      "kéo dài 02 tuần",
-      "học kỳ II",
-      "Tết Nguyên đán"
+      "hai tuần",
+      "01/02–07/02/2027",
+      "08/02–14/02/2027"
     ],
-    "outdated_trap_answer": "Chỉ được nghỉ đúng 3 ngày theo quy định của Luật Lao động.",
+    "outdated_trap_answer": "Mọi năm học đều nghỉ Tết đúng hai tuần bất kể kế hoạch riêng (không thể suy ra).",
     "source_doc_id": "uet-2026-ke-hoach-hoc-tap-2026-413e3e36cd",
-    "source_clause": "Lịch học kỳ II, Các tuần nghỉ Tết",
+    "source_clause": "Học kỳ I, các tuần 23–24",
     "source_sha256": "5bfa3bef29029ff4e2ed4a81d8a05aaaa7d4e6a698655a032678d8c64478d2ec"
   },
   {
@@ -606,38 +609,36 @@
   },
   {
     "id": "BENCH_ACT_036",
-    "question": "Nghị định 179/2026/NĐ-CP được áp dụng chính sách học bổng cho các ngành đào tạo nào tại Trường ĐH Công nghệ?",
+    "question": "Theo thông báo tuyển sinh UET năm 2026 về Nghị định 179/2026/NĐ-CP, có bao nhiêu ngành trong tổng số ngành đại học thuộc danh mục được áp dụng chính sách học bổng?",
     "category": "active_rule",
     "topic": "hoc_bong",
     "target_year": 2026,
-    "ground_truth_answer": "Chính sách học bổng theo Nghị định 179/2026/NĐ-CP được áp dụng cho các ngành khoa học cơ bản, kỹ thuật mũi nhọn và nông nghiệp công nghệ cao thuộc danh mục ưu tiên đào tạo nhân lực của Nhà nước tại UET.",
+    "ground_truth_answer": "Thông báo của UET ghi 18 trong tổng số 20 ngành tuyển sinh đại học năm 2026 thuộc danh mục ngành được áp dụng chính sách học bổng theo Nghị định 179/2026/NĐ-CP.",
     "key_facts": [
-      "Nghị định 179/2026/NĐ-CP",
-      "khoa học cơ bản",
-      "kỹ thuật mũi nhọn",
-      "danh mục ưu tiên"
+      "18/20 ngành",
+      "tuyển sinh đại học 2026",
+      "Nghị định 179/2026/NĐ-CP"
     ],
-    "outdated_trap_answer": "Áp dụng đồng đều cho toàn bộ sinh viên tất cả các ngành kinh tế xã hội và ngôn ngữ.",
+    "outdated_trap_answer": "Tất cả 20 ngành đại học của UET đều thuộc danh mục.",
     "source_doc_id": "uet-2026-cac-nganh-ap-dung-hoc-bong-theo-nghi-dinh-179-2026-fd7d83fe0e",
-    "source_clause": "Nội dung bài viết thông báo tuyển sinh và học bổng 2026",
+    "source_clause": "Đoạn mở đầu thông báo",
     "source_sha256": "7eb88a9ea004e63c5ad823d1f5b2692737788c4e36dbed2dba41bce0b1e9e90d"
   },
   {
     "id": "BENCH_ACT_037",
-    "question": "Viện Trí tuệ Nhân tạo tổ chức Hội nghị sinh viên NCKH năm học 2025-2026 với những mảng chủ đề trọng tâm nào?",
+    "question": "Theo thông báo Viện TTNT năm học 2025–2026, Hội nghị SVNCKH cấp Viện được dự kiến tổ chức vào khoảng thời gian nào?",
     "category": "active_rule",
     "topic": "nckh",
     "target_year": 2025,
-    "ground_truth_answer": "Hội nghị NCKH sinh viên của Viện TTNT tập trung vào các hướng nghiên cứu: Học máy và Học sâu, Thị giác máy tính, Xử lý ngôn ngữ tự nhiên, Robot thông minh và các ứng dụng AI trong y tế, nông nghiệp và công nghiệp.",
+    "ground_truth_answer": "Viện TTNT dự kiến tổ chức Hội nghị SVNCKH cấp Viện và họp hội đồng thẩm định trong khoảng 23–27/03/2026. Thông báo không liệt kê danh sách lĩnh vực nghiên cứu trọng tâm.",
     "key_facts": [
-      "Học máy và Học sâu",
-      "Thị giác máy tính",
-      "Xử lý ngôn ngữ tự nhiên",
-      "Viện Trí tuệ Nhân tạo"
+      "23–27/03/2026",
+      "Hội nghị cấp Viện",
+      "thẩm định"
     ],
-    "outdated_trap_answer": "Tập trung vào cơ học lý thuyết và vật liệu xây dựng cầu đường.",
+    "outdated_trap_answer": "Liệt kê ML/CV/NLP/robotics và ứng dụng AI là phạm vi bắt buộc của hội nghị (không được nguồn này nêu).",
     "source_doc_id": "uet-2025-nckh-hoi-nghi-vien-ttnt-2025-a3efe92971",
-    "source_clause": "Mục Chủ đề và Phạm vi nghiên cứu",
+    "source_clause": "Bảng kế hoạch triển khai, dòng 6",
     "source_sha256": "d733e767e7c5f81c0e397c2b4460a9bc826913968b7f954964ad32cb201b340a"
   },
   {
@@ -726,38 +727,37 @@
   },
   {
     "id": "BENCH_SUP_006",
-    "question": "Học phí lần đầu khóa tuyển sinh năm 2022 ngành CNTT hệ chuẩn theo quyết định năm học 2024-2025 là bao nhiêu tiền một năm?",
+    "question": "Theo quyết định học phí UET năm học 2024–2025, khóa QH-2022 hệ chuẩn các ngành nhóm 1 (gồm CNTT) có mức học lần đầu bao nhiêu một năm và một tín chỉ?",
     "category": "superseded_rule",
     "topic": "hoc_phi",
     "target_year": 2024,
-    "ground_truth_answer": "Theo Quyết định học phí năm học 2024-2025, học phí học lần đầu khóa QH-2022 các ngành nhóm 1 (trong đó có CNTT) là 27.000.000 đồng/năm học (tương đương 735.000 đồng/tín chỉ).",
+    "ground_truth_answer": "Năm học 2024–2025, khóa QH-2022 hệ chuẩn nhóm 1 có mức học lần đầu 28.100.000 đồng/năm học (10 tháng), tương ứng 765.000 đồng/tín chỉ.",
     "key_facts": [
-      "27.000.000 đồng/năm học",
-      "735.000 đồng/tín chỉ",
-      "Nhóm 1 CNTT",
-      "năm học 2024-2025"
+      "28.100.000 đồng/năm",
+      "765.000 đồng/tín chỉ",
+      "QH-2022",
+      "nhóm 1"
     ],
-    "outdated_trap_answer": "26.100.000 đồng/năm (715.000 đồng/tín chỉ) của năm học 2022-2023.",
+    "outdated_trap_answer": "27.000.000 đồng/năm và 735.000 đồng/tín chỉ (không khớp bảng 2024–2025).",
     "source_doc_id": "uet-2024-dinh-muc-hoc-phi-dai-hoc-2024-82e336a2fd",
-    "source_clause": "Điều 2, Bảng nhóm 1",
+    "source_clause": "Điều 2, bảng các khóa tuyển sinh 2022",
     "source_sha256": "3ad05a22390d4729d416bc6a9d84dc2030aae9291e043db4b884ea3a8d0f76b1"
   },
   {
     "id": "BENCH_SUP_007",
-    "question": "Học phí lần đầu khóa tuyển sinh năm 2023 hệ chuẩn các ngành nhóm 1 theo quyết định năm học 2024-2025 là bao nhiêu?",
+    "question": "Trong năm học 2024–2025, khóa QH-2023 theo chương trình chuẩn/chất lượng cao có định mức học phí lần đầu bao nhiêu một năm và mức học lại bao nhiêu mỗi tín chỉ?",
     "category": "superseded_rule",
     "topic": "hoc_phi",
     "target_year": 2024,
-    "ground_truth_answer": "Theo quyết định năm học 2024-2025, học phí học lần đầu đối với khóa tuyển sinh năm 2023 nhóm 1 (CNTT, AI...) là 31.000.000 đồng/năm học (tương đương 840.000 đồng/tín chỉ).",
+    "ground_truth_answer": "Khóa QH-2023 theo chương trình đào tạo chuẩn/chất lượng cao có mức học lần đầu 32.000.000 đồng/năm học (10 tháng); học lại, cải thiện hoặc tự chọn tự do 869.000 đồng/tín chỉ.",
     "key_facts": [
-      "31.000.000 đồng/năm học",
-      "840.000 đồng/tín chỉ",
-      "khóa 2023",
-      "năm học 2024-2025"
+      "32.000.000 đồng/năm",
+      "869.000 đồng/tín chỉ",
+      "QH-2023"
     ],
-    "outdated_trap_answer": "34.000.000 đồng/năm của năm 2025-2026 hoặc 36.000.000 đồng/năm của năm 2026-2027.",
+    "outdated_trap_answer": "31.000.000 đồng/năm và 840.000 đồng/tín chỉ (không khớp nguồn).",
     "source_doc_id": "uet-2024-dinh-muc-hoc-phi-dai-hoc-2024-82e336a2fd",
-    "source_clause": "Điều 3, Bảng nhóm 1",
+    "source_clause": "Điều 3, bảng học phí khóa 2023 và 2024",
     "source_sha256": "3ad05a22390d4729d416bc6a9d84dc2030aae9291e043db4b884ea3a8d0f76b1"
   },
   {
@@ -779,36 +779,36 @@
   },
   {
     "id": "BENCH_SUP_009",
-    "question": "Định mức học phí đào tạo thạc sĩ khóa QH-2021 trở về trước trong năm học 2024-2025 là bao nhiêu tiền một năm học?",
+    "question": "Theo định mức học phí sau đại học 2024–2025, học viên thạc sĩ tuyển sinh từ năm 2021 trở về trước nộp bao nhiêu mỗi năm và mỗi tín chỉ học lại?",
     "category": "superseded_rule",
     "topic": "hoc_phi",
     "target_year": 2024,
-    "ground_truth_answer": "Theo Quyết định số 1357/QĐ-ĐHCN ngày 23/09/2024, học phí thạc sĩ khóa QH-2021 trở về trước là 24.600.000 đồng/năm học (tương đương 770.000 đồng/tín chỉ).",
+    "ground_truth_answer": "Năm học 2024–2025, học viên thạc sĩ khóa tuyển sinh từ 2021 trở về trước đóng 24.600.000 đồng/năm khi học lần đầu; học lại, cải thiện hoặc tự chọn tự do tính 767.000 đồng/tín chỉ.",
     "key_facts": [
-      "24.600.000 đồng/năm học",
-      "770.000 đồng/tín chỉ",
-      "Thạc sĩ QH-2021",
-      "2024-2025"
+      "24.600.000 đồng/năm",
+      "767.000 đồng/tín chỉ",
+      "khóa 2021 trở về trước"
     ],
-    "outdated_trap_answer": "21.750.000 đồng/năm học (678.000 đồng/tín chỉ) của năm học 2022-2023.",
+    "outdated_trap_answer": "770.000 đồng/tín chỉ (khác bảng 767.000).",
     "source_doc_id": "uet-2024-dinh-muc-hoc-phi-sau-dai-hoc-2024-58724ca756",
-    "source_clause": "Điều 1, Khoản 1",
+    "source_clause": "Điều 1, bảng học phí thạc sĩ",
     "source_sha256": "6dbcf7c0430833e86a1fa977ec89604db1034c629ccff79e3299e44c238aa640"
   },
   {
     "id": "BENCH_SUP_010",
-    "question": "Học phí đào tạo tiến sĩ khóa tuyển sinh QH-2021 trở về trước năm học 2024-2025 là bao nhiêu so với năm học 2026-2027?",
+    "question": "Theo định mức học phí sau đại học 2024–2025, nghiên cứu sinh tuyển sinh từ năm 2021 trở về trước nộp mức học phí lần đầu bao nhiêu một năm và mức học lại bao nhiêu một tín chỉ?",
     "category": "superseded_rule",
     "topic": "hoc_phi",
     "target_year": 2024,
-    "ground_truth_answer": "Năm học 2024-2025, học phí tiến sĩ khóa QH-2021 trở về trước là 36.300.000 đồng/năm học (khoảng 3.630.000 đ/tháng). Mức này đến năm học 2026-2027 đã tăng lên 4.400.000 đồng/tháng.",
+    "ground_truth_answer": "Năm học 2024–2025, nghiên cứu sinh khóa 2021 trở về trước đóng 36.000.000 đồng/năm cho học lần đầu; học lại hoặc cải thiện điểm tính 1.091.000 đồng/tín chỉ.",
     "key_facts": [
-      "2024-2025: 36.300.000 đồng/năm",
-      "2026-2027: 4.400.000 đồng/tháng"
+      "36.000.000 đồng/năm",
+      "1.091.000 đồng/tín chỉ",
+      "khóa 2021 trở về trước"
     ],
-    "outdated_trap_answer": "31.900.000 đồng/năm học của năm 2022-2023.",
+    "outdated_trap_answer": "36.300.000 đồng/năm (không khớp quyết định 2024–2025).",
     "source_doc_id": "uet-2024-dinh-muc-hoc-phi-sau-dai-hoc-2024-58724ca756",
-    "source_clause": "Điều 2, Khoản 1",
+    "source_clause": "Điều 2, bảng học phí tiến sĩ",
     "source_sha256": "6dbcf7c0430833e86a1fa977ec89604db1034c629ccff79e3299e44c238aa640"
   },
   {
@@ -848,106 +848,106 @@
   },
   {
     "id": "BENCH_SUP_013",
-    "question": "Theo Quyết định số 1459/QĐ-ĐHCN ngày 29/12/2023, mức học bổng KKHT loại Xuất sắc cho sinh viên CTĐT chuẩn năm học 2023-2024 là bao nhiêu?",
+    "question": "Theo bảng mức học bổng KKHT 2023–2024 ban hành kèm Quyết định 1388/QĐ-ĐHCN, sinh viên CTĐT chuẩn khóa QH-2022 thuộc các ngành khác nhận học bổng loại Xuất sắc bao nhiêu?",
     "category": "superseded_rule",
     "topic": "hoc_bong",
     "target_year": 2023,
-    "ground_truth_answer": "Theo Quyết định số 1459/QĐ-ĐHCN năm học 2023-2024, định mức học bổng KKHT loại Xuất sắc cho sinh viên CTĐT chuẩn khóa QH-2022 nhóm 1 là 2.610.000 đồng/tháng. Mức này đã được điều chỉnh tăng lên theo các năm học sau.",
+    "ground_truth_answer": "Quyết định 1388/QĐ-ĐHCN ngày 21/12/2023 quy định học bổng loại Xuất sắc cho khóa QH-2022 chương trình chuẩn thuộc nhóm các ngành khác là 2.750.000 đồng/tháng.",
     "key_facts": [
-      "2.610.000 đồng/tháng",
-      "loại Xuất sắc",
-      "năm học 2023-2024",
-      "Quyết định 1459/QĐ-ĐHCN"
+      "1388/QĐ-ĐHCN",
+      "21/12/2023",
+      "2.750.000 đồng/tháng",
+      "Xuất sắc"
     ],
-    "outdated_trap_answer": "3.000.000 đồng/tháng (đây là định mức của năm học 2025-2026).",
+    "outdated_trap_answer": "Quyết định 1459/QĐ-ĐHCN; mức 2.610.000 đồng/tháng là loại Khá của nhóm này.",
     "source_doc_id": "uet-2023-dinh-muc-hoc-bong-kkht-2023-eca6067120",
-    "source_clause": "Bảng định mức học bổng KKHT 2023-2024",
+    "source_clause": "Phần mở đầu và mục 1, bảng khóa QH-2022",
     "source_sha256": "3f810dc0ac46bfccaa177a75cd2850aa5887fa49b0b56bad56f7b8b538bb3922"
   },
   {
     "id": "BENCH_SUP_014",
-    "question": "Mức học bổng KKHT loại Giỏi ngành Công nghệ Nông nghiệp năm học 2023-2024 theo quyết định cũ là bao nhiêu?",
+    "question": "Theo Quyết định 1388/QĐ-ĐHCN, sinh viên ngành Công nghệ Nông nghiệp khóa QH-2022 nhận học bổng KKHT loại Giỏi và loại Xuất sắc năm học 2023–2024 bao nhiêu?",
     "category": "superseded_rule",
     "topic": "hoc_bong",
     "target_year": 2023,
-    "ground_truth_answer": "Theo Quyết định 1459/QĐ-ĐHCN năm học 2023-2024, học bổng loại Giỏi ngành Công nghệ Nông nghiệp khóa QH-2022 là 1.914.000 đồng/tháng (loại Xuất sắc là 2.088.000 đồng/tháng).",
+    "ground_truth_answer": "Theo phụ lục Quyết định 1388/QĐ-ĐHCN, khóa QH-2022 ngành Công nghệ Nông nghiệp nhận loại Giỏi 1.810.000 đồng/tháng, loại Xuất sắc 1.880.000 đồng/tháng.",
     "key_facts": [
-      "1.914.000 đồng/tháng",
-      "loại Giỏi",
-      "Công nghệ Nông nghiệp",
-      "năm học 2023-2024"
+      "1.810.000 đồng/tháng",
+      "1.880.000 đồng/tháng",
+      "QH-2022 CNNN"
     ],
-    "outdated_trap_answer": "2.200.000 đồng/tháng theo mức điều chỉnh năm 2025-2026.",
+    "outdated_trap_answer": "1.914.000 đồng/tháng và 2.088.000 đồng/tháng (không khớp bảng).",
     "source_doc_id": "uet-2023-dinh-muc-hoc-bong-kkht-2023-eca6067120",
-    "source_clause": "Bảng định mức học bổng, dòng Công nghệ Nông nghiệp",
+    "source_clause": "Mục 1, bảng học bổng chương trình chuẩn",
     "source_sha256": "3f810dc0ac46bfccaa177a75cd2850aa5887fa49b0b56bad56f7b8b538bb3922"
   },
   {
     "id": "BENCH_SUP_015",
-    "question": "Quy chế xét học bổng KKHT số 1931/QĐ-ĐHCN ký ngày 07/08/2026 đã thay thế cho các quy định nào trước đó?",
+    "question": "Quy định xét học bổng KKHT ban hành kèm Quyết định 1931/QĐ-ĐHCN năm 2026 nêu thế nào về việc thay thế các văn bản trước đó?",
     "category": "superseded_rule",
     "topic": "hoc_bong",
     "target_year": 2026,
-    "ground_truth_answer": "Quyết định số 1931/QĐ-ĐHCN ngày 07/08/2026 quy định bãi bỏ các quy định trước đây của Nhà trường về quy trình xét, cấp học bổng KKHT trái với quy định mới, thay thế cho quy chế học bổng ban hành năm 2022 (QĐ 1102/QĐ-CTSV).",
+    "ground_truth_answer": "Theo Điều 9, quy định có hiệu lực kể từ ngày ký, áp dụng từ học kỳ I năm học 2026–2027 và thay thế cho các văn bản được ban hành trước đó. Điều khoản không nêu đích danh Quyết định 1102/QĐ-CTSV.",
     "key_facts": [
-      "thay thế các quy định trước đây",
-      "QĐ 1102/QĐ-CTSV năm 2022",
-      "có hiệu lực từ ngày ký 07/08/2026"
+      "Điều 9",
+      "thay thế các văn bản được ban hành trước đó",
+      "học kỳ I 2026–2027"
     ],
-    "outdated_trap_answer": "Chỉ bổ sung tạm thời chứ không thay thế bất kỳ văn bản cũ nào.",
+    "outdated_trap_answer": "Quy định Điều 9 chỉ đích danh Quyết định 1102/QĐ-CTSV (không được nêu trong điều này).",
     "source_doc_id": "uet-2026-quy-dinh-xet-hoc-bong-kkht-2026-17a091722e",
-    "source_clause": "Điều khoản thi hành",
+    "source_clause": "Điều 9, hiệu lực thi hành",
     "source_sha256": "e1ec32e90a93b940dab8c73dc90c5f50d1f16f2b3e00b701d42af0eda312dfaf"
   },
   {
     "id": "BENCH_SUP_016",
-    "question": "Quyết định số 3968/QĐ-ĐHQGHN ngày 07/10/2024 về học bổng thay thế cho văn bản nào của ĐHQGHN?",
+    "question": "Quy định quản lý và sử dụng học bổng tại ĐHQGHN ban hành kèm Quyết định 4618/QĐ-ĐHQGHN năm 2024 thay thế văn bản nào?",
     "category": "superseded_rule",
     "topic": "hoc_bong",
     "target_year": 2024,
-    "ground_truth_answer": "Quyết định 3968/QĐ-ĐHQGHN thay thế Quy định về quản lý và sử dụng học bổng tại ĐHQGHN ban hành kèm Quyết định số 2928/QĐ-ĐHQGHN ngày 28/08/2015 của Giám đốc ĐHQGHN.",
+    "ground_truth_answer": "Điều 18 của quy định ban hành kèm Quyết định 4618/QĐ-ĐHQGHN ngày 07/10/2024 nêu thay thế quy định ban hành kèm Quyết định số 5249/QĐ-ĐHQGHN ngày 27/12/2014.",
     "key_facts": [
-      "Quyết định số 2928/QĐ-ĐHQGHN",
-      "ngày 28/08/2015",
-      "thay thế"
+      "4618/QĐ-ĐHQGHN",
+      "5249/QĐ-ĐHQGHN",
+      "27/12/2014"
     ],
-    "outdated_trap_answer": "Thay thế Quyết định 3568/QĐ-ĐHQGHN năm 2014 về tổ chức hoạt động.",
+    "outdated_trap_answer": "Quyết định 3968 thay thế 2928/QĐ-ĐHQGHN ngày 28/08/2015 (không khớp Điều 18).",
     "source_doc_id": "uet-2024-quy-dinh-ve-hoc-bong-2024-6291b27e51",
-    "source_clause": "Điều 2 Quyết định ban hành",
+    "source_clause": "Điều 18, hiệu lực thi hành",
     "source_sha256": "aea624fe612513a58a269f889b1d7adc9bd8490f4eb1b3e471b90f4550a05cc3"
   },
   {
     "id": "BENCH_SUP_017",
-    "question": "Thời gian tổ chức Hội nghị sinh viên NCKH Khoa CNTT năm học 2023-2024 diễn ra vào ngày nào (đã kết thúc)?",
+    "question": "Theo kế hoạch Khoa CNTT năm học 2023–2024, ngày dự kiến tổ chức Hội nghị SVNCKH cấp Khoa và hạn nộp báo cáo là ngày nào?",
     "category": "superseded_rule",
     "topic": "nckh",
     "target_year": 2023,
-    "ground_truth_answer": "Hội nghị SV NCKH cấp Khoa CNTT năm học 2023-2024 được tổ chức vào ngày 12/04/2024 (với hạn nộp báo cáo toàn văn là ngày 25/03/2024). Sự kiện này thuộc năm học cũ 2023-2024.",
+    "ground_truth_answer": "Theo kế hoạch đăng trên website Khoa CNTT, sinh viên nộp báo cáo tại Văn phòng Khoa ngày 22/02/2024; Hội nghị SVNCKH cấp Khoa dự kiến diễn ra ngày 12/03/2024.",
     "key_facts": [
-      "ngày 12/04/2024",
-      "hạn nộp 25/03/2024",
-      "Khoa CNTT 2023-2024"
+      "22/02/2024",
+      "12/03/2024",
+      "Khoa CNTT",
+      "kế hoạch 2023–2024"
     ],
-    "outdated_trap_answer": "Đang nhận bài dự thi cho năm 2026.",
+    "outdated_trap_answer": "12/04/2024 và hạn nộp 25/03/2024 (không khớp kế hoạch công bố).",
     "source_doc_id": "uet-2023-nckh-hoi-nghi-cap-khoa-cntt-2023-c7a2dc436a",
-    "source_clause": "Mục Kế hoạch thời gian",
+    "source_clause": "Bảng kế hoạch triển khai cấp Khoa",
     "source_sha256": "4ed0c66cd30c31ce253004e896cc9fcb617b73b4d442dfc1263fec0310334768"
   },
   {
     "id": "BENCH_SUP_018",
-    "question": "Hội nghị SV NCKH Viện Trí tuệ Nhân tạo năm học 2024-2025 có mốc hạn nộp báo cáo là ngày nào?",
+    "question": "Theo kế hoạch Viện TTNT năm học 2024–2025, sinh viên nộp báo cáo và Hội nghị SVNCKH cấp Viện dự kiến vào những ngày nào?",
     "category": "superseded_rule",
     "topic": "nckh",
     "target_year": 2024,
-    "ground_truth_answer": "Hội nghị SV NCKH Viện TTNT năm học 2024-2025 có hạn nộp báo cáo toàn văn trước ngày 30/03/2025 và tổ chức hội nghị vào tháng 04/2025.",
+    "ground_truth_answer": "Viện TTNT ấn định ngày nộp báo cáo tại Văn phòng Viện là 27/02/2025 và dự kiến tổ chức Hội nghị cấp Viện từ 06/03 đến 15/03/2025.",
     "key_facts": [
-      "trước ngày 30/03/2025",
-      "tổ chức tháng 04/2025",
-      "Viện TTNT 2024-2025"
+      "27/02/2025",
+      "06–15/03/2025",
+      "Viện TTNT"
     ],
-    "outdated_trap_answer": "Hạn nộp báo cáo vào tháng 4 năm 2026.",
+    "outdated_trap_answer": "Nộp báo cáo 30/03/2025 và tổ chức hội nghị vào tháng 04/2025 (không khớp kế hoạch).",
     "source_doc_id": "uet-2024-nckh-hoi-nghi-vien-ttnt-2024-02d85718af",
-    "source_clause": "Mục Lịch trình thực hiện",
+    "source_clause": "Bảng kế hoạch triển khai cấp Viện",
     "source_sha256": "8c520f0997deeeb21c00c7e736b0f32ea4429522df64114e587ef0b102b08d85"
   },
   {
@@ -1071,36 +1071,36 @@
   },
   {
     "id": "BENCH_SUP_026",
-    "question": "Học bổng KKHT cho sinh viên CTĐT chất lượng cao khóa tuyển sinh 2022 loại Xuất sắc năm 2023-2024 có mức tiền là bao nhiêu?",
+    "question": "Theo phụ lục Quyết định 1388/QĐ-ĐHCN về học bổng 2023–2024, sinh viên lớp chất lượng cao ngành CNTT khóa QH-2022 nhận mức Xuất sắc bao nhiêu mỗi tháng?",
     "category": "superseded_rule",
     "topic": "hoc_bong",
     "target_year": 2023,
-    "ground_truth_answer": "Theo Quyết định số 1459/QĐ-ĐHCN, mức học bổng KKHT loại Xuất sắc cho sinh viên CTĐT CLC tuyển sinh 2022 là 3.500.000 đồng/tháng.",
+    "ground_truth_answer": "Lớp chất lượng cao thuộc ngành CNTT khóa QH-2022 có mức học bổng KKHT loại Xuất sắc 3.580.000 đồng/tháng theo phụ lục Quyết định 1388/QĐ-ĐHCN.",
     "key_facts": [
-      "3.500.000 đồng/tháng",
-      "CLC tuyển sinh 2022",
-      "loại Xuất sắc 2023-2024"
+      "3.580.000 đồng/tháng",
+      "CLC CNTT",
+      "QH-2022"
     ],
-    "outdated_trap_answer": "2.610.000 đồng/tháng (đây là mức của hệ chuẩn).",
+    "outdated_trap_answer": "3.500.000 đồng/tháng là mức Giỏi của nhóm TT23, không phải Xuất sắc CLC CNTT QH-2022.",
     "source_doc_id": "uet-2023-dinh-muc-hoc-bong-kkht-2023-eca6067120",
-    "source_clause": "Bảng định mức học bổng CLC",
+    "source_clause": "Mục 2, bảng lớp CLC ngành CNTT",
     "source_sha256": "3f810dc0ac46bfccaa177a75cd2850aa5887fa49b0b56bad56f7b8b538bb3922"
   },
   {
     "id": "BENCH_SUP_027",
-    "question": "Mức học bổng KKHT loại Giỏi cho sinh viên CTĐT chuẩn các ngành nhóm 1 khóa 2022 trong năm học 2023-2024 là bao nhiêu?",
+    "question": "Theo phụ lục Quyết định 1388/QĐ-ĐHCN năm học 2023–2024, sinh viên CTĐT chuẩn khóa QH-2022 thuộc nhóm các ngành khác nhận học bổng loại Giỏi bao nhiêu?",
     "category": "superseded_rule",
     "topic": "hoc_bong",
     "target_year": 2023,
-    "ground_truth_answer": "Theo bảng định mức ban hành kèm Quyết định 1459/QĐ-ĐHCN, mức học bổng loại Giỏi là 2.392.500 đồng/tháng cho sinh viên CTĐT chuẩn nhóm 1 khóa QH-2022.",
+    "ground_truth_answer": "Học bổng loại Giỏi đối với khóa QH-2022 CTĐT chuẩn thuộc nhóm các ngành khác là 2.680.000 đồng/tháng theo phụ lục Quyết định 1388/QĐ-ĐHCN.",
     "key_facts": [
-      "2.392.500 đồng/tháng",
-      "loại Giỏi",
-      "nhóm 1 khóa QH-2022"
+      "2.680.000 đồng/tháng",
+      "Giỏi",
+      "QH-2022 các ngành khác"
     ],
-    "outdated_trap_answer": "2.610.000 đồng/tháng (đây là mức loại Xuất sắc).",
+    "outdated_trap_answer": "2.392.500 đồng/tháng (không khớp phụ lục).",
     "source_doc_id": "uet-2023-dinh-muc-hoc-bong-kkht-2023-eca6067120",
-    "source_clause": "Bảng định mức học bổng, cột Loại Giỏi",
+    "source_clause": "Mục 1, bảng chương trình chuẩn",
     "source_sha256": "3f810dc0ac46bfccaa177a75cd2850aa5887fa49b0b56bad56f7b8b538bb3922"
   },
   {
@@ -1176,144 +1176,144 @@
   },
   {
     "id": "BENCH_TEM_005",
-    "question": "Năm học 2022-2023, học phí học lần đầu đào tạo thạc sĩ các ngành của Trường ĐH Công nghệ là bao nhiêu tiền một năm?",
+    "question": "Theo quy định học phí sau đại học 2022–2023, học viên thạc sĩ QH-2021 và QH-2022 nộp bao nhiêu mỗi năm học và mỗi tín chỉ?",
     "category": "temporal_specific",
     "topic": "hoc_phi",
     "target_year": 2022,
-    "ground_truth_answer": "Học phí đào tạo thạc sĩ học lần đầu năm học 2022-2023 là 21.750.000 đồng/năm học (10 tháng), tương đương 678.000 đồng/tín chỉ khi học lại.",
+    "ground_truth_answer": "Học viên thạc sĩ khóa QH-2021 đóng 20.250.000 đồng/năm học và 632.000 đồng/tín chỉ; khóa QH-2022 đóng 30.000.000 đồng/năm học và 936.000 đồng/tín chỉ.",
     "key_facts": [
-      "21.750.000 đồng/năm học",
-      "678.000 đồng/tín chỉ",
-      "Thạc sĩ 2022-2023"
+      "QH-2021",
+      "20.250.000",
+      "632.000",
+      "QH-2022",
+      "30.000.000",
+      "936.000"
     ],
-    "outdated_trap_answer": "24.600.000 đồng/năm học (mức năm 2024-2025).",
+    "outdated_trap_answer": "21.750.000 đồng/năm và 678.000 đồng/tín chỉ (không thuộc bảng này).",
     "source_doc_id": "uet-2022-dinh-muc-hoc-phi-dao-tao-sau-dai-hoc-2022-0ed8bb2f65",
-    "source_clause": "Điều 1, Khoản 1",
+    "source_clause": "Mục 1, bảng định mức học phí thạc sĩ",
     "source_sha256": "52256e967aa1bbb875b8d15766b3dcfdadcbb7473bdde917ab673fe0b4664890"
   },
   {
     "id": "BENCH_TEM_006",
-    "question": "Năm học 2022-2023, học phí đào tạo tiến sĩ học lần đầu là bao nhiêu tiền một năm học?",
+    "question": "Theo quy định học phí sau đại học 2022–2023, nghiên cứu sinh QH-2021 và QH-2022 có mức học phí lần đầu bao nhiêu mỗi năm?",
     "category": "temporal_specific",
     "topic": "hoc_phi",
     "target_year": 2022,
-    "ground_truth_answer": "Định mức học phí đào tạo tiến sĩ học lần đầu năm học 2022-2023 là 31.900.000 đồng/năm học (10 tháng), tương đương 966.000 đồng/tín chỉ khi học lại.",
+    "ground_truth_answer": "Nghiên cứu sinh QH-2021 đóng 33.750.000 đồng/năm học (10 tháng), còn khóa QH-2022 đóng 36.000.000 đồng/năm học.",
     "key_facts": [
-      "31.900.000 đồng/năm học",
-      "966.000 đồng/tín chỉ",
-      "Tiến sĩ 2022-2023"
+      "33.750.000 đồng/năm",
+      "QH-2021",
+      "36.000.000 đồng/năm",
+      "QH-2022"
     ],
-    "outdated_trap_answer": "36.300.000 đồng/năm học (mức năm 2024-2025).",
+    "outdated_trap_answer": "31.900.000 đồng/năm học (không thuộc bảng này).",
     "source_doc_id": "uet-2022-dinh-muc-hoc-phi-dao-tao-sau-dai-hoc-2022-0ed8bb2f65",
-    "source_clause": "Điều 2, Khoản 1",
+    "source_clause": "Mục 2, bảng định mức học phí tiến sĩ",
     "source_sha256": "52256e967aa1bbb875b8d15766b3dcfdadcbb7473bdde917ab673fe0b4664890"
   },
   {
     "id": "BENCH_TEM_007",
-    "question": "Năm học 2024-2025, sinh viên khóa QH-2022 ngành Công nghệ Nông nghiệp học lần đầu nộp học phí bao nhiêu tiền một năm và một tín chỉ?",
+    "question": "Theo định mức học phí UET năm học 2024–2025, ngành Công nghệ Nông nghiệp khóa QH-2022 hệ chuẩn đóng bao nhiêu một năm và một tín chỉ khi học lần đầu?",
     "category": "temporal_specific",
     "topic": "hoc_phi",
     "target_year": 2024,
-    "ground_truth_answer": "Trong năm học 2024-2025, khóa QH-2022 ngành Công nghệ Nông nghiệp nộp 18.000.000 đồng/năm học (tương đương 490.000 đồng/tín chỉ).",
+    "ground_truth_answer": "Khóa QH-2022 ngành Công nghệ Nông nghiệp thuộc nhóm 3, mức học lần đầu là 18.700.000 đồng/năm học (10 tháng) và 510.000 đồng/tín chỉ.",
     "key_facts": [
-      "18.000.000 đồng/năm học",
-      "490.000 đồng/tín chỉ",
-      "Công nghệ Nông nghiệp",
-      "năm học 2024-2025"
+      "18.700.000 đồng/năm",
+      "510.000 đồng/tín chỉ",
+      "CNNN",
+      "nhóm 3"
     ],
-    "outdated_trap_answer": "17.400.000 đồng/năm học (480.000 đ/tín chỉ) của năm học 2022-2023.",
+    "outdated_trap_answer": "18.000.000 đồng/năm và 490.000 đồng/tín chỉ (không khớp năm 2024–2025).",
     "source_doc_id": "uet-2024-dinh-muc-hoc-phi-dai-hoc-2024-82e336a2fd",
-    "source_clause": "Điều 2, Bảng Nhóm 3",
+    "source_clause": "Điều 2, nhóm 3 và chú thích",
     "source_sha256": "3ad05a22390d4729d416bc6a9d84dc2030aae9291e043db4b884ea3a8d0f76b1"
   },
   {
     "id": "BENCH_TEM_008",
-    "question": "Năm học 2024-2025, sinh viên khóa QH-2022 ngành Công nghệ Kỹ thuật Xây dựng học lần đầu đóng mức học phí bao nhiêu?",
+    "question": "Theo định mức học phí UET 2024–2025, khóa QH-2022 ngành Công nghệ Kỹ thuật Xây dựng Giao thông (nhóm 2) đóng học lần đầu bao nhiêu một năm và một tín chỉ?",
     "category": "temporal_specific",
     "topic": "hoc_phi",
     "target_year": 2024,
-    "ground_truth_answer": "Trong năm học 2024-2025, ngành Công nghệ Kỹ thuật Xây dựng (nhóm 2) khóa QH-2022 đóng 22.500.000 đồng/năm học (tương đương 610.000 đồng/tín chỉ).",
+    "ground_truth_answer": "Khóa QH-2022 ngành Công nghệ Kỹ thuật Xây dựng Giao thông thuộc nhóm 2 có mức học phí lần đầu 23.400.000 đồng/năm học (10 tháng), tương đương 634.000 đồng/tín chỉ.",
     "key_facts": [
-      "22.500.000 đồng/năm học",
-      "610.000 đồng/tín chỉ",
-      "Kỹ thuật Xây dựng",
-      "năm học 2024-2025"
+      "23.400.000 đồng/năm",
+      "634.000 đồng/tín chỉ",
+      "QH-2022",
+      "nhóm 2"
     ],
-    "outdated_trap_answer": "21.175.000 đồng/năm học của năm học 2022-2023.",
+    "outdated_trap_answer": "22.500.000 đồng/năm và 610.000 đồng/tín chỉ (không khớp năm 2024–2025).",
     "source_doc_id": "uet-2024-dinh-muc-hoc-phi-dai-hoc-2024-82e336a2fd",
-    "source_clause": "Điều 2, Bảng Nhóm 2",
+    "source_clause": "Điều 2, nhóm 2 và chú thích",
     "source_sha256": "3ad05a22390d4729d416bc6a9d84dc2030aae9291e043db4b884ea3a8d0f76b1"
   },
   {
     "id": "BENCH_TEM_009",
-    "question": "Năm học 2024-2025, học viên cao học khóa QH-2022 đến QH-2024 nộp học phí học lần đầu là bao nhiêu tiền một năm?",
+    "question": "Theo định mức học phí sau đại học 2024–2025, học viên thạc sĩ khóa tuyển sinh 2022–2024 có mức học lần đầu và học lại bao nhiêu?",
     "category": "temporal_specific",
     "topic": "hoc_phi",
     "target_year": 2024,
-    "ground_truth_answer": "Theo Quyết định số 1357/QĐ-ĐHCN, học viên cao học trúng tuyển từ năm 2022 đến năm 2024 học lần đầu đóng 31.500.000 đồng/năm học (tương đương 1.030.000 đồng/tín chỉ).",
+    "ground_truth_answer": "Học viên thạc sĩ trúng tuyển 2022–2024 đóng học phí lần đầu 33.000.000 đồng/năm; học lại, cải thiện và tự chọn tự do tính 1.076.000 đồng/tín chỉ.",
     "key_facts": [
-      "31.500.000 đồng/năm học",
-      "1.030.000 đồng/tín chỉ",
-      "Thạc sĩ QH-2022 đến QH-2024",
-      "2024-2025"
+      "33.000.000 đồng/năm",
+      "1.076.000 đồng/tín chỉ",
+      "2022–2024"
     ],
-    "outdated_trap_answer": "24.600.000 đồng/năm học (đây là mức của khóa 2021 trở về trước).",
+    "outdated_trap_answer": "31.500.000 đồng/năm và 1.030.000 đồng/tín chỉ (không khớp bảng).",
     "source_doc_id": "uet-2024-dinh-muc-hoc-phi-sau-dai-hoc-2024-58724ca756",
-    "source_clause": "Điều 1, Khoản 2",
+    "source_clause": "Điều 1, bảng học phí thạc sĩ",
     "source_sha256": "6dbcf7c0430833e86a1fa977ec89604db1034c629ccff79e3299e44c238aa640"
   },
   {
     "id": "BENCH_TEM_010",
-    "question": "Năm học 2024-2025, nghiên cứu sinh trúng tuyển từ năm 2022 đến năm 2024 học lần đầu nộp học phí bao nhiêu tiền một năm?",
+    "question": "Theo định mức học phí sau đại học 2024–2025, nghiên cứu sinh trúng tuyển trong các năm 2022–2024 đóng học lần đầu và học lại bao nhiêu?",
     "category": "temporal_specific",
     "topic": "hoc_phi",
     "target_year": 2024,
-    "ground_truth_answer": "Nghiên cứu sinh trúng tuyển từ năm 2022 đến năm 2024 nộp học phí học lần đầu là 37.800.000 đồng/năm học (tương đương 1.150.000 đồng/tín chỉ) trong năm học 2024-2025.",
+    "ground_truth_answer": "Nghiên cứu sinh tuyển sinh 2022–2024 đóng học lần đầu 40.000.000 đồng/năm và học lại, cải thiện hoặc tự chọn tự do 1.218.000 đồng/tín chỉ.",
     "key_facts": [
-      "37.800.000 đồng/năm học",
-      "1.150.000 đồng/tín chỉ",
-      "Tiến sĩ QH-2022 đến QH-2024",
-      "2024-2025"
+      "40.000.000 đồng/năm",
+      "1.218.000 đồng/tín chỉ",
+      "2022–2024"
     ],
-    "outdated_trap_answer": "36.300.000 đồng/năm học (đây là mức của khóa 2021 trở về trước).",
+    "outdated_trap_answer": "37.800.000 đồng/năm và 1.150.000 đồng/tín chỉ (không khớp bảng).",
     "source_doc_id": "uet-2024-dinh-muc-hoc-phi-sau-dai-hoc-2024-58724ca756",
-    "source_clause": "Điều 2, Khoản 2",
+    "source_clause": "Điều 2, bảng học phí tiến sĩ",
     "source_sha256": "6dbcf7c0430833e86a1fa977ec89604db1034c629ccff79e3299e44c238aa640"
   },
   {
     "id": "BENCH_TEM_011",
-    "question": "Trong năm học 2023-2024, định mức học bổng KKHT loại Khá cho sinh viên ngành Công nghệ thông tin chuẩn khóa 2022 là bao nhiêu tiền một tháng?",
+    "question": "Theo bảng học bổng KKHT năm học 2023–2024, sinh viên CNTT hệ chuẩn khóa QH-2022 (nhóm các ngành khác) có mức học bổng loại Khá bao nhiêu?",
     "category": "temporal_specific",
     "topic": "hoc_bong",
     "target_year": 2023,
-    "ground_truth_answer": "Theo Quyết định số 1459/QĐ-ĐHCN, mức học bổng KKHT loại Khá cho sinh viên ngành CNTT chuẩn khóa 2022 trong năm học 2023-2024 là 2.175.000 đồng/tháng.",
+    "ground_truth_answer": "Theo phụ lục Quyết định 1388/QĐ-ĐHCN, mức học bổng loại Khá cho CTĐT chuẩn khóa QH-2022 nhóm các ngành khác (gồm CNTT) là 2.610.000 đồng/tháng.",
     "key_facts": [
-      "2.175.000 đồng/tháng",
-      "loại Khá",
-      "ngành CNTT chuẩn 2022",
-      "năm học 2023-2024"
+      "2.610.000 đồng/tháng",
+      "Khá",
+      "QH-2022 các ngành khác"
     ],
-    "outdated_trap_answer": "2.392.500 đồng/tháng (mức loại Giỏi) hoặc 2.610.000 đồng/tháng (loại Xuất sắc).",
+    "outdated_trap_answer": "2.175.000 đồng/tháng là mức loại Khá của nhóm XDGT/HKVT, không phải CNTT.",
     "source_doc_id": "uet-2023-dinh-muc-hoc-bong-kkht-2023-eca6067120",
-    "source_clause": "Bảng định mức học bổng, cột Loại Khá",
+    "source_clause": "Mục 1, bảng chương trình chuẩn",
     "source_sha256": "3f810dc0ac46bfccaa177a75cd2850aa5887fa49b0b56bad56f7b8b538bb3922"
   },
   {
     "id": "BENCH_TEM_012",
-    "question": "Năm học 2023-2024, sinh viên ngành Công nghệ Kỹ thuật Xây dựng khóa 2022 nhận học bổng KKHT loại Xuất sắc là bao nhiêu tiền một tháng?",
+    "question": "Năm học 2023–2024, mức học bổng KKHT loại Xuất sắc của sinh viên khóa QH-2022 ngành Công nghệ Kỹ thuật Xây dựng Giao thông là bao nhiêu?",
     "category": "temporal_specific",
     "topic": "hoc_bong",
     "target_year": 2023,
-    "ground_truth_answer": "Trong năm học 2023-2024, mức học bổng loại Xuất sắc ngành CN Kỹ thuật Xây dựng khóa QH-2022 là 2.175.000 đồng/tháng.",
+    "ground_truth_answer": "Theo phụ lục Quyết định 1388/QĐ-ĐHCN, sinh viên khóa QH-2022 ngành XDGT có mức học bổng loại Xuất sắc 2.315.000 đồng/tháng.",
     "key_facts": [
-      "2.175.000 đồng/tháng",
-      "loại Xuất sắc",
-      "CN Kỹ thuật Xây dựng",
-      "năm học 2023-2024"
+      "2.315.000 đồng/tháng",
+      "Xuất sắc",
+      "QH-2022 XDGT"
     ],
-    "outdated_trap_answer": "2.610.000 đồng/tháng (đây là mức của nhóm ngành CNTT).",
+    "outdated_trap_answer": "2.175.000 đồng/tháng là mức Khá của nhóm này, không phải Xuất sắc.",
     "source_doc_id": "uet-2023-dinh-muc-hoc-bong-kkht-2023-eca6067120",
-    "source_clause": "Bảng định mức học bổng, dòng Nhóm 2",
+    "source_clause": "Mục 1, bảng chương trình chuẩn",
     "source_sha256": "3f810dc0ac46bfccaa177a75cd2850aa5887fa49b0b56bad56f7b8b538bb3922"
   },
   {
@@ -1370,122 +1370,123 @@
   },
   {
     "id": "BENCH_TEM_016",
-    "question": "Năm học 2025-2026, mức học bổng KKHT loại Xuất sắc của sinh viên ngành Công nghệ Nông nghiệp là bao nhiêu?",
+    "question": "Theo bảng học bổng KKHT 2025–2026, sinh viên khóa QH-2022 ngành Công nghệ Nông nghiệp hệ chuẩn có mức Xuất sắc bao nhiêu một tháng?",
     "category": "temporal_specific",
     "topic": "hoc_bong",
     "target_year": 2025,
-    "ground_truth_answer": "Theo Quyết định số 1968/QĐ-ĐHCN quy định học bổng năm học 2025-2026, mức học bổng loại Xuất sắc ngành Công nghệ Nông nghiệp là 2.400.000 đồng/tháng.",
+    "ground_truth_answer": "Bảng định mức học bổng KKHT 2025–2026 quy định mức Xuất sắc đối với CTĐT chuẩn khóa QH-2022 ngành Công nghệ Nông nghiệp là 2.200.000 đồng/tháng.",
     "key_facts": [
-      "2.400.000 đồng/tháng",
-      "Công nghệ Nông nghiệp",
-      "loại Xuất sắc",
-      "năm học 2025-2026"
+      "2.200.000 đồng/tháng",
+      "CNNN",
+      "QH-2022",
+      "Xuất sắc"
     ],
-    "outdated_trap_answer": "2.088.000 đồng/tháng (đây là mức năm học 2023-2024).",
+    "outdated_trap_answer": "2.400.000 đồng/tháng (không khớp bảng 2025–2026).",
     "source_doc_id": "uet-2025-quy-dinh-muc-hoc-bong-2025-2c0c46d3fe",
-    "source_clause": "Bảng định mức học bổng 2025-2026, dòng Công nghệ Nông nghiệp",
+    "source_clause": "Điều 1, bảng định mức năm học 2025–2026",
     "source_sha256": "46c665cb743b7723af594dd780fdad7b1b90004a8737f4f3f50734e1311fe26b"
   },
   {
     "id": "BENCH_TEM_017",
-    "question": "Năm học 2025-2026, học bổng loại Giỏi ngành Kỹ thuật robot và Vật lý kỹ thuật là bao nhiêu tiền một tháng?",
+    "question": "Theo bảng học bổng KKHT UET 2025–2026, mức loại Giỏi của sinh viên CTĐT chuẩn khóa QH-2022 nhóm ngành CNKTXD/CNHKVT là bao nhiêu?",
     "category": "temporal_specific",
     "topic": "hoc_bong",
     "target_year": 2025,
-    "ground_truth_answer": "Trong năm học 2025-2026, mức học bổng loại Giỏi cho các ngành thuộc nhóm kỹ thuật (trong đó có Kỹ thuật robot, Vật lý kỹ thuật) là 2.750.000 đồng/tháng.",
+    "ground_truth_answer": "Khóa QH-2022 CTĐT chuẩn thuộc nhóm ngành CNKTXD/CNHKVT được hưởng mức học bổng loại Giỏi 2.600.000 đồng/tháng.",
     "key_facts": [
-      "2.750.000 đồng/tháng",
-      "loại Giỏi",
-      "Kỹ thuật robot / Vật lý kỹ thuật",
-      "năm học 2025-2026"
+      "2.600.000 đồng/tháng",
+      "Giỏi",
+      "QH-2022",
+      "CNKTXD/CNHKVT"
     ],
-    "outdated_trap_answer": "2.392.500 đồng/tháng của năm học 2023-2024.",
+    "outdated_trap_answer": "2.750.000 đồng/tháng cho mọi ngành kỹ thuật (không có bảng mức này).",
     "source_doc_id": "uet-2025-quy-dinh-muc-hoc-bong-2025-2c0c46d3fe",
-    "source_clause": "Bảng định mức học bổng 2025-2026",
+    "source_clause": "Điều 1, bảng định mức học bổng",
     "source_sha256": "46c665cb743b7723af594dd780fdad7b1b90004a8737f4f3f50734e1311fe26b"
   },
   {
     "id": "BENCH_TEM_018",
-    "question": "Hội nghị SV NCKH cấp Trường năm học 2025-2026 có những mốc giải thưởng chính thức nào cho các công trình xuất sắc?",
+    "question": "Theo Thông báo số 1, triển lãm poster SVNCKH cấp Trường năm học 2025–2026 được dự kiến diễn ra trong thời gian nào?",
     "category": "temporal_specific",
     "topic": "nckh",
     "target_year": 2025,
-    "ground_truth_answer": "Cơ cấu giải thưởng cấp Trường gồm: Giải Nhất, Giải Nhì, Giải Ba và Giải Khuyến khích kèm theo tiền thưởng và giấy khen của Hiệu trưởng Trường ĐH Công nghệ.",
+    "ground_truth_answer": "Theo lịch dự kiến của thông báo cấp Trường, hoạt động triển lãm poster diễn ra từ 24/04 đến 04/05/2026. Đây là lịch dự kiến, không phải xác nhận sự kiện đã tổ chức.",
     "key_facts": [
-      "Giải Nhất, Giải Nhì, Giải Ba, Giải Khuyến khích",
-      "giấy khen của Hiệu trưởng"
+      "24/04–04/05/2026",
+      "triển lãm poster",
+      "dự kiến"
     ],
-    "outdated_trap_answer": "Chỉ trao một cúp duy nhất không có các hạng mục giải Nhì, Ba.",
+    "outdated_trap_answer": "Thông báo này ấn định cơ cấu Giải Nhất, Nhì, Ba, Khuyến khích và mức tiền thưởng cụ thể (không có căn cứ trong thông báo).",
     "source_doc_id": "uet-2025-nckh-thong-bao-cap-truong-2025-f5d6ba8fea",
-    "source_clause": "Mục IV, Cơ cấu giải thưởng",
+    "source_clause": "Mục II, trang 1",
     "source_sha256": "7a1d8b1169324b04c682aed4fe7be436bcdd063904c5b59b57cacfdd24596e60"
   },
   {
     "id": "BENCH_TEM_019",
-    "question": "Hạn đăng ký đề tài và nộp báo cáo tóm tắt NCKH tại Viện Trí tuệ Nhân tạo năm học 2025-2026 là khi nào?",
+    "question": "Theo bảng kế hoạch Viện TTNT năm học 2025–2026, sinh viên nộp báo cáo toàn văn vào ngày nào và hội nghị cấp Viện dự kiến tổ chức khi nào?",
     "category": "temporal_specific",
     "topic": "nckh",
     "target_year": 2025,
-    "ground_truth_answer": "Theo thông báo của Viện TTNT năm học 2025-2026, hạn đăng ký đề tài là trước ngày 15/01/2026 và hạn nộp báo cáo toàn văn là trước ngày 30/03/2026.",
+    "ground_truth_answer": "Theo bảng kế hoạch, sinh viên nộp báo cáo vào 05/03/2026; Hội nghị SVNCKH cấp Viện dự kiến diễn ra từ 23/03 đến 27/03/2026. Nguồn có hai mốc đăng ký 15/02 và 25/02/2026 mâu thuẫn nhau nên không dùng chúng để kết luận một hạn đăng ký duy nhất.",
     "key_facts": [
-      "trước ngày 15/01/2026",
-      "trước ngày 30/03/2026",
-      "Viện TTNT 2025-2026"
+      "05/03/2026",
+      "23–27/03/2026",
+      "mốc đăng ký mâu thuẫn"
     ],
-    "outdated_trap_answer": "Hạn nộp toàn văn là tháng 12 năm 2025.",
+    "outdated_trap_answer": "15/01/2026 và 30/03/2026 (không khớp thông báo).",
     "source_doc_id": "uet-2025-nckh-hoi-nghi-vien-ttnt-2025-a3efe92971",
-    "source_clause": "Mục Lịch trình thực hiện",
+    "source_clause": "Bảng kế hoạch và đoạn lưu ý cuối thông báo",
     "source_sha256": "d733e767e7c5f81c0e397c2b4460a9bc826913968b7f954964ad32cb201b340a"
   },
   {
     "id": "BENCH_TEM_020",
-    "question": "Trong năm học 2022-2023, hoạt động NCKH của sinh viên UET bao gồm các cuộc thi học thuật tiêu biểu nào?",
+    "question": "Trong kế hoạch SVNCKH năm học 2022–2023, hội nghị cấp ĐHQGHN và việc Bộ GD&ĐT nhận hồ sơ cấp Bộ được dự kiến vào tháng nào?",
     "category": "temporal_specific",
     "topic": "nckh",
     "target_year": 2022,
-    "ground_truth_answer": "Theo kế hoạch hoạt động NCKH năm học 2022-2023, các hoạt động gồm: Hội nghị SV NCKH các cấp, cuộc thi Olympic Tin học sinh viên, Olympic Toán học, Cuộc thi Lập trình sinh viên quốc tế ICPC và các cuộc thi sáng tạo Robot.",
+    "ground_truth_answer": "Kế hoạch NCKH năm học 2022–2023 dự kiến hội nghị cấp ĐHQGHN vào tháng 5/2023; ở cấp Bộ GD&ĐT, thời điểm nhận hồ sơ cũng dự kiến vào tháng 5/2023.",
     "key_facts": [
-      "Hội nghị SV NCKH",
-      "Olympic Tin học",
-      "Olympic Toán học",
-      "ICPC"
+      "tháng 5/2023",
+      "cấp ĐHQGHN",
+      "cấp Bộ GD&ĐT"
     ],
-    "outdated_trap_answer": "Chỉ có duy nhất một kỳ thi lý thuyết trên giấy do trường tổ chức.",
+    "outdated_trap_answer": "Thông báo này liệt kê Olympic Toán, Olympic Tin, ICPC và robotics trong lịch hội nghị NCKH (không đúng nội dung nguồn).",
     "source_doc_id": "uet-2022-hoat-dong-nckh-2022-fd44a9cf0c",
-    "source_clause": "Mục Danh mục hoạt động học thuật và NCKH",
+    "source_clause": "Mục I, bảng thời gian dự kiến",
     "source_sha256": "541f543b4c1252d4c1a8e52932f0b5f90ce09b3ed505b6fca68ab9906715b515"
   },
   {
     "id": "BENCH_TEM_021",
-    "question": "Thời khóa biểu học kỳ I năm học 2022-2023 của UET áp dụng từ ngày nào?",
+    "question": "Theo thời khóa biểu học kỳ I 2022–2023 của UET, tiết 1 buổi sáng bắt đầu và kết thúc lúc mấy giờ?",
     "category": "temporal_specific",
     "topic": "dao_tao",
     "target_year": 2022,
-    "ground_truth_answer": "Thời khóa biểu học kỳ I năm học 2022-2023 bắt đầu có hiệu lực và giảng dạy từ ngày 29/08/2022 theo lịch công tác đào tạo.",
+    "ground_truth_answer": "Theo bảng thời gian học tập và giảng dạy đi kèm thời khóa biểu học kỳ I năm 2022–2023, tiết 1 buổi sáng bắt đầu lúc 07h00 và kết thúc lúc 07h50.",
     "key_facts": [
-      "29/08/2022",
-      "học kỳ I năm học 2022-2023"
+      "07h00",
+      "07h50",
+      "tiết 1"
     ],
-    "outdated_trap_answer": "Bắt đầu từ 15/09/2022.",
+    "outdated_trap_answer": "Thời khóa biểu xác lập ngày bắt đầu có hiệu lực 29/08/2022 (không thấy trong tài liệu này).",
     "source_doc_id": "uet-thoi-khoa-bieu-hoc-ki-i-2022-2023-d5f2256636",
-    "source_clause": "Thông tin đầu văn bản thời khóa biểu",
+    "source_clause": "Bảng THỜI GIAN HỌC TẬP VÀ GIẢNG DẠY",
     "source_sha256": "cafb018969b5de97fd59bf95e67651f4b9e2f3cb0868d16d67c258619e60a312"
   },
   {
     "id": "BENCH_TEM_022",
-    "question": "Năm học 2026-2027, học kỳ I chính thức khai giảng và bắt đầu tuần học chuyên môn thứ nhất vào ngày nào?",
+    "question": "Theo kế hoạch học tập UET năm học 2026–2027, các khóa K67–K70 bắt đầu tuần 1 học chuyên môn của học kỳ I vào ngày nào?",
     "category": "temporal_specific",
     "topic": "dao_tao",
     "target_year": 2026,
-    "ground_truth_answer": "Theo Kế hoạch học tập năm học 2026-2027, học kỳ I bắt đầu từ ngày 01/09/2026 (tuần 1 chuyên môn bắt đầu ngay sau kỳ nghỉ lễ Quốc khánh).",
+    "ground_truth_answer": "Các khóa K67–K70 bắt đầu tuần 1 học chuyên môn ngày 07/09/2026, kéo dài đến 13/09/2026; lịch từ 03/09–06/09/2026 dành cho sinh hoạt đầu năm.",
     "key_facts": [
-      "01/09/2026",
-      "năm học 2026-2027",
-      "Học kỳ I"
+      "07/09/2026",
+      "13/09/2026",
+      "K67–K70"
     ],
-    "outdated_trap_answer": "Bắt đầu từ 01/10/2026.",
+    "outdated_trap_answer": "Bắt đầu học chuyên môn ngày 01/09/2026 (không đúng lịch học).",
     "source_doc_id": "uet-2026-ke-hoach-hoc-tap-2026-413e3e36cd",
-    "source_clause": "Mục Lịch tuần Học kỳ I",
+    "source_clause": "Học kỳ I, hai hàng đầu tiên của bảng kế hoạch",
     "source_sha256": "5bfa3bef29029ff4e2ed4a81d8a05aaaa7d4e6a698655a032678d8c64478d2ec"
   },
   {
