@@ -1,7 +1,7 @@
 # ChronoReg continual LoRA experiment. Paths are relative to repository root.
 lora:
   base_model: Qwen/Qwen2.5-0.5B-Instruct
-  model_revision: main # Pin to a Hugging Face commit SHA before final experiments.
+  model_revision: 7ae557604adf67be50417f59c2c2f167def9a775 # Pinned Qwen model revision.
   strategy: sequential # Same LoRA adapter updated in chronological order.
   model_dtype: float32 # Verified on Quadro T1000 4 GiB at 510 tokens, accumulation 8, 2 epochs.
   gradient_checkpointing: true # Reduce activation VRAM; use non-reentrant mode.
