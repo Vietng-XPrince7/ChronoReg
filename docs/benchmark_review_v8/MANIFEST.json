@@ -1,0 +1,75 @@
+{
+  "artifacts": {
+    "review_only/benchmark_candidate_90_NOT_FROZEN.jsonl": {
+      "rows": 90,
+      "sha256": "92420b55327baf9da1dddd3936767df7e1569a2ff1a92b331228ef9d9424e572"
+    },
+    "review_only/proposed_delta_12_NOT_APPLIED.jsonl": {
+      "rows": 12,
+      "sha256": "9b393da6424350a0f090a77f1d488811796b21cfe3e541243579d6f19015ec05"
+    },
+    "review_only/superseded_candidate_27_NOT_FROZEN.jsonl": {
+      "rows": 27,
+      "sha256": "753511b8ae2ce084535e491521a0d5c67aa23ce452826fee5eb25dc838e4d37c"
+    },
+    "review_only/valid_candidate_37_NOT_FROZEN.jsonl": {
+      "rows": 37,
+      "sha256": "4eda5dcb2a7f41f6c3f373bc6378d5b42a0d16092191d29eb91a5dff993284b0"
+    },
+    "review_only/year_specific_candidate_26_NOT_FROZEN.jsonl": {
+      "rows": 26,
+      "sha256": "af5c224308f309af19230ab5a8db3065aed0488848b7cbce7abe6b961d0d0488"
+    }
+  },
+  "benchmark_frozen": false,
+  "benchmark_records": 90,
+  "changed_ids": [
+    "BENCH_SUP_001",
+    "BENCH_SUP_002",
+    "BENCH_SUP_003",
+    "BENCH_SUP_004",
+    "BENCH_SUP_008",
+    "BENCH_SUP_011",
+    "BENCH_SUP_012",
+    "BENCH_SUP_021",
+    "BENCH_TEM_001",
+    "BENCH_TEM_002",
+    "BENCH_TEM_005",
+    "BENCH_TEM_006"
+  ],
+  "historical_subject_years": {
+    "BENCH_SUP_001": 2025,
+    "BENCH_SUP_002": 2025,
+    "BENCH_SUP_003": 2025,
+    "BENCH_SUP_004": 2025,
+    "BENCH_SUP_011": 2025,
+    "BENCH_SUP_021": 2024
+  },
+  "limitations": [
+    "This adjusts as_of_year and target_year ONLY in a review candidate, under the assumed interpretation of as_of_year as an available checkpoint year.",
+    "Team evaluator and RAG version-selector owners must confirm year semantics before canonical update.",
+    "Canonical primary, secondary JSON and actual split files remain unchanged.",
+    "Do not treat the 12 candidate changes as owner/human approval, benchmark freeze or training permission."
+  ],
+  "owner_approved": false,
+  "retrospective_2026_ids": [
+    "BENCH_SUP_001",
+    "BENCH_SUP_002",
+    "BENCH_SUP_003",
+    "BENCH_SUP_004",
+    "BENCH_SUP_011",
+    "BENCH_SUP_021"
+  ],
+  "source_addition_ids": [
+    "BENCH_SUP_012"
+  ],
+  "source_primary_sha256": "333404a93e510ca580a19dc149c2f93587782eb6380def40626deaa05e1036e2",
+  "source_v7_candidate_sha256": "d49929acd4b9def6a29325e52cc3dcb6529779b0dcef159bea3f5f3750e40804",
+  "split_sizes": {
+    "active": 37,
+    "superseded": 27,
+    "temporal": 26
+  },
+  "status": "REVIEW_ONLY_PENDING_OWNER_REVIEW",
+  "training_authorized": false
+}
