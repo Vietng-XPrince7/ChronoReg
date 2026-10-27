@@ -90,13 +90,7 @@ def require_training_release(repo: Path | None, prepared_dir: Path, year: int,
         raise RuntimeError('TRAINING_RELEASE_BLOCKED: expected 90 held-out and 24 curated QA')
     decisions_rows = read_jsonl(decisions)
     require_overlap_inventory_binding(repo, release, leak_rows, bench, decisions_rows)
-    if len(decisions_rows) != 25 or len({x.get('candidate_id') for x in decisions_rows}) != 25 or any(x.get('decision') != 'approve' for x in decisions_rows):
-        raise RuntimeError('TRAINING_RELEASE_BLOCKED: V3 decisions not 25 approved')
-    quarantined = {'fact-review-2024-026'}
-    candidate_ids = {x['candidate_id'] for x in decisions_rows} - quarantined
-    approved_by_id = {d['candidate_id']: d for d in decisions_rows}
-    if {x.get('id') for x in rows} != candidate_ids or any(LEGACY_ID.match(str(r.get('id',''))) for r in rows):
-        raise RuntimeError('TRAINING_RELEASE_BLOCKED: curated IDs do not match V3 release')
+    approved_by_id = require_curated_v3_dispositions(decisions_rows, rows)
     for row in rows:
         decision = approved_by_id[row['id']]
         if (row.get('question') != decision.get('question')
@@ -125,6 +119,31 @@ def require_training_release(repo: Path | None, prepared_dir: Path, year: int,
             raise RuntimeError('TRAINING_RELEASE_BLOCKED: staged payload differs from verified curated input')
     return {'release_file_sha256': sha256(release_path), 'benchmark_sha256': sha256(primary),
             'curated_train_sha256': sha256(train), 'released_count': len(rows)}
+
+
+def require_curated_v3_dispositions(decisions_rows: list[dict], rows: list[dict]) -> dict[str, dict]:
+    """24 approved QA plus one explicitly quarantined item; never approve a hold.
+
+    This verifies disposition consistency only. It does not create or accept
+    independent review evidence and it cannot authorize live training.
+    """
+    ids = [d.get('candidate_id') for d in decisions_rows]
+    if len(decisions_rows) != 25 or len(set(ids)) != 25 or any(
+            not isinstance(value, str) or not value.strip() for value in ids):
+        raise RuntimeError('TRAINING_RELEASE_BLOCKED: V3 decision coverage invalid')
+    by_id = {d['candidate_id']: d for d in decisions_rows}
+    held = 'fact-review-2024-026'
+    if held not in by_id or by_id[held].get('decision') != 'quarantine':
+        raise RuntimeError('TRAINING_RELEASE_BLOCKED: high-risk V3 QA must be quarantined, not approved')
+    approved = {cid for cid, d in by_id.items()
+                if cid != held and d.get('decision') == 'approve'}
+    if len(approved) != 24 or set(by_id) != approved | {held}:
+        raise RuntimeError('TRAINING_RELEASE_BLOCKED: V3 must contain 24 approvals and 1 quarantine')
+    if (len(rows) != 24 or {r.get('id') for r in rows} != approved
+            or len({r.get('id') for r in rows}) != 24
+            or any(LEGACY_ID.match(str(r.get('id', ''))) for r in rows)):
+        raise RuntimeError('TRAINING_RELEASE_BLOCKED: curated IDs do not match 24 approved V3 QA')
+    return by_id
 
 
 def _sha256_text(value: str) -> str:
