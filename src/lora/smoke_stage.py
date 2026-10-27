@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import math
 import json
 import tempfile
 from pathlib import Path
@@ -57,9 +58,60 @@ def preflight(repo: Path) -> dict:
             'uet_data_accessed': False}
 
 
+
+
+def _finite_training_logs(log_history: list[dict]) -> dict:
+    """Fail if a logged optimizer step skipped/overflowed, even with finite loss."""
+    steps = [item for item in log_history if 'grad_norm' in item]
+    if not steps:
+        raise RuntimeError('NO_EFFECTIVE_OPTIMIZER_STEP: Trainer did not log a gradient norm')
+    for item in steps:
+        norm = item.get('grad_norm')
+        loss = item.get('loss')
+        if not isinstance(norm, (int, float)) or not math.isfinite(norm) or norm <= 0:
+            raise RuntimeError(f'NONFINITE_GRADIENT: grad_norm={norm!r}')
+        if not isinstance(loss, (int, float)) or not math.isfinite(loss):
+            raise RuntimeError(f'NONFINITE_TRAINING_LOSS: loss={loss!r}')
+    return {'grad_norm': float(steps[-1]['grad_norm']), 'loss': float(steps[-1]['loss'])}
+
+
+def _trainable_adapter_snapshot(model, torch) -> dict:
+    weights = {name: p.detach().float().cpu().clone()
+               for name, p in model.named_parameters()
+               if p.requires_grad and 'lora_' in name}
+    if not weights:
+        raise RuntimeError('NO_TRAINABLE_LORA_PARAMETERS')
+    if any(not bool(torch.isfinite(v).all()) for v in weights.values()):
+        raise RuntimeError('NONFINITE_ADAPTER_BEFORE_TRAINING')
+    return weights
+
+
+def _verified_parameter_update(before: dict, model, torch) -> dict:
+    after = {name: p for name, p in model.named_parameters()
+             if p.requires_grad and 'lora_' in name}
+    if set(before) != set(after):
+        raise RuntimeError('CHANGED_ADAPTER_PARAMETER_SET')
+    changed, max_delta = 0, 0.0
+    for name, original in before.items():
+        current = after[name].detach().float().cpu()
+        if not bool(torch.isfinite(current).all()):
+            raise RuntimeError(f'NONFINITE_ADAPTER_AFTER_TRAINING: {name}')
+        delta = (original - current).abs().max().item()
+        if not math.isfinite(delta):
+            raise RuntimeError(f'NONFINITE_ADAPTER_DELTA: {name}')
+        if delta > 0:
+            changed += 1
+        max_delta = max(max_delta, delta)
+    if changed == 0 or max_delta <= 0:
+        raise RuntimeError('ZERO_ADAPTER_UPDATE: training saved weights without learning')
+    return {'updated_tensors': changed, 'max_abs_delta': max_delta}
+
+
 def run_gpu_smoke(repo: Path) -> dict:
     """Exercise real model loads/training/adapter reload using hardcoded toy text."""
-    cfg = _read_config(repo)
+    # Synthetic diagnostic only: FP32 avoids first-step FP16 AMP overflow on Turing.
+    # Production configs/lora.yaml stays unchanged and still requires release.
+    cfg = dict(_read_config(repo), model_dtype='float32')
     from .modeling import (LoRAAnswerer, QADataset, _libraries,
                            check_previous, model_loading_kwargs,
                            pad_batch, tokenize_qa)
@@ -112,7 +164,7 @@ def run_gpu_smoke(repo: Path) -> dict:
                 learning_rate=float(cfg['learning_rate']),
                 seed=cfg['seed'], report_to='none', save_strategy='no',
                 logging_steps=1, remove_unused_columns=False,
-                bf16=False, fp16=True,
+                bf16=False, fp16=False,
                 gradient_checkpointing=bool(cfg.get('gradient_checkpointing', True)),
                 gradient_checkpointing_kwargs={'use_reentrant': False},
                 dataloader_num_workers=0)
@@ -121,7 +173,10 @@ def run_gpu_smoke(repo: Path) -> dict:
                 train_dataset=QADataset([encoded]),
                 data_collator=lambda examples: pad_batch(examples, tokenizer.pad_token_id),
                 processing_class=tokenizer)
+            initial_adapters = _trainable_adapter_snapshot(model, torch)
             trainer.train()
+            gradient_stats = _finite_training_logs(trainer.state.log_history)
+            update_stats = _verified_parameter_update(initial_adapters, model, torch)
             checkpoint.mkdir()
             model.save_pretrained(str(checkpoint), safe_serialization=True)
             (checkpoint / 'stage.json').write_text(json.dumps({
@@ -133,7 +188,17 @@ def run_gpu_smoke(repo: Path) -> dict:
                 raise RuntimeError('Synthetic LoRA adapter was not saved')
             if not (checkpoint / 'adapter_config.json').is_file():
                 raise RuntimeError('Synthetic adapter config was not saved')
+            from safetensors import safe_open
+            with safe_open(str(weights), framework='pt', device='cpu') as reader:
+                for tensor_name in reader.keys():
+                    if not torch.isfinite(reader.get_tensor(tensor_name)).all():
+                        raise RuntimeError(f'Nonfinite synthetic adapter weights: {tensor_name}')
             print(json.dumps({'synthetic_stage': year, 'adapter_saved': True,
+                              'fp32_diagnostic_only': True,
+                              'grad_norm': gradient_stats['grad_norm'],
+                              'training_loss': gradient_stats['loss'],
+                              'adapter_update_max_abs': update_stats['max_abs_delta'],
+                              'trainable_tensors_updated': update_stats['updated_tensors'],
                               'gpu_peak_mib': round(torch.cuda.max_memory_allocated() / (1024 * 1024))}), flush=True)
             # Release resources before loading the next stage on a small GPU.
             del trainer, model, base, tokenizer
@@ -145,6 +210,8 @@ def run_gpu_smoke(repo: Path) -> dict:
         if not isinstance(result['answer'], str) or result['sources'] != []:
             raise RuntimeError('Synthetic adapter inference contract failed')
         summary = {'result': 'PASS', 'synthetic_stages': list(STAGES),
+                   'training_update_verified': True, 'gradient_norms_finite': True,
+                   'smoke_dtype': 'float32', 'production_dtype_unchanged': True,
                    'adapter_reload': 'PASS', 'answer_contract': 'PASS',
                    'temporary_artifacts_removed_on_exit': True,
                    'production_training_authorized': False,
