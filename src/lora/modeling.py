@@ -107,7 +107,8 @@ def check_previous(previous: Path, year: int, cfg: dict) -> dict:
 
 def train_stage(cfg: dict, prepared_dir: Path, year: int,
                 checkpoint_root: Path, previous: Path | None = None,
-                allow_cpu: bool = False, dry_run: bool = False) -> dict:
+                allow_cpu: bool = False, dry_run: bool = False,
+                release_path: Path | None = None, repo: Path | None = None) -> dict:
     """Train exactly one chronological stage and persist its adapter separately."""
     train_path = prepared_dir / f'train_{year}.jsonl'
     rows = read_jsonl(train_path)
@@ -135,6 +136,10 @@ def train_stage(cfg: dict, prepared_dir: Path, year: int,
             'checkpoint': str(checkpoint)}
     if dry_run:
         return dict(plan, dry_run=True, model_loaded=False)
+    # Never load model weights or allocate GPU without a pinned, reviewed release.
+    from .release_guard import require_training_release
+    release_evidence = require_training_release(repo, prepared_dir, year, release_path)
+    plan['release_evidence'] = release_evidence
     (torch, LoraConfig, PeftConfig, PeftModel, get_peft_model,
      AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments) = _libraries()
     if not torch.cuda.is_available() and not allow_cpu:

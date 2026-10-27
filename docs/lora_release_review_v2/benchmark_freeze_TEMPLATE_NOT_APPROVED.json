@@ -1,0 +1,8 @@
+{
+  "schema": "chronoreg-benchmark-freeze/v1",
+  "benchmark_frozen": false,
+  "owner_approved": false,
+  "benchmark_sha256": "333404a93e510ca580a19dc149c2f93587782eb6380def40626deaa05e1036e2",
+  "full_benchmark_review_sha256": "1c7f1397f7eab37f3c31603e8f87981eddd1f618c7f7196249b534cf06235514",
+  "note": "Not a freeze. Do not change booleans without documented independent review of all 90 records."
+}
