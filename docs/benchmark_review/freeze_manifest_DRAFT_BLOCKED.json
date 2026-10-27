@@ -1,0 +1,37 @@
+{
+  "artifact": "CHRONOREG_VERSIONING_AND_BENCHMARK_FREEZE_READINESS_V4",
+  "created_utc": "2026-10-27",
+  "mode": "READ_ONLY_PR_PROPOSAL_NOT_COMMITTED",
+  "benchmark_source": "data/qa_benchmark/benchmark.jsonl",
+  "benchmark_source_sha256": "333404a93e510ca580a19dc149c2f93587782eb6380def40626deaa05e1036e2",
+  "benchmark_size": 90,
+  "corrections": 42,
+  "primary_docs": 22,
+  "official_amendments_discovered": 2,
+  "official_source_fact_evidence_42": "MIXED_PRIOR_AI_ASSISTED_AND_FRESH_FIRST_PARTY_AND_UPLOADED_MARKDOWN; NOT_INDEPENDENTLY_HUMAN_APPROVED",
+  "formal_owner_acceptance": false,
+  "release_approved": false,
+  "benchmark_frozen": false,
+  "training_authorized": false,
+  "hard_blocks": [
+    "TEMPORAL_TUITION_AMENDMENT_2023_AMBIGUITY_4_QUESTIONS",
+    "UNVERIFIED_OFFICIAL_ORIGINAL_2026_STUDY_PLAN_5_QUESTIONS",
+    "42_CORRECTIONS_REQUIRE_EXPLICIT_OWNER_DECISION",
+    "ALL_90_NEED_SOURCE_LEVEL_EFFECTIVE_TIME_AND_FACT_SIGNOFF",
+    "SOURCE_DOC_SHA256_PROVENANCE_NOT_INDEPENDENTLY_REPLAYED_FOR_22_DOCUMENTS"
+  ],
+  "warning_flags": [
+    "2_BENCHMARK_ITEMS_ASK_NEAR_DUPLICATE_K67_K70_WEEK_ONE_EVENT",
+    "SOURCE_URL_OF_SOME_BENCHMARK_DOCS_UNKNOWN"
+  ],
+  "source_evidence_urls": {
+    "original_2022_ug": "https://uet.vnu.edu.vn/wp-content/uploads/2022/05/Quy-dinh-dinh-muc-hoc-phi-dao-tao-dai-hoc-nam-hoc-2022-2023.pdf",
+    "original_2022_pg": "https://uet.vnu.edu.vn/wp-content/uploads/2022/05/Quy-dinh-dinh-muc-hoc-phi-dao-tao-Sau-dai-hoc-nam-hoc-2022-2023.pdf",
+    "2023_ug_amendment": "https://uet.vnu.edu.vn/dieu-chinh-dinh-muc-hoc-phi-dao-tao-dai-hoc-nam-hoc-2022-2023/",
+    "2023_pg_amendment": "https://uet.vnu.edu.vn/dieu-chinh-dinh-muc-hoc-phi-dao-tao-sau-dai-hoc-nam-hoc-2022-2023/",
+    "2024_vnu_scholarship": "https://vnu.edu.vn/-doc2662.html",
+    "2024_vnu_scholarship_pdf": "https://www.vnu.edu.vn/upload/2024/10/35731/file/Signed_2024_10_4_QUY%20DINH%20VE%20HOC%20BONG.pdf",
+    "2022_timetable": "https://tuyensinh.uet.vnu.edu.vn/wp-content/images/QH-2022-I-CQ-C-C.pdf",
+    "2026_study_plan_official_pointer": "https://handbook.uet.vnu.edu.vn/"
+  }
+}
