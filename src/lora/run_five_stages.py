@@ -40,16 +40,40 @@ def check_pin(cfg: dict) -> None:
         raise RuntimeError("MODEL_REVISION_NOT_PINNED: pin a verified 40-character Hugging Face SHA before live training")
 
 
-def _save_integrity(checkpoints: Path, year: int, release_file_hash: str) -> None:
-    """Write a local SHA manifest only after a completed adapter is produced."""
+def _run_config_sha256(cfg: dict) -> str:
+    """Bind resumed adapters to the same exact training and inference settings."""
+    encoded = json.dumps(cfg, sort_keys=True, ensure_ascii=False,
+                         separators=(",", ":"), allow_nan=False).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _released_benchmark(repo: Path, cfg: dict, expected_sha256: str) -> Path:
+    """Reject a different or modified evaluation benchmark before GPU allocation."""
+    relative = cfg.get("benchmark", "data/qa_benchmark/benchmark.jsonl")
+    if not isinstance(relative, str) or not relative.strip():
+        raise RuntimeError("BENCHMARK_PATH_INVALID: expected repository-relative benchmark")
+    path = Path(relative)
+    if path.is_absolute():
+        raise RuntimeError("BENCHMARK_PATH_INVALID: absolute path refused")
+    canonical = (repo / path).resolve()
+    if not canonical.is_relative_to(repo.resolve()) or not canonical.is_file():
+        raise RuntimeError("BENCHMARK_PATH_INVALID: missing or outside repository")
+    if sha256(canonical) != expected_sha256:
+        raise RuntimeError("BENCHMARK_MISMATCH_BEFORE_TRAINING: configured benchmark does not match the owner release")
+    return canonical
+
+
+def _save_integrity(checkpoints: Path, year: int, release_file_hash: str, cfg: dict) -> None:
+    """Commit saved adapter bytes and full run configuration to a checksum sidecar."""
     folder = checkpoints / f"year-{year}"
     sidecar = folder / "adapter_integrity.json"
     if sidecar.exists():
         raise FileExistsError(f"REFUSE_TO_REWRITE_INTEGRITY: {sidecar}")
     hashes = {name: sha256(folder / name) for name in
               ("adapter_model.safetensors", "adapter_config.json", "stage.json")}
-    record = {"schema": "chronoreg-adapter-integrity/v1", "year": year,
-              "release_file_sha256": release_file_hash, "file_sha256": hashes}
+    record = {"schema": "chronoreg-adapter-integrity/v2", "year": year,
+              "release_file_sha256": release_file_hash,
+              "run_config_sha256": _run_config_sha256(cfg), "file_sha256": hashes}
     sidecar.write_text(json.dumps(record, sort_keys=True, indent=2) + "\n", encoding="utf-8")
 
 
@@ -69,7 +93,8 @@ def _stage_info(checkpoints: Path, year: int, cfg: dict, manifest: dict,
     if not sidecar.is_file():
         raise RuntimeError(f"MISSING_CHECKPOINT_INTEGRITY: {folder}")
     binding = json.loads(sidecar.read_text(encoding="utf-8"))
-    if (binding.get("schema") != "chronoreg-adapter-integrity/v1"
+    if (binding.get("schema") != "chronoreg-adapter-integrity/v2"
+            or binding.get("run_config_sha256") != _run_config_sha256(cfg)
             or binding.get("year") != year
             or binding.get("release_file_sha256") != release_file_hash
             or any(binding.get("file_sha256", {}).get(name) != sha256(folder / name)
@@ -107,6 +132,9 @@ def preflight(repo: Path, cfg: dict, release: Path,
     if any(x != releases[0] for x in releases):
         raise RuntimeError("INCONSISTENT_STAGE_RELEASE")
     release_hash = releases[0]["release_file_sha256"]
+    # The release guard may allow a repository-relative benchmark path that is
+    # different from cfg['benchmark']; catch it now, not after five GPU stages.
+    _released_benchmark(repo, cfg, releases[0]["benchmark_sha256"])
     state = []
     seen_missing = False
     for year in YEARS:
@@ -122,6 +150,7 @@ def preflight(repo: Path, cfg: dict, release: Path,
             state.append({"year": year, "status": "VERIFIED_EXISTING"})
     return {"status": "READY_FOR_RELEASED_EXECUTION", "stages": state,
             "release_sha256": release_hash, "training_total": manifest["total"],
+            "run_config_sha256": _run_config_sha256(cfg),
             "benchmark_sha256": releases[0]["benchmark_sha256"],
             "model_revision": cfg["model_revision"], "production_training_authorized": True}
 
@@ -155,7 +184,7 @@ def execute(repo: Path, cfg: dict, release: Path, prepared: Path,
                               repo=repo, release_path=release, dry_run=False)
         # A stage is only accepted if the model code wrote a complete, release-bound adapter.
         manifest = json.loads((prepared / "manifest.json").read_text(encoding="utf-8"))
-        _save_integrity(checkpoints, year, plan["release_sha256"])
+        _save_integrity(checkpoints, year, plan["release_sha256"], cfg)
         _stage_info(checkpoints, year, cfg, manifest, plan["release_sha256"])
         year_runs.append({"year": year, "status": "TRAINED_AND_VERIFIED",
                           "training_rows": outcome["training_rows"]})
@@ -171,9 +200,8 @@ def execute(repo: Path, cfg: dict, release: Path, prepared: Path,
             current["answerer"] = LoRAAnswerer(cfg, checkpoints / f"year-{stage}", allow_cpu=False)
             current["year"] = stage
         return current["answerer"].answer(question, as_of_year)["answer"]
-    bench = repo / "data/qa_benchmark/benchmark.jsonl"
-    if sha256(bench) != plan["benchmark_sha256"]:
-        raise RuntimeError("BENCHMARK_CHANGED_AFTER_RELEASE")
+    # Recheck after training to detect a benchmark modified during execution.
+    bench = _released_benchmark(repo, cfg, plan["benchmark_sha256"])
     scoring = evaluate_stages(bench, YEARS, predict, results)
     current["answerer"] = None
     _clear_gpu()
@@ -181,6 +209,7 @@ def execute(repo: Path, cfg: dict, release: Path, prepared: Path,
               "stages": year_runs, "release_sha256": plan["release_sha256"],
               "benchmark_sha256": plan["benchmark_sha256"], "base_model": cfg["base_model"],
               "model_revision": cfg["model_revision"],
+              "run_config_sha256": plan["run_config_sha256"],
               "unique_benchmark_cases": scoring["unique_benchmark_cases"],
               "evaluated_predictions": scoring["count"],
               "result_directory": str(results),
