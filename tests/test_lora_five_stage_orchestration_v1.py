@@ -48,7 +48,7 @@ def save_checkpoint(root, ckpts, y, cfg, manifest, release, *, integrity=True):
        'model_revision':cfg['model_revision'], 'model_dtype':cfg['model_dtype'],
        'training_sha256':manifest['year_sha256'][str(y)], 'strategy':'sequential',
        'release_evidence':{'release_file_sha256':run.sha256(release)}}), encoding='utf-8')
-    if integrity: run._save_integrity(ckpts, y, run.sha256(release))
+    if integrity: run._save_integrity(ckpts, y, run.sha256(release), cfg)
 
 
 def test_live_rejects_unpinned_model_before_release(tmp_path, monkeypatch):
