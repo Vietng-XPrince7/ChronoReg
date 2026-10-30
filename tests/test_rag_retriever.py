@@ -2,6 +2,7 @@
 import json
 import re
 import tempfile
+import zlib
 from contextlib import contextmanager
 from pathlib import Path
 from unittest.mock import patch
@@ -36,9 +37,10 @@ RECORDS = [
 
 
 def _vec(text):
-    v = [0.0] * 128
+    # crc32 (không dùng hash() của Python vì nó đổi giá trị giữa các lần chạy -> test chập chờn)
+    v = [0.0] * 512
     for w in re.findall(r"\w+", text.lower()):
-        v[hash(w) % 128] += 1.0
+        v[zlib.crc32(w.encode("utf-8")) % 512] += 1.0
     n = sum(x * x for x in v) ** 0.5
     return [x / n for x in v] if n else v
 

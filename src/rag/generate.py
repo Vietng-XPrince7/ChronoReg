@@ -5,9 +5,10 @@ from .versioning import VersionPlan
 
 
 def _header(m: dict) -> str:
-    year = m["academic_year"] or "chưa rõ năm học"
-    note = "" if m["year_status"] == "verified" else f" [năm học: {m['year_status']}, chưa duyệt]"
-    return f"{m['doc_id']} - năm học {year}{note}"
+    year = f"năm học {m['academic_year']}" if m["academic_year"] else "chưa xác định năm học"
+    note = "" if m["year_status"] == "verified" else " (chưa duyệt)"
+    dieu = f" - {m['dieu_so']}" if m.get("dieu_so") else ""
+    return f"{m['doc_id']}{dieu} - {year}{note}"
 
 
 def build_prompt(question: str, hits: list[dict], plan: VersionPlan) -> str:

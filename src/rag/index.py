@@ -6,7 +6,7 @@ Chạy:  python -m src.rag.index
 from __future__ import annotations
 
 from . import embedder, store
-from .chunker import load_chunks
+from .chunker import load_chunks, summarize
 from .config import load_config, resolve
 
 
@@ -16,7 +16,14 @@ def build_index(cfg: dict | None = None, reset: bool = True, batch: int = 32) ->
     if not path.exists():
         raise SystemExit(f"Chưa có {path}. Chạy: python -m src.versioning.cli export-chunks "
                          "--include-unreviewed --max-chars 1500")
-    chunks = load_chunks(path, resolve(cfg["reviewed_documents_file"]))
+    chunks = load_chunks(
+        path,
+        reviewed_file=resolve(cfg["reviewed_documents_file"]),
+        documents_file=resolve(cfg.get("documents_file", "data/versioning/documents.jsonl")),
+        min_articles=cfg.get("min_articles", 3) if cfg.get("chunk_by_article", True) else 10**9,
+        max_article_chars=cfg.get("max_article_chars", 2000),
+    )
+    print("Chunk:", summarize(chunks))
     if not chunks:
         raise SystemExit(f"{path} không có chunk nào.")
     col = store.get_collection(cfg, reset=reset)
