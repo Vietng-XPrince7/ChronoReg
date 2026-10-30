@@ -1,0 +1,28 @@
+{
+  "status": "AUDIT_REVIEW_ONLY_NOT_FROZEN",
+  "benchmark_sha256": "333404a93e510ca580a19dc149c2f93587782eb6380def40626deaa05e1036e2",
+  "v5_pack_sha256": "b042d0ca3e1c44dede4dfd1a5592a36cd22ab8e0751e34eed4805a7b13a43ae6",
+  "benchmark_item_count": 90,
+  "source_document_count": 22,
+  "source_hashes_verified": 22,
+  "amount_primary_source_exception_count": 6,
+  "amount_exceptions": {
+    "BENCH_SUP_001": "NEEDS_MULTIPLE_DOCUMENTS",
+    "BENCH_SUP_002": "NEEDS_MULTIPLE_DOCUMENTS",
+    "BENCH_SUP_003": "NEEDS_MULTIPLE_DOCUMENTS",
+    "BENCH_SUP_008": "UNSUPPORTED_AMOUNT_IN_22_SOURCE_SET",
+    "BENCH_SUP_012": "UNSUPPORTED_AMOUNT_IN_22_SOURCE_SET",
+    "BENCH_SUP_021": "NEEDS_MULTIPLE_DOCUMENTS"
+  },
+  "confirmed_content_issue": "BENCH_SUP_008: 870,000 vs original 869,000 and mixed 2024 program groups",
+  "additional_unverified_claim": "BENCH_SUP_012: 996,000 not found across 22 sources; 2024 foreign tuition depends on cohort",
+  "proposals_count": 10,
+  "owner_approved": false,
+  "benchmark_frozen": false,
+  "training_authorized": false,
+  "official_urls": {
+    "2024_ug": "https://uet.vnu.edu.vn/dinh-muc-hoc-phi-dao-tao-dai-hoc-nam-hoc-2024-2025/",
+    "2023_ug_retro": "https://uet.vnu.edu.vn/dieu-chinh-dinh-muc-hoc-phi-dao-tao-dai-hoc-nam-hoc-2022-2023/",
+    "2023_pg_retro": "https://uet.vnu.edu.vn/dieu-chinh-dinh-muc-hoc-phi-dao-tao-sau-dai-hoc-nam-hoc-2022-2023/"
+  }
+}

@@ -1,0 +1,22 @@
+# ChronoReg continual LoRA experiment. Paths are relative to repository root.
+lora:
+  base_model: Qwen/Qwen2.5-0.5B-Instruct
+  model_revision: 7ae557604adf67be50417f59c2c2f167def9a775 # Pinned Qwen model revision.
+  strategy: sequential # Same LoRA adapter updated in chronological order.
+  model_dtype: float32 # Verified on Quadro T1000 4 GiB at 510 tokens, accumulation 8, 2 epochs.
+  gradient_checkpointing: true # Reduce activation VRAM; use non-reentrant mode.
+  years: [2022, 2023, 2024, 2025, 2026]
+  seed: 42
+  max_seq_length: 512 # 510-token synthetic stress passed on 2026-10-27; live QA still needs length audit.
+  learning_rate: 0.0001
+  epochs: 2
+  train_batch_size: 1
+  gradient_accumulation_steps: 8
+  lora_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj]
+  max_new_tokens: 160
+  train_qa: src/lora/runs/approved_qa.jsonl
+  benchmark: data/qa_benchmark/benchmark.jsonl
+  run_dir: src/lora/runs

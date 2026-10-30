@@ -228,6 +228,52 @@ def apply_reviews(docs: list[dict[str, Any]], reviews: list[dict[str, Any]]) -> 
         d['evidence_reference'] = rev['evidence_reference']
 
 
+def apply_publication_holds(docs: list[dict[str, Any]], holds: list[dict[str, Any]]) -> None:
+    """Keep reviewed metadata without automatically releasing stale/noisy sources.
+
+    All holds are immutable-content-bound and must be reviewed independently.
+    An empty hold list preserves previous behavior for other installations.
+    """
+    lookup = {doc['doc_id']: doc for doc in docs}
+    seen = set()
+    for record in holds:
+        doc_id = record.get('doc_id')
+        if doc_id in seen or doc_id not in lookup:
+            raise ValueError(f'Unknown or duplicate publication hold: {doc_id}')
+        seen.add(doc_id)
+        doc = lookup[doc_id]
+        if record.get('content_sha256') != doc['content_sha256']:
+            raise ValueError(f'Stale publication hold (SHA mismatch): {doc_id}')
+        reason = record.get('reason')
+        evidence = record.get('evidence_reference')
+        if not isinstance(reason, str) or len(reason.strip()) < 12:
+            raise ValueError(f'Publication hold requires a reason: {doc_id}')
+        if not isinstance(evidence, str) or not evidence.strip():
+            raise ValueError(f'Publication hold requires source context: {doc_id}')
+        doc['publication_hold_reason'] = reason.strip()
+
+
+def validate_review_ledger(docs: list[dict[str, Any]], entries: list[dict[str, Any]]) -> None:
+    """Validate versioning review inventory separately from approved legal metadata."""
+    lookup = {doc['doc_id']: doc for doc in docs}
+    seen = set()
+    allowed = {'catalog_only', 'historical_hold', 'quality_hold',
+               'metadata_verified', 'needs_original', 'source_mismatch'}
+    for entry in entries:
+        doc_id = entry.get('doc_id')
+        if doc_id in seen or doc_id not in lookup:
+            raise ValueError(f'Unknown or duplicate review ledger entry: {doc_id}')
+        seen.add(doc_id)
+        doc = lookup[doc_id]
+        if (entry.get('content_sha256') != doc['content_sha256'] or
+                entry.get('relative_path') != doc['relative_path']):
+            raise ValueError(f'Stale review ledger entry: {doc_id}')
+        if entry.get('disposition') not in allowed:
+            raise ValueError(f'Unknown review disposition: {doc_id}')
+        if not entry.get('reason') or not entry.get('further_action'):
+            raise ValueError(f'Incomplete review disposition: {doc_id}')
+
+
 def policy_qa_readiness(doc: dict[str, Any]) -> str:
     """Readiness of a document for reviewed, year-scoped retrieval.
 
@@ -237,6 +283,8 @@ def policy_qa_readiness(doc: dict[str, Any]) -> str:
     """
     if not doc['eligible_for_policy_qa']:
         return 'excluded_from_policy_qa'
+    if doc.get('publication_hold_reason'):
+        return 'held_pending_source_or_content_review'
     if doc['review_status'] != 'verified_against_source':
         return 'unreviewed'
     if not isinstance(doc.get('scope'), str) or not doc['scope'].strip():
@@ -303,6 +351,13 @@ def build(root: Path, *, corpus: Path | None = None, out: Path | None = None) ->
     reviews = read_jsonl(out / 'reviewed_documents.jsonl')
     relations = read_jsonl(out / 'approved_relations.jsonl')
     apply_reviews(docs, reviews)
+    validate_relations(docs, relations, corpus)
+    # These immutable-content-bound ledgers record evidence/quality exceptions.
+    # A document may have verified metadata while being withheld from policy QA.
+    holds = read_jsonl(out / 'publication_holds.jsonl')
+    ledger = read_jsonl(out / 'batch4_review_ledger.jsonl')
+    apply_publication_holds(docs, holds)
+    validate_review_ledger(docs, ledger)
     for d in docs:
         d['policy_qa_readiness'] = policy_qa_readiness(d)
         d['policy_qa_ready'] = d['policy_qa_readiness'] == 'reviewed_scope_and_time'

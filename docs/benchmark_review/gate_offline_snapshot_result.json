@@ -1,0 +1,17 @@
+{
+  "status": "REVIEW_REQUIRED",
+  "benchmark_sha256": "333404a93e510ca580a19dc149c2f93587782eb6380def40626deaa05e1036e2",
+  "primary_rows": 90,
+  "review_corrections": 42,
+  "temporal_rows": 90,
+  "source_registry_rows": 24,
+  "blocking_reasons": [
+    "2026_PLAN_ORIGINAL_PDF_LINEAGE_UNVERIFIED",
+    "42_CORRECTION_OWNER_AND_REVIEW_SIGNOFF_PENDING",
+    "90_SOURCE_EFFECTIVITY_OR_FACT_SIGNOFF_PENDING",
+    "FOUR_RETROSPECTIVE_TUITION_QUESTIONS_UNRESOLVED_IN_PRIMARY",
+    "SOURCE_REGISTRY_UNVERIFIED"
+  ],
+  "benchmark_frozen": false,
+  "training_authorized": false
+}
