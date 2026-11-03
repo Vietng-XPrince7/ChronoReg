@@ -1,1 +1,12 @@
+# Standardize line-endings to LF across all platforms
+* text=auto eol=lf
+*.json text eol=lf
+*.jsonl text eol=lf
+*.md text eol=lf
+*.csv text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.py text eol=lf
+
+# Raw markdown source preservation
 data/raw/uet/markdown/** -text whitespace=-trailing-space
