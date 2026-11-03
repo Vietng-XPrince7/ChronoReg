@@ -70,14 +70,25 @@ class FakeCollection:
         return {"metadatas": [r[3] for r in self.rows]}
 
 
+_BASE_META = {
+    "doc_id": "", "academic_year": "", "start_year": 0, "year_status": "verified", "review_status": "",
+    "topic_hint": "", "scope": "", "issued_date": "", "effective_from": "", "effective_until_exclusive": "",
+    "start_char": 0, "end_char": 0, "dieu_so": "", "dieu_title": "", "chuong": "", "chunking": "article",
+    "part": 0, "latest_in_topic": 0,
+}
+
+
 @contextmanager
-def fake_index():
+def fake_index(extra=None):
+    """extra: các chunk bổ sung [(id, nội dung, {metadata ghi đè})], vd chunk theo Điều."""
     with tempfile.TemporaryDirectory() as d:
         path = Path(d) / "chunks.jsonl"
         path.write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in RECORDS), encoding="utf-8")
         col = FakeCollection()
         for c in load_chunks(path):
             col.upsert([c.id], [c.document], [_vec(c.text)], [c.metadata])
+        for cid, text, meta in extra or []:
+            col.upsert([cid], [text], [_vec(text)], [{**_BASE_META, **meta}])
         with patch.object(embedder, "embed", lambda cfg, texts: [_vec(t) for t in texts]), \
                 patch.object(store, "get_collection", lambda cfg, reset=False: col):
             yield
@@ -98,8 +109,19 @@ def test_plan_version_cases():
     assert plan_version("Học phí hiện nay?").mode == "latest"
     # năm nêu trong câu hỏi ưu tiên hơn as_of_year
     assert plan_version("Học phí năm học 2022-2023?", as_of_year=2024).start_year == 2022
-    # "khóa 2022" là khóa tuyển sinh, không phải năm của quy định
+    # năm của KHÓA TUYỂN SINH không phải năm của quy định
     assert plan_version("Học phí khóa 2022 là bao nhiêu?").mode == "latest"
+    assert plan_version("Học phí khóa QH-2021 trở về trước là bao nhiêu?").mode == "latest"
+    assert plan_version("Mức học phí khóa tuyển sinh từ 2021 trở về trước?").mode == "latest"
+    assert plan_version("Học phí sinh viên tuyển sinh năm 2021 là bao nhiêu?").mode == "latest"
+    # vẫn nhận năm học khi câu hỏi có cả khóa tuyển sinh
+    p = plan_version("Năm học 2022-2023, học phí khóa tuyển sinh từ 2021 trở về trước là bao nhiêu?")
+    assert p.mode == "year" and p.all_years() == [2022]
+    # nhiều năm trong một câu hỏi (so sánh cũ - mới): giữ cả hai, theo thứ tự xuất hiện
+    p = plan_version("Trước năm học 2026-2027, học phí năm học 2025-2026 là bao nhiêu?")
+    assert p.all_years() == [2026, 2025] and p.start_year == 2026
+    # "năm học 2022-2023" không bị đếm thêm như một năm đơn lẻ, kể cả khi đổi quy ước
+    assert plan_version("Học phí năm học 2022-2023?", None, "end").all_years() == [2022]
 
 
 def test_year_filter_returns_only_that_academic_year():
@@ -116,15 +138,17 @@ def test_chunks_with_unknown_year_are_never_returned_by_year_filter():
             assert all(h["metadata"]["doc_id"] != "hp-mo-ho" for h in hits)
 
 
-def test_latest_picks_newest_year_of_the_topic():
+def test_latest_filters_to_the_newest_year_of_each_topic():
     with fake_index():
         hits, plan = _search("Định mức học phí đào tạo đại học hiện nay")
-        assert plan.start_year == 2024
-        assert {h["metadata"]["doc_id"] for h in hits} == {"hp-2024"}
+        docs = [h["metadata"]["doc_id"] for h in hits]
+        assert plan.mode == "latest" and plan.start_year == 2024
+        assert docs[0] == "hp-2024" and "hp-2022" not in docs and "hp-2023" not in docs
         # chủ đề chỉ có một năm học: lấy năm đó, không bị ép sang năm mới nhất toàn cục
         hits, plan = _search("Hoạt động nghiên cứu khoa học của sinh viên")
-        assert plan.start_year == 2022
-        assert {h["metadata"]["doc_id"] for h in hits} == {"nc-2022"}
+        assert hits[0]["metadata"]["doc_id"] == "nc-2022"
+        assert all(h["metadata"]["latest_in_topic"] == 1 for h in hits)
+        assert all(h["metadata"]["start_year"] for h in hits)   # chunk chưa rõ năm học không lọt vào
 
 
 def test_old_rule_question_returns_several_academic_years():
@@ -132,3 +156,28 @@ def test_old_rule_question_returns_several_academic_years():
         hits, plan = _search("Quy định cũ về định mức học phí đào tạo đại học")
     assert plan.mode == "all"
     assert len({h["metadata"]["start_year"] for h in hits}) >= 2
+
+
+def test_question_with_two_academic_years_retrieves_both():
+    with fake_index():
+        hits, plan = _search("Trước năm học 2024-2025, định mức học phí năm học 2022-2023 là bao nhiêu?")
+    assert plan.mode == "year" and plan.all_years() == [2024, 2022]
+    assert {h["metadata"]["start_year"] for h in hits} == {2024, 2022}
+    assert plan.label() == "2024-2025 và 2022-2023"
+
+
+def test_question_naming_an_article_prefers_that_article():
+    extra = [
+        ("hb:a17", "Quy định về học bổng. Điều 17 mức học bổng toàn phần", dict(
+            doc_id="hb-2024", academic_year="2024-2025", start_year=2024, topic_hint="scholarship", dieu_so="Điều 17")),
+        ("hb:a3", "Theo quy định học bổng ban hành năm 2024, mức học bổng bao nhiêu", dict(
+            doc_id="hb-2024", academic_year="2024-2025", start_year=2024, topic_hint="scholarship", dieu_so="Điều 3")),
+    ]
+    q = "Theo quy định học bổng ban hành năm 2024, mức học bổng bao nhiêu? Xem Điều 17"
+    with fake_index(extra):
+        hits, plan = _search(q)
+        assert plan.all_years() == [2024]
+        assert hits[0]["metadata"]["dieu_so"] == "Điều 17"            # đúng Điều được nêu, lên đầu
+        assert len({h["document"] for h in hits}) == len(hits)        # không trùng
+        # Điều N chỉ được hiểu trong đúng năm học: không kéo Điều 17 của năm khác vào
+        assert all(h["metadata"]["start_year"] == 2024 for h in hits)

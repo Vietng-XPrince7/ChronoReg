@@ -211,6 +211,7 @@ def _metadata(base: dict, issued: str, **extra) -> dict:
         "chuong": "",
         "chunking": "span",
         "part": 0,
+        "latest_in_topic": 0,   # được tính sau trong load_chunks
     }
     meta.update(extra)
     return meta
@@ -278,7 +279,25 @@ def load_chunks(chunks_file: str | Path, reviewed_file: str | Path | None = None
             chunks.extend(_article_chunks(base, sections, iss, max_article_chars))
         else:
             chunks.extend(_span_chunks(recs, iss))
+    _flag_latest_in_topic(chunks)
     return chunks
+
+
+def _flag_latest_in_topic(chunks: list[Chunk]) -> None:
+    """Đánh dấu chunk thuộc năm học mới nhất CỦA CHỦ ĐỀ của nó (latest_in_topic = 1).
+
+    Dùng cho câu hỏi không nêu năm: lọc các chunk này rồi để độ giống chọn chủ đề, thay vì
+    đoán chủ đề từ kết quả đầu tiên (đoán sai chủ đề kéo theo sai văn bản).
+    """
+    latest: dict[str, int] = {}
+    for c in chunks:
+        sy = c.metadata["start_year"]
+        if sy:
+            t = c.metadata["topic_hint"]
+            latest[t] = max(latest.get(t, 0), sy)
+    for c in chunks:
+        sy = c.metadata["start_year"]
+        c.metadata["latest_in_topic"] = int(bool(sy) and sy == latest.get(c.metadata["topic_hint"]))
 
 
 def summarize(chunks: list[Chunk]) -> dict:

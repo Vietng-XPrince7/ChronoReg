@@ -1,10 +1,8 @@
 """Truy xuất chunk, lọc phiên bản (năm học) NGAY TRONG truy vấn."""
 from __future__ import annotations
 
-from collections import Counter
-
 from . import embedder, store
-from .versioning import VersionPlan
+from .versioning import VersionPlan, extract_article
 
 
 def _query(cfg: dict, question: str, where: dict | None, n: int) -> list[dict]:
@@ -18,33 +16,52 @@ def _query(cfg: dict, question: str, where: dict | None, n: int) -> list[dict]:
     ]
 
 
-def latest_by_topic(cfg: dict) -> tuple[dict[str, int], int]:
-    """Năm bắt đầu mới nhất theo chủ đề (chỉ tính chunk đã biết năm học) và mới nhất toàn cục."""
-    metas = store.get_collection(cfg).get(include=["metadatas"])["metadatas"]
-    out: dict[str, int] = {}
-    for m in metas:
-        if m["start_year"]:
-            t = m["topic_hint"]
-            out[t] = max(out.get(t, 0), m["start_year"])
-    return out, max(out.values(), default=0)
+def _and(where: dict | None, extra: dict) -> dict:
+    if not where:
+        return extra
+    if "$and" in where:
+        return {"$and": [*where["$and"], extra]}
+    return {"$and": [where, extra]}
+
+
+def _wheres(plan: VersionPlan) -> list[dict | None]:
+    """Các điều kiện lọc theo chế độ: mỗi năm học một điều kiện; "latest" = năm học mới nhất
+    của từng chủ đề; "all" = không lọc."""
+    if plan.mode == "year":
+        return [plan.where_for(y) for y in plan.all_years()] or [None]
+    if plan.mode == "latest":
+        return [{"latest_in_topic": 1}]
+    return [None]
+
+
+def _interleave(lists: list[list[dict]], n: int) -> list[dict]:
+    out = [lst[i] for i in range(max((len(x) for x in lists), default=0)) for lst in lists if i < len(lst)]
+    return out[:n]
 
 
 def retrieve(question: str, plan: VersionPlan, cfg: dict) -> tuple[list[dict], VersionPlan]:
-    """-> (hits, plan). Ở chế độ "latest", plan được cập nhật năm học đã chọn."""
+    """-> (hits, plan). Ở chế độ "latest", plan được cập nhật các năm học đã dùng."""
     k = cfg.get("top_k", 5)
-    if plan.mode != "latest":
-        return _query(cfg, question, plan.where(), k), plan
+    wheres = _wheres(plan)
+    per = k if len(wheres) == 1 else max(2, -(-k // len(wheres)))   # nhiều năm: mỗi năm một phần
+    hits = _interleave([_query(cfg, question, w, per) for w in wheres], k)
 
-    # "latest": đoán chủ đề từ kết quả gần nhất (không lọc), rồi lấy năm học mới nhất của chủ đề đó
-    probe = _query(cfg, question, None, max(k * 3, 10))
-    if not probe:
-        return [], plan
-    by_topic, overall = latest_by_topic(cfg)
-    topic = probe[0]["metadata"]["topic_hint"]
-    year = by_topic.get(topic) or overall
-    if not year:   # chưa chunk nào biết năm học
-        return probe[:k], VersionPlan("latest", None, plan.reason + " (không chunk nào biết năm học)")
-    where = {"$and": [{"topic_hint": topic}, {"start_year": year}]} if topic in by_topic \
-        else {"start_year": year}
-    new_plan = VersionPlan("latest", year, f"{plan.reason}: chủ đề '{topic or '?'}' -> {year}-{year + 1}")
-    return _query(cfg, question, where, k), new_plan
+    if plan.mode == "latest" and not hits:
+        # chỉ mục cũ chưa có cờ latest_in_topic (cần chạy lại: python -m src.rag.index)
+        hits = _query(cfg, question, None, k)
+        plan = VersionPlan("latest", None, plan.reason + " (chưa có cờ latest_in_topic: chạy lại index)")
+
+    # câu hỏi nêu rõ "Điều N": ưu tiên các chunk đúng Điều đó (trong cùng bộ lọc phiên bản)
+    art = extract_article(question)
+    if art:
+        art_hits = _interleave(
+            [_query(cfg, question, _and(w, {"dieu_so": art}), 2) for w in wheres], 2)
+        seen = {h["document"] for h in art_hits}
+        hits = (art_hits + [h for h in hits if h["document"] not in seen])[:k]
+
+    if plan.mode == "latest" and hits:
+        years = sorted({h["metadata"]["start_year"] for h in hits if h["metadata"]["start_year"]}, reverse=True)
+        if years:
+            plan = VersionPlan("latest", years[0],
+                               "không nêu năm -> văn bản mới nhất của từng chủ đề", tuple(years))
+    return hits, plan

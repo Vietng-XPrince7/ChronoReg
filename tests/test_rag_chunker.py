@@ -143,3 +143,10 @@ def test_long_article_is_split_into_parts():
 def test_only_ready_filters_unreviewed_documents():
     env = Env({"a": BANG, "b": BANG}, [_rec("a", 0, "x", verified=True), _rec("b", 0, "y", verified=False)])
     assert {c.metadata["doc_id"] for c in env.load(only_ready=True)} == {"a"}
+
+
+def test_latest_in_topic_flag():
+    env = Env({"a": BANG, "b": BANG},
+              [_rec("a", 0, "x", ay="2024-2025"), _rec("b", 0, "y", ay="2025-2026")])
+    flags = {c.metadata["doc_id"]: c.metadata["latest_in_topic"] for c in env.load()}
+    assert flags == {"a": 0, "b": 1}
