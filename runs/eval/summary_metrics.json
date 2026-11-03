@@ -1,0 +1,525 @@
+{
+  "benchmark_count": 90,
+  "systems": {
+    "naive_rag": {
+      "overall": {
+        "count": 90,
+        "key_fact_score": 0.3604,
+        "token_f1": 0.277,
+        "exact_match": 0.0,
+        "temporal_doc_accuracy": 0.4222,
+        "temporal_year_accuracy": 0.6111,
+        "temporal_score": 0.5167,
+        "ohr_rate": 0.2667,
+        "latency": {
+          "mean_ms": 6.95,
+          "median_ms": 6.43,
+          "p95_ms": 10.31,
+          "min_ms": 4.6,
+          "max_ms": 16.91,
+          "count": 90
+        }
+      },
+      "by_category": {
+        "active_rule": {
+          "count": 37,
+          "key_fact_score": 0.3631,
+          "token_f1": 0.2764,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.4865,
+          "temporal_year_accuracy": 0.5405,
+          "temporal_score": 0.5135,
+          "ohr_rate": 0.5946,
+          "latency": {
+            "mean_ms": 7.22,
+            "median_ms": 6.35,
+            "p95_ms": 12.74,
+            "min_ms": 4.6,
+            "max_ms": 16.91,
+            "count": 37
+          }
+        },
+        "superseded_rule": {
+          "count": 27,
+          "key_fact_score": 0.3457,
+          "token_f1": 0.3017,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.3333,
+          "temporal_year_accuracy": 0.6296,
+          "temporal_score": 0.4815,
+          "ohr_rate": 0.0,
+          "latency": {
+            "mean_ms": 6.93,
+            "median_ms": 6.72,
+            "p95_ms": 9.25,
+            "min_ms": 5.49,
+            "max_ms": 11.34,
+            "count": 27
+          }
+        },
+        "temporal_specific": {
+          "count": 26,
+          "key_fact_score": 0.3718,
+          "token_f1": 0.2523,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.4231,
+          "temporal_year_accuracy": 0.6923,
+          "temporal_score": 0.5577,
+          "ohr_rate": 0.0769,
+          "latency": {
+            "mean_ms": 6.57,
+            "median_ms": 6.25,
+            "p95_ms": 8.87,
+            "min_ms": 5.03,
+            "max_ms": 9.96,
+            "count": 26
+          }
+        }
+      },
+      "by_topic": {
+        "cong_tac_sinh_vien": {
+          "count": 1,
+          "key_fact_score": 0.0,
+          "token_f1": 0.0923,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 1.0,
+          "temporal_year_accuracy": 1.0,
+          "temporal_score": 1.0,
+          "ohr_rate": 0.0,
+          "latency": {
+            "mean_ms": 7.64,
+            "median_ms": 7.64,
+            "p95_ms": 7.64,
+            "min_ms": 7.64,
+            "max_ms": 7.64,
+            "count": 1
+          }
+        },
+        "dao_tao": {
+          "count": 10,
+          "key_fact_score": 0.1783,
+          "token_f1": 0.1624,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.2,
+          "temporal_year_accuracy": 0.8,
+          "temporal_score": 0.5,
+          "ohr_rate": 0.4,
+          "latency": {
+            "mean_ms": 6.53,
+            "median_ms": 6.57,
+            "p95_ms": 8.06,
+            "min_ms": 5.03,
+            "max_ms": 8.06,
+            "count": 10
+          }
+        },
+        "hoc_bong": {
+          "count": 21,
+          "key_fact_score": 0.5389,
+          "token_f1": 0.3349,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.7619,
+          "temporal_year_accuracy": 0.619,
+          "temporal_score": 0.6905,
+          "ohr_rate": 0.2381,
+          "latency": {
+            "mean_ms": 6.76,
+            "median_ms": 6.3,
+            "p95_ms": 8.75,
+            "min_ms": 5.5,
+            "max_ms": 10.31,
+            "count": 21
+          }
+        },
+        "hoc_phi": {
+          "count": 48,
+          "key_fact_score": 0.2986,
+          "token_f1": 0.2748,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.2708,
+          "temporal_year_accuracy": 0.5208,
+          "temporal_score": 0.3958,
+          "ohr_rate": 0.2917,
+          "latency": {
+            "mean_ms": 7.11,
+            "median_ms": 6.36,
+            "p95_ms": 11.34,
+            "min_ms": 4.6,
+            "max_ms": 16.91,
+            "count": 48
+          }
+        },
+        "nckh": {
+          "count": 10,
+          "key_fact_score": 0.5,
+          "token_f1": 0.2995,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.6,
+          "temporal_year_accuracy": 0.8,
+          "temporal_score": 0.7,
+          "ohr_rate": 0.1,
+          "latency": {
+            "mean_ms": 6.89,
+            "median_ms": 6.67,
+            "p95_ms": 8.92,
+            "min_ms": 5.44,
+            "max_ms": 8.92,
+            "count": 10
+          }
+        }
+      },
+      "by_year": {
+        "2022": {
+          "count": 10,
+          "key_fact_score": 0.3417,
+          "token_f1": 0.2713,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.2,
+          "temporal_year_accuracy": 0.7,
+          "temporal_score": 0.45,
+          "ohr_rate": 0.2,
+          "latency": {
+            "mean_ms": 6.04,
+            "median_ms": 6.07,
+            "p95_ms": 6.76,
+            "min_ms": 5.03,
+            "max_ms": 6.76,
+            "count": 10
+          }
+        },
+        "2023": {
+          "count": 13,
+          "key_fact_score": 0.2821,
+          "token_f1": 0.2141,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.3077,
+          "temporal_year_accuracy": 0.5385,
+          "temporal_score": 0.4231,
+          "ohr_rate": 0.0,
+          "latency": {
+            "mean_ms": 6.27,
+            "median_ms": 6.31,
+            "p95_ms": 7.09,
+            "min_ms": 5.19,
+            "max_ms": 7.09,
+            "count": 13
+          }
+        },
+        "2024": {
+          "count": 17,
+          "key_fact_score": 0.3039,
+          "token_f1": 0.3214,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.4118,
+          "temporal_year_accuracy": 0.5294,
+          "temporal_score": 0.4706,
+          "ohr_rate": 0.1765,
+          "latency": {
+            "mean_ms": 7.38,
+            "median_ms": 6.88,
+            "p95_ms": 11.34,
+            "min_ms": 5.62,
+            "max_ms": 11.34,
+            "count": 17
+          }
+        },
+        "2025": {
+          "count": 19,
+          "key_fact_score": 0.4114,
+          "token_f1": 0.272,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.6316,
+          "temporal_year_accuracy": 0.7895,
+          "temporal_score": 0.7105,
+          "ohr_rate": 0.0526,
+          "latency": {
+            "mean_ms": 7.28,
+            "median_ms": 6.87,
+            "p95_ms": 10.31,
+            "min_ms": 5.44,
+            "max_ms": 10.31,
+            "count": 19
+          }
+        },
+        "2026": {
+          "count": 31,
+          "key_fact_score": 0.3989,
+          "token_f1": 0.284,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.4194,
+          "temporal_year_accuracy": 0.5484,
+          "temporal_score": 0.4839,
+          "ohr_rate": 0.5806,
+          "latency": {
+            "mean_ms": 7.08,
+            "median_ms": 6.35,
+            "p95_ms": 12.74,
+            "min_ms": 4.6,
+            "max_ms": 16.91,
+            "count": 31
+          }
+        }
+      }
+    },
+    "chrono_rag": {
+      "overall": {
+        "count": 90,
+        "key_fact_score": 0.4017,
+        "token_f1": 0.2732,
+        "exact_match": 0.0,
+        "temporal_doc_accuracy": 0.8333,
+        "temporal_year_accuracy": 0.9889,
+        "temporal_score": 0.9111,
+        "ohr_rate": 0.0222,
+        "latency": {
+          "mean_ms": 0.54,
+          "median_ms": 0.46,
+          "p95_ms": 1.07,
+          "min_ms": 0.15,
+          "max_ms": 4.42,
+          "count": 90
+        }
+      },
+      "by_category": {
+        "active_rule": {
+          "count": 37,
+          "key_fact_score": 0.4275,
+          "token_f1": 0.272,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.8378,
+          "temporal_year_accuracy": 1.0,
+          "temporal_score": 0.9189,
+          "ohr_rate": 0.027,
+          "latency": {
+            "mean_ms": 0.59,
+            "median_ms": 0.57,
+            "p95_ms": 1.15,
+            "min_ms": 0.17,
+            "max_ms": 1.49,
+            "count": 37
+          }
+        },
+        "superseded_rule": {
+          "count": 27,
+          "key_fact_score": 0.3889,
+          "token_f1": 0.3106,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.8889,
+          "temporal_year_accuracy": 0.963,
+          "temporal_score": 0.9259,
+          "ohr_rate": 0.037,
+          "latency": {
+            "mean_ms": 0.51,
+            "median_ms": 0.46,
+            "p95_ms": 0.8,
+            "min_ms": 0.15,
+            "max_ms": 1.11,
+            "count": 27
+          }
+        },
+        "temporal_specific": {
+          "count": 26,
+          "key_fact_score": 0.3782,
+          "token_f1": 0.2361,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.7692,
+          "temporal_year_accuracy": 1.0,
+          "temporal_score": 0.8846,
+          "ohr_rate": 0.0,
+          "latency": {
+            "mean_ms": 0.52,
+            "median_ms": 0.35,
+            "p95_ms": 0.64,
+            "min_ms": 0.17,
+            "max_ms": 4.42,
+            "count": 26
+          }
+        }
+      },
+      "by_topic": {
+        "cong_tac_sinh_vien": {
+          "count": 1,
+          "key_fact_score": 0.0,
+          "token_f1": 0.127,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 1.0,
+          "temporal_year_accuracy": 1.0,
+          "temporal_score": 1.0,
+          "ohr_rate": 0.0,
+          "latency": {
+            "mean_ms": 0.72,
+            "median_ms": 0.72,
+            "p95_ms": 0.72,
+            "min_ms": 0.72,
+            "max_ms": 0.72,
+            "count": 1
+          }
+        },
+        "dao_tao": {
+          "count": 10,
+          "key_fact_score": 0.2267,
+          "token_f1": 0.2198,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.9,
+          "temporal_year_accuracy": 1.0,
+          "temporal_score": 0.95,
+          "ohr_rate": 0.0,
+          "latency": {
+            "mean_ms": 0.85,
+            "median_ms": 0.44,
+            "p95_ms": 4.42,
+            "min_ms": 0.24,
+            "max_ms": 4.42,
+            "count": 10
+          }
+        },
+        "hoc_bong": {
+          "count": 21,
+          "key_fact_score": 0.3079,
+          "token_f1": 0.2731,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.619,
+          "temporal_year_accuracy": 1.0,
+          "temporal_score": 0.8095,
+          "ohr_rate": 0.0476,
+          "latency": {
+            "mean_ms": 0.54,
+            "median_ms": 0.37,
+            "p95_ms": 1.15,
+            "min_ms": 0.15,
+            "max_ms": 1.49,
+            "count": 21
+          }
+        },
+        "hoc_phi": {
+          "count": 48,
+          "key_fact_score": 0.4566,
+          "token_f1": 0.2889,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.9167,
+          "temporal_year_accuracy": 0.9792,
+          "temporal_score": 0.9479,
+          "ohr_rate": 0.0208,
+          "latency": {
+            "mean_ms": 0.51,
+            "median_ms": 0.55,
+            "p95_ms": 0.69,
+            "min_ms": 0.22,
+            "max_ms": 0.8,
+            "count": 48
+          }
+        },
+        "nckh": {
+          "count": 10,
+          "key_fact_score": 0.55,
+          "token_f1": 0.2662,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.8,
+          "temporal_year_accuracy": 1.0,
+          "temporal_score": 0.9,
+          "ohr_rate": 0.0,
+          "latency": {
+            "mean_ms": 0.43,
+            "median_ms": 0.4,
+            "p95_ms": 0.64,
+            "min_ms": 0.29,
+            "max_ms": 0.64,
+            "count": 10
+          }
+        }
+      },
+      "by_year": {
+        "2022": {
+          "count": 10,
+          "key_fact_score": 0.3917,
+          "token_f1": 0.2433,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.6,
+          "temporal_year_accuracy": 1.0,
+          "temporal_score": 0.8,
+          "ohr_rate": 0.0,
+          "latency": {
+            "mean_ms": 0.79,
+            "median_ms": 0.34,
+            "p95_ms": 4.42,
+            "min_ms": 0.29,
+            "max_ms": 4.42,
+            "count": 10
+          }
+        },
+        "2023": {
+          "count": 13,
+          "key_fact_score": 0.2949,
+          "token_f1": 0.2381,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.9231,
+          "temporal_year_accuracy": 1.0,
+          "temporal_score": 0.9615,
+          "ohr_rate": 0.0,
+          "latency": {
+            "mean_ms": 0.35,
+            "median_ms": 0.35,
+            "p95_ms": 0.6,
+            "min_ms": 0.15,
+            "max_ms": 0.6,
+            "count": 13
+          }
+        },
+        "2024": {
+          "count": 17,
+          "key_fact_score": 0.3775,
+          "token_f1": 0.2845,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.7647,
+          "temporal_year_accuracy": 1.0,
+          "temporal_score": 0.8824,
+          "ohr_rate": 0.0588,
+          "latency": {
+            "mean_ms": 0.68,
+            "median_ms": 0.6,
+            "p95_ms": 1.49,
+            "min_ms": 0.32,
+            "max_ms": 1.49,
+            "count": 17
+          }
+        },
+        "2025": {
+          "count": 19,
+          "key_fact_score": 0.4237,
+          "token_f1": 0.2776,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.7895,
+          "temporal_year_accuracy": 0.9474,
+          "temporal_score": 0.8684,
+          "ohr_rate": 0.0526,
+          "latency": {
+            "mean_ms": 0.42,
+            "median_ms": 0.4,
+            "p95_ms": 0.69,
+            "min_ms": 0.22,
+            "max_ms": 0.69,
+            "count": 19
+          }
+        },
+        "2026": {
+          "count": 31,
+          "key_fact_score": 0.4495,
+          "token_f1": 0.2887,
+          "exact_match": 0.0,
+          "temporal_doc_accuracy": 0.9355,
+          "temporal_year_accuracy": 1.0,
+          "temporal_score": 0.9677,
+          "ohr_rate": 0.0,
+          "latency": {
+            "mean_ms": 0.55,
+            "median_ms": 0.57,
+            "p95_ms": 0.81,
+            "min_ms": 0.17,
+            "max_ms": 0.97,
+            "count": 31
+          }
+        }
+      }
+    }
+  }
+}

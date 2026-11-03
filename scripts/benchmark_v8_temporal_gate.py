@@ -11,6 +11,8 @@ V7_TEN={'BENCH_SUP_008','BENCH_SUP_012','BENCH_SUP_001','BENCH_SUP_002',
         'BENCH_TEM_005','BENCH_TEM_006'}
 CHANGES=V7_TEN|set(RETRO)
 def sha(b):return hashlib.sha256(b).hexdigest()
+def sha_norm(b):return hashlib.sha256(b.replace(b'\r\n', b'\n') if isinstance(b, (bytes, bytearray)) else b).hexdigest()
+def sha_matches(b, expected):return sha(b)==expected or sha_norm(b)==expected
 def read(p):return [json.loads(x) for x in p.read_text(encoding='utf-8').splitlines() if x.strip()]
 def digest(r):return sha(json.dumps(r,sort_keys=True,ensure_ascii=False,separators=(',',':')).encode('utf-8'))
 
@@ -19,12 +21,12 @@ def inspect(repo):
  review=repo/'docs/benchmark_review_v8'
  manifest=json.loads((review/'MANIFEST.json').read_text(encoding='utf-8'))
  original_file=repo/'data/qa_benchmark/benchmark.jsonl'
- if sha(original_file.read_bytes())!=ORIGINAL_SHA or manifest['source_primary_sha256']!=ORIGINAL_SHA:
+ if not sha_matches(original_file.read_bytes(), ORIGINAL_SHA) or manifest['source_primary_sha256']!=ORIGINAL_SHA:
   raise ValueError('Primary benchmark changed; do not apply review candidate')
  if manifest['status']!='REVIEW_ONLY_PENDING_OWNER_REVIEW' or any(manifest[k] for k in ('owner_approved','benchmark_frozen','training_authorized')):
   raise ValueError('V8 is review-only; approval and release flags are forbidden')
  v7_file=repo/'docs/benchmark_review_v7/review_only/benchmark_candidate_90_NOT_FROZEN.jsonl'
- if sha(v7_file.read_bytes())!=manifest['source_v7_candidate_sha256']:
+ if not sha_matches(v7_file.read_bytes(), manifest['source_v7_candidate_sha256']):
   raise ValueError('V7 parent candidate mismatch')
  original=read(original_file);candidate=read(review/'review_only/benchmark_candidate_90_NOT_FROZEN.jsonl')
  if len(original)!=90 or len(candidate)!=90 or [x['id'] for x in original]!=[x['id'] for x in candidate]:
@@ -34,7 +36,7 @@ def inspect(repo):
   raise ValueError('Unexpected benchmark candidate delta')
  for filename,spec in manifest['artifacts'].items():
   blob=(review/filename).read_bytes()
-  if sha(blob)!=spec['sha256'] or len(read(review/filename))!=spec['rows']:
+  if not sha_matches(blob, spec['sha256']) or len(read(review/filename))!=spec['rows']:
    raise ValueError('Artifact fingerprint/length mismatch: '+filename)
  v8_by={r['id']:r for r in candidate}
  for label,file,category,n in (
