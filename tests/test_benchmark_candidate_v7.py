@@ -20,7 +20,7 @@ def test_manifest_restricted():
     assert m['benchmark_frozen'] is False and m['owner_approved'] is False and m['training_authorized'] is False
     for v in m['candidate_files'].values():
         p = ROOT/v['file']
-        assert hashlib.sha256(p.read_bytes()).hexdigest() == v['sha256']
+        assert hashlib.sha256(p.read_bytes().replace(b'\r\n', b'\n')).hexdigest() == v['sha256']
         assert len(rows(p)) == v['rows']
 
 def test_primary_ids_and_splits():
