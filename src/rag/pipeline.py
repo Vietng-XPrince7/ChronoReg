@@ -52,6 +52,7 @@ def answer(
 
     sources = [{
         "doc_id": h["metadata"]["doc_id"],
+        "dieu_so": h["metadata"].get("dieu_so", ""),
         "academic_year": h["metadata"]["academic_year"],
         "year_status": h["metadata"]["year_status"],
         "review_status": h["metadata"]["review_status"],

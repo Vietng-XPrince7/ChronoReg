@@ -5,14 +5,18 @@ from .versioning import VersionPlan
 
 
 def _header(m: dict) -> str:
-    year = m["academic_year"] or "chưa rõ năm học"
-    note = "" if m["year_status"] == "verified" else f" [năm học: {m['year_status']}, chưa duyệt]"
-    return f"{m['doc_id']} - năm học {year}{note}"
+    year = f"năm học {m['academic_year']}" if m["academic_year"] else "chưa xác định năm học"
+    note = "" if m["year_status"] == "verified" else " (chưa duyệt)"
+    dieu = f" - {m['dieu_so']}" if m.get("dieu_so") else ""
+    return f"{m['doc_id']}{dieu} - {year}{note}"
 
 
 def build_prompt(question: str, hits: list[dict], plan: VersionPlan) -> str:
     ctx = "\n\n".join(f"[{_header(h['metadata'])}]\n{h['document']}" for h in hits)
-    if plan.mode in ("year", "latest") and plan.start_year:
+    if plan.mode == "latest":
+        scope = ("Chỉ xét quy định mới nhất trong dữ liệu"
+                 + (f" (các năm học: {plan.label()})." if plan.all_years() else "."))
+    elif plan.mode == "year" and plan.all_years():
         scope = f"Chỉ xét quy định của năm học {plan.label()}."
     else:
         scope = ("Ngữ cảnh có thể gồm nhiều năm học. Nêu rõ từng năm học và "

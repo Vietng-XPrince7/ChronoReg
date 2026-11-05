@@ -5,6 +5,14 @@
 chunks_file: data/versioning/rag_chunks_draft.jsonl
 reviewed_documents_file: data/versioning/reviewed_documents.jsonl
 
+documents_file: data/versioning/documents.jsonl   # used to find the source .md of each document
+
+# Hybrid chunking: documents with at least min_articles "Dieu" are split by article,
+# the rest keep the character-based chunks exported by the data team.
+chunk_by_article: true
+min_articles: 3
+max_article_chars: 2000
+
 vector_db_path: data/vectordb
 collection: regulations
 
