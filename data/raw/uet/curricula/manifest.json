@@ -1,0 +1,359 @@
+{
+  "schema_version": "1.0",
+  "retrieved_context_date": "2026-11-05",
+  "requested_cohorts": [
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "institution": "University of Engineering and Technology, VNU",
+  "records": [
+    {
+      "doc_id": "uet-curriculum-civil-engineering-QH-2026-plus",
+      "program_slug": "civil-engineering",
+      "program_name_vi": "Kỹ thuật xây dựng",
+      "degree": "Kỹ sư",
+      "duration_years": 4.5,
+      "cohort_from": 2026,
+      "cohort_to": null,
+      "edition_label": "QH-2026-plus",
+      "curriculum_status": "curriculum",
+      "reported_total_credits": 150,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-4/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-xay-dung-15/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-xay-dung-16/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-xay-dung-17/",
+        "implementation": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-xay-dung-18/"
+      },
+      "source_status": "verified_official_index_links",
+      "review_status": "metadata_reviewed; course_table_pending_ingestion",
+      "retrieval_eligible": false,
+      "notes": "2026 ngành/mã đổi sang Kỹ thuật xây dựng (7580201); không sửa tên ngành các chương trình cũ."
+    },
+    {
+      "doc_id": "uet-curriculum-civil-engineering-QH-2025",
+      "program_slug": "civil-engineering",
+      "program_name_vi": "Công nghệ kỹ thuật xây dựng",
+      "degree": "Kỹ sư",
+      "duration_years": 4.5,
+      "cohort_from": 2025,
+      "cohort_to": 2025,
+      "edition_label": "QH-2025",
+      "curriculum_status": "curriculum",
+      "reported_total_credits": 150,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-4/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-11/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-12/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-13/",
+        "implementation": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-14/"
+      },
+      "source_status": "verified_official_index_links",
+      "review_status": "metadata_reviewed; course_table_pending_ingestion",
+      "retrieval_eligible": false,
+      "notes": "Ngành/mã 7510103; áp dụng riêng QH-2025 theo chỉ mục."
+    },
+    {
+      "doc_id": "uet-curriculum-civil-engineering-QH-2022-to-2024",
+      "program_slug": "civil-engineering",
+      "program_name_vi": "Công nghệ kỹ thuật xây dựng",
+      "degree": "Kỹ sư",
+      "duration_years": 4.5,
+      "cohort_from": 2022,
+      "cohort_to": 2024,
+      "edition_label": "QH-2022-to-2024",
+      "curriculum_status": "curriculum",
+      "reported_total_credits": 150,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-4/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-8/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-9/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-10/"
+      },
+      "source_status": "verified_official_index_links",
+      "review_status": "metadata_reviewed; course_table_pending_ingestion",
+      "retrieval_eligible": false,
+      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng 2022–2024 do có các phiên bản riêng cho 2025 và 2026. Đây là suy luận phân giải phiên bản."
+    },
+    {
+      "doc_id": "uet-curriculum-industrial-graphic-design-QH-2025-plus",
+      "program_slug": "industrial-graphic-design",
+      "program_name_vi": "Thiết kế công nghiệp và đồ họa",
+      "degree": "Cử nhân",
+      "duration_years": 4,
+      "cohort_from": 2025,
+      "cohort_to": null,
+      "edition_label": "QH-2025-plus",
+      "curriculum_status": "curriculum",
+      "reported_total_credits": 135,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-4/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-5/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-6/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-7/",
+        "implementation": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-8/"
+      },
+      "source_status": "verified_official_index_links",
+      "review_status": "metadata_reviewed; course_table_pending_ingestion",
+      "retrieval_eligible": false,
+      "notes": ""
+    },
+    {
+      "doc_id": "uet-curriculum-industrial-graphic-design-QH-2024",
+      "program_slug": "industrial-graphic-design",
+      "program_name_vi": "Thiết kế công nghiệp và đồ họa",
+      "degree": "Cử nhân",
+      "duration_years": 4,
+      "cohort_from": 2024,
+      "cohort_to": 2024,
+      "edition_label": "QH-2024",
+      "curriculum_status": "curriculum",
+      "reported_total_credits": 135,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-4/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-2/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-3/"
+      },
+      "source_status": "verified_official_index_links",
+      "review_status": "metadata_reviewed; course_table_pending_ingestion",
+      "retrieval_eligible": false,
+      "notes": "UET xác nhận tuyển sinh lần đầu năm 2024; chỉ mục nói QH-2024 trở đi nhưng đã có phiên bản QH-2025 riêng."
+    },
+    {
+      "doc_id": "uet-curriculum-agricultural-technology-QH-2025-plus",
+      "program_slug": "agricultural-technology",
+      "program_name_vi": "Công nghệ nông nghiệp",
+      "degree": "Kỹ sư",
+      "duration_years": 4.5,
+      "cohort_from": 2025,
+      "cohort_to": null,
+      "edition_label": "QH-2025-plus",
+      "curriculum_status": "curriculum",
+      "reported_total_credits": 150,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-4/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-8/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-9/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-10/",
+        "implementation": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-11/"
+      },
+      "source_status": "verified_official_index_links",
+      "review_status": "metadata_reviewed; course_table_pending_ingestion",
+      "retrieval_eligible": false,
+      "notes": ""
+    },
+    {
+      "doc_id": "uet-curriculum-agricultural-technology-QH-2022-to-2024",
+      "program_slug": "agricultural-technology",
+      "program_name_vi": "Công nghệ nông nghiệp",
+      "degree": "Kỹ sư",
+      "duration_years": 4.5,
+      "cohort_from": 2022,
+      "cohort_to": 2024,
+      "edition_label": "QH-2022-to-2024",
+      "curriculum_status": "curriculum",
+      "reported_total_credits": 150,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-4/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-5/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-6/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-7/"
+      },
+      "source_status": "verified_official_index_links",
+      "review_status": "metadata_reviewed; course_table_pending_ingestion",
+      "retrieval_eligible": false,
+      "notes": "Chỉ mục ghi QH-2022 trở đi; phiên bản QH-2025 khác. Phân vùng 2022–2024 để tránh chọn nhầm."
+    },
+    {
+      "doc_id": "uet-curriculum-biotechnology-QH-2025-plus",
+      "program_slug": "biotechnology",
+      "program_name_vi": "Công nghệ sinh học (CT Công nghệ kỹ thuật sinh học)",
+      "degree": "Kỹ sư",
+      "duration_years": 4.5,
+      "cohort_from": 2025,
+      "cohort_to": null,
+      "edition_label": "QH-2025-plus",
+      "curriculum_status": "curriculum",
+      "reported_total_credits": 150,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-4/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-5/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-6/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-7/",
+        "implementation": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-8/"
+      },
+      "source_status": "verified_official_index_links",
+      "review_status": "metadata_reviewed; course_table_pending_ingestion",
+      "retrieval_eligible": false,
+      "notes": "Năm đầu tiên tuyển sinh ngành là 2025 theo thông tin UET."
+    },
+    {
+      "doc_id": "uet-curriculum-biotechnology-opening-proposal",
+      "program_slug": "biotechnology",
+      "program_name_vi": "Công nghệ sinh học (CT Công nghệ kỹ thuật sinh học)",
+      "degree": "Kỹ sư",
+      "duration_years": 4.5,
+      "cohort_from": null,
+      "cohort_to": null,
+      "edition_label": "opening-proposal",
+      "curriculum_status": "opening_proposal",
+      "reported_total_credits": 150,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-4/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-2/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-3/"
+      },
+      "source_status": "verified_official_index_links",
+      "review_status": "metadata_reviewed; course_table_pending_ingestion",
+      "retrieval_eligible": false,
+      "notes": "Tài liệu theo đề án mở ngành, KHÔNG gán cho QH-2022..2024; không dùng như quy định áp dụng."
+    },
+    {
+      "doc_id": "uet-curriculum-artificial-intelligence-QH-2025-plus",
+      "program_slug": "artificial-intelligence",
+      "program_name_vi": "Trí tuệ nhân tạo",
+      "degree": "Cử nhân",
+      "duration_years": 4,
+      "cohort_from": 2025,
+      "cohort_to": null,
+      "edition_label": "QH-2025-plus",
+      "curriculum_status": "curriculum",
+      "reported_total_credits": 135,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-4/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-7/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-8/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-9/",
+        "implementation": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-10/"
+      },
+      "source_status": "verified_official_index_links",
+      "review_status": "metadata_reviewed; course_table_pending_ingestion",
+      "retrieval_eligible": false,
+      "notes": ""
+    },
+    {
+      "doc_id": "uet-curriculum-artificial-intelligence-QH-2022-to-2024-updated",
+      "program_slug": "artificial-intelligence",
+      "program_name_vi": "Trí tuệ nhân tạo",
+      "degree": "Cử nhân",
+      "duration_years": 4,
+      "cohort_from": 2022,
+      "cohort_to": 2024,
+      "edition_label": "QH-2022-to-2024-updated",
+      "curriculum_status": "curriculum",
+      "reported_total_credits": 123,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-4/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/40411-2/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-5/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-6/"
+      },
+      "source_status": "verified_official_index_links",
+      "review_status": "metadata_reviewed; course_table_pending_ingestion",
+      "retrieval_eligible": false,
+      "notes": "UET ghi rõ cập nhật. Ngày bắt đầu áp dụng bản cập nhật và mối quan hệ pháp lý cần xác minh; không tự động coi bản gốc hết hiệu lực tại một ngày cụ thể."
+    },
+    {
+      "doc_id": "uet-curriculum-artificial-intelligence-QH-2022-to-2024-original",
+      "program_slug": "artificial-intelligence",
+      "program_name_vi": "Trí tuệ nhân tạo",
+      "degree": "Cử nhân",
+      "duration_years": 4,
+      "cohort_from": 2022,
+      "cohort_to": 2024,
+      "edition_label": "QH-2022-to-2024-original",
+      "curriculum_status": "curriculum",
+      "reported_total_credits": 124,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-4/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-2/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-3/"
+      },
+      "source_status": "verified_official_index_links",
+      "review_status": "metadata_reviewed; course_table_pending_ingestion",
+      "retrieval_eligible": false,
+      "notes": "Bản gốc được lưu song song để so sánh. Không cho RAG chọn tự động nếu chưa xác định ngày/thông báo cập nhật."
+    },
+    {
+      "doc_id": "uet-curriculum-data-science-QH-2025-plus",
+      "program_slug": "data-science",
+      "program_name_vi": "Khoa học dữ liệu (CT Khoa học và kỹ thuật dữ liệu)",
+      "degree": "Cử nhân",
+      "duration_years": 4,
+      "cohort_from": 2025,
+      "cohort_to": null,
+      "edition_label": "QH-2025-plus",
+      "curriculum_status": "curriculum",
+      "reported_total_credits": 135,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-4/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-5/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-6/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-7/",
+        "implementation": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-8/"
+      },
+      "source_status": "verified_official_index_links",
+      "review_status": "metadata_reviewed; course_table_pending_ingestion",
+      "retrieval_eligible": false,
+      "notes": "Năm đầu tiên tuyển sinh ngành là 2025 theo thông tin UET."
+    },
+    {
+      "doc_id": "uet-curriculum-data-science-opening-proposal",
+      "program_slug": "data-science",
+      "program_name_vi": "Khoa học dữ liệu (CT Khoa học và kỹ thuật dữ liệu)",
+      "degree": "Cử nhân",
+      "duration_years": 4,
+      "cohort_from": null,
+      "cohort_to": null,
+      "edition_label": "opening-proposal",
+      "curriculum_status": "opening_proposal",
+      "reported_total_credits": 130,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-4/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-2/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-3/"
+      },
+      "source_status": "verified_official_index_links",
+      "review_status": "metadata_reviewed; course_table_pending_ingestion",
+      "retrieval_eligible": false,
+      "notes": "Tài liệu theo đề án mở ngành; 130 tín chỉ KHÔNG đồng nhất với bản áp dụng QH-2025 (135 TC)."
+    }
+  ],
+  "excluded_future": [
+    {
+      "program_slug": "information-security",
+      "program_name_vi": "An toàn thông tin",
+      "cohort_from": 2027,
+      "cohort_to": null,
+      "source_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-an-toan-thong-tin/",
+      "source_pages": {
+        "overview": "https://uet.edu.vn/chuong-trinh-dao-tao-an-toan-thong-tin-2/",
+        "outcomes": "https://uet.edu.vn/chuong-trinh-dao-tao-an-toan-thong-tin-3/",
+        "curriculum": "https://uet.edu.vn/chuong-trinh-dao-tao-an-toan-thong-tin-4/",
+        "implementation": "https://uet.edu.vn/chuong-trinh-dao-tao-an-toan-thong-tin-5/"
+      },
+      "scope_status": "outside_requested_QH2022_2026",
+      "notes": "Trang chính thức chỉ ghi QH-2027 trở đi; không gán cho các khóa 2022–2026."
+    }
+  ],
+  "provenance_urls": {
+    "2025_openings": "https://uet.edu.vn/nam-2025-truong-dai-hoc-cong-nghe-dhqghn-mo-nhieu-nganh-moi-tang-chi-tieu/",
+    "2024_igd_opening": "https://uet.edu.vn/bo-mon-cong-nghe-xay-dung-giao-thong/",
+    "2026_civil_rename": "https://uet.edu.vn/tuyen-sinh/"
+  },
+  "caveats": [
+    "Official index article dates can predate later added cohort sections.",
+    "Link-level verification is not full table-row review.",
+    "Original and updated AI 2022-2024 versions cannot be ordered by effective date without explicit evidence.",
+    "Opening proposal is not an active enrolled-cohort curriculum.",
+    "The 2027 Information Security curriculum is outside the requested scope.",
+    "Data were not ingested into any live local project or RAG index by preparing this bundle."
+  ]
+}
