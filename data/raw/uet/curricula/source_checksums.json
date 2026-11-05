@@ -1,0 +1,590 @@
+{
+  "uet-curriculum-civil-engineering-QH-2026-plus": {
+    "complete": true,
+    "sections": {
+      "overview": {
+        "extracted_word_count": 619,
+        "tables_found": 0,
+        "sha256_extracted_md": "70a3757317105820c6c4c4429a0ad7f998fe5996b6dbce043ac591520ae41eb0",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-xay-dung-15/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-xay-dung-15/",
+        "http_status": 200,
+        "sha256_html": "4dffa63eb47632430631e79e3187e487d2de0937f737c3e233645d1f3e396da7",
+        "fetch_date": "2026-11-05"
+      },
+      "outcomes": {
+        "extracted_word_count": 962,
+        "tables_found": 1,
+        "sha256_extracted_md": "bde81a61ea95d27140e27b579497cc60350647d3533c78c30782cefa579fc3fe",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-xay-dung-16/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-xay-dung-16/",
+        "http_status": 200,
+        "sha256_html": "c29edff0417840b97222b4f3faa3e1cd0b1a4a511c84563863d1bd6e0e77399a",
+        "fetch_date": "2026-11-05"
+      },
+      "curriculum": {
+        "extracted_word_count": 1573,
+        "tables_found": 2,
+        "sha256_extracted_md": "e37eebacb4cb6d12fe4ddcd88597d27bc1cb29c17cd421e48cddd0f262ead1f6",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-xay-dung-17/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-xay-dung-17/",
+        "http_status": 200,
+        "sha256_html": "a24d968978f03b79d3542b0eca268a7e193374cd740e92af33075acdc81f00bb",
+        "fetch_date": "2026-11-05"
+      },
+      "implementation": {
+        "extracted_word_count": 736,
+        "tables_found": 1,
+        "sha256_extracted_md": "4f5c142dd628488f51b9381f1b31b4463944a33128b41174917c32fa285e48a4",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-xay-dung-18/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-xay-dung-18/",
+        "http_status": 200,
+        "sha256_html": "1faa6af53f36ea81d0f7fafdc3016118ace8b5aaff56aa2a87b365b7db7238e2",
+        "fetch_date": "2026-11-05"
+      }
+    },
+    "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-civil-engineering-QH-2026-plus.md",
+    "sha256_markdown": "c90d542e5caa8f0f9ad1ce426d1a9e230faabb11874708b375bdecdd7691a4c4"
+  },
+  "uet-curriculum-civil-engineering-QH-2025": {
+    "complete": true,
+    "sections": {
+      "overview": {
+        "extracted_word_count": 621,
+        "tables_found": 0,
+        "sha256_extracted_md": "4d4ba38fa6303fd04ea32814c725d3742d46466ffda1fdfc6969197ee05194d2",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-11/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-11/",
+        "http_status": 200,
+        "sha256_html": "803a78b917de30aa0b1c25459caf1fd031b80e6d60a7ba66f174a8b310f09136",
+        "fetch_date": "2026-11-05"
+      },
+      "outcomes": {
+        "extracted_word_count": 962,
+        "tables_found": 1,
+        "sha256_extracted_md": "de321f56e94d8f6dc32d23e162553b4db491fe014f6ce8f97e3582f2d6933c55",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-12/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-12/",
+        "http_status": 200,
+        "sha256_html": "eb525cd2727226e30a36e28578a4e6cc4538d78a451b39920e3e208d718a2f21",
+        "fetch_date": "2026-11-05"
+      },
+      "curriculum": {
+        "extracted_word_count": 1578,
+        "tables_found": 1,
+        "sha256_extracted_md": "8d8f19263b7d9881cfd69309b6ad1eb90596edbe6f1dd360957b375e719b64d0",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-13/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-13/",
+        "http_status": 200,
+        "sha256_html": "9780bd36805b311ded26d45b74fd380d79f5e5218da17b7ea5ff5d77eaf35fec",
+        "fetch_date": "2026-11-05"
+      },
+      "implementation": {
+        "extracted_word_count": 783,
+        "tables_found": 1,
+        "sha256_extracted_md": "099c37c7595995fbe624201d739d61acbc14a0ae7489dd41dc8765f7d0b5a0a0",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-14/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-14/",
+        "http_status": 200,
+        "sha256_html": "a24af14003ed8a7bd7335717836e876edf31aedb49433b8b5d64142769afc722",
+        "fetch_date": "2026-11-05"
+      }
+    },
+    "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-civil-engineering-QH-2025.md",
+    "sha256_markdown": "2b618d427a57fc710d783c440ec2fa3453ff01f00c185acac24f21307ff7bd2f"
+  },
+  "uet-curriculum-civil-engineering-QH-2022-to-2024": {
+    "complete": true,
+    "sections": {
+      "overview": {
+        "extracted_word_count": 558,
+        "tables_found": 0,
+        "sha256_extracted_md": "17669cb3d7fdd6d52eeee6014294e6cfe9820965c71d21f80d97250a3cf240a4",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-8/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-8/",
+        "http_status": 200,
+        "sha256_html": "14e0b95efd63571562919740ae30ae7e488b58f756f9958a93efe956bd53acad",
+        "fetch_date": "2026-11-05"
+      },
+      "outcomes": {
+        "extracted_word_count": 809,
+        "tables_found": 0,
+        "sha256_extracted_md": "30374a44d99b764de5f0d62817730af590b64dd44622c48f7f79d962c79f7671",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-9/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-9/",
+        "http_status": 200,
+        "sha256_html": "3a5bf34a7c86a5ed37be3f8de519d6a9df6bf52a89ed6491c131f511662f8596",
+        "fetch_date": "2026-11-05"
+      },
+      "curriculum": {
+        "extracted_word_count": 1625,
+        "tables_found": 1,
+        "sha256_extracted_md": "78511d7db32645bc4a2ae61cec3cae3c0cc9b90d249bbf82637278cb93cda0e3",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-10/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-ky-thuat-xay-dung-10/",
+        "http_status": 200,
+        "sha256_html": "4061a90ded282ff61f88bf47f99e65d6123ffbc77ffc17e6ee934acd68bbba28",
+        "fetch_date": "2026-11-05"
+      }
+    },
+    "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-civil-engineering-QH-2022-to-2024.md",
+    "sha256_markdown": "0073ca6e0abe3de1ee9fabaef9636d20c3082ace2a70a842404aee079a5a0b42"
+  },
+  "uet-curriculum-industrial-graphic-design-QH-2025-plus": {
+    "complete": true,
+    "sections": {
+      "overview": {
+        "extracted_word_count": 654,
+        "tables_found": 0,
+        "sha256_extracted_md": "f524509f0d02b9244c823bf10551b4719e398f306cd7c0d55f66898c001e028c",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-5/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-5/",
+        "http_status": 200,
+        "sha256_html": "c4f95d8ec13773af6f3426def1d378adb4800b972ca912ddbe3845a879ba5ea6",
+        "fetch_date": "2026-11-05"
+      },
+      "outcomes": {
+        "extracted_word_count": 968,
+        "tables_found": 1,
+        "sha256_extracted_md": "0246a81957af40dec8622700ff55e6330e1521b7461463cb3f8fd1980ce725d6",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-6/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-6/",
+        "http_status": 200,
+        "sha256_html": "e4f2e8187966242a3381b51e7cb770f0cc699afe2b682a5b10eb03c1b73c8b0b",
+        "fetch_date": "2026-11-05"
+      },
+      "curriculum": {
+        "extracted_word_count": 1901,
+        "tables_found": 1,
+        "sha256_extracted_md": "5b35b6628e51c8b434d314e5a1aceb858b2314d516ba2ed337da326f19f217b1",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-7/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-7/",
+        "http_status": 200,
+        "sha256_html": "240acafca8f17955f36e63b0e43f30e49b8c536b88b8cb19abb2cbb1d0f7506a",
+        "fetch_date": "2026-11-05"
+      },
+      "implementation": {
+        "extracted_word_count": 1003,
+        "tables_found": 1,
+        "sha256_extracted_md": "999aa8a3cdc2d4a77b9137cb9817f389d77fa1faf7284085be04a1852740b87b",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-8/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-8/",
+        "http_status": 200,
+        "sha256_html": "babadd626c01b63e06c63b35240fb86ca834327b150670259ab0ac7f44bd712c",
+        "fetch_date": "2026-11-05"
+      }
+    },
+    "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-industrial-graphic-design-QH-2025-plus.md",
+    "sha256_markdown": "931f93b84ec3ebc79859de32dcbc050fa44bbf7cfe82d75e305ae08d07b48576"
+  },
+  "uet-curriculum-industrial-graphic-design-QH-2024": {
+    "complete": true,
+    "sections": {
+      "overview": {
+        "extracted_word_count": 744,
+        "tables_found": 0,
+        "sha256_extracted_md": "28b541eafa52b8b5ab7f1ba6e2f1fa470e7e585903bf5ccfca15279fd7d1e30f",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa/",
+        "http_status": 200,
+        "sha256_html": "d2a4435a16c941ca49d3e70ea0876a49da2ca009cd479ed3a8bd2e4d121e44ac",
+        "fetch_date": "2026-11-05"
+      },
+      "outcomes": {
+        "extracted_word_count": 859,
+        "tables_found": 0,
+        "sha256_extracted_md": "2d3ea08e0546bccb4a953b9a6b32dfe3d387542f96df05b145fb141be28b1041",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-2/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-2/",
+        "http_status": 200,
+        "sha256_html": "3747dce3010b2265954a7c3743837d6fcf384f8d57ad679d78b34238e8724295",
+        "fetch_date": "2026-11-05"
+      },
+      "curriculum": {
+        "extracted_word_count": 1953,
+        "tables_found": 7,
+        "sha256_extracted_md": "798e33ba7b466eaa5622eb20899c83eb97fd0ce2e65b823fbc69b081d51e83b1",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-3/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thiet-ke-cong-nghiep-va-hoa-3/",
+        "http_status": 200,
+        "sha256_html": "3e4b36b46637ae77551e1f485b830a9ed337ecf9c4b98b7d125daadffb1f73df",
+        "fetch_date": "2026-11-05"
+      }
+    },
+    "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-industrial-graphic-design-QH-2024.md",
+    "sha256_markdown": "88fcaedb9b1e388d4f120106861d2af37fee59dca6140756e60aeb5472230a13"
+  },
+  "uet-curriculum-agricultural-technology-QH-2025-plus": {
+    "complete": true,
+    "sections": {
+      "overview": {
+        "extracted_word_count": 612,
+        "tables_found": 0,
+        "sha256_extracted_md": "cf0da96a2a78ecc2a6011fe6aec901e0325e79377a8c60101bc82eb5a6e83c04",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-8/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-8/",
+        "http_status": 200,
+        "sha256_html": "1c7e20c8c48300490fd83074b07253e4536e2b3c7eb95dc5ae9c746921757d85",
+        "fetch_date": "2026-11-05"
+      },
+      "outcomes": {
+        "extracted_word_count": 996,
+        "tables_found": 1,
+        "sha256_extracted_md": "266cf5662a6807a4e95b9ac09ecce5156b42fc429ab6bdbc3e8b66832e9441ff",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-9/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-9/",
+        "http_status": 200,
+        "sha256_html": "455565378ae02307aad3f2b2dfb5e91ad5de9c51c42a38264685eca679fe7299",
+        "fetch_date": "2026-11-05"
+      },
+      "curriculum": {
+        "extracted_word_count": 1721,
+        "tables_found": 1,
+        "sha256_extracted_md": "a57acc7a9dc0f9c45d66d3077809d5ab129a1458ee18da43602010ce4e35c9d9",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-10/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-10/",
+        "http_status": 200,
+        "sha256_html": "3be3f58b9e4d24fc2c0b6d2f30e68f92989e7d3ad7c6863cc4093003b0a430cb",
+        "fetch_date": "2026-11-05"
+      },
+      "implementation": {
+        "extracted_word_count": 887,
+        "tables_found": 1,
+        "sha256_extracted_md": "ee04ade4facc9bba4ab4b9aff6ad25cc8f1ce6485e914f1fd5deced74f2b1d3f",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-11/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-11/",
+        "http_status": 200,
+        "sha256_html": "396604e7e1ce371b26a34f5e89c02cb985f0d74e6804880158dc0deefbbf8698",
+        "fetch_date": "2026-11-05"
+      }
+    },
+    "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-agricultural-technology-QH-2025-plus.md",
+    "sha256_markdown": "1451e73a03d2a0a569a3622a46a29088f2d9158755091fe67d70b4f13e5d436f"
+  },
+  "uet-curriculum-agricultural-technology-QH-2022-to-2024": {
+    "complete": true,
+    "sections": {
+      "overview": {
+        "extracted_word_count": 362,
+        "tables_found": 0,
+        "sha256_extracted_md": "af4c985d4711ac9269bcb56036e4eae2ef47b8511e57a3edb02e7a25336f0aeb",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-5/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-5/",
+        "http_status": 200,
+        "sha256_html": "6fe3f64656dd0522467fee5443d511ecab8047f9fdeb024798bdb582d1d80a3a",
+        "fetch_date": "2026-11-05"
+      },
+      "outcomes": {
+        "extracted_word_count": 1735,
+        "tables_found": 1,
+        "sha256_extracted_md": "787e62d52326c3b87d9867bed133c7fdbf802c93538ba51eaa0214c6508af342",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-6/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-6/",
+        "http_status": 200,
+        "sha256_html": "5d0722b6b81d4ec5092ea025cd1a8b0eb46706fe3c7690ac59b37bfc3a937909",
+        "fetch_date": "2026-11-05"
+      },
+      "curriculum": {
+        "extracted_word_count": 1640,
+        "tables_found": 1,
+        "sha256_extracted_md": "77cb36566e30c7ca6cbe27d0e97eea039ec9d670c2f0d20a1c9fa1433c208a0e",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-7/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-nong-nghiep-7/",
+        "http_status": 200,
+        "sha256_html": "0fbbb6b8953daf7b5a7cd8e43372dfb4d46182c362c02909f39944e4a057960e",
+        "fetch_date": "2026-11-05"
+      }
+    },
+    "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-agricultural-technology-QH-2022-to-2024.md",
+    "sha256_markdown": "f43bb4a5dc93eead3cbdbe67587942278d633d9b8db25c11ddac12d102a0f3cd"
+  },
+  "uet-curriculum-biotechnology-QH-2025-plus": {
+    "complete": true,
+    "sections": {
+      "overview": {
+        "extracted_word_count": 651,
+        "tables_found": 0,
+        "sha256_extracted_md": "8697bf04241ed1df4dae81a32e2dc4ed37ea7c8b7ab5113da2134d59a717478e",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-5/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-5/",
+        "http_status": 200,
+        "sha256_html": "090da6f4096d8e525c08277bc646743301b58356125d9fcf13ba68d8ae52e5fa",
+        "fetch_date": "2026-11-05"
+      },
+      "outcomes": {
+        "extracted_word_count": 1036,
+        "tables_found": 1,
+        "sha256_extracted_md": "66cc4a7d5261c100abb6b1eadcde00d47595dd439aca7f413a522020268d225d",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-6/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-6/",
+        "http_status": 200,
+        "sha256_html": "f8883ea4d98e76e350db18fb2e17a43f9439cd2e798a633351e076cd56972941",
+        "fetch_date": "2026-11-05"
+      },
+      "curriculum": {
+        "extracted_word_count": 1588,
+        "tables_found": 1,
+        "sha256_extracted_md": "824590680c690fd856fb81e6c5cec7851f7cdca6570d66140ab94e0644adf3bc",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-7/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-7/",
+        "http_status": 200,
+        "sha256_html": "7a1011517e6befab5ceeab88889956a1f4676dab4f5d4b921b3059c4a78f84c9",
+        "fetch_date": "2026-11-05"
+      },
+      "implementation": {
+        "extracted_word_count": 825,
+        "tables_found": 1,
+        "sha256_extracted_md": "79f83c91f1d1005661c823bbe358902e054a31d8fbb7b45f3353a61baca798fb",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-8/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-8/",
+        "http_status": 200,
+        "sha256_html": "388f13c7b0d4ad7d691808e30c0710af329f5d5916c163724ecad32445fe3bfa",
+        "fetch_date": "2026-11-05"
+      }
+    },
+    "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-biotechnology-QH-2025-plus.md",
+    "sha256_markdown": "614eb6929a0a347f812d062322b9a8cb3f8d013272f8b0f0e2128459bb5a3ea7"
+  },
+  "uet-curriculum-biotechnology-opening-proposal": {
+    "complete": true,
+    "sections": {
+      "overview": {
+        "extracted_word_count": 828,
+        "tables_found": 0,
+        "sha256_extracted_md": "67b4b247243252a6f17dcc2cc5429f71bffca28e7a79916e968eb5c57d31faff",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc/",
+        "http_status": 200,
+        "sha256_html": "45b58213baecf0c6cf6b0c57d019e9ce73dd5e2d1b6aee13ccd8dd10b7e5693e",
+        "fetch_date": "2026-11-05"
+      },
+      "outcomes": {
+        "extracted_word_count": 2512,
+        "tables_found": 4,
+        "sha256_extracted_md": "88a1d72fabba149052d16e0cca82a7eab7822cd36d795b63c63ee8eb41d0a238",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-2/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-2/",
+        "http_status": 200,
+        "sha256_html": "da6d88ef27fe4224dec780c3351f5153cbe1a7be6680a9bf2be16e26f3b941cf",
+        "fetch_date": "2026-11-05"
+      },
+      "curriculum": {
+        "extracted_word_count": 2008,
+        "tables_found": 1,
+        "sha256_extracted_md": "651db28a0e07544b2ca313e18ccf14956b41e010abf47c9f36c4fe920174082e",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-3/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-cong-nghe-ky-thuat-sinh-hoc-nganh-cong-nghe-sinh-hoc-3/",
+        "http_status": 200,
+        "sha256_html": "90eeced3c9ea8a1058981cae02a5448da739cf0c27ce1f93ca3018f1e716b1d8",
+        "fetch_date": "2026-11-05"
+      }
+    },
+    "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-biotechnology-opening-proposal.md",
+    "sha256_markdown": "14fc4d3be76c145d4a34dcbfeac045101c98ef12cedb7ace8eae19de3f6f5e94"
+  },
+  "uet-curriculum-artificial-intelligence-QH-2025-plus": {
+    "complete": true,
+    "sections": {
+      "overview": {
+        "extracted_word_count": 571,
+        "tables_found": 0,
+        "sha256_extracted_md": "183904a4fb24b352ac1a6a4934bd4ae9ff97399336217f6eb8cfa1402dce11c2",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-7/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-7/",
+        "http_status": 200,
+        "sha256_html": "c4ac1864b220b081a22a787834104dba807ae1b5e90228323bd4ffab00b12160",
+        "fetch_date": "2026-11-05"
+      },
+      "outcomes": {
+        "extracted_word_count": 731,
+        "tables_found": 1,
+        "sha256_extracted_md": "98b3248740a627979369809a12a6b893e04cab56819b1209d70948ddf65a724e",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-8/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-8/",
+        "http_status": 200,
+        "sha256_html": "107d5305ae4daf52365bb8b72e162fd5bbe8454ac6f176bb8d38d94711fc7bad",
+        "fetch_date": "2026-11-05"
+      },
+      "curriculum": {
+        "extracted_word_count": 1761,
+        "tables_found": 1,
+        "sha256_extracted_md": "fc7b59f1c0226b8dfc4d55c9c31501f99a88b134c96e957a45ade9e6891df7b3",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-9/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-9/",
+        "http_status": 200,
+        "sha256_html": "f5d2fd79053c6bf7ef82a8b5b7ec6215081d52014890b91ee262e2f7e42f40dc",
+        "fetch_date": "2026-11-05"
+      },
+      "implementation": {
+        "extracted_word_count": 919,
+        "tables_found": 1,
+        "sha256_extracted_md": "c4f90d4133394c59422beb7da064443aa52b26a3bcfc7b1deee12bc1a987d53b",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-10/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-10/",
+        "http_status": 200,
+        "sha256_html": "9dd79982e28dd1b703d67aedea18bc92432e3adba8934a9b5176b9b041123f58",
+        "fetch_date": "2026-11-05"
+      }
+    },
+    "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-artificial-intelligence-QH-2025-plus.md",
+    "sha256_markdown": "f5ac2a096c26f81bf0aea043c8ff48daec7da00d6193d521c600439b43642e8c"
+  },
+  "uet-curriculum-artificial-intelligence-QH-2022-to-2024-updated": {
+    "complete": true,
+    "sections": {
+      "overview": {
+        "extracted_word_count": 386,
+        "tables_found": 0,
+        "sha256_extracted_md": "65e1765a995a0b43b12bc94dbec44739e166388e67cf5d223b676d43c44fcb77",
+        "requested_url": "https://uet.edu.vn/40411-2/",
+        "final_url": "https://uet.edu.vn/40411-2/",
+        "http_status": 200,
+        "sha256_html": "4850a04d6226947d86de37d6b00cd94b5c534a17f0e4f6d0039b35aba34fdd9f",
+        "fetch_date": "2026-11-05"
+      },
+      "outcomes": {
+        "extracted_word_count": 596,
+        "tables_found": 0,
+        "sha256_extracted_md": "656f9e61f342c824ef5816ec3448512e68b806ed3c4eba281aaafb2a8bad05d1",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-5/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-5/",
+        "http_status": 200,
+        "sha256_html": "e147017f61047c648795cdafdc7ddd3450d0f3c1142bcb84168d94accf625386",
+        "fetch_date": "2026-11-05"
+      },
+      "curriculum": {
+        "extracted_word_count": 1347,
+        "tables_found": 1,
+        "sha256_extracted_md": "0efb290a182652b3ebcc1067976e47e5b8fb04960d88ba135c816792393bb7ef",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-6/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-6/",
+        "http_status": 200,
+        "sha256_html": "ee1579e1a78b6dce7946d88efacc0b0cc84c4ab5dad9034e4b04dc337fb313a7",
+        "fetch_date": "2026-11-05"
+      }
+    },
+    "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-artificial-intelligence-QH-2022-to-2024-updated.md",
+    "sha256_markdown": "4aa973f460daa0606d458ed43272f3583d8089c7b3019f615b35ae885cee0549"
+  },
+  "uet-curriculum-artificial-intelligence-QH-2022-to-2024-original": {
+    "complete": true,
+    "sections": {
+      "overview": {
+        "extracted_word_count": 445,
+        "tables_found": 0,
+        "sha256_extracted_md": "32c6550cc1f56a76a713a263fe65781c342efc47508124debe8296b70b1ec05e",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao/",
+        "http_status": 200,
+        "sha256_html": "1730c4a7932c504361eab396b11c3d898eeff0b33f50540b770aee6684049d00",
+        "fetch_date": "2026-11-05"
+      },
+      "outcomes": {
+        "extracted_word_count": 584,
+        "tables_found": 0,
+        "sha256_extracted_md": "9aa5275f65e5759716db055e56937d567b737ccd958dc4ee511de0f693cbdb63",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-2/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-2/",
+        "http_status": 200,
+        "sha256_html": "86e38ee11f0a75eb194088b54c1c05f86b854e5c20d0f531f3390d907ce84803",
+        "fetch_date": "2026-11-05"
+      },
+      "curriculum": {
+        "extracted_word_count": 1362,
+        "tables_found": 6,
+        "sha256_extracted_md": "147ba89451c60f9eca80357b34d3fb5a38204b35e1dee6a5ccd4d325c44bfc67",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-3/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-tri-tue-nhan-tao-3/",
+        "http_status": 200,
+        "sha256_html": "0e6e01387b6081abd19ac0d838fb901f53fa171132940a52e736a2865a7dd6ab",
+        "fetch_date": "2026-11-05"
+      }
+    },
+    "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-artificial-intelligence-QH-2022-to-2024-original.md",
+    "sha256_markdown": "8f22582bb059bcebea236e724440ffa7ac4102669e1139fe821ae0b4f2f77413"
+  },
+  "uet-curriculum-data-science-QH-2025-plus": {
+    "complete": true,
+    "sections": {
+      "overview": {
+        "extracted_word_count": 728,
+        "tables_found": 0,
+        "sha256_extracted_md": "067ac71dc31d0e1e117be605899e0eb104d85de654cd242582a8a09e368d016d",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-5/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-5/",
+        "http_status": 200,
+        "sha256_html": "0b00d1daaa80ae7a8f809f23aad63f60f3727bd95879952fc1a9d89c5270a1fd",
+        "fetch_date": "2026-11-05"
+      },
+      "outcomes": {
+        "extracted_word_count": 741,
+        "tables_found": 1,
+        "sha256_extracted_md": "c884a467231d933a7ba4f3fb9d577f88f2cec6e1301d7ce1a9cc39fa8c6bfbed",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-6/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-6/",
+        "http_status": 200,
+        "sha256_html": "01040aff5ea19a67f330582a17beaf91be972629ef37c062d9e55edc31829cc9",
+        "fetch_date": "2026-11-05"
+      },
+      "curriculum": {
+        "extracted_word_count": 1538,
+        "tables_found": 1,
+        "sha256_extracted_md": "c8933a0563aef9c1a93cd86ef11ee169d341cd21964558e62bba2d5ae7313c21",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-7/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-7/",
+        "http_status": 200,
+        "sha256_html": "66f3d4ae30b52d599467a38447f1f80542ac46d1ee33c137f371d6a72282d795",
+        "fetch_date": "2026-11-05"
+      },
+      "implementation": {
+        "extracted_word_count": 784,
+        "tables_found": 1,
+        "sha256_extracted_md": "2443600dbd5bb0ab179e262c897f4b4494ff1e5609fd451a16bdc7d6a028044c",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-8/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-8/",
+        "http_status": 200,
+        "sha256_html": "1e2d816a22cbcf0902679a7dd65a6b36200c89fb6eea4952a99a7852a2c0f790",
+        "fetch_date": "2026-11-05"
+      }
+    },
+    "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-data-science-QH-2025-plus.md",
+    "sha256_markdown": "d57605d2cb642592c45c1eb2f89d75e9988ac207d8843d4c4e97bc76e082bee0"
+  },
+  "uet-curriculum-data-science-opening-proposal": {
+    "complete": true,
+    "sections": {
+      "overview": {
+        "extracted_word_count": 1024,
+        "tables_found": 0,
+        "sha256_extracted_md": "ecd56ef462e11429d8c747b4e717948ec53979152fdd0f1777184fe96d75edf7",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu/",
+        "http_status": 200,
+        "sha256_html": "4bac6be752009f05fc53925a5ffc20fd19309a8e2491cecfed29333a871feb0e",
+        "fetch_date": "2026-11-05"
+      },
+      "outcomes": {
+        "extracted_word_count": 1884,
+        "tables_found": 2,
+        "sha256_extracted_md": "c59d1b15e5a507a24fddce5508fc98be7ae60d18853493e64cbe2511f3c3f05c",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-2/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-2/",
+        "http_status": 200,
+        "sha256_html": "42fa8ee97a81070a34ff52d025e0ad4cc27ac7a37cea8104cf474b2f08f665e1",
+        "fetch_date": "2026-11-05"
+      },
+      "curriculum": {
+        "extracted_word_count": 1696,
+        "tables_found": 2,
+        "sha256_extracted_md": "af78ba2dd2a48c0e90efaeb1d8f74249cfc8b2689eca17789dc81a17cb7b99df",
+        "requested_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-3/",
+        "final_url": "https://uet.edu.vn/chuong-trinh-dao-tao-khoa-hoc-va-ky-thuat-du-lieu-nganh-khoa-hoc-du-lieu-3/",
+        "http_status": 200,
+        "sha256_html": "ecedf5fe545bc597ea7498dfea930f6a0474226bc5481036a0a25f2a85bb832a",
+        "fetch_date": "2026-11-05"
+      }
+    },
+    "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-data-science-opening-proposal.md",
+    "sha256_markdown": "4be1a96098d0d8a5f7d7d03f971fdb61ad96bb4408610621c707ed4b7e825429"
+  }
+}
