@@ -1,0 +1,24 @@
+{
+  "epochs_per_year": 2,
+  "model_config_sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+  "model_folder": "/kaggle/input/models/qwen-lm/qwen2.5/transformers/3b-instruct/1",
+  "model_id_claimed": "Qwen/Qwen2.5-3B-Instruct",
+  "note": "No claim of independent review / verified effective-year answers; exploratory results only",
+  "runtime": {
+    "accelerate": "1.15.0",
+    "gpu": "Tesla T4",
+    "gpu_gib": 14.56,
+    "peft": "0.21.2",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.20.2"
+  },
+  "status": "COURSE_EXPERIMENT_NOT_INDEPENDENTLY_RELEASED",
+  "train_counts": {
+    "2022": 40,
+    "2023": 37,
+    "2024": 36,
+    "2025": 49,
+    "2026": 38
+  },
+  "training_data_sha256": "1e7f8dffa8425e6a441f651bb320935bd4e1e32a69933ac5073e85a55d71851e"
+}

@@ -1,0 +1,12 @@
+{
+  "last_adapter_sha256": "95c82416cd768f75145f220a670d563dc4f77c3c01ea39abf2ed4b54cf38dba3",
+  "stages": [
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "status": "FIVE_COURSE_ADAPTERS_VERIFIED_NOT_OFFICIAL_RELEASE",
+  "training_data_sha256": "1e7f8dffa8425e6a441f651bb320935bd4e1e32a69933ac5073e85a55d71851e"
+}

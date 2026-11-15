@@ -1,0 +1,22 @@
+{
+  "schema": "chronoreg-course-experiment/v1",
+  "scope": "classroom exploratory research, not the independently released ChronoReg training data",
+  "training_rows": 200,
+  "counts": {
+    "2022": 40,
+    "2023": 37,
+    "2024": 36,
+    "2025": 49,
+    "2026": 38
+  },
+  "train_sha256": "1e7f8dffa8425e6a441f651bb320935bd4e1e32a69933ac5073e85a55d71851e",
+  "source_file_count": 24,
+  "year_status": "proposed_not_independently_verified",
+  "source_check": "machine excerpt/value check only; source bytes not independently re-fetched in this build",
+  "owner_scope": "permission to proceed with class experiment; does not imply individual source or temporal approval",
+  "frozen_benchmark_sha256_expected": "47497e6bea518c95fa9c3b674fc63ccf022cc625e73da056c3e87bc63a70596f",
+  "benchmark_source": "Vietng-XPrince7/ChronoReg main data/qa_benchmark/benchmark.jsonl; NOT bundled unless user provides it",
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "method": "sequential NF4 QLoRA 2022-2026; LoRA r8 alpha16 dropout0.05",
+  "warning": "DO NOT use this output to satisfy the official independent-review release gate."
+}

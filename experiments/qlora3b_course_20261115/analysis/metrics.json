@@ -1,0 +1,401 @@
+{
+  "overall": [
+    {
+      "checkpoint_year": 2022,
+      "n": 90,
+      "f1": 0.461583,
+      "median": 0.4396,
+      "exact": 0,
+      "pred_words": 36.344444,
+      "money_gold": 51,
+      "money_any_match": 2,
+      "money_all_match": 0
+    },
+    {
+      "checkpoint_year": 2023,
+      "n": 90,
+      "f1": 0.443027,
+      "median": 0.4295,
+      "exact": 0,
+      "pred_words": 26.588889,
+      "money_gold": 51,
+      "money_any_match": 1,
+      "money_all_match": 0
+    },
+    {
+      "checkpoint_year": 2024,
+      "n": 90,
+      "f1": 0.404207,
+      "median": 0.4,
+      "exact": 0,
+      "pred_words": 22.466667,
+      "money_gold": 51,
+      "money_any_match": 1,
+      "money_all_match": 0
+    },
+    {
+      "checkpoint_year": 2025,
+      "n": 90,
+      "f1": 0.361279,
+      "median": 0.37125,
+      "exact": 0,
+      "pred_words": 17.733333,
+      "money_gold": 51,
+      "money_any_match": 0,
+      "money_all_match": 0
+    },
+    {
+      "checkpoint_year": 2026,
+      "n": 90,
+      "f1": 0.372273,
+      "median": 0.3798,
+      "exact": 0,
+      "pred_words": 16.9,
+      "money_gold": 51,
+      "money_any_match": 0,
+      "money_all_match": 0
+    }
+  ],
+  "by_type": [
+    {
+      "checkpoint_year": 2022,
+      "type": "active_rule",
+      "n": 37,
+      "f1": 0.441108
+    },
+    {
+      "checkpoint_year": 2022,
+      "type": "superseded_rule",
+      "n": 27,
+      "f1": 0.461978
+    },
+    {
+      "checkpoint_year": 2022,
+      "type": "temporal_specific",
+      "n": 26,
+      "f1": 0.490312
+    },
+    {
+      "checkpoint_year": 2023,
+      "type": "active_rule",
+      "n": 37,
+      "f1": 0.429268
+    },
+    {
+      "checkpoint_year": 2023,
+      "type": "superseded_rule",
+      "n": 27,
+      "f1": 0.435163
+    },
+    {
+      "checkpoint_year": 2023,
+      "type": "temporal_specific",
+      "n": 26,
+      "f1": 0.470773
+    },
+    {
+      "checkpoint_year": 2024,
+      "type": "active_rule",
+      "n": 37,
+      "f1": 0.413354
+    },
+    {
+      "checkpoint_year": 2024,
+      "type": "superseded_rule",
+      "n": 27,
+      "f1": 0.405489
+    },
+    {
+      "checkpoint_year": 2024,
+      "type": "temporal_specific",
+      "n": 26,
+      "f1": 0.389858
+    },
+    {
+      "checkpoint_year": 2025,
+      "type": "active_rule",
+      "n": 37,
+      "f1": 0.38533
+    },
+    {
+      "checkpoint_year": 2025,
+      "type": "superseded_rule",
+      "n": 27,
+      "f1": 0.34193
+    },
+    {
+      "checkpoint_year": 2025,
+      "type": "temporal_specific",
+      "n": 26,
+      "f1": 0.347146
+    },
+    {
+      "checkpoint_year": 2026,
+      "type": "active_rule",
+      "n": 37,
+      "f1": 0.395573
+    },
+    {
+      "checkpoint_year": 2026,
+      "type": "superseded_rule",
+      "n": 27,
+      "f1": 0.351404
+    },
+    {
+      "checkpoint_year": 2026,
+      "type": "temporal_specific",
+      "n": 26,
+      "f1": 0.360788
+    }
+  ],
+  "by_asof": [
+    {
+      "checkpoint_year": 2022,
+      "as_of_year": 2022,
+      "n": 10,
+      "f1": 0.44634
+    },
+    {
+      "checkpoint_year": 2022,
+      "as_of_year": 2023,
+      "n": 13,
+      "f1": 0.502577
+    },
+    {
+      "checkpoint_year": 2022,
+      "as_of_year": 2024,
+      "n": 17,
+      "f1": 0.530865
+    },
+    {
+      "checkpoint_year": 2022,
+      "as_of_year": 2025,
+      "n": 19,
+      "f1": 0.432089
+    },
+    {
+      "checkpoint_year": 2022,
+      "as_of_year": 2026,
+      "n": 31,
+      "f1": 0.429394
+    },
+    {
+      "checkpoint_year": 2023,
+      "as_of_year": 2022,
+      "n": 10,
+      "f1": 0.45976
+    },
+    {
+      "checkpoint_year": 2023,
+      "as_of_year": 2023,
+      "n": 13,
+      "f1": 0.465477
+    },
+    {
+      "checkpoint_year": 2023,
+      "as_of_year": 2024,
+      "n": 17,
+      "f1": 0.491494
+    },
+    {
+      "checkpoint_year": 2023,
+      "as_of_year": 2025,
+      "n": 19,
+      "f1": 0.406421
+    },
+    {
+      "checkpoint_year": 2023,
+      "as_of_year": 2026,
+      "n": 31,
+      "f1": 0.424071
+    },
+    {
+      "checkpoint_year": 2024,
+      "as_of_year": 2022,
+      "n": 10,
+      "f1": 0.32086
+    },
+    {
+      "checkpoint_year": 2024,
+      "as_of_year": 2023,
+      "n": 13,
+      "f1": 0.437515
+    },
+    {
+      "checkpoint_year": 2024,
+      "as_of_year": 2024,
+      "n": 17,
+      "f1": 0.457853
+    },
+    {
+      "checkpoint_year": 2024,
+      "as_of_year": 2025,
+      "n": 19,
+      "f1": 0.346368
+    },
+    {
+      "checkpoint_year": 2024,
+      "as_of_year": 2026,
+      "n": 31,
+      "f1": 0.423155
+    },
+    {
+      "checkpoint_year": 2025,
+      "as_of_year": 2022,
+      "n": 10,
+      "f1": 0.31516
+    },
+    {
+      "checkpoint_year": 2025,
+      "as_of_year": 2023,
+      "n": 13,
+      "f1": 0.327631
+    },
+    {
+      "checkpoint_year": 2025,
+      "as_of_year": 2024,
+      "n": 17,
+      "f1": 0.391124
+    },
+    {
+      "checkpoint_year": 2025,
+      "as_of_year": 2025,
+      "n": 19,
+      "f1": 0.325426
+    },
+    {
+      "checkpoint_year": 2025,
+      "as_of_year": 2026,
+      "n": 31,
+      "f1": 0.395874
+    },
+    {
+      "checkpoint_year": 2026,
+      "as_of_year": 2022,
+      "n": 10,
+      "f1": 0.3777
+    },
+    {
+      "checkpoint_year": 2026,
+      "as_of_year": 2023,
+      "n": 13,
+      "f1": 0.342862
+    },
+    {
+      "checkpoint_year": 2026,
+      "as_of_year": 2024,
+      "n": 17,
+      "f1": 0.397118
+    },
+    {
+      "checkpoint_year": 2026,
+      "as_of_year": 2025,
+      "n": 19,
+      "f1": 0.330753
+    },
+    {
+      "checkpoint_year": 2026,
+      "as_of_year": 2026,
+      "n": 31,
+      "f1": 0.394681
+    }
+  ],
+  "by_period": [
+    {
+      "checkpoint_year": 2022,
+      "period": "earlier_than_target",
+      "n": 80,
+      "f1": 0.463489
+    },
+    {
+      "checkpoint_year": 2022,
+      "period": "target_year",
+      "n": 10,
+      "f1": 0.44634
+    },
+    {
+      "checkpoint_year": 2023,
+      "period": "earlier_than_target",
+      "n": 67,
+      "f1": 0.436173
+    },
+    {
+      "checkpoint_year": 2023,
+      "period": "later_than_target",
+      "n": 10,
+      "f1": 0.45976
+    },
+    {
+      "checkpoint_year": 2023,
+      "period": "target_year",
+      "n": 13,
+      "f1": 0.465477
+    },
+    {
+      "checkpoint_year": 2024,
+      "period": "earlier_than_target",
+      "n": 50,
+      "f1": 0.393976
+    },
+    {
+      "checkpoint_year": 2024,
+      "period": "later_than_target",
+      "n": 23,
+      "f1": 0.386796
+    },
+    {
+      "checkpoint_year": 2024,
+      "period": "target_year",
+      "n": 17,
+      "f1": 0.457853
+    },
+    {
+      "checkpoint_year": 2025,
+      "period": "earlier_than_target",
+      "n": 31,
+      "f1": 0.395874
+    },
+    {
+      "checkpoint_year": 2025,
+      "period": "later_than_target",
+      "n": 40,
+      "f1": 0.351497
+    },
+    {
+      "checkpoint_year": 2025,
+      "period": "target_year",
+      "n": 19,
+      "f1": 0.325426
+    },
+    {
+      "checkpoint_year": 2026,
+      "period": "later_than_target",
+      "n": 59,
+      "f1": 0.3605
+    },
+    {
+      "checkpoint_year": 2026,
+      "period": "target_year",
+      "n": 31,
+      "f1": 0.394681
+    }
+  ],
+  "cases_by_type": {
+    "active_rule": 37,
+    "superseded_rule": 27,
+    "temporal_specific": 26
+  },
+  "asof_counts": {
+    "2022": 10,
+    "2023": 13,
+    "2024": 17,
+    "2025": 19,
+    "2026": 31
+  },
+  "paired_mean_delta_22_to_26": -0.08930999999999999,
+  "paired_counts": {
+    "improved": 29,
+    "declined": 59,
+    "tie": 2
+  }
+}
