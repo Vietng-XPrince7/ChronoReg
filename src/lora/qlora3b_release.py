@@ -1,6 +1,6 @@
 """Strict research data-release gate for the separate 3B QLoRA experiment.
 
-The existing 0.5B V1 release gate remains unchanged. No approval files are
+No approval files are
 created by this module. Ledger completeness is not proof of reviewer identity.
 """
 from __future__ import annotations
@@ -12,7 +12,7 @@ from pathlib import Path
 
 from .contracts import (read_jsonl, sha256, validate_benchmark,
                         validate_training, question_key)
-from .release_guard import require_full_benchmark_review
+from .benchmark_review import require_full_benchmark_review
 
 SCHEMA = 'chronoreg-qlora3b-release/v1'
 YEARS = [2022, 2023, 2024, 2025, 2026]
