@@ -16,8 +16,8 @@ From `C:\HaiAnh\ChronoReg-LoRA` in PowerShell, using the repo's installed Python
 
 ```powershell
 py -m src.versioning.cli build
-py -m src.lora.cli propose
-py -m src.lora.cli review-template
+py -m src.lora.review_cli propose
+py -m src.lora.review_cli review-template
 ```
 
 Expected local, **Git-ignored** files:
@@ -41,12 +41,12 @@ Review one row at a time against the original UET source and the latest version 
 ## Finalize the reviewed subset
 
 ```powershell
-py -m src.lora.cli review-finalize
+py -m src.lora.review_cli review-finalize
 ```
 
 This rechecks all source hashes, the latest document registry, holds, academic year, signed review decisions, and approved QA contract. It fails closed on stale candidates or unsafe documents. It exports **only explicitly human-approved records** into `src/lora/runs/approved_qa.jsonl`.
 
-Without the official held-out benchmark, the command honestly reports `benchmark_overlap_checked: false`. It does **not** authorize training; `prepare` requires the benchmark and approved QA in **every requested year**. Once Việt supplies the separate benchmark file, pass `--benchmark path/to/official_benchmark.jsonl` on a new review batch or run `prepare`; keep development QA separate from that protected evaluation set.
+Without the official held-out benchmark, the command honestly reports `benchmark_overlap_checked: false`. It does **not** authorize training; the 3B `stage` command requires an independently reviewed benchmark and sufficient approved QA in each year. Once Việt supplies the separate benchmark file, pass `--benchmark path/to/official_benchmark.jsonl` on a new review batch or stage a separate, approved 3B training batch; keep development QA separate from that protected evaluation set.
 
 By default, finalization refuses to overwrite an existing approved QA file. To iterate on review decisions, archive the current local output and start a new batch. Do not commit the ignored local `runs/` files.
 
@@ -69,4 +69,4 @@ All 23 remain **unreviewed drafts**. The year 2024 general scholarship document 
 
 Request finalized version metadata and the official **held-out** benchmark with `id`, `question`, `type`, `as_of_year`, `gold_answer`, `gold_doc_id` and optional `outdated_answer`. Also agree on the academic-year/year-as-of convention and have a distinct development split if hyperparameters need tuning. Our branch only consumes these interfaces; it must not edit `src/eval/`, `src/ingestion/`, `docs/schema.md` or the other team's benchmark.
 
-After enough reviewed QAs exist in each year, use `py -m src.lora.cli prepare`, followed by the already-validated sequential Trainer and forgetting evaluation. Do **not** claim five-year continual learning has been run on UET sources until that experiment is actually complete.
+After enough reviewed QAs exist in each year, use `py -m src.lora.cli stage --train path/to/curated_approved_qa.jsonl`, then complete the independent release review and preflight before training. Do **not** claim five-year continual learning has been run on UET sources until that experiment is actually complete.

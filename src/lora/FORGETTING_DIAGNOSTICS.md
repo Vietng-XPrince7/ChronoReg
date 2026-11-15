@@ -1,6 +1,6 @@
 # Continual LoRA: held-out forgetting diagnostics
 
-`python -m src.lora.cli evaluate` evaluates checkpoints in chronological order. At a
+`python -m src.lora.cli --release docs/lora_releases/qlora3b_release.json evaluate` evaluates released 3B checkpoints in chronological order. At a
 checkpoint for year `t`, questions from years after `t` are **not evaluated**.
 Each older year is re-tested to measure loss of previously learned capability.
 

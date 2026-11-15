@@ -1,31 +1,26 @@
-# ChronoReg Qwen2.5-3B QLoRA: one-run research extension
+# ChronoReg: Canonical Qwen2.5-3B QLoRA experiment
 
-This is a **separate, experimental** QLoRA runner. It leaves `configs/lora.yaml`,
-`src/lora/modeling.py`, `src/lora/run_five_stages.py`, the v1 release guard,
-all 0.5B adapters, the shared benchmark, RAG and the frontend unchanged.
-Do **not** interpret passing unit tests as UET factual accuracy.
+This is the only active LoRA model pipeline. The shared benchmark, independent
+source review, RAG code and frontend are unchanged. This document does not
+claim that 3B weights were trained or that QA quality has been validated.
 
-## Decision and hardware
+## Model and runtime
 
-- Base: `Qwen/Qwen2.5-3B-Instruct`, pinned Hugging Face commit
-  `aa8e72537993ba99e69dfaafa59ed015b17504d1` (verify upstream model card).
-- Research use: review the model's **Qwen Research** license. Do not presume
-  it grants unrestricted commercial deployment.
-- Quantization: 4-bit NF4, double quantization, FP16 compute; QLoRA adapters.
-- GPU gate: one NVIDIA GPU with at least **12 GiB VRAM**. This is a conservative
-  engineering threshold, not a guarantee of no OOM. A local Quadro T1000 4GB
-  is deliberately rejected; for a first run use e.g. a 16GB T4 instance.
-- 5 chronological updates with a single reused adapter: 2022 through 2026.
-- One frozen model/config, one released dataset, one evaluation; no automatic
-  7B escalation or endless hyperparameter search.
+- Base: `Qwen/Qwen2.5-3B-Instruct`, pinned to Hugging Face revision
+  `aa8e72537993ba99e69dfaafa59ed015b17504d1`.
+- Confirm the model's license before any commercial or public deployment.
+- Quantization: NF4 4-bit with double quantization and FP16 compute.
+- Minimum GPU gate: 12 GiB VRAM, preferably 16 GiB for the first test.
+  This is a gate, not a promise of fitting all hardware.
+- Sequential stages: 2022, 2023, 2024, 2025, 2026.
+- Canonical config: `configs/lora.yaml`; one configuration, one final run.
 
-## Existing blockers
+## Training blockers
 
-The previous demo had 24 QA. The 200 legacy `train-YYYY-NNN` items are not
-eligible for release. Curricula draft QA (`needs_human_review` / `PENDING`)
-must be reviewed by humans and are **NOT automatically admitted**. The old
-`release_guard.py` intentionally only covers the fixed 24-item V3 batch; the
-3B runner has a separate strict schema for a **new, larger** training release.
+- The existing 200 template QA items are not approved source-grounded data.
+- Curriculum QA drafts (including 51 + 72 candidates) still require independent review.
+- Benchmark review and semantic leakage adjudication must be completed.
+- No runner command may create approvals or overwrite immutable checkpoints.
 
 ### Release prerequisites
 
@@ -82,8 +77,7 @@ individual answers. The team must independently assess content and governance.
 
 ## Commands (from ChronoReg repo root on a suitable Linux CUDA machine)
 
-Install runtime dependencies in a **new virtual environment**, separately from
-baseline. Pin tested package versions after first validation and document them:
+Install runtime dependencies in a **new virtual environment**, in a clean environment. Pin tested package versions after first validation and document them:
 
 ```bash
 python -m venv .venv-qlora3b
@@ -129,6 +123,4 @@ python -m src.lora.qlora3b --repo . \
 `predictions.jsonl`, `forgetting_summary.json`, `qlora3b_provenance.json`,
 manual version/outdated analysis by the evaluation owner, reproducibility notes,
 no benchmark contamination. Document failure/weak quality rather than
-retraining on the held-out answers. Report 0.5B baseline separately; the 0.5B
-24-example demo is *not* a controlled apples-to-apples comparison with a
-3B system trained on 200+ QA.
+retraining on the held-out answers. Do not claim version accuracy or factual quality without source verification.

@@ -6,3 +6,4 @@ accelerate>=1.1.1,<2
 safetensors>=0.4.5
 PyYAML>=6.0
 pytest>=8
+bitsandbytes>=0.45,<1  # Linux CUDA QLoRA NF4

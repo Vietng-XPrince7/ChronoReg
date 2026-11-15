@@ -1,7 +1,6 @@
 """Isolated, release-gated 3B NF4 QLoRA runner for the ChronoReg experiment.
 
-Only imports CUDA/ML packages after evidence and device checks. The 0.5B
-baseline and its release guard remain untouched.
+Only imports CUDA/ML packages after evidence and device checks. Only the current QLoRA 3B pipeline is supported.
 """
 from __future__ import annotations
 
@@ -200,7 +199,7 @@ def qlora_model(cfg: dict, torch, *, previous: Path | None, inference: bool):
 
 def train_one(repo: Path, cfg: dict, prepared: Path, checkpoints: Path,
               auth: dict, year: int) -> dict:
-    from .modeling import (tokenize_qa, QADataset, pad_batch,
+    from .qa_runtime import (tokenize_qa, QADataset, pad_batch,
                            _training_adapter_snapshot, _verify_training_numerics)
     from transformers import Trainer, TrainingArguments
     import torch
@@ -305,7 +304,7 @@ def run_eval(repo: Path, cfg: dict, prepared: Path, release: Path,
                                     previous=checkpoints / f'year-{stage}', inference=True)
             model.eval()
             state.update(year=stage, model=model, tok=tok)
-        from .modeling import messages
+        from .qa_runtime import messages
         prompt = state['tok'].apply_chat_template(messages(question, as_of_year),
                                                   tokenize=False, add_generation_prompt=True)
         encoded = state['tok'](prompt, add_special_tokens=False, return_tensors='pt')
@@ -329,10 +328,43 @@ def run_eval(repo: Path, cfg: dict, prepared: Path, release: Path,
     return provenance
 
 
+
+def run_answer(repo: Path, cfg: dict, prepared: Path, release: Path,
+               checkpoints: Path, *, year: int, as_of_year: int,
+               question: str) -> dict:
+    """Source-free parametric answer; requires a verified, released 3B adapter."""
+    if year not in YEARS or as_of_year not in YEARS or year < as_of_year:
+        raise ValueError('year / as-of-year invalid; checkpoint cannot precede question year')
+    if not isinstance(question, str) or not question.strip():
+        raise ValueError('A nonempty question is required')
+    auth, plan = preflight(repo, cfg, prepared, release, checkpoints)
+    if year not in plan['completed_stages']:
+        raise RuntimeError(f'ANSWER_BLOCKED: year-{year} checkpoint not verified')
+    torch, gpu = gpu_preflight(cfg)
+    model, tok = qlora_model(cfg, torch, previous=checkpoints / f'year-{year}', inference=True)
+    model.eval()
+    from .qa_runtime import messages
+    prompt = tok.apply_chat_template(messages(question, as_of_year),
+                                     tokenize=False, add_generation_prompt=True)
+    encoded = tok(prompt, add_special_tokens=False, return_tensors='pt')
+    encoded = {k: v.to('cuda:0') for k, v in encoded.items()}
+    with torch.inference_mode():
+        generated = model.generate(**encoded, do_sample=False,
+                                   max_new_tokens=cfg['max_new_tokens'],
+                                   pad_token_id=tok.pad_token_id)
+    response = tok.decode(generated[0][encoded['input_ids'].shape[1]:],
+                          skip_special_tokens=True).strip()
+    return {'status': 'MODEL_ONLY_NOT_SOURCE_VERIFIED', 'answer': response,
+            'model': MODEL, 'checkpoint_year': year, 'as_of_year': as_of_year,
+            'checkpoint': str(checkpoints / f'year-{year}'),
+            'adapter_sha256': sha256(checkpoints / f'year-{year}' / 'adapter_model.safetensors'),
+            'sources': [], 'gpu': gpu, 'release_sha256': auth['release_sha256']}
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(description='Release-bound ChronoReg Qwen2.5-3B QLoRA')
     p.add_argument('--repo', type=Path, default=Path('.'))
-    p.add_argument('--config', default='configs/lora_3b.yaml')
+    p.add_argument('--config', default='configs/lora.yaml')
     p.add_argument('--prepared', default='src/lora/runs/qlora3b/prepared')
     p.add_argument('--checkpoints', default='src/lora/runs/qlora3b/checkpoints')
     p.add_argument('--release', default=None)
@@ -345,6 +377,10 @@ def main(argv=None):
     t.add_argument('--resume', action='store_true')
     e = sub.add_parser('evaluate')
     e.add_argument('--output', default='src/lora/runs/qlora3b/evaluation')
+    a = sub.add_parser('answer')
+    a.add_argument('--year', type=int, required=True)
+    a.add_argument('--as-of-year', type=int, required=True)
+    a.add_argument('--question', required=True)
     args = p.parse_args(argv)
     try:
         repo = args.repo.resolve()
@@ -365,6 +401,10 @@ def main(argv=None):
             _, result = preflight(repo, cfg, prepared, release, ckpt)
         elif args.command == 'train':
             result = run_train(repo, cfg, prepared, release, ckpt, resume=args.resume)
+        elif args.command == 'answer':
+            result = run_answer(repo, cfg, prepared, release, ckpt,
+                                year=args.year, as_of_year=args.as_of_year,
+                                question=args.question)
         else:
             result = run_eval(repo, cfg, prepared, release, ckpt, local(args.output))
         print(json.dumps(result, ensure_ascii=False, indent=2))
