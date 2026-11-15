@@ -12,6 +12,8 @@ tính trên câu trả lời của LLM trong src/eval/ của Việt):
   top1 đúng/cũ/mới   năm học của kết quả đầu so với target_year
              (câu superseded_rule chấp nhận cả target_year và target_year+1)
   fact recall  tỉ lệ các số tiền/số liệu trong key_facts xuất hiện trong văn bản truy xuất được
+Với --generate: chấm thêm trên CÂU TRẢ LỜI do LLM viết (recall số liệu; có nêu số chỉ có trong
+đáp án "bẫy" hay không). Vẫn là chỉ số xấp xỉ theo chuỗi, không thay cho việc đọc câu trả lời.
 """
 from __future__ import annotations
 
@@ -22,6 +24,7 @@ from collections import Counter, defaultdict
 
 from . import store
 from .config import load_config, resolve
+from .generate import generate
 from .retriever import retrieve
 from .versioning import plan_version
 
@@ -65,7 +68,7 @@ def top1_status(hits: list[dict], exp: set[int]) -> str:
     return "correct" if y in exp else ("outdated" if y < min(exp) else "too_new")
 
 
-def evaluate(items: list[dict], cfg: dict, as_of_mode: str = "none") -> list[dict]:
+def evaluate(items: list[dict], cfg: dict, as_of_mode: str = "none", with_answers: bool = False) -> list[dict]:
     indexed = {m["doc_id"] for m in store.get_collection(cfg).get(include=["metadatas"])["metadatas"]}
     rows = []
     for it in items:
@@ -73,6 +76,15 @@ def evaluate(items: list[dict], cfg: dict, as_of_mode: str = "none") -> list[dic
         plan = plan_version(it["question"], as_of, cfg.get("single_year_means", "start"))
         hits, plan = retrieve(it["question"], plan, cfg)
         docs = [h["metadata"]["doc_id"] for h in hits]
+        ans = arecall = trap = None
+        if with_answers:   # sinh câu trả lời thật bằng LLM rồi chấm trên câu trả lời
+            ans = (generate(it["question"], hits, plan, cfg) if hits
+                   else "Không tìm thấy quy định phù hợp.")
+            facts = it.get("key_facts") or []
+            arecall = fact_recall(facts, ans)
+            # số chỉ có trong đáp án "bẫy" (mức cũ/sai) mà câu trả lời lại nêu ra
+            trap_only = numeric_facts([it.get("outdated_trap_answer") or ""]) - numeric_facts(facts)
+            trap = bool(trap_only & numbers(ans)) if trap_only else None
         gold = it.get("source_doc_id")
         rows.append({
             "id": it.get("id"), "category": it.get("category", "?"), "mode": plan.mode,
@@ -82,6 +94,7 @@ def evaluate(items: list[dict], cfg: dict, as_of_mode: str = "none") -> list[dic
             "top1_doc": docs[0] if docs else None,
             "top1_year": hits[0]["metadata"]["academic_year"] if hits else None,
             "recall": fact_recall(it.get("key_facts") or [], "\n".join(h["document"] for h in hits)),
+            "answer": ans, "ans_recall": arecall, "trap_hit": trap,
             "question": it["question"],
         })
     return rows
@@ -101,7 +114,11 @@ def summarize(rows: list[dict]) -> dict:
         idx = [r for r in rs if r["gold_indexed"]]
         rec = [r["recall"] for r in rs if r["recall"] is not None]
         t = Counter(r["top1"] for r in rs)
+        arec = [r["ans_recall"] for r in rs if r.get("ans_recall") is not None]
+        trp = [r["trap_hit"] for r in rs if r.get("trap_hit") is not None]
         out[cat] = {
+            "answer_recall": (sum(arec) / len(arec)) if arec else None,
+            "trap_rate": (sum(trp) / len(trp)) if trp else None, "trap_checkable": len(trp),
             "n": len(rs), "gold_not_indexed": len(rs) - len(idx),
             "hit@k": sum(r["hit_any"] for r in rs) / len(rs),
             "hit@k_indexed_only": (sum(r["hit_any"] for r in idx) / len(idx)) if idx else None,
@@ -125,6 +142,13 @@ def print_report(rows: list[dict], show: int = 8) -> None:
               f"{_pct(t.get('correct', 0), n):>11}{_pct(t.get('outdated', 0), n):>7}"
               f"{_pct(t.get('too_new', 0), n):>7}{_pct(t.get('unknown_year', 0) + t.get('no_result', 0), n):>7}{rec:>8}")
     print("\n(hit@k* chỉ tính câu mà văn bản gốc có trong chỉ mục; recall = số liệu key_facts tìm thấy)")
+    if any(r.get("answer") is not None for r in rows):
+        print(f"\nCÂU TRẢ LỜI DO LLM SINH RA:\n{'nhóm':<18}{'recall số liệu':>16}{'nêu số của đáp án bẫy':>24}")
+        for cat, s in sorted(summ.items(), key=lambda kv: (kv[0] == "TỔNG", kv[0])):
+            ar = f"{100 * s['answer_recall']:5.1f}%" if s["answer_recall"] is not None else "   -  "
+            tr = (f"{100 * s['trap_rate']:5.1f}% ({s['trap_checkable']} câu)"
+                  if s["trap_rate"] is not None else "   -  ")
+            print(f"{cat:<18}{ar:>16}{tr:>24}")
     bad = [r for r in rows if r["gold_indexed"] and not r["hit_any"]]
     print(f"\nCâu có văn bản gốc trong chỉ mục nhưng không truy xuất được: {len(bad)}")
     for r in bad[:show]:
@@ -149,11 +173,15 @@ if __name__ == "__main__":
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--out", default=None, help="lưu chi tiết từng câu (JSON)")
     ap.add_argument("--show", type=int, default=8)
+    ap.add_argument("--generate", action="store_true",
+                    help="sinh câu trả lời bằng LLM (llm.provider khác none) và chấm trên câu trả lời; chậm")
     a = ap.parse_args()
     cfg = load_config()
     items = load_items(resolve(a.bench))[: a.limit]
     print(f"{len(items)} câu | chunks_file={cfg['chunks_file']} | as_of={a.as_of} | top_k={cfg.get('top_k', 5)}\n")
-    rows = evaluate(items, cfg, a.as_of)
+    if a.generate and cfg.get("llm", {}).get("provider", "none") == "none":
+        raise SystemExit("--generate cần llm.provider là local hoặc anthropic trong configs/rag.yaml")
+    rows = evaluate(items, cfg, a.as_of, with_answers=a.generate)
     print_report(rows, a.show)
     if a.out:
         with open(a.out, "w", encoding="utf-8") as f:
