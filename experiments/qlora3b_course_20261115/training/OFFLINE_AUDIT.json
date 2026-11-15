@@ -1,0 +1,26 @@
+{
+  "status": "COURSE_DATA_NOTEBOOK_READY_GPU_NOT_RUN",
+  "notebook": "ChronoReg_3B_Course_Kaggle_Offline.ipynb",
+  "data_rows": 200,
+  "year_counts": {
+    "2022": 40,
+    "2023": 37,
+    "2024": 36,
+    "2025": 49,
+    "2026": 38
+  },
+  "data_sha256": "1e7f8dffa8425e6a441f651bb320935bd4e1e32a69933ac5073e85a55d71851e",
+  "unit_tests": 11,
+  "unit_tests_passed": 11,
+  "embedded_notebook_extraction": "PASS",
+  "source_audit": "excerpt-level checks only, source bytes not re-fetched for all 24 files",
+  "benchmark_exact_question_overlap_vs_canonical_90": "0/200 (checked with GitHub connector normalized questions)",
+  "training_started": false,
+  "checkpoint_count": 0,
+  "canonical_evaluation_completed": false,
+  "required_kaggle_conditions": [
+    "T4 12+ GiB CUDA",
+    "local HF-format Qwen2.5-3B-Instruct model via Add Input",
+    "installed compatible torch/transformers/peft/bitsandbytes/accelerate"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "benchmark_sha256": "47497e6bea518c95fa9c3b674fc63ccf022cc625e73da056c3e87bc63a70596f",
+  "data_sha256": "1e7f8dffa8425e6a441f651bb320935bd4e1e32a69933ac5073e85a55d71851e",
+  "evaluation_warning": "Token F1 is not true factual or temporal version accuracy; manual analysis required",
+  "model_config_sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+  "stage_sha256": {
+    "2022": "8e0d89454d303f2f1dc2fa9d09af58b126008f4249ac50850fdbcef652f767b7",
+    "2023": "5992e13dcaa5a1ccb122ebef1b380aec3dba7e5be30394dfb69eef609e14f7b8",
+    "2024": "f946bcb87f79dbc6ebe65583372160f67ea73556b3e59752f25857db360ba7fc",
+    "2025": "443a00dd671d4a3326da8f976adf059ae9ad98a2cc11f28fd9ddbd5f831a7209",
+    "2026": "95c82416cd768f75145f220a670d563dc4f77c3c01ea39abf2ed4b54cf38dba3"
+  }
+}

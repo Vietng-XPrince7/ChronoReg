@@ -1,0 +1,32 @@
+{
+  "benchmark_sha256": "47497e6bea518c95fa9c3b674fc63ccf022cc625e73da056c3e87bc63a70596f",
+  "n_predictions": 450,
+  "scores_by_checkpoint": {
+    "2022": {
+      "n": 90,
+      "past_cases": 10,
+      "token_f1_mean_proxy": 0.4616
+    },
+    "2023": {
+      "n": 90,
+      "past_cases": 23,
+      "token_f1_mean_proxy": 0.443
+    },
+    "2024": {
+      "n": 90,
+      "past_cases": 40,
+      "token_f1_mean_proxy": 0.4042
+    },
+    "2025": {
+      "n": 90,
+      "past_cases": 59,
+      "token_f1_mean_proxy": 0.3613
+    },
+    "2026": {
+      "n": 90,
+      "past_cases": 90,
+      "token_f1_mean_proxy": 0.3723
+    }
+  },
+  "status": "EXPLORATORY_LEXICAL_PROXY_NOT_SEMANTIC_VERSION_ACCURACY"
+}

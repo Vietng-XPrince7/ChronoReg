@@ -1,0 +1,10 @@
+{
+  "adapter_sha256": "95c82416cd768f75145f220a670d563dc4f77c3c01ea39abf2ed4b54cf38dba3",
+  "label": "COURSE_EXPERIMENT_NOT_OFFICIAL_RELEASE",
+  "loss": 1.579797585805257,
+  "model_config_sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+  "previous_adapter_sha256": "443a00dd671d4a3326da8f976adf059ae9ad98a2cc11f28fd9ddbd5f831a7209",
+  "rows": 38,
+  "training_data_sha256": "1e7f8dffa8425e6a441f651bb320935bd4e1e32a69933ac5073e85a55d71851e",
+  "year": 2026
+}
