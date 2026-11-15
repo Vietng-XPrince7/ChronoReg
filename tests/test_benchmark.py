@@ -116,36 +116,66 @@ def test_split_files_exist_and_consistent():
 
 
 def test_anti_data_leakage_between_train_and_benchmark():
-    """Đảm bảo KHÔNG có câu hỏi nào trong tập Training QA của LoRA trùng lặp quá 75% với 90 câu Benchmark."""
+    """Check the genuinely released QLoRA 3B QA; never restore old fake rows.
+
+    Without a released dataset, this data-dependent check cannot run.
+    The training release gate remains closed; no unreviewed QA is accepted.
+    """
+    import hashlib
     import re
-    train_qa_path = Path("src/lora/runs/approved_qa.jsonl")
-    assert train_qa_path.exists(), "Chưa tìm thấy src/lora/runs/approved_qa.jsonl"
-    
-    train_rows = [json.loads(l) for l in train_qa_path.read_text(encoding="utf-8").splitlines() if l.strip()]
-    bench_rows = [json.loads(l) for l in BENCHMARK_JSONL.read_text(encoding="utf-8").splitlines() if l.strip()]
-    
-    assert len(train_rows) >= 150, f"Số câu train QA {len(train_rows)} < 150"
-    assert len(bench_rows) >= 85
-    
-    def word_set(text: str) -> set[str]:
-        return set(re.findall(r"\w+", text.lower()))
-    
-    bench_word_sets = [(b["id"], b["question"], word_set(b["question"])) for b in bench_rows]
-    
-    for train_item in train_rows:
-        t_id = train_item["id"]
-        t_q = train_item["question"]
-        t_words = word_set(t_q)
-        
-        for b_id, b_q, b_words in bench_word_sets:
-            if not t_words or not b_words:
+    from src.lora.contracts import read_jsonl, validate_benchmark, validate_training
+
+    repo = Path.cwd()
+    old_demo = repo / "src/lora/runs/approved_qa.jsonl"
+    assert not old_demo.exists(), (
+        "Retired 0.5B pseudo-approved QA reappeared; do not use for 3B training"
+    )
+    config = (repo / "configs/lora.yaml").read_text(encoding="utf-8")
+    assert "Qwen/Qwen2.5-3B-Instruct" in config, "Canonical model must be 3B"
+
+    release_path = repo / "docs/lora_releases/qlora3b_release.json"
+    if not release_path.is_file():
+        pytest.skip(
+            "3B training dataset not owner-released yet; "
+            "leakage comparison needs a genuine approved dataset"
+        )
+
+    release = json.loads(release_path.read_text(encoding="utf-8-sig"))
+    assert release.get("schema") == "chronoreg-qlora3b-release/v1"
+    assert release.get("status") == "owner_released"
+    assert release.get("independent_training_review") is True
+    assert release.get("independent_benchmark_review") is True
+    assert release.get("semantic_leakage_reviewed") is True
+
+    relative = Path(release.get("curated_train_file", ""))
+    assert not relative.is_absolute() and str(relative).strip()
+    train_path = (repo / relative).resolve()
+    assert train_path.is_relative_to(repo.resolve()), "Training path escapes repo"
+    assert train_path.is_file(), "Released curated 3B QA file missing"
+    assert hashlib.sha256(train_path.read_bytes()).hexdigest() == release.get(
+        "curated_train_sha256"
+    ), "Released 3B QA SHA256 mismatch"
+
+    benchmark_rows = validate_benchmark(read_jsonl(BENCHMARK_JSONL))
+    assert len(benchmark_rows) == 90
+    approved = validate_training(read_jsonl(train_path), repo, benchmark_rows)
+    assert len(approved) >= 200, "QLoRA 3B requires >= 200 approved QA"
+    for year in (2022, 2023, 2024, 2025, 2026):
+        assert sum(row["as_of_year"] == year for row in approved) >= 30, (
+            f"Insufficient approved QA for {year}"
+        )
+
+    def word_set(value: str) -> set[str]:
+        return set(re.findall(r"\w+", value.lower()))
+
+    bench_words = [(r["id"], word_set(r["question"])) for r in benchmark_rows]
+    for item in approved:
+        words = word_set(item["question"])
+        for bid, gold in bench_words:
+            if not words or not gold:
                 continue
-            jaccard_sim = len(t_words & b_words) / len(t_words | b_words)
-            assert jaccard_sim < 0.75, (
-                f"Phát hiện Data Leakage giữa Train '{t_id}' và Benchmark '{b_id}'!\n"
-                f"Similarity: {jaccard_sim:.2f} >= 0.75\n"
-                f"Train Question: {t_q}\n"
-                f"Benchmark Question: {b_q}"
+            similarity = len(words & gold) / len(words | gold)
+            assert similarity < 0.75, (
+                f"Potential train/benchmark question leakage "
+                f"{item['id']} vs {bid} (Jaccard={similarity:.3f})"
             )
-
-
