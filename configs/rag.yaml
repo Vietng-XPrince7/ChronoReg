@@ -25,7 +25,14 @@ top_k: 5
 #   start: 2023 -> 2023-2024     end: 2023 -> 2022-2023
 single_year_means: start
 
+# How the answer is written from the retrieved passages (RAG needs no training):
+#   none      print the retrieved passages only (for checking retrieval)
+#   local     model on this machine via transformers, no API key.
+#             Qwen/Qwen2.5-1.5B-Instruct runs on CPU (slow, about 1 min per answer); 3B needs more RAM
+#   anthropic API (pip install anthropic; set ANTHROPIC_API_KEY); change model to the one the team picks
 llm:
-  provider: none
-  model: claude-sonnet-5-5
-  max_tokens: 800
+  provider: local
+  model: Qwen/Qwen2.5-1.5B-Instruct
+  max_new_tokens: 400
+  max_hits: 4               # passages given to the model
+  max_context_chars: 1200   # characters kept from each passage
