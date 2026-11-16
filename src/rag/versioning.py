@@ -34,13 +34,13 @@ class VersionPlan:
     years: tuple[int, ...] = ()
     is_historical: bool = False
 
-    def all_years(self) -> tuple[int, ...]:
+    def all_years(self) -> list[int]:
         if self.years:
-            return self.years
-        return (self.start_year,) if self.start_year else ()
+            return list(self.years)
+        return [self.start_year] if self.start_year else []
 
     def label(self) -> str:
-        return ", ".join(f"{y}-{y + 1}" for y in self.all_years())
+        return " và ".join(f"{y}-{y + 1}" for y in self.all_years())
 
     def where_for(self, year: int | None = None) -> dict | None:
         y = year if year is not None else self.start_year
@@ -59,11 +59,6 @@ def single_year_to_start(year: int, single_year_means: str = "start") -> int:
 def extract_years(question: str, single_year_means: str = "start") -> list[int]:
     q = question.lower()
     found: list[tuple[int, int]] = []
-
-    # Handle "trước năm học YYYY-YYYY" by shifting start year back by 1
-    for m in _PRIOR_YEAR.finditer(q):
-        y = int(m.group(1))
-        found.append((m.start(), y - 1))
 
     for m in _RANGE.finditer(q):
         a, b = int(m.group(1)), int(m.group(2))
