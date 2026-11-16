@@ -1,0 +1,10 @@
+{
+  "adapter_sha256": "14cb97de41329bd7af9eee2bd5db752dc99ce496d46c8cfe9707d2eded1654b6",
+  "base_config_sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+  "data_sha256": "c5200ca407d39984fe9c0a7767d0a9f66cc06ea8cc6f3f76b5c40d302356feb5",
+  "loss": 0.8175583353229597,
+  "previous_adapter_sha256": null,
+  "rows": 806,
+  "status": "EXPERIMENTAL_NOT_OFFICIAL_RELEASE",
+  "year": 2022
+}

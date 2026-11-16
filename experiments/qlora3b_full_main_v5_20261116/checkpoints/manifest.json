@@ -1,0 +1,150 @@
+{
+  "status": "EXPLORATORY_GROUNDED_DATA_NOT_HUMAN_CERTIFIED",
+  "coverage_blockers": [],
+  "git_ref": "origin/main",
+  "git_commit": "45890a87208d549efe7723b8795c2aaf6f393717",
+  "source_markdown_count": 147,
+  "source_parsed_count": 37,
+  "source_unparsed_count": 110,
+  "fact_count": 2272,
+  "supervised_cases_including_clarifications": 1660,
+  "clarification_cases": 5,
+  "facts_by_topic": {
+    "curriculum_course": 1417,
+    "curriculum_total": 28,
+    "scholarship": 47,
+    "tuition": 163,
+    "tuition_needs_detail": 5
+  },
+  "train_rows": 2732,
+  "validation_rows": 574,
+  "train_source_docs": 26,
+  "validation_source_docs": 11,
+  "shared_source_sha256_train_validation": 0,
+  "quarantined_staged_files": 85,
+  "source_status_counts": {
+    "index_metadata_not_training": 1,
+    "metadata_source_card_not_training": 31,
+    "no_supported_calendar_table_or_bullet": 1,
+    "no_supported_numeric_table": 7,
+    "no_unambiguous_year": 6,
+    "parsed": 37,
+    "quarantined_unverified_source_no_official_url": 53,
+    "unsupported_topic_or_non_table": 11
+  },
+  "train_by_year": {
+    "2022": 806,
+    "2023": 46,
+    "2024": 58,
+    "2025": 1344,
+    "2026": 478
+  },
+  "validation_by_year": {
+    "2022": 198,
+    "2023": 0,
+    "2024": 2,
+    "2025": 286,
+    "2026": 88
+  },
+  "source_holdout_plan": [
+    {
+      "year": 2022,
+      "status": "DOCUMENT_HOLDOUT",
+      "total_rows": 1004,
+      "heldout_rows_estimate": 198,
+      "source_docs": 13,
+      "holdout_docs": 7,
+      "min_train_rows": 803
+    },
+    {
+      "year": 2023,
+      "status": "NO_SAFE_HOLDOUT",
+      "total_rows": 46,
+      "source_docs": 1,
+      "min_train_rows": 40
+    },
+    {
+      "year": 2024,
+      "status": "DOCUMENT_HOLDOUT",
+      "total_rows": 56,
+      "heldout_rows_estimate": 2,
+      "source_docs": 3,
+      "holdout_docs": 1,
+      "min_train_rows": 44
+    },
+    {
+      "year": 2025,
+      "status": "DOCUMENT_HOLDOUT",
+      "total_rows": 1644,
+      "heldout_rows_estimate": 286,
+      "source_docs": 15,
+      "holdout_docs": 2,
+      "min_train_rows": 1315
+    },
+    {
+      "year": 2026,
+      "status": "DOCUMENT_HOLDOUT",
+      "total_rows": 560,
+      "heldout_rows_estimate": 82,
+      "source_docs": 5,
+      "holdout_docs": 1,
+      "min_train_rows": 448
+    }
+  ],
+  "validation_years_without_heldout_source": [
+    2023
+  ],
+  "train_by_topic": {
+    "tuition": 154,
+    "curriculum_course": 2440,
+    "curriculum_total": 40,
+    "scholarship": 94,
+    "tuition_needs_detail": 4
+  },
+  "exact_benchmark_question_variants_excluded": 0,
+  "sha256": {
+    "train.jsonl": "c5200ca407d39984fe9c0a7767d0a9f66cc06ea8cc6f3f76b5c40d302356feb5",
+    "validation.jsonl": "900a7ba1aaa2471d96d1ff4b4dea87215f62e16dba9f5916870964885cf73f14",
+    "source_corpus.jsonl": "1b5910f129be346cb6876bf4651af1662ec7061299d4ae96a8ada0ec69984fb9"
+  },
+  "limits": [
+    "Extracts only explicitly supported numeric tables/curriculum fields",
+    "All other markdown documents retained in corpus but not silently converted to QA",
+    "Source availability and legal effectivity are not independently verified",
+    "Validation holds out whole source hashes; related documents may still share underlying facts",
+    "No training or evaluation guarantee for unlisted or future rules"
+  ],
+  "missing_source_years": [],
+  "topics_with_facts_by_year": {
+    "2022": {
+      "tuition": 53,
+      "curriculum_total": 10,
+      "curriculum_course": 439
+    },
+    "2023": {
+      "scholarship": 23
+    },
+    "2024": {
+      "tuition": 27,
+      "curriculum_total": 1,
+      "tuition_needs_detail": 2
+    },
+    "2025": {
+      "scholarship": 24,
+      "tuition": 42,
+      "curriculum_total": 13,
+      "curriculum_course": 743
+    },
+    "2026": {
+      "tuition": 41,
+      "curriculum_total": 4,
+      "curriculum_course": 235,
+      "tuition_needs_detail": 3
+    }
+  },
+  "known_demo_coverage_gaps": [
+    "NO_2026_SCHOLARSHIP_AMOUNTS_FROM_MAIN",
+    "NO_ACADEMIC_CALENDAR_FACTS_FROM_MAIN"
+  ],
+  "notes": "COVERAGE != LEGAL CORRECTNESS. Quarantine files remain in source corpus, never in SFT. Missing facts must be sourced, never inferred."
+}
