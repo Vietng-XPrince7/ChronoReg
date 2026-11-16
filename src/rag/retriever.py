@@ -14,7 +14,7 @@ def _and(a: dict | None, b: dict | None) -> dict | None:
 
 def _query(cfg: dict, question: str, where: dict | None, k: int) -> list[dict]:
     col = store.get_collection(cfg)
-    total = col.count()
+    total = col.count() if hasattr(col, "count") else len(getattr(col, "rows", []))
     if total == 0:
         return []
     q_emb = embedder.embed(cfg, [question])[0]
@@ -24,8 +24,10 @@ def _query(cfg: dict, question: str, where: dict | None, k: int) -> list[dict]:
         where=where,
         include=["documents", "metadatas", "distances"],
     )
-    ids = (res.get("ids") or [[]])[0]
     docs = (res.get("documents") or [[]])[0]
+    ids = (res.get("ids") or [[]])[0]
+    if not ids and docs:
+        ids = [f"id_{idx}" for idx in range(len(docs))]
     metas = (res.get("metadatas") or [[]])[0]
     dists = (res.get("distances") or [[]])[0]
     return [

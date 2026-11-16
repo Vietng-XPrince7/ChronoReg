@@ -951,7 +951,7 @@ def _infer_doc_year_and_topic(d: dict[str, Any]) -> tuple[str, int, str]:
         topic = "academic_calendar"
     elif any(k in combined for k in ("nckh", "nghiên cứu khoa học", "svnckh", "de-tai", "hoi-nghi-vien")):
         topic = "research"
-    elif any(k in combined for k in ("quy_che_dao_tao", "quy-che-dao-tao", "quy chế đào tạo", "quy-dinh-dao-tao")):
+    elif any(k in combined for k in ("quy_che_dao_tao", "quy-che-dao-tao", "quy chế đào tạo", "quy-dinh-dao-tao", "curriculum", "ctdt")):
         topic = "training_rules"
     elif any(k in combined for k in ("tuyen_sinh", "tuyen-sinh", "xet-tuyen", "diem-trung-tuyen", "nhap-hoc")):
         topic = "admissions"
@@ -1466,6 +1466,20 @@ class InMemoryRetriever:
             if line.strip()
         ]
 
+        curricula_dir = md_root / "curricula"
+        if curricula_dir.is_dir():
+            for p_curr in sorted(curricula_dir.glob("*.md")):
+                if p_curr.name == "INDEX.md":
+                    continue
+                cid = p_curr.stem
+                if not any(d.get("doc_id") == cid for d in docs):
+                    docs.append({
+                        "doc_id": cid,
+                        "relative_path": f"curricula/{p_curr.name}",
+                        "title_hint": cid.replace("-", " "),
+                        "topic_hint": "training_rules",
+                    })
+
         superseded_by: dict[str, str] = {}
         supersedes: dict[str, str] = {}
         if rels_path.is_file():
@@ -1780,7 +1794,9 @@ def detect_topic(question: str) -> str:
     if any(k in ql for k in (
         "quy chế đào tạo", "cảnh báo học tập", "buộc thôi học",
         "khóa luận", "học phần", "điểm trung bình", "cpa", "gpa", "nghỉ học tạm thời",
-        "bảo lưu", "chuyển ngành", "song ngành",
+        "bảo lưu", "chuyển ngành", "song ngành", "chương trình đào tạo", "ctđt",
+        "kỹ thuật năng lượng", "cơ kỹ thuật", "kỹ thuật không gian",
+        "kỹ thuật vật liệu", "vật lý kỹ thuật", "cơ điện tử", "tự động hóa",
     )):
         return "training_rules"
     return ""
@@ -1903,6 +1919,27 @@ class RAGEvalAdapter:
             i for i, c in enumerate(chunks)
             if not doc_topic or c.get("topic") == doc_topic
         ] or list(range(total_chunks))
+
+        if doc_topic == "training_rules":
+            major_slugs = [
+                ("energy-engineering", "năng lượng"),
+                ("mechatronics", "cơ điện tử"),
+                ("space-engineering", "không gian"),
+                ("materials-engineering", "vật liệu"),
+                ("engineering-mechanics", "cơ kỹ thuật"),
+                ("engineering-physics", "vật lý"),
+                ("control-and-automation", "tự động hóa"),
+                ("control-and-automation", "điều khiển"),
+                ("civil-engineering", "xây dựng"),
+            ]
+            matched_slugs = [slug for slug, kw in major_slugs if kw in question.lower()]
+            if matched_slugs:
+                major_indices = [
+                    i for i in topic_indices
+                    if any(slug in chunks[i].get("doc_id", "") for slug in matched_slugs)
+                ]
+                if major_indices:
+                    topic_indices = major_indices
 
         if cat == "active_rule":
             active_in_topic = [i for i in topic_indices if chunks[i].get("is_active", True)]
