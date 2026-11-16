@@ -40,3 +40,22 @@ def test_evaluate_end_to_end_with_fake_index():
     assert not by["X1"]["gold_indexed"] and not by["X1"]["hit_any"]
     summ = ev.summarize(rows)
     assert summ["TỔNG"]["n"] == 3 and summ["TỔNG"]["gold_not_indexed"] == 1
+
+
+def test_generated_answers_are_scored_for_facts_and_trap_numbers():
+    from unittest.mock import patch
+    items = [
+        {"id": "G1", "category": "temporal_specific", "target_year": 2022, "source_doc_id": "hp-2022",
+         "question": "Năm học 2022-2023, định mức học phí đào tạo đại học là bao nhiêu?",
+         "key_facts": ["1.350.000 đồng/tháng"], "outdated_trap_answer": "1.640.000 đồng/tháng (mức năm 2024)"},
+        {"id": "G2", "category": "temporal_specific", "target_year": 2022, "source_doc_id": "hp-2022",
+         "question": "Năm học 2022-2023, định mức học phí đào tạo đại học là bao nhiêu nữa?",
+         "key_facts": ["1.350.000 đồng/tháng"], "outdated_trap_answer": "1.640.000 đồng/tháng (mức năm 2024)"},
+    ]
+    answers = iter(["Học phí là 1.350.000 đồng/tháng.", "Học phí là 1.640.000 đồng/tháng."])
+    with fake_index(), patch.object(ev, "generate", lambda q, h, p, c: next(answers)):
+        rows = ev.evaluate(items, CFG, "none", with_answers=True)
+    assert rows[0]["ans_recall"] == 1.0 and rows[0]["trap_hit"] is False
+    assert rows[1]["ans_recall"] == 0.0 and rows[1]["trap_hit"] is True
+    s = ev.summarize(rows)["TỔNG"]
+    assert s["answer_recall"] == 0.5 and s["trap_rate"] == 0.5 and s["trap_checkable"] == 2

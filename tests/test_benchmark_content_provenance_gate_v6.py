@@ -32,7 +32,7 @@ def test_duplicate_and_malformed_registry(tmp_path):
         for i in range(22):wr.writerow({'doc_id':'duplicate','source_sha256':str(i),'local_paths':'x'})
     with pytest.raises(ValueError,match='unique'):gate.read_references(file)
 
-
+    
 def test_expected_real_ids_are_present_in_review():
     import csv
     csv_path=Path(__file__).resolve().parents[1]/'docs/benchmark_review_v6/amount_provenance_90.csv'
