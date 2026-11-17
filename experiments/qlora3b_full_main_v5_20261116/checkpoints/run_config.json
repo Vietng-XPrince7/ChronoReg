@@ -1,0 +1,16 @@
+{
+  "base_config_sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+  "data_sha256": "c5200ca407d39984fe9c0a7767d0a9f66cc06ea8cc6f3f76b5c40d302356feb5",
+  "epochs": 1.0,
+  "git_commit": "45890a87208d549efe7723b8795c2aaf6f393717",
+  "hardware": {
+    "cuda": "13.0",
+    "gpu": "Tesla T4",
+    "peft": "0.21.2",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.20.2"
+  },
+  "rows": 2732,
+  "status": "COURSE_RESEARCH_NOT_OFFICIAL_RELEASE",
+  "validation_rows": 574
+}

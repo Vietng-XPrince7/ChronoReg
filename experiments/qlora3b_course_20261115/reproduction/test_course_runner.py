@@ -5,13 +5,14 @@ sys.path.insert(0,str(Path(__file__).resolve().parent))
 from course_train_runner import dataset_preflight, norm_question, metric_f1, load_benchmark, stage_valid,find_local_model
 
 ROOT=Path(__file__).resolve().parent
+DATA_ROOT=ROOT if (ROOT/'course_train_200.jsonl').exists() else ROOT.parent/'training'
 
 class TestCourseRunner(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.path=Path(self.tmp.name)
-        self.data=json.loads('['+','.join(ROOT.joinpath('course_train_200.jsonl').read_text(encoding='utf-8').splitlines())+']')
+        self.data=json.loads('['+','.join(DATA_ROOT.joinpath('course_train_200.jsonl').read_text(encoding='utf-8').splitlines())+']')
         self.datafile=self.path/'dataset.jsonl'
         self.manifest=self.path/'manifest.json'
         self.write_input(self.data)
@@ -20,7 +21,7 @@ class TestCourseRunner(unittest.TestCase):
         self.manifest.write_text(json.dumps({'training_rows':len(rows),
             'train_sha256':hashlib.sha256(self.datafile.read_bytes()).hexdigest()}),encoding='utf-8')
     def test_200_valid(self):
-        data,counts=dataset_preflight(ROOT/'course_train_200.jsonl',ROOT/'manifest.json')
+        data,counts=dataset_preflight(DATA_ROOT/'course_train_200.jsonl',DATA_ROOT/'manifest.json')
         self.assertEqual(len(data),200)
         self.assertEqual(counts,{2022:40,2023:37,2024:36,2025:49,2026:38})
     def test_tamper_digest_rejected(self):

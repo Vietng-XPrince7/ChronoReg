@@ -58,16 +58,19 @@ class FakeCollection:
     def upsert(self, ids, documents, embeddings, metadatas):
         self.rows += list(zip(ids, documents, embeddings, metadatas))
 
-    def query(self, query_embeddings, n_results, where=None):
+    def query(self, query_embeddings, n_results, where=None, **kwargs):
         q = query_embeddings[0]
         rows = [r for r in self.rows if not where or _match(r[3], where)]
         dist = lambda r: 1 - sum(a * b for a, b in zip(q, r[2]))
         rows = sorted(rows, key=dist)[:n_results]
-        return {"documents": [[r[1] for r in rows]], "metadatas": [[r[3] for r in rows]],
+        return {"ids": [[r[0] for r in rows]], "documents": [[r[1] for r in rows]], "metadatas": [[r[3] for r in rows]],
                 "distances": [[dist(r) for r in rows]]}
 
     def get(self, include=None):
         return {"metadatas": [r[3] for r in self.rows]}
+
+    def count(self):
+        return len(self.rows)
 
 
 _BASE_META = {
