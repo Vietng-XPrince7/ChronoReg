@@ -669,10 +669,11 @@
       // Tier 3: Source Citation Block (Strict separation between LoRA & RAG)
       let sourceInfo = '';
       if (actualEngine === 'continual_lora') {
+        const loraLabel = m.source_label || 'Nguồn: Trí nhớ Tham số LoRA 3B (31 văn bản UET 2021–2026) | Không tốn độ trễ Retrieval';
         sourceInfo = `
           <div class="flex items-center gap-1.5 text-[11px] text-indigo-700 bg-indigo-50/60 px-2.5 py-1 rounded-lg border border-indigo-100 font-medium">
             <i data-lucide="brain" class="w-3.5 h-3.5 shrink-0"></i>
-            <span>Nguồn: Trí nhớ Tham số LoRA 3B (31 văn bản UET 2021–2026) | Không tốn độ trễ Retrieval</span>
+            <span>${escapeHtml(loraLabel)}</span>
           </div>
         `;
       } else if (actualEngine === 'meta_greeting' || actualEngine === 'safety_gate_red') {
@@ -835,8 +836,9 @@
               <div class="text-[11px] text-indigo-950/80 leading-relaxed max-h-48 overflow-y-auto whitespace-pre-line">
                 ${lora.answer || '—'}
               </div>
-              <div class="pt-2 border-t border-slate-100 text-[10px] text-slate-500 italic">
-                🧠 Trí nhớ Tham số (Nội suy mượt mà, nhưng rủi ro nhầm số cũ)
+              <div class="pt-2 border-t border-slate-100 text-[10px] text-slate-500 italic space-y-0.5">
+                <div>🧠 ${escapeHtml(lora.metadata?.source_label || 'Trí nhớ Tham số (QLoRA 3B)')}</div>
+                ${lora.metadata?.token_f1_proxy ? `<div class="font-mono text-indigo-600 font-semibold not-italic">Token F1: ${lora.metadata.token_f1_proxy.toFixed(3)}</div>` : ''}
               </div>
             </div>
 

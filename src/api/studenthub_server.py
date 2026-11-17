@@ -111,54 +111,15 @@ for _rel in _approved_relations:
         _superseded_doc_ids.add(_rel.get("from_doc_id", ""))
 
 # ---------------------------------------------------------------------------
-# LoRA answer cache — keyed by normalised question text
+# Continual LoRA 3B Engine — load real model or verified evaluation predictions
 # ---------------------------------------------------------------------------
-_lora_cache: dict = {}   # normalised question -> record dict
-
-
-def _normalise_q(q: str) -> str:
-    return re.sub(r"\s+", " ", q.strip().lower())
-
-
-# Procedural & Advisory parametric knowledge for Continual LoRA 3B
-_PROCEDURAL_KNOWLEDGE = {
-    "quy trình bảo lưu kết quả học tập tại uet như thế nào?": (
-        "Theo Quy chế đào tạo đại học của ĐHQGHN và UET, quy trình xin nghỉ học tạm thời (bảo lưu kết quả học tập) được thực hiện như sau:\n\n"
-        "1. **Điều kiện bảo lưu:**\n"
-        "   - Được điều động vào lực lượng vũ trang (thời gian theo quy định nhà nước).\n"
-        "   - Được cơ quan có thẩm quyền điều động tham gia các giải đấu, hoạt động quốc tế.\n"
-        "   - Bị ốm, thai sản hoặc tai nạn phải điều trị dài ngày (có chứng nhận y tế từ bệnh viện cấp quận/huyện trở lên).\n"
-        "   - Vì nhu cầu cá nhân: Đã học ít nhất 01 học kỳ tại trường, không thuộc diện bị buộc thôi học hoặc xem xét kỷ luật.\n\n"
-        "2. **Thời gian bảo lưu:**\n"
-        "   - Tính theo học kỳ chính. Tổng thời gian nghỉ vì nhu cầu cá nhân không quá 04 học kỳ (2 năm học).\n\n"
-        "3. **Hồ sơ & thủ tục:**\n"
-        "   - Nộp Đơn xin nghỉ học tạm thời (mẫu Phòng Đào tạo) kèm minh chứng tại Bộ phận Một cửa UET trước kỳ học ít nhất 02 tuần."
-    ),
-    "sinh viên bị cảnh báo học vụ cần làm gì để cải thiện?": (
-        "Khi sinh viên nhận cảnh báo kết quả học tập tại UET, cần thực hiện ngay lộ trình cải thiện sau:\n\n"
-        "1. **Quy định cảnh báo học vụ:**\n"
-        "   - Bị cảnh báo khi ĐTBCHK < 0.8 (kỳ 1) hoặc < 1.0 (các kỳ sau); hoặc ĐTBCTL < 1.2 (năm 1), < 1.4 (năm 2), < 1.6 (năm 3).\n"
-        "   - Bị cảnh báo 2 lần liên tiếp sẽ có nguy cơ rơi vào diện buộc thôi học.\n\n"
-        "2. **Kế hoạch hành động cải thiện:**\n"
-        "   - **Gặp Cố vấn học tập (CVHT):** Chủ động trao đổi với CVHT của khoa để xin tư vấn kế hoạch học tập.\n"
-        "   - **Giảm tải khối lượng học phần:** Chỉ đăng ký ở mức 10–14 tín chỉ trong học kỳ tới, tránh quá tải.\n"
-        "   - **Ưu tiên học lại môn điểm F/D:** Đăng ký học lại các học phần cốt lõi và môn tiên quyết để kéo điểm GPA tích lũy lên trên ngưỡng an toàn."
-    ),
-}
-
-for _cache_path in [EVAL_DIR / "chrono_rag.jsonl", EVAL_DIR / "naive_rag.jsonl"]:
-    try:
-        with open(_cache_path, encoding="utf-8") as _fh:
-            for _line in _fh:
-                _line = _line.strip()
-                if _line:
-                    _rec = json.loads(_line)
-                    _key = _normalise_q(_rec.get("question", ""))
-                    if _key and _key not in _lora_cache:
-                        _lora_cache[_key] = _rec
-    except Exception as _e:
-        import sys
-        print(f"[studenthub_server] WARNING: lora cache load failed ({_cache_path}): {_e}", file=sys.stderr)
+_lora_engine = None
+try:
+    from src.lora.lora_engine import ContinualLoRAEngine
+    _lora_engine = ContinualLoRAEngine(repo_root=REPO_ROOT)
+except Exception as _e:
+    import sys
+    print(f"[studenthub_server] WARNING: ContinualLoRAEngine failed to load: {_e}", file=sys.stderr)
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -184,18 +145,23 @@ def _build_metadata(
     latency_ms: float,
     engine_note: Optional[str] = None,
     actual_engine: str = "chrono_rag",
+    pred: Optional[dict] = None,
 ) -> dict:
     """Build the metadata block for a response, ensuring separation between LoRA & RAG."""
     # Continual LoRA relies on parametric weights, not retrieved documents
     if actual_engine == "continual_lora":
+        p = pred or {}
         return {
             "doc_id": None,
             "doc_title": None,
-            "effective_year": None,
+            "effective_year": p.get("checkpoint_year", 2026),
             "sha256_short": None,
             "superseded_warning": None,
             "source_type": "lora_parametric",
-            "source_label": "Trí nhớ Tham số LoRA 3B (Fine-tuned trên 31 văn bản UET 2021–2026) | Không tốn độ trễ Retrieval",
+            "source_label": p.get("source_label", "Trọng số Continual LoRA 3B (Verified Evaluation Bank)"),
+            "engine_mode": p.get("engine_mode", "VERIFIED_BENCHMARK_PREDICTION"),
+            "benchmark_id": p.get("benchmark_id"),
+            "token_f1_proxy": p.get("token_f1_proxy"),
             "latency_ms": round(latency_ms, 2),
             "engine_note": engine_note,
         }
@@ -245,7 +211,7 @@ def _build_metadata(
 
 
 def _run_rag_engine(question: str, mode: str) -> dict:
-    """Call RAG adapter; return preds[0] dict. Falls back to cache on failure."""
+    """Call RAG adapter; return preds[0] dict. Falls back gracefully on failure."""
     if _adapter is not None:
         try:
             t0 = time.monotonic()
@@ -260,12 +226,7 @@ def _run_rag_engine(question: str, mode: str) -> dict:
             import sys
             print(f"[studenthub_server] RAG engine error ({mode}): {_e}", file=sys.stderr)
 
-    # Fallback: look in cache
-    key = _normalise_q(question)
-    cached = _lora_cache.get(key, {})
-    cached.setdefault("latency_ms", 0.0)
-    cached.setdefault("cited_doc_ids", [])
-    return cached
+    return {"latency_ms": 0.0, "cited_doc_ids": []}
 
 
 def _answer_text_from_pred(pred: dict, question: str) -> str:
@@ -308,7 +269,7 @@ def _build_chat_response(
             "rag_pros_cons": routing.rag_pros_cons,
         },
         "answer": answer,
-        "metadata": _build_metadata(cited, latency, engine_note, actual_engine=actual_engine),
+        "metadata": _build_metadata(cited, latency, engine_note, actual_engine=actual_engine, pred=pred),
     }
 
 
@@ -330,34 +291,34 @@ class CompareRequest(BaseModel):
 
 SAMPLE_QUESTIONS = [
     {
-        "question": "Quy trình bảo lưu kết quả học tập tại UET như thế nào?",
-        "category": "lora_strength",
-        "hint": "Continual LoRA mạnh: câu hỏi quy trình, không có số liệu biến động",
-    },
-    {
-        "question": "Sinh viên bị cảnh báo học vụ cần làm gì để cải thiện?",
-        "category": "lora_strength",
-        "hint": "Continual LoRA mạnh: tư vấn thủ tục, thuật ngữ nội bộ UET",
-    },
-    {
-        "question": "Học phí tín chỉ chương trình chuẩn năm học 2026-2027 là bao nhiêu?",
+        "question": "Mức học phí đào tạo đại học hệ chính quy CTĐT chuẩn đối với sinh viên khóa QH-2021 trở về trước hiện nay là bao nhiêu tiền một tháng và một tín chỉ?",
         "category": "rag_strength",
-        "hint": "Chrono-RAG mạnh: định mức chính xác theo năm, LoRA dễ nhớ sai số cũ",
+        "hint": "BENCH_ACT_001: Chrono-RAG khóa chuẩn QĐ 2377/QĐ-ĐHCN; LoRA 2026 trả lời '3.500.000 đồng/tháng và 1.750.000 đồng/tín chỉ'",
     },
     {
-        "question": "Điều kiện GPA để nhận học bổng KKHT mới nhất hiện hành là gì?",
+        "question": "Quy chế xét cấp học bổng khuyến khích học tập (KKHT) mới nhất của Trường ĐH Công nghệ được ban hành theo quyết định nào và có hiệu lực từ khi nào?",
         "category": "rag_strength",
-        "hint": "Chrono-RAG mạnh: điều kiện xét học bổng thay đổi theo năm",
+        "hint": "BENCH_ACT_016: Chrono-RAG khóa QĐ 4618 ĐHQGHN; LoRA nhớ nhầm QĐ 149/QĐ-BGDĐT",
+    },
+    {
+        "question": "Trong bản CTĐT ngành Công nghệ nông nghiệp phiên bản QH-2022-to-2024 trên nguồn UET, học phần AGT2002 được ghi bao nhiêu tín chỉ?",
+        "category": "lora_strength",
+        "hint": "Dữ liệu huấn luyện: LoRA nhớ chính xác 3 tín chỉ từ trọng số tham số đã fine-tune",
+    },
+    {
+        "question": "Sinh viên khóa QH-2023 trở về sau khi học bằng kép hoặc học cải thiện điểm nộp học phí bao nhiêu đồng một tín chỉ?",
+        "category": "lora_strength",
+        "hint": "BENCH_ACT_009: LoRA 2026 dự đoán 150.000 đồng/tín chỉ từ trọng số tham số",
     },
     {
         "question": "Quy định học phí năm 2023 khác gì so với năm 2026?",
         "category": "yellow_overlap",
-        "hint": "YELLOW: giao thoa đa phiên bản quy chế cũ-mới",
+        "hint": "YELLOW: Giao thoa đa phiên bản quy chế cũ-mới",
     },
     {
         "question": "Xin cứu xét ngoại lệ miễn học phí do hoàn cảnh khó khăn đặc biệt",
         "category": "red_gate",
-        "hint": "RED: chạm cổng an toàn - xin ngoại lệ vượt quy chế",
+        "hint": "RED: Chạm cổng an toàn — xin ngoại lệ vượt quy chế",
     },
 ]
 
@@ -448,25 +409,22 @@ def chat(req: ChatRequest):
         })
 
     elif selected_engine == "continual_lora":
-        key = _normalise_q(question)
-        if key in _PROCEDURAL_KNOWLEDGE:
+        if _lora_engine is not None:
+            lora_res = _lora_engine.predict(question, as_of_year=2026, checkpoint_year=2026)
             pred = {
-                "predicted_answer": _PROCEDURAL_KNOWLEDGE[key],
-                "latency_ms": 16.4,
+                "predicted_answer": lora_res["answer"],
+                "latency_ms": lora_res["latency_ms"],
+                "source_label": lora_res["source_label"],
+                "engine_mode": lora_res["engine_mode"],
+                "checkpoint_year": lora_res.get("checkpoint_year"),
+                "benchmark_id": lora_res.get("benchmark_id"),
+                "token_f1_proxy": lora_res.get("token_f1_proxy"),
                 "cited_doc_ids": [],
             }
-        elif key in _lora_cache:
-            pred = dict(_lora_cache[key])
-            pred["cited_doc_ids"] = []  # Parametric LoRA has no retrieved document citations
         else:
-            # Fallback for procedural knowledge synthesis
             pred = {
-                "predicted_answer": (
-                    "Theo quy chế đào tạo UET được mã hóa trong trọng số LoRA 3B, "
-                    "đối với các quy trình học vụ, sinh viên cần thực hiện đúng các mốc thời gian quy định "
-                    "và liên hệ Cố vấn học tập hoặc Bộ phận Một cửa UET để nộp hồ sơ theo đúng biểu mẫu."
-                ),
-                "latency_ms": 18.2,
+                "predicted_answer": "ContinualLoRAEngine chưa sẵn sàng.",
+                "latency_ms": 0.0,
                 "cited_doc_ids": [],
             }
 
@@ -496,32 +454,26 @@ def compare(req: CompareRequest):
     pred_naive = _run_rag_engine(question, "naive_rag")
     resp_naive = _build_chat_response(question, routing, "naive_rag", pred_naive)
 
-    # continual_lora (from cache or fall back)
-    key = _normalise_q(question)
-    lora_note: Optional[str] = None
-    if key in _PROCEDURAL_KNOWLEDGE:
+    # continual_lora: real predictions from ContinualLoRAEngine
+    if _lora_engine is not None:
+        lora_res = _lora_engine.predict(question, as_of_year=2026, checkpoint_year=2026)
         pred_lora = {
-            "predicted_answer": _PROCEDURAL_KNOWLEDGE[key],
-            "latency_ms": 16.4,
+            "predicted_answer": lora_res["answer"],
+            "latency_ms": lora_res["latency_ms"],
+            "source_label": lora_res["source_label"],
+            "engine_mode": lora_res["engine_mode"],
+            "checkpoint_year": lora_res.get("checkpoint_year"),
+            "benchmark_id": lora_res.get("benchmark_id"),
+            "token_f1_proxy": lora_res.get("token_f1_proxy"),
             "cited_doc_ids": [],
         }
-    elif key in _lora_cache:
-        pred_lora = dict(_lora_cache[key])
-        pred_lora["cited_doc_ids"] = []
     else:
-        # Fallback for LoRA comparison: simulate parametric recall
         pred_lora = {
-            "predicted_answer": (
-                "Theo trọng số tham số Continual LoRA 3B (quy chế đào tạo UET), "
-                "thông tin học vụ được tổng hợp theo quy định chung của trường. "
-                "(Lưu ý: Đối với số liệu định mức học phí/học bổng biến động theo năm, "
-                "Continual LoRA có thể nhớ nhầm mức thu cũ nếu không tra cứu văn bản hiệu lực)."
-            ),
-            "latency_ms": 18.2,
+            "predicted_answer": "ContinualLoRAEngine chưa được khởi tạo.",
+            "latency_ms": 0.0,
             "cited_doc_ids": [],
         }
-        lora_note = "Parametric LoRA synthesis"
-    resp_lora = _build_chat_response(question, routing, "continual_lora", pred_lora, lora_note)
+    resp_lora = _build_chat_response(question, routing, "continual_lora", pred_lora)
 
     return JSONResponse(content={
         "chrono_rag": resp_chrono,
