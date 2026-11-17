@@ -44,11 +44,30 @@ def _scope(plan: VersionPlan) -> str:
 
 def build_user(question: str, hits: list[dict], plan: VersionPlan,
                max_hits: int = 4, max_chars: int = 1200) -> str:
-    """Phần người dùng của prompt: phạm vi năm học + ngữ cảnh (cắt ngắn cho model nhỏ) + câu hỏi."""
-    ctx = "\n\n".join(
-        f"[{i}] {_header(h['metadata'])}\n{h['document'][:max_chars]}"
-        for i, h in enumerate(hits[:max_hits], 1)
-    )
+    """Phần người dùng của prompt: phạm vi năm học + ngữ cảnh (phân nhóm theo năm khi đa phiên bản) + câu hỏi."""
+    selected = hits[:max_hits]
+    distinct_years = list(dict.fromkeys(h["metadata"].get("academic_year") or "" for h in selected))
+    if len(distinct_years) > 1 or len(plan.all_years()) > 1:
+        year_order = [f"{y}-{y + 1}" for y in plan.all_years()]
+        rank = {ay: i for i, ay in enumerate(year_order)}
+        ordered = sorted(
+            enumerate(selected),
+            key=lambda pair: (rank.get(pair[1]["metadata"].get("academic_year") or "", len(rank)), pair[0]),
+        )
+        blocks: list[str] = []
+        last_ay = None
+        for idx, (_, h) in enumerate(ordered, 1):
+            ay = h["metadata"].get("academic_year") or "chưa rõ năm học"
+            if ay != last_ay:
+                blocks.append(f"--- NĂM HỌC {ay} ---")
+                last_ay = ay
+            blocks.append(f"[{idx}] {_header(h['metadata'])}\n{h['document'][:max_chars]}")
+        ctx = "\n\n".join(blocks)
+    else:
+        ctx = "\n\n".join(
+            f"[{i}] {_header(h['metadata'])}\n{h['document'][:max_chars]}"
+            for i, h in enumerate(selected, 1)
+        )
     return f"{_scope(plan)}\n\n=== NGỮ CẢNH ===\n{ctx}\n\n=== CÂU HỎI ===\n{question}\n\n=== TRẢ LỜI ==="
 
 

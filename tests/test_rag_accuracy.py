@@ -296,6 +296,54 @@ class TestOutOfDistributionGeneralization:
                 2022,
                 ["50% mức học phí năm học", "347/QĐ-KHTC"],
             ),
+            (
+                "Tiết 2 buổi sáng bắt đầu lúc mấy giờ?",
+                "uet-thoi-khoa-bieu-hoc-ki-i-2022-2023-d5f2256636",
+                2022,
+                ["08h00", "08h50", "tiết 2"],
+            ),
+            (
+                "Tiết 7 buổi chiều học từ mấy giờ đến mấy giờ?",
+                "uet-thoi-khoa-bieu-hoc-ki-i-2022-2023-d5f2256636",
+                2022,
+                ["13h00", "13h50", "tiết 7"],
+            ),
+            (
+                "Chậm nộp học phí có bị cấm thi không?",
+                "uet-quy-dinh-nop-hoc-phi-2021-f480728f8f",
+                2021,
+                ["cấm thi", "hạ một bậc điểm rèn luyện"],
+            ),
+            (
+                "Ngành Công nghệ thông tin có những môn học nào?",
+                "uet-ctdt-cong-nghe-thong-tin-tkb",
+                2022,
+                ["Công nghệ thông tin"],
+            ),
+            (
+                "Ngành Khoa học dữ liệu gồm bao nhiêu tín chỉ?",
+                "uet-curriculum-data-science-QH-2025-plus",
+                2025,
+                ["135 tín chỉ", "Khoa học dữ liệu"],
+            ),
+            (
+                "Quy định học phí đào tạo tiến sĩ mới nhất hiện nay là bao nhiêu?",
+                "uet-2026-quy-dinh-muc-thu-hoc-phi-2026-cdebf4adc3",
+                2026,
+                ["4.500.000", "1.375.000"],
+            ),
+            (
+                "Môn Cở sở dữ liệu có bao nhiêu tín chỉ ?",
+                "uet-ctdt-mang-may-tinh-va-truyen-thong-du-lieu-tkb",
+                2022,
+                ["Cơ sở dữ liệu", "INT2211", "4"],
+            ),
+            (
+                "Học phần INT2210 bao nhiêu tín chỉ?",
+                "uet-ctdt-he-thong-thong-tin-tkb",
+                2022,
+                ["INT2210", "4"],
+            ),
         ],
     )
     def test_paraphrased_queries_generalize_accurately(
@@ -309,6 +357,22 @@ class TestOutOfDistributionGeneralization:
         assert out["as_of_year"] == expected_year
         assert expected_doc_id in out["cited_doc_ids"]
         assert key_fact_score(out["predicted_answer"], expected_facts) == 1.0
+
+    @pytest.mark.parametrize(
+        "ood_query",
+        [
+            "Ngành Y khoa có những môn học nào?",
+            "Học phí ngành Y khoa là bao nhiêu?",
+            "Điểm chuẩn UET năm 2024 là bao nhiêu?",
+            "Sinh viên bị cảnh báo học vụ khi nào?",
+            "Thời tiết Hà Nội hôm nay thế nào?",
+            "Giá vàng SJC hôm nay bao nhiêu?",
+        ],
+    )
+    def test_unsupported_and_ood_queries_abstain(self, ood_query: str) -> None:
+        out = answer(ood_query, mode="chrono_rag")
+        assert out["cited_doc_ids"] == []
+        assert "Không tìm thấy thông tin phù hợp" in out["predicted_answer"]
 
 
 # ==============================================================================

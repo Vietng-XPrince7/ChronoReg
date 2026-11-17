@@ -81,3 +81,14 @@ class TestRoutingDecision:
             assert r.selected_engine == "meta_greeting"
             assert r.risk_tier == "GREEN"
             assert "Chào hỏi" in r.detected_signals[0]
+
+    def test_long_query_with_greeting_words_not_hijacked(self, router):
+        q = "Cho hỏi thủ tục giới thiệu về hệ thống tín chỉ và hỗ trợ gì được cho sinh viên năm 2025?"
+        r = router.route_decision(q)
+        assert r.selected_engine != "meta_greeting"
+
+    def test_legitimate_fee_waiver_not_blocked_by_red_gate(self, router):
+        q1 = "Thủ tục xin miễn giảm học phí cho sinh viên thuộc diện chính sách năm học 2025-2026?"
+        q2 = "Em xin miễn học phần Giáo dục thể chất vì đã có chứng chỉ thì quy trình thế nào?"
+        assert router.route_decision(q1).selected_engine == "chrono_rag"
+        assert router.route_decision(q2).selected_engine != "safety_gate_red"
