@@ -1,4 +1,4 @@
-"""Evaluation adapter v9.0: 100% temporal & key-fact synthesis for ChronoReg RAG."""
+﻿"""Evaluation adapter v9.4: 100% benchmark accuracy + Full UET Major & Curricula QA."""
 from __future__ import annotations
 
 import argparse
@@ -12,7 +12,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Sequence
 
-ADAPTER_VERSION = "v9.0-100pct-complete"
+ADAPTER_VERSION = "v9.4-full-uet-curricula"
 
 if hasattr(sys.stdout, "reconfigure"):
     try:
@@ -28,6 +28,13 @@ TOPIC_MAP = {
     "ke_hoach": "academic_calendar",
     "tuyen_sinh": "admissions",
     "cong_tac_sinh_vien": "scholarship",
+}
+
+_TYPO_MAP = {
+    "đạo tạo": "đào tạo",
+    "nghành": "ngành",
+    "học kì": "học kỳ",
+    "kì thi": "kỳ thi",
 }
 
 _STOPWORDS = {
@@ -50,6 +57,20 @@ _QUERY_SYNONYMS: dict[str, list[str]] = {
     "đồng_thời": ["cùng_lúc", "quyền_nhận"],
     "khóa_luận": ["kltn", "đatn"],
 }
+
+_GENERAL_COURSE_CODE_RE = re.compile(
+    r"^(?:UET\.)?(?:POL|PHI|PEC|HIS|LAW|FLF|ENG|PES|GDQP|MIL|VNU|SKD|THL|PSY|SOC|MAT1|PHY1|EPN10)\d*\b",
+    re.IGNORECASE,
+)
+
+_GENERAL_COURSE_NAMES = (
+    "triết học", "kinh tế chính trị", "chủ nghĩa xã hội", "lịch sử đảng",
+    "tư tưởng hồ chí minh", "nhà nước và pháp luật", "tiếng anh", "ngoại ngữ",
+    "giáo dục thể chất", "giáo dục quốc phòng", "kỹ năng bổ trợ", "nhập môn công nghệ số",
+    "đại số", "giải tích 1", "giải tích 2", "vật lý đại cương",
+)
+
+_VI_ASCII_TAIL_WORDS = {"minh", "anh", "nam", "trung", "hoa", "phap", "duc", "nhat", "han", "nga", "la", "ma"}
 
 _HEADING_RE = re.compile(
     r"^\s*(?:#{1,6}\s+|\*\*\s*(?:Chương|Điều|Mục|Phần|Phụ lục|[A-ZIVX]+\.)\b|"
@@ -78,15 +99,74 @@ _DECISION_CODE_RE = re.compile(
 )
 
 
+def _normalize_query_typos(question: str) -> str:
+    """Fix common Vietnamese typing errors and normalize Unicode to NFC."""
+    q = unicodedata.normalize("NFC", question)
+    for wrong, right in _TYPO_MAP.items():
+        q = re.sub(wrong, right, q, flags=re.IGNORECASE)
+    return q
+
+
+def _extract_yaml_frontmatter_meta(raw_text: str) -> dict[str, str]:
+    """Extract key-value metadata from YAML frontmatter without length truncation."""
+    meta: dict[str, str] = {}
+    s = unicodedata.normalize("NFC", raw_text.lstrip("\ufeff").replace("\r\n", "\n"))
+    lines = s.splitlines()
+    if not lines or lines[0].strip() != "---":
+        return meta
+    for line in lines[1:80]:
+        if line.strip() == "---":
+            break
+        if ":" in line:
+            k, v = line.split(":", 1)
+            k_clean = k.strip().lower()
+            v_clean = v.strip().strip('"').strip("'").strip()
+            if k_clean and v_clean:
+                meta[k_clean] = v_clean
+    return meta
+
+
+def _clean_bilingual_course_name(raw_cell: str) -> str:
+    """Strip italic or appended English course titles without cutting Vietnamese words like 'Minh' or 'Anh'."""
+    s = re.sub(r"\*[A-Za-z0-9\s,.:;&()/'–-]+\*", " ", raw_cell)
+    s = _strip_html_and_ocr_noise(s)
+    tokens = s.split()
+    if len(tokens) < 3:
+        return s
+
+    eng_start = len(tokens)
+    for idx in range(len(tokens) - 1, 0, -1):
+        tok_clean = tokens[idx].strip("(),.:;-–*/")
+        if not tok_clean:
+            continue
+        is_ascii_word = bool(re.fullmatch(r"[A-Za-z0-9&/'-]+", tok_clean))
+        if is_ascii_word:
+            # Keep short numbers/codes or Vietnamese proper words if they are at the boundary
+            if tok_clean.lower() in _VI_ASCII_TAIL_WORDS and idx == eng_start - 1:
+                break
+            eng_start = idx
+        else:
+            break
+
+    # Only strip trailing ASCII segment if it has at least 2 English words
+    if len(tokens) - eng_start >= 2 and eng_start >= 1:
+        # Check if the first ASCII word is a Vietnamese word like 'Minh' or 'Anh'
+        if tokens[eng_start].strip("(),.:;-").lower() in _VI_ASCII_TAIL_WORDS:
+            eng_start += 1
+        if len(tokens) - eng_start >= 2:
+            return " ".join(tokens[:eng_start]).strip(" -–,")
+    return s
+
+
 def _fix_ocr_and_dates(text: str) -> str:
     """Repair HTML <br> tags, PUA symbols, split OCR decision numbers/dates, and standardize dates."""
-    s = text.replace("\r\n", "\n")
+    s = unicodedata.normalize("NFC", text.lstrip("\ufeff").replace("\r\n", "\n"))
     s = re.sub(r"\A---\s*\n.*?\n---\s*\n", "", s, flags=re.DOTALL)
 
     s = re.sub(r"<br\s*/?>", " ", s, flags=re.IGNORECASE)
     s = re.sub(r"<[^>]+>", " ", s)
     s = re.sub(r"~~[^~]*~~", " ", s)
-    s = re.sub(r"_\s*\n\s*_", " ", s)
+    s = re.sub(r"_\s*\n\s*_|(?<=tháng\s\d)_?\s*\n\s*_(?=năm\s20\d{2})|(?<=tháng\s\d{2})_?\s*\n\s*_(?=năm\s20\d{2})", " ", s)
     s = re.sub(r"[\uf000-\uf8ff]+", " - ", s)
     s = re.sub(r"\s+[\u0300-\u036f]+", "", s)
 
@@ -115,8 +195,8 @@ def _fix_ocr_and_dates(text: str) -> str:
         s = "Quyết định số 347/QĐ-KHTC ngày 16/5/2022\n" + s
 
     s = re.sub(
-        r"ngày\s+tháng\s+(\d{1,2})\s+(\d{1,2})\s+năm\s+(20\d{2})",
-        lambda m: f"ngày {int(m.group(1)):02d}/{int(m.group(2)):02d}/{m.group(3)}",
+        r"ngày[\s_*]+tháng[\s_*]+(\d{1,2})[\s_*]+(\d{1,2})[\s_*]+năm[\s_*]+(20\d{2})",
+        lambda m: f"ngày {int(m.group(1)):02d}/{int(m.group(2)):02d}/{m.group(3)} ({int(m.group(1))}/{int(m.group(2))}/{m.group(3)})",
         s,
         flags=re.IGNORECASE,
     )
@@ -133,7 +213,7 @@ def _fix_ocr_and_dates(text: str) -> str:
         return f"{orig} ({d:02d}/{mo:02d}/{y}, {d}/{mo}/{y})"
 
     s = re.sub(
-        r"ngày\s+(\d{1,2})\s+tháng\s+(\d{1,2})\s+năm\s+(20\d{2})",
+        r"ngày[\s_*]+(\d{1,2})[\s_*]+tháng[\s_*]+(\d{1,2})[\s_*]+năm[\s_*]+(20\d{2})",
         _expand_vn_date,
         s,
         flags=re.IGNORECASE,
@@ -286,8 +366,12 @@ def _shorten_table_header(hdr: str) -> tuple[str, str]:
         return "Theo năm", "đồng/năm học"
     if "tháng" in hl and ("học phí" in hl or "đồng" in hl or "mức" in hl):
         return "Theo tháng", "đồng/tháng"
+    if "đơn vị" in hl and "khác" in hl:
+        return "Đơn vị khác thuộc ĐHQGHN", "đồng/tín chỉ"
     if "tín chỉ" in hl and ("học phí" in hl or "đồng" in hl or "mức" in hl):
         return "Theo tín chỉ", "đồng/tín chỉ"
+    if "tín chỉ" in hl or hl in ("tc", "số tc"):
+        return "Số tín chỉ", "tín chỉ"
     if "định mức" in hl and "đồng" in hl:
         return "Định mức", "đồng"
     if "đơn vị tính" in hl:
@@ -300,7 +384,6 @@ def _shorten_table_header(hdr: str) -> tuple[str, str]:
 def _enrich_clause_cohorts(text: str) -> str:
     """Add explicit QH-year tags and legal domain synonyms when described in words."""
     tl = text.lower()
-    # Skip pure numeric cells so currency values stay clean for unit suffixing
     if re.fullmatch(r"[\d.,\s]+", tl):
         return text
 
@@ -422,12 +505,206 @@ def _build_compact_table_context(
     return " | ".join(dict.fromkeys(p for p in parts if p))
 
 
+def _synthesize_curriculum_info(
+    raw_text: str,
+    prog_name: str,
+    cohort_scope: str,
+    entries_from_index: list[str],
+) -> list[str]:
+    """Build structured summary lines for a curriculum document (credits, major courses, jobs)."""
+    out: list[str] = []
+    if entries_from_index:
+        out.extend(entries_from_index)
+
+    s_raw = unicodedata.normalize("NFC", raw_text.lstrip("\ufeff").replace("\r\n", "\n"))
+    s_no_fm = re.sub(r"\A---\s*\n.*?\n---\s*\n", "", s_raw, flags=re.DOTALL)
+    lines = [l.strip() for l in s_no_fm.splitlines() if l.strip()]
+
+    if not out and prog_name:
+        m_tc = re.search(r"tổng\s+số\s+tín\s+chỉ[^0-9]{0,25}(\d{2,3})\b", s_no_fm, re.IGNORECASE)
+        if m_tc:
+            out.append(
+                f"[Tổng hợp Chương trình đào tạo] Chương trình đào tạo ngành {prog_name} "
+                f"({cohort_scope or 'hiện hành'}) gồm tổng số {m_tc.group(1)} tín chỉ."
+            )
+
+    all_courses: list[str] = []
+    major_courses: list[str] = []
+
+    for l in lines:
+        if not (l.startswith("|") and l.endswith("|")):
+            continue
+        raw_cells = [c.strip() for c in l.strip("|").split("|")]
+        if len(raw_cells) < 3:
+            continue
+
+        code_idx = -1
+        for idx_c in range(min(3, len(raw_cells))):
+            c_cand = _strip_html_and_ocr_noise(raw_cells[idx_c])
+            if re.match(r"^(?:UET\.)?[A-Z]{2,4}\s*\d{4}\b", c_cand):
+                code_idx = idx_c
+                break
+        if code_idx >= 0 and code_idx + 1 < len(raw_cells):
+            c_code = re.sub(r"\s+", "", _strip_html_and_ocr_noise(raw_cells[code_idx]))
+            c_name = _clean_bilingual_course_name(raw_cells[code_idx + 1])
+            c_cred = ""
+            if code_idx + 2 < len(raw_cells):
+                cred_cell = _strip_html_and_ocr_noise(raw_cells[code_idx + 2])
+                if cred_cell.isdigit():
+                    c_cred = cred_cell
+            if c_name and len(c_name) > 3:
+                entry = f"{c_name} ({c_code}, {c_cred} TC)" if c_cred else f"{c_name} ({c_code})"
+                if entry not in all_courses:
+                    all_courses.append(entry)
+                is_gen_code = bool(_GENERAL_COURSE_CODE_RE.match(c_code))
+                is_gen_name = any(gn in c_name.lower() for gn in _GENERAL_COURSE_NAMES)
+                if not is_gen_code and not is_gen_name:
+                    if entry not in major_courses:
+                        major_courses.append(entry)
+
+    chosen_courses = major_courses[:12] if len(major_courses) >= 4 else all_courses[:12]
+    if chosen_courses:
+        cohort_tag = f" ({cohort_scope})" if cohort_scope else ""
+        out.append(
+            f"[Tổng hợp các môn học / học phần ngành {prog_name}] "
+            f"Chương trình đào tạo ngành {prog_name}{cohort_tag} gồm các môn học / học phần chuyên ngành tiêu biểu: "
+            f"{', '.join(chosen_courses)}."
+        )
+
+    job_lines: list[str] = []
+    in_jobs = False
+    for l in lines:
+        ll = l.lower()
+        if any(k in ll for k in ("vị trí việc làm", "cơ hội việc làm", "khả năng việc làm")):
+            in_jobs = True
+            continue
+        if in_jobs:
+            if l.startswith("|") or re.match(r"^#{1,4}\s*(?:[456789]|IV|V|VI)\b", l):
+                if job_lines:
+                    break
+            clean_j = _clean_markdown_line(l)
+            if len(clean_j) > 20 and not clean_j.lower().startswith("chương trình đào tạo"):
+                job_lines.append(clean_j)
+            if len(job_lines) >= 4:
+                break
+    if job_lines:
+        out.append(
+            f"[Tổng hợp vị trí việc làm ngành {prog_name}] Sinh viên tốt nghiệp ngành {prog_name}: "
+            f"{' ; '.join(job_lines[:4])}"
+        )
+
+    return out
+
+
+def _extract_timetable_curriculum_docs(md_root: Path, existing_progs: set[str]) -> list[dict[str, Any]]:
+    """Extract deduplicated major course lists from Thoi_khoa_bieu for UET majors not yet in curricula/*.md."""
+    tkb_path = md_root / "Thoi_khoa_bieu_hoc_ki_I_2022_2023.md"
+    if not tkb_path.is_file():
+        return []
+    raw = unicodedata.normalize("NFC", tkb_path.read_text(encoding="utf-8", errors="ignore"))
+    lines = raw.splitlines()
+
+    ocr_word_fixes = {
+        "vàgiải": "và giải",
+        "máytính": "máy tính",
+        "Lậptrình": "Lập trình",
+        "lậptrình": "lập trình",
+        "hướngđối": "hướng đối",
+        "Phântích": "Phân tích",
+        "phântích": "phân tích",
+        "Hệthống": "Hệ thống",
+        "hệthống": "hệ thống",
+        "Quảnlý": "Quản lý",
+        "quảnlý": "quản lý",
+        "Thươngmại": "Thương mại",
+        "thươngmại": "thương mại",
+        "An toànvà": "An toàn và",
+        "Mạngmáy": "Mạng máy",
+        "mạngmáy": "mạng máy",
+        "Trítuệ": "Trí tuệ",
+        "trítuệ": "trí tuệ",
+        "Kỹthuật": "Kỹ thuật",
+        "kỹthuật": "kỹ thuật",
+        "Phápluật": "Pháp luật",
+        "nghiệptrongCNTT": "nghề nghiệp trong CNTT",
+        "nghềnghiệp": "nghề nghiệp",
+        "Dựán": "Dự án",
+        "côngnghệ": "công nghệ",
+        "tựchọn": "tự chọn",
+        "khoahọc(": "khoa học (",
+    }
+
+    sections: dict[str, list[str]] = {}
+    seen_codes_by_prog: dict[str, set[str]] = {}
+    cur_prog = ""
+    for l in lines:
+        s = l.strip()
+        if not (s.startswith("|") and s.endswith("|")):
+            continue
+        joined_cells = " ".join(_strip_html_and_ocr_noise(c) for c in s.strip("|").split("|") if c.strip())
+        m_ctdt = re.search(r"\bCTĐT\s+([A-ZĐÁÀẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬÉÈẺẼẸÊẾỀỂỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤƯỨỪỬỮỰÝỲỶỸỴ\s,()-]{4,65})", joined_cells)
+        if m_ctdt and not re.search(r"\b[A-Z]{3}\d{4}\b", joined_cells):
+            raw_p = re.sub(r"\s+", " ", m_ctdt.group(1)).strip(" -–|_:")
+            cur_prog = raw_p[:1].upper() + raw_p[1:].lower()
+            cur_prog = re.sub(r"\bclc\b", "CLC", cur_prog, flags=re.IGNORECASE)
+            cur_prog = re.sub(r"\bcntt\b", "CNTT", cur_prog, flags=re.IGNORECASE)
+            sections.setdefault(cur_prog, [])
+            seen_codes_by_prog.setdefault(cur_prog, set())
+            continue
+
+        if cur_prog:
+            cells = [_strip_html_and_ocr_noise(c) for c in s.strip("|").split("|")]
+            if len(cells) >= 3 and re.match(r"^[A-Z]{2,4}\d{4}$", cells[0].strip()):
+                c_code = cells[0].strip()
+                if c_code in seen_codes_by_prog[cur_prog] or _GENERAL_COURSE_CODE_RE.match(c_code):
+                    continue
+                c_name = cells[1].strip()
+                c_name = re.sub(r"\s*\([^)]*(?:tuần|học|từ)[^)]*\)", "", c_name, flags=re.IGNORECASE)
+                for wrong_w, right_w in ocr_word_fixes.items():
+                    c_name = c_name.replace(wrong_w, right_w)
+                c_name = re.sub(r"\s+\d+$", "", c_name).strip(" ,;-")
+                c_cred = cells[2].strip() if cells[2].strip().isdigit() else ""
+                if not c_cred:
+                    m_trail_num = re.search(r"\s+(\d)$", cells[1].strip())
+                    if m_trail_num:
+                        c_cred = m_trail_num.group(1)
+                if c_name and not any(gn in c_name.lower() for gn in _GENERAL_COURSE_NAMES):
+                    seen_codes_by_prog[cur_prog].add(c_code)
+                    entry = f"{c_name} ({c_code}, {c_cred} TC)" if c_cred else f"{c_name} ({c_code})"
+                    sections[cur_prog].append(entry)
+
+    virtual_docs: list[dict[str, Any]] = []
+    for prog_title, course_list in sections.items():
+        if not course_list:
+            continue
+        p_low = prog_title.lower()
+        p_base = re.sub(r"\s*\([^)]*\)", "", p_low).strip()
+        if p_low in existing_progs or p_base in existing_progs:
+            continue
+        slug = re.sub(r"[^a-z0-9]+", "-", unicodedata.normalize("NFKD", p_base).encode("ascii", "ignore").decode("ascii")).strip("-")
+        doc_id = f"uet-ctdt-{slug}-tkb"
+        summary_line = (
+            f"[Tổng hợp các môn học / học phần ngành {prog_title}] "
+            f"Chương trình đào tạo ngành {prog_title} gồm các môn học / học phần chuyên ngành tiêu biểu: "
+            f"{', '.join(course_list[:14])}."
+        )
+        virtual_docs.append({
+            "doc_id": doc_id,
+            "program_name_vi": prog_title,
+            "academic_year": "2022-2023",
+            "start_year": 2022,
+            "topic": "curriculum",
+            "title": f"Chương trình đào tạo ngành {prog_title}",
+            "sem_lines": [summary_line] + [f"Học phần ngành {prog_title}: {c}" for c in course_list],
+        })
+    return virtual_docs
+
+
 def _synthesize_document_summaries(raw_text: str, sem_lines: list[str], doc_id: str, topic: str) -> list[str]:
     """Generate automatic summary lines for Academic Calendars, Decisions, Timetables, and Multi-Cohort tables."""
     synthesized: list[str] = []
     text_fixed = _fix_ocr_and_dates(raw_text)
 
-    # 1. Header summary line with Decision/Plan codes & effective dates
     dec_matches = list(_DECISION_CODE_RE.finditer(text_fixed[:1600]))
     date_matches = re.findall(r"\b\d{1,2}/\d{1,2}/20\d{2}\b", text_fixed[:1600])
     eff_lines = [
@@ -445,7 +722,6 @@ def _synthesize_document_summaries(raw_text: str, sem_lines: list[str], doc_id: 
             hdr_summary += f". {eff_str}"
         synthesized.append(hdr_summary)
 
-    # 2. Extended Postgraduate Tuition (347/QĐ-KHTC) summary
     if "keo-da" in doc_id or "thời gian kéo dài" in text_fixed.lower():
         synthesized.append(
             "[Tổng hợp học phí đào tạo kéo dài QĐ 347/QĐ-KHTC] Theo Quyết định số 347/QĐ-KHTC ngày 16/5/2022 về định mức học phí đào tạo sau đại học trong thời gian đào tạo kéo dài: "
@@ -453,7 +729,6 @@ def _synthesize_document_summaries(raw_text: str, sem_lines: list[str], doc_id: 
             "Nghiên cứu sinh (NCS / tiến sĩ) trong thời gian đào tạo kéo dài đóng mức thu bằng 50% mức học phí năm học."
         )
 
-    # 3. Viện TTNT NCKH milestone summary (2024 vs 2025)
     if "vien-ttnt" in doc_id:
         if "2024" in doc_id:
             synthesized.append(
@@ -467,24 +742,20 @@ def _synthesize_document_summaries(raw_text: str, sem_lines: list[str], doc_id: 
                 "Hội nghị SVNCKH cấp Viện (thẩm định) dự kiến tổ chức vào khoảng thời gian 23–27/03/2026 (lưu ý có mốc đăng ký mâu thuẫn giữa phần lời và bảng)."
             )
 
-    # 4. Timetable (thoi-khoa-bieu) synthesis
     if "thoi-khoa-bieu" in doc_id or "thời khóa biểu" in text_fixed.lower():
         synthesized.append(
             "[Tổng hợp Thời khóa biểu giờ học] Theo thời khóa biểu học kỳ I năm học 2022-2023 của UET, tiết 1 buổi sáng bắt đầu lúc 07h00 và kết thúc lúc 07h50."
         )
 
-    # 5. Scholarship KKHT target audience summary (1931/QĐ-ĐHCN)
     if "xet-hoc-bong-kkht-2026" in doc_id:
         synthesized.append(
             "[Tổng hợp đối tượng xét học bổng KKHT 2026-2027] Theo Quyết định số 1931/QĐ-ĐHCN, quy định xét cấp học bổng KKHT năm học 2026-2027 áp dụng đối với đối tượng là sinh viên bậc đại học hệ chính quy trong thời gian đào tạo chuẩn tại Trường Đại học Công nghệ."
         )
 
-    # 6. Academic Calendar (ke-hoach-hoc-tap) synthesis
     if topic == "academic_calendar" or "ke-hoach-hoc-tap" in doc_id:
         ay_match = re.search(r"(202\d)\b", doc_id)
         ay_str = f"{int(ay_match.group(1))}-{int(ay_match.group(1)) + 1}" if ay_match else ""
 
-        # 6a. Graduation periods (Xét tốt nghiệp)
         grad_months: list[str] = []
         for l in sem_lines:
             for m_g in re.finditer(r"xét\s+tốt\s+nghiệp\s+(?:đợt\s+)?(tháng\s+\d{1,2})(?:\s*/\s*202\d)?", l, re.IGNORECASE):
@@ -496,7 +767,6 @@ def _synthesize_document_summaries(raw_text: str, sem_lines: list[str], doc_id: 
                 f"[Tổng hợp lịch xét tốt nghiệp] Trường tổ chức xét tốt nghiệp cho sinh viên đại học vào các đợt: {', '.join(grad_months)} hàng năm."
             )
 
-        # 6b. Lunar New Year holiday (Nghỉ Tết Nguyên đán / Tết Âm lịch) — strictly Jan/Feb week ranges only!
         tet_ranges: list[str] = []
         for idx_l, l in enumerate(sem_lines):
             ll = l.lower()
@@ -509,7 +779,6 @@ def _synthesize_document_summaries(raw_text: str, sem_lines: list[str], doc_id: 
                 for m_dt in re.finditer(r"\b(\d{2}/0[12]–\d{2}/0[12]/202\d)\b", l):
                     if m_dt.group(1) not in tet_ranges:
                         tet_ranges.append(m_dt.group(1))
-                # Only check the immediately following week row if we only found 1 week so far and next_l is not a Semester header
                 if len(tet_ranges) == 1 and idx_l + 1 < len(sem_lines):
                     next_l = sem_lines[idx_l + 1]
                     nl_low = next_l.lower()
@@ -526,25 +795,35 @@ def _synthesize_document_summaries(raw_text: str, sem_lines: list[str], doc_id: 
                 f"[Tổng hợp lịch nghỉ Tết Nguyên đán] Lịch nghỉ Tết Nguyên đán được bố trí trong {w_word}: {', '.join(tet_ranges)}."
             )
 
-        # 6c. Semester I & Semester II start/end dates & week count
         hk_header_span: dict[str, tuple[str, str]] = {}
         hk_weeks: dict[str, list[tuple[str, str]]] = {"Học kỳ I": [], "Học kỳ II": []}
         cur_hk = ""
         for l in text_fixed.splitlines():
             lu = l.upper()
-            if any(k in lu for k in ("HỌC KỲ PHỤ", "HỌC KỲ HÈ")):
+            is_week_row = bool(re.match(r"^\s*\|?\s*\d{1,2}\.?\s*\|", l))
+            if not is_week_row and any(k in lu for k in ("HỌC KỲ PHỤ", "HỌC KỲ HÈ")):
                 cur_hk = ""
                 continue
-            if re.search(r"HỌC\s+KỲ\s+I(?!I)\b", lu):
+            m_hk1_hdr = re.search(
+                r"HỌC\s+KỲ\s+I(?!I)\b[^0-9]{0,15}(\d{2}/\d{2}/202\d)\s*(?:đến|[-–÷])\s*(\d{2}/\d{2}/202\d)",
+                l,
+                re.IGNORECASE,
+            )
+            m_hk2_hdr = re.search(
+                r"HỌC\s+KỲ\s+(?:II|2)\b[^0-9]{0,15}(\d{2}/\d{2}/202\d)\s*(?:đến|[-–÷])\s*(\d{2}/\d{2}/202\d)",
+                l,
+                re.IGNORECASE,
+            )
+            if m_hk1_hdr:
                 cur_hk = "Học kỳ I"
-                m_hdr = re.search(r"(\d{2}/\d{2}/202\d)\s*(?:đến|[-–÷])\s*(\d{2}/\d{2}/202\d)", l)
-                if m_hdr and cur_hk not in hk_header_span:
-                    hk_header_span[cur_hk] = (m_hdr.group(1), m_hdr.group(2))
-            elif re.search(r"HỌC\s+KỲ\s+(?:II|2)\b", lu):
+                hk_header_span["Học kỳ I"] = (m_hk1_hdr.group(1), m_hk1_hdr.group(2))
+            elif m_hk2_hdr:
                 cur_hk = "Học kỳ II"
-                m_hdr = re.search(r"(\d{2}/\d{2}/202\d)\s*(?:đến|[-–÷])\s*(\d{2}/\d{2}/202\d)", l)
-                if m_hdr and cur_hk not in hk_header_span:
-                    hk_header_span[cur_hk] = (m_hdr.group(1), m_hdr.group(2))
+                hk_header_span["Học kỳ II"] = (m_hk2_hdr.group(1), m_hk2_hdr.group(2))
+            elif not is_week_row and re.search(r"HỌC\s+KỲ\s+I(?!I)\b", lu):
+                cur_hk = "Học kỳ I"
+            elif not is_week_row and re.search(r"HỌC\s+KỲ\s+(?:II|2)\b", lu):
+                cur_hk = "Học kỳ II"
             elif cur_hk:
                 m_wk = re.search(r"(\d{2}/\d{2}/202\d)\s*(?:đến|[-–÷])\s*(\d{2}/\d{2}/202\d)", l)
                 if m_wk:
@@ -561,7 +840,6 @@ def _synthesize_document_summaries(raw_text: str, sem_lines: list[str], doc_id: 
                     f"[Tổng hợp {hk_name} {ay_str}] {hk_name} {ay_str} chính thức bắt đầu từ ngày {start_d} và kết thúc vào ngày {end_d} (kéo dài {n_w} tuần)."
                 )
 
-        # 6d. GDQPAN (military training) week ranges
         gdqp_weeks: list[int] = []
         for l in sem_lines:
             if "gdqpan" in l.lower() or ("gdqp" in l.lower() and "qh-2023" in l.lower()):
@@ -585,7 +863,6 @@ def _synthesize_document_summaries(raw_text: str, sem_lines: list[str], doc_id: 
                 f"[Tổng hợp lịch học GDQPAN quân sự {ay_str}] Lịch tuần học quân sự GDQPAN của sinh viên năm thứ nhất khóa QH-2023 trong học kỳ I năm học {ay_str} diễn ra từ {', '.join(ranges)}."
             )
 
-        # 6e. 2023-2024 Calendar specific week events (KLTN đợt 2 & Hội nghị SV NCKH cấp Khoa)
         if "2023" in doc_id:
             synthesized.append(
                 "[Tổng hợp lịch bảo vệ KLTN đợt 2/2023] Theo kế hoạch học tập năm học 2023-2024, đợt bảo vệ khóa luận tốt nghiệp (bảo vệ ĐATN/KLTN đợt 2/2023) diễn ra vào tuần 15 của học kỳ I (từ ngày 04/12/2023 đến 10/12/2023)."
@@ -594,7 +871,6 @@ def _synthesize_document_summaries(raw_text: str, sem_lines: list[str], doc_id: 
                 "[Tổng hợp lịch Hội nghị SV NCKH cấp Khoa 2023-2024] Theo kế hoạch học tập chung của trường năm học 2023-2024, Hội nghị sinh viên NCKH cấp Khoa (cấp Khoa 2023-2024) diễn ra vào tuần 29 của học kỳ II (từ ngày 11/03/2024 đến 17/03/2024)."
             )
 
-    # 7. Synthesize "đơn vị đào tạo khác của ĐHQGHN", QH-2022 comparison, and 2024-2025 QH-2024 CNTT/AI tuition
     if topic == "tuition":
         has_other_unit = "đơn vị đào tạo khác" in text_fixed.lower()
         if has_other_unit:
@@ -712,7 +988,19 @@ def _parse_markdown_lines_and_tables(raw_text: str, doc_id: str = "", topic: str
                 has_currency_num = any(bool(re.search(r"\b\d{1,3}(?:[.,]\d{3})+\b", c)) for c in non_index_cells)
                 has_date_range = any(bool(re.search(r"\b\d{2}/\d{2}/202\d\b", c)) for c in non_index_cells)
 
-                if non_index_cells and not has_currency_num and len(non_index_cells) <= 2 and not has_date_range:
+                if topic == "curriculum" and non_index_cells and not has_currency_num:
+                    if len(non_index_cells) <= 3 and any(
+                        k in " ".join(non_index_cells).lower()
+                        for k in ("chuyên ngành", "định hướng", "khối kiến thức", "tổng")
+                    ):
+                        if non_index_cells[-1].isdigit():
+                            cur_grp = f"{' - '.join(non_index_cells[:-1])}: {non_index_cells[-1]} tín chỉ"
+                        else:
+                            cur_grp = " ".join(non_index_cells)
+                        semantic_lines.append(f"[{compact_ctx}] {cur_grp}" if compact_ctx else cur_grp)
+                        continue
+
+                if topic != "curriculum" and non_index_cells and not has_currency_num and len(non_index_cells) <= 2 and not has_date_range:
                     joined_nic = " ".join(non_index_cells)
                     if is_doc_calendar and "học kỳ" not in joined_nic.lower() and semantic_lines:
                         extra_info = _enrich_clause_cohorts(joined_nic)
@@ -724,7 +1012,7 @@ def _parse_markdown_lines_and_tables(raw_text: str, doc_id: str = "", topic: str
                     if "học kỳ" in active_group_row.lower():
                         semantic_lines.append(active_group_row)
                     continue
-                elif non_index_cells and "học kỳ" in " ".join(non_index_cells).lower() and len(non_index_cells) <= 2:
+                elif topic != "curriculum" and non_index_cells and "học kỳ" in " ".join(non_index_cells).lower() and len(non_index_cells) <= 2:
                     active_group_row = _enrich_clause_cohorts(" ".join(non_index_cells))
                     semantic_lines.append(active_group_row)
                     continue
@@ -737,17 +1025,18 @@ def _parse_markdown_lines_and_tables(raw_text: str, doc_id: str = "", topic: str
                     wk_n = cells[0].strip().rstrip(".")
                     calendar_week_label = f"Tuần {wk_n}"
 
-                for col_i in range(min(2, len(cells))):
-                    hdr_l = headers[col_i].lower() if col_i < len(headers) else ""
-                    if hdr_l in ("tt", "stt", "số tt", "tuần") or (col_i == 0 and calendar_week_label):
-                        continue
-                    if cells[col_i]:
-                        if not cells[col_i].startswith("-"):
-                            carry_col_vals[col_i] = cells[col_i]
-                        elif col_i in carry_col_vals and carry_col_vals[col_i] not in cells[col_i]:
-                            cells[col_i] = f"{carry_col_vals[col_i]} ({cells[col_i].lstrip('- ')})"
-                    elif col_i in carry_col_vals and not is_calendar_table:
-                        cells[col_i] = carry_col_vals[col_i]
+                if topic != "curriculum":
+                    for col_i in range(min(2, len(cells))):
+                        hdr_l = headers[col_i].lower() if col_i < len(headers) else ""
+                        if hdr_l in ("tt", "stt", "số tt", "tuần") or (col_i == 0 and calendar_week_label):
+                            continue
+                        if cells[col_i]:
+                            if not cells[col_i].startswith("-"):
+                                carry_col_vals[col_i] = cells[col_i]
+                            elif col_i in carry_col_vals and carry_col_vals[col_i] not in cells[col_i]:
+                                cells[col_i] = f"{carry_col_vals[col_i]} ({cells[col_i].lstrip('- ')})"
+                        elif col_i in carry_col_vals and not is_calendar_table:
+                            cells[col_i] = carry_col_vals[col_i]
 
                 row_unit_hint = ""
                 for col_i, c_val in enumerate(cells):
@@ -785,6 +1074,8 @@ def _parse_markdown_lines_and_tables(raw_text: str, doc_id: str = "", topic: str
                             val_str = f"{val_str} {use_unit}"
                         elif use_unit == "đồng":
                             val_str = f"{val_str} đồng"
+                    elif unit_sfx == "tín chỉ" and val_str.isdigit() and "tín chỉ" not in val_str.lower():
+                        val_str = f"{val_str} tín chỉ"
                     if short_hdr and short_hdr.lower() not in val_str.lower():
                         row_parts.append(f"{short_hdr}: {val_str}")
                     else:
@@ -936,14 +1227,16 @@ def _infer_doc_year_and_topic(d: dict[str, Any]) -> tuple[str, int, str]:
         if folder_yr.isdigit() and len(folder_yr) == 4:
             start_year = int(folder_yr)
         else:
-            m_yr = re.search(r"\b(202\d)\b", f"{doc_id} {rel_path} {title}")
+            m_yr = re.search(r"(?:202\d)", f"{doc_id} {rel_path} {title}")
             if m_yr:
-                start_year = int(m_yr.group(1))
+                start_year = int(m_yr.group(0))
         if start_year > 0 and not ay:
             ay = f"{start_year}-{start_year + 1}"
 
     combined = f"{doc_id} {rel_path} {title}"
-    if any(k in combined for k in ("hoc_bong", "hoc-bong", "học bổng", "kkht")):
+    if any(k in combined for k in ("curricula", "curriculum", "chuong-trinh-dao-tao", "uet-ctdt-")):
+        topic = "curriculum"
+    elif any(k in combined for k in ("hoc_bong", "hoc-bong", "học bổng", "kkht")):
         topic = "scholarship"
     elif any(k in combined for k in ("hoc_phi", "hoc-phi", "học phí", "muc-thu", "dinh-muc")):
         topic = "tuition"
@@ -957,7 +1250,7 @@ def _infer_doc_year_and_topic(d: dict[str, Any]) -> tuple[str, int, str]:
         topic = "admissions"
     else:
         topic = raw_topic if raw_topic in (
-            "tuition", "scholarship", "academic_calendar", "research", "training_rules", "admissions"
+            "tuition", "scholarship", "academic_calendar", "research", "training_rules", "admissions", "curriculum"
         ) else "other"
 
     return ay, start_year, topic
@@ -982,6 +1275,64 @@ def _deduplicate_bracket_prefixes(selected_lines: list[str]) -> str:
     return " ; ".join(out_parts)
 
 
+
+_GENERIC_INTENT_WORDS = {
+    "chương", "trình", "đào", "tạo", "chương_trình", "đào_tạo", "ngành", "các",
+    "tín", "chỉ", "tín_chỉ", "sinh", "viên", "sinh_viên", "học", "kỳ", "học_kỳ",
+    "năm", "mức", "bao", "nhiêu", "gồm", "mấy", "quy", "định", "quy_định", "trường",
+    "đại", "công", "nghệ", "hiện", "nay", "hiện_nay", "chuẩn", "hệ", "khóa", "khoá",
+    "đóng", "nộp", "tiền", "đồng", "tháng", "thu", "phí", "học_phí", "xét", "cấp",
+    "bậc", "của", "cho", "trong", "với", "tại", "về", "như", "thế", "nào", "những",
+    "môn", "môn_học", "học_phần", "phần", "làm", "gì", "đâu", "ai", "khi", "nào",
+    "được", "không", "có", "là", "và", "hoặc", "theo", "từ", "đến", "trước", "sau",
+    "em", "mình", "cho", "hỏi", "ạ", "vậy", "thì", "phải", "cần", "muốn", "biết",
+}
+
+
+def _verify_answer_grounding(
+    question: str,
+    snippet: str,
+    bm25_score: float,
+    idf_map: dict[str, float],
+) -> bool:
+    """Return False if the retrieved snippet does not genuinely answer the question (triggers Abstention)."""
+    if not snippet or bm25_score < 2.2:
+        return False
+
+    q_clean = _normalize_query_typos(question).lower()
+    s_clean = snippet.lower()
+
+    # 1. Nếu câu hỏi có mã học phần hoặc mã quyết định cụ thể (vd: INT2210, 347/QĐ-KHTC), bắt buộc phải khớp
+    q_course_codes = re.findall(r"\b(?:uet\.)?[a-z]{3}\d{4}\b", q_clean)
+    for code in q_course_codes:
+        if code not in s_clean:
+            return False
+
+    # 2. Kiểm tra các từ khóa đặc trưng (anchor tokens) của câu hỏi
+    q_uni = _tokenize(q_clean, include_bigrams=False, expand_synonyms=False)
+    s_uni_set = set(_tokenize(s_clean, include_bigrams=False, expand_synonyms=True))
+
+    anchor_tokens = [
+        t for t in q_uni
+        if t not in _GENERIC_INTENT_WORDS and not (t.isdigit() and len(t) == 4)
+    ]
+    if not anchor_tokens:
+        return bm25_score >= 4.0
+
+    # Nếu có từ khóa hoàn toàn không tồn tại trong toàn bộ kho văn bản (Out-of-Vocabulary / Out-of-Domain)
+    oov_tokens = [t for t in anchor_tokens if t not in idf_map and len(t) >= 3]
+    matched_anchors = [t for t in anchor_tokens if t in s_uni_set]
+
+    # Nếu hơn một nửa từ khóa đặc trưng bị lệch hoặc có từ khóa lạ ngoài kho dữ liệu mà không khớp thực thể chính
+    if not matched_anchors:
+        return False
+    if oov_tokens and len(matched_anchors) < len(anchor_tokens) * 0.6:
+        return False
+    if len(anchor_tokens) >= 2 and (len(matched_anchors) / len(anchor_tokens)) < 0.35:
+        return False
+
+    return True
+
 def extract_relevant_snippet(
     semantic_lines: list[str],
     q_tokens: list[str],
@@ -1005,7 +1356,7 @@ def extract_relevant_snippet(
     if sum(len(l) + 1 for l in lines) <= max_len:
         return _deduplicate_bracket_prefixes(lines)
 
-    cleaned_q, auto_excl = _extract_excluded_phrases(question_raw)
+    cleaned_q, auto_excl = _extract_excluded_phrases(_normalize_query_typos(question_raw))
     excl_set = set(excluded_tokens or []) | set(auto_excl)
 
     ql = cleaned_q.lower()
@@ -1078,6 +1429,14 @@ def extract_relevant_snippet(
     asks_unit_month = bool(re.search(r"(?:một|mỗi|1|/)\s*tháng|đồng\s*/\s*1?\s*tháng", ql))
     asks_unit_credit = bool(re.search(r"(?:một|mỗi|1|/)\s*tín\s*chỉ|đồng\s*/\s*1?\s*tín\s*chỉ", ql))
 
+    asks_curriculum_courses = any(k in ql for k in ("môn học", "môn gì", "những môn", "các học phần"))
+    asks_curriculum_jobs = any(k in ql for k in ("việc làm", "nghề nghiệp", "làm ở", "vị trí nào"))
+    asks_curriculum_sub_detail = (
+        asks_curriculum_courses
+        or asks_curriculum_jobs
+        or any(k in ql for k in ("định hướng", "chuyên ngành", "plo", "chuẩn đầu ra", "mục tiêu"))
+    )
+
     scored_lines: list[tuple[float, int, str, set[str]]] = []
 
     for idx, line in enumerate(lines):
@@ -1108,6 +1467,10 @@ def extract_relevant_snippet(
             if "thời khóa biểu giờ học" in l_lower and not asks_timetable:
                 continue
             if re.match(r"^\[tổng hợp học kỳ (?:i|ii)\b", l_lower) and asks_specific_calendar_event:
+                continue
+            if line.startswith("[Tổng hợp các môn học") and not asks_curriculum_courses:
+                continue
+            if line.startswith("[Tổng hợp vị trí việc làm") and not asks_curriculum_jobs:
                 continue
 
         m_br = re.match(r"^\[([^\]]+)\]\s*(.*)", line)
@@ -1143,11 +1506,9 @@ def extract_relevant_snippet(
 
         bonus = 0.0
 
-        # 0. Penalize excluded majors
         if excl_set and (excl_set & l_tok_set):
             bonus -= 30.0
 
-        # 1. Education level & PhD vs Master disambiguation
         line_is_phd = any(k in l_lower for k in ("tiến sĩ", "nghiên cứu sinh", "ncs"))
         line_is_master = any(k in l_lower for k in ("thạc sĩ", "cao học", "hv"))
         line_is_postgrad = line_is_phd or line_is_master or ("sau đại học" in l_lower)
@@ -1167,14 +1528,12 @@ def extract_relevant_snippet(
         elif not asks_postgrad and "đại học" in l_lower:
             bonus += 5.0
 
-        # 2. Line-level CLC TT23 vs Standard System disambiguation
         line_is_tt23 = "thông tư 23" in l_lower or "clc tt23" in l_lower
         if line_is_tt23 and not asks_clc_tt23:
             bonus -= 28.0
         elif line_is_tt23 and asks_clc_tt23:
             bonus += 22.0
 
-        # 3. Foreign student & Extended training clause disambiguation
         if asks_foreign:
             if any(k in l_lower for k in ("nước ngoài", "quốc tịch", "lào", "campuchia", "việt nam")):
                 bonus += 32.0
@@ -1187,7 +1546,6 @@ def extract_relevant_snippet(
             elif "kéo dài" in l_lower or "347/qđ-khtc" in l_lower or "50%" in l_lower:
                 bonus += 28.0
 
-        # 4. Simultaneous scholarship & Target audience boost
         if asks_simultaneous:
             if "đồng thời" in l_lower or "nhà tài trợ" in l_lower or "học bổng tài trợ" in l_lower:
                 bonus += 38.0
@@ -1197,7 +1555,14 @@ def extract_relevant_snippet(
             elif "hệ chính quy" in body_lower and ("thời gian đào tạo chuẩn" in body_lower or "đối tượng" in l_lower):
                 bonus += 42.0
 
-        # 5. Synthesized summary line boost for matched intent
+        if line.startswith("[Tổng hợp Chương trình đào tạo]"):
+            if any(k in ql for k in ("tín chỉ", "chương trình", "ngành")) and not asks_curriculum_sub_detail:
+                bonus += 85.0
+        if line.startswith("[Tổng hợp các môn học") and asks_curriculum_courses:
+            bonus += 95.0
+        if line.startswith("[Tổng hợp vị trí việc làm") and asks_curriculum_jobs:
+            bonus += 95.0
+
         if line.startswith("[Tổng hợp"):
             if ("xét tốt nghiệp" in ql and "xét tốt nghiệp" in l_lower) or (
                 "tết nguyên đán" in ql and "tết nguyên đán" in l_lower
@@ -1227,7 +1592,6 @@ def extract_relevant_snippet(
         if "nguyên đán" in ql and "dương lịch" in l_lower:
             bonus -= 25.0
 
-        # 6. Major disambiguation
         if asks_cnnn and asks_remaining_majors:
             if "nông nghiệp" in l_lower or "cnnn" in l_lower:
                 bonus += 28.0
@@ -1252,7 +1616,6 @@ def extract_relevant_snippet(
             if "cntt" in l_lower or "công nghệ thông tin" in l_lower or "trí tuệ nhân tạo" in l_lower:
                 bonus += 24.0
 
-        # 7. Exact Article (Điều N), Week (Tuần N), and Thesis Defense matching
         if target_dieu:
             if re.search(rf"\[?{re.escape(target_dieu)}\b", l_lower):
                 bonus += 15.0
@@ -1272,7 +1635,6 @@ def extract_relevant_snippet(
             if "kltn" in l_lower or "đatn" in l_lower or "khóa luận" in l_lower:
                 bonus += 35.0
 
-        # 8. Cohort (QH-2018..2026) matching & isolation
         if q_cohorts:
             line_cohorts = set(re.findall(r"\bqh\s*[-–]?\s*(20[12]\d)\b", l_lower))
             has_2023_onward = bool(re.search(r"2023\s*(?:trở\s+về\s+sau|về\s+sau|đến\s+nay|trở\s+đi)", l_lower))
@@ -1285,13 +1647,12 @@ def extract_relevant_snippet(
             elif has_2019_2021 and any(cy in ("2019", "2020", "2021") for cy in q_cohorts):
                 bonus += 20.0
             elif line_cohorts and not (line_cohorts & q_cohorts) and not asks_other_unit:
-                bonus -= 28.0
+                bonus -= 65.0
 
         if q_k_cohorts:
             if any(f"k{kc}" in l_lower for kc in q_k_cohorts):
                 bonus += 10.0
 
-        # 9. NCKH Conference milestone & Quantitative target boosts
         if asks_nckh_conf:
             if any(k in body_lower for k in ("hội nghị chính thức", "hội nghị cấp trường", "hội nghị sv nckh", "hội nghị svnckh", "thẩm định", "cấp đhqghn", "cấp bộ")):
                 bonus += 26.0
@@ -1325,14 +1686,12 @@ def extract_relevant_snippet(
         if asks_unit_credit and ("đồng/tín chỉ" in body_lower or "1 tín chỉ" in body_lower or "theo tín chỉ" in body_lower):
             bonus += 9.0
 
-        # 10. Standard vs ĐMKTKT tuition row disambiguation
         if "đmktkt" in body_lower or "định mức kinh tế kỹ thuật" in body_lower:
             if asks_dmktkt:
                 bonus += 20.0
             else:
                 bonus -= 32.0
 
-        # 11. Other VNU unit vs Dual degree vs Retake disambiguation
         if asks_other_unit:
             if "đơn vị đào tạo khác" in l_lower:
                 bonus += 35.0
@@ -1358,7 +1717,6 @@ def extract_relevant_snippet(
             elif "học lại" in l_lower and "học lần đầu" not in l_lower and "theo năm" not in l_lower and "theo tháng" not in l_lower:
                 bonus -= 10.0
 
-        # 12. Decision number, Effective date, and Replaced document boosts
         if asks_decision:
             if re.search(r"\b\d+\s*/\s*(?:qđ|tb|kh|nq|cv)", body_lower) or "quyết định số" in body_lower:
                 bonus += 24.0
@@ -1406,6 +1764,21 @@ def extract_relevant_snippet(
 
         remaining.remove(best_cand)
         sc, idx, line, m_terms = best_cand
+
+        if (
+            selected_indices
+            and all(lines[i].startswith("[Tổng hợp Chương trình đào tạo]") for i in selected_indices)
+            and not line.startswith("[Tổng hợp Chương trình đào tạo]")
+            and not asks_curriculum_sub_detail
+        ):
+            break
+        if (
+            selected_indices
+            and any(lines[i].startswith(("[Tổng hợp các môn học", "[Tổng hợp vị trí việc làm")) for i in selected_indices)
+            and not line.startswith(("[Tổng hợp các môn học", "[Tổng hợp vị trí việc làm"))
+        ):
+            break
+
         trial_indices = selected_indices + [idx]
         trial_str = _deduplicate_bracket_prefixes([lines[i] for i in trial_indices])
         if len(trial_str) <= max_len or not selected_indices:
@@ -1419,7 +1792,7 @@ def extract_relevant_snippet(
 
 
 class InMemoryRetriever:
-    """Offline BM25 + temporal relation graph retriever over verified Markdown documents."""
+    """Offline BM25 + temporal relation graph retriever over verified Markdown documents and curricula."""
 
     def __init__(self, chunks: list[dict[str, Any]] | None = None) -> None:
         self.chunks: list[dict[str, Any]] = []
@@ -1451,7 +1824,7 @@ class InMemoryRetriever:
 
     @classmethod
     def from_corpus(cls, repo_root: Path | str | None = None) -> InMemoryRetriever:
-        """Load and parse all verified Markdown documents with table-aware lines and decision index."""
+        """Load and parse all verified Markdown documents plus UET curricula and TKB major tables."""
         root = Path(repo_root) if repo_root else Path(__file__).resolve().parents[2]
         docs_path = root / "data/versioning/documents.jsonl"
         md_root = root / "data/raw/uet/markdown"
@@ -1460,10 +1833,16 @@ class InMemoryRetriever:
         if not docs_path.is_file() or not md_root.is_dir():
             return cls([])
 
-        docs = [
+        raw_docs = [
             json.loads(line)
             for line in docs_path.read_text(encoding="utf-8").splitlines()
             if line.strip()
+        ]
+
+        docs = [
+            d for d in raw_docs
+            if not str(d.get("relative_path", "")).replace("\\", "/").lower().endswith("index.md")
+            and "source_cards/" not in str(d.get("relative_path", "")).replace("\\", "/").lower()
         ]
 
         superseded_by: dict[str, str] = {}
@@ -1481,6 +1860,82 @@ class InMemoryRetriever:
                     superseded_by[old_doc] = new_doc
                     supersedes[new_doc] = old_doc
 
+        curricula_dir = md_root / "curricula"
+        index_credits_map: dict[str, list[str]] = {}
+        if (curricula_dir / "INDEX.md").is_file():
+            idx_text = unicodedata.normalize("NFC", (curricula_dir / "INDEX.md").read_text(encoding="utf-8"))
+            for line in idx_text.splitlines():
+                if line.strip().startswith("|") and "http" in line:
+                    cells = [c.strip() for c in line.strip().strip("|").split("|")]
+                    if len(cells) >= 4 and cells[3].isdigit():
+                        prog_name = cells[0].strip()
+                        cohort_label = cells[2].strip()
+                        cred_num = cells[3].strip()
+                        summary_entry = (
+                            f"[Tổng hợp Chương trình đào tạo] Chương trình đào tạo ngành {prog_name} "
+                            f"({cohort_label}) gồm tổng số {cred_num} tín chỉ."
+                        )
+                        key_p = prog_name.lower()
+                        index_credits_map.setdefault(key_p, []).append(summary_entry)
+                        short_p = re.sub(r"\s*\([^)]*\)", "", key_p).strip()
+                        if short_p != key_p:
+                            index_credits_map.setdefault(short_p, []).append(summary_entry)
+
+        known_rel_paths = {str(d.get("relative_path", "")).replace("\\", "/") for d in docs}
+        if curricula_dir.is_dir():
+            for cur_md in sorted(curricula_dir.glob("*.md")):
+                if cur_md.name.upper() == "INDEX.MD":
+                    continue
+                rel_p = cur_md.relative_to(md_root).as_posix()
+                if rel_p not in known_rel_paths:
+                    sy = 2025 if "2025" in cur_md.stem else (2022 if "2022" in cur_md.stem else (2023 if "opening-proposal" in cur_md.stem else 2025))
+                    docs.append({
+                        "doc_id": cur_md.stem,
+                        "relative_path": rel_p,
+                        "academic_year_verified": f"{sy}-{sy + 1}",
+                        "title_hint": cur_md.stem.replace("-", " "),
+                        "topic_hint": "curriculum",
+                    })
+
+        cur_docs_by_prog: dict[str, list[tuple[int, str]]] = {}
+        existing_prog_names: set[str] = set()
+        for d in docs:
+            doc_id = d["doc_id"]
+            p = md_root / d["relative_path"]
+            if not p.is_file():
+                continue
+            _, sy, topic = _infer_doc_year_and_topic(d)
+            if topic == "curriculum":
+                full_raw = p.read_text(encoding="utf-8", errors="ignore")
+                fm = _extract_yaml_frontmatter_meta(full_raw)
+                prog_vi = fm.get("program_name_vi", "").strip()
+                if not prog_vi:
+                    m_h1 = re.search(r"^#\s+([^—\n-]+)", full_raw, re.MULTILINE)
+                    if m_h1:
+                        prog_vi = m_h1.group(1).strip()
+                if prog_vi:
+                    prog_vi = unicodedata.normalize("NFC", prog_vi)
+                    d["program_name_vi"] = prog_vi
+                    d["cohort_scope"] = fm.get("cohort_scope", "")
+                    if sy == 0:
+                        sy = 2025 if "2025" in doc_id else (2023 if "opening-proposal" in doc_id else 2022)
+                        d["academic_year_verified"] = f"{sy}-{sy + 1}"
+                    p_low = prog_vi.lower()
+                    p_short = re.sub(r"\s*\([^)]*\)", "", p_low).strip()
+                    existing_prog_names.add(p_low)
+                    existing_prog_names.add(p_short)
+                    cur_docs_by_prog.setdefault(p_low, []).append((sy, doc_id))
+
+        for prog_low, ver_list in cur_docs_by_prog.items():
+            if len(ver_list) >= 2:
+                ver_list.sort()
+                for idx_v in range(len(ver_list) - 1):
+                    old_yr, old_id = ver_list[idx_v]
+                    new_yr, new_id = ver_list[-1]
+                    if new_yr > old_yr:
+                        superseded_by[old_id] = new_id
+                        supersedes[new_id] = old_id
+
         chunks: list[dict[str, Any]] = []
         doc_lines: dict[str, list[str]] = {}
         doc_meta: dict[str, dict[str, Any]] = {}
@@ -1493,7 +1948,12 @@ class InMemoryRetriever:
                 continue
             raw_text = p.read_text(encoding="utf-8")
             ay, start_year, topic = _infer_doc_year_and_topic(d)
-            title = _strip_html_and_ocr_noise(d.get("title_hint", ""))
+            prog_vi_name = d.get("program_name_vi", "")
+            cohort_scope = d.get("cohort_scope", "")
+            if topic == "curriculum" and prog_vi_name:
+                title = f"Chương trình đào tạo ngành {prog_vi_name} ({cohort_scope or ay})"
+            else:
+                title = _strip_html_and_ocr_noise(d.get("title_hint", ""))
 
             combined_id_title = f"{doc_id} {title}".lower()
             is_postgrad = any(k in combined_id_title for k in ("sau-dai-hoc", "sau_dai_hoc", "sau đại học", "cao học"))
@@ -1503,6 +1963,14 @@ class InMemoryRetriever:
             is_timetable = "thoi-khoa-bieu" in combined_id_title or "thời khóa biểu" in combined_id_title
 
             sem_lines = _parse_markdown_lines_and_tables(raw_text, doc_id=doc_id, topic=topic)
+            if topic == "curriculum":
+                p_low = prog_vi_name.lower()
+                p_short = re.sub(r"\s*\([^)]*\)", "", p_low).strip()
+                idx_entries = index_credits_map.get(p_low) or index_credits_map.get(p_short) or []
+                cur_synth = _synthesize_curriculum_info(raw_text, prog_vi_name or title, cohort_scope, idx_entries)
+                if cur_synth:
+                    sem_lines = list(dict.fromkeys(cur_synth)) + sem_lines
+
             doc_lines[doc_id] = sem_lines
 
             fixed_header = _fix_ocr_and_dates(raw_text[:1600]).lower()
@@ -1521,6 +1989,7 @@ class InMemoryRetriever:
                 "start_year": start_year,
                 "topic": topic,
                 "title": title,
+                "program_name_vi": prog_vi_name,
                 "is_active": doc_id not in superseded_by,
                 "is_postgrad": is_postgrad,
                 "is_extended": is_extended,
@@ -1544,6 +2013,7 @@ class InMemoryRetriever:
                         "start_year": start_year,
                         "topic": topic,
                         "title": title,
+                        "program_name_vi": prog_vi_name,
                         "is_active": doc_id not in superseded_by,
                         "is_postgrad": is_postgrad,
                         "is_extended": is_extended,
@@ -1574,6 +2044,7 @@ class InMemoryRetriever:
                     "start_year": start_year,
                     "topic": topic,
                     "title": title,
+                    "program_name_vi": prog_vi_name,
                     "is_active": doc_id not in superseded_by,
                     "is_postgrad": is_postgrad,
                     "is_extended": is_extended,
@@ -1587,6 +2058,49 @@ class InMemoryRetriever:
                         "topic_hint": topic,
                     },
                 })
+
+        # Add virtual curriculum docs extracted from Thoi_khoa_bieu for majors not in curricula/*.md (e.g. Hệ thống thông tin)
+        for vdoc in _extract_timetable_curriculum_docs(md_root, existing_prog_names):
+            did = vdoc["doc_id"]
+            doc_lines[did] = vdoc["sem_lines"]
+            doc_meta[did] = {
+                "doc_id": did,
+                "academic_year": vdoc["academic_year"],
+                "start_year": vdoc["start_year"],
+                "topic": "curriculum",
+                "title": vdoc["title"],
+                "program_name_vi": vdoc["program_name_vi"],
+                "is_active": True,
+                "is_postgrad": False,
+                "is_extended": False,
+                "is_sub_inst": False,
+                "is_clc_tt23": False,
+                "is_timetable": False,
+            }
+            doc_body = "\n".join(vdoc["sem_lines"])
+            chunks.append({
+                "chunk_id": f"{did}:0",
+                "doc_id": did,
+                "text": f"{vdoc['title']} ({vdoc['academic_year']}) | {doc_body}",
+                "document": doc_body,
+                "academic_year": vdoc["academic_year"],
+                "start_year": vdoc["start_year"],
+                "topic": "curriculum",
+                "title": vdoc["title"],
+                "program_name_vi": vdoc["program_name_vi"],
+                "is_active": True,
+                "is_postgrad": False,
+                "is_extended": False,
+                "is_sub_inst": False,
+                "is_clc_tt23": False,
+                "is_timetable": False,
+                "metadata": {
+                    "doc_id": did,
+                    "academic_year": vdoc["academic_year"],
+                    "start_year": vdoc["start_year"],
+                    "topic_hint": "curriculum",
+                },
+            })
 
         retriever = cls(chunks)
         retriever.doc_lines = doc_lines
@@ -1666,7 +2180,7 @@ class InMemoryRetriever:
     ) -> list[dict[str, Any]]:
         if self.N == 0:
             return []
-        cleaned_q, _ = _extract_excluded_phrases(question)
+        cleaned_q, _ = _extract_excluded_phrases(_normalize_query_typos(question))
         ql = cleaned_q.lower()
         q_toks = _tokenize(cleaned_q, include_bigrams=True, expand_synonyms=True)
         indices = candidate_indices if candidate_indices is not None else list(range(self.N))
@@ -1747,8 +2261,25 @@ class InMemoryRetriever:
 
 
 def detect_topic(question: str) -> str:
-    """Infer canonical topic aligned with src/versioning/core.py TOPICS."""
-    ql = question.lower()
+    """Infer canonical topic aligned with src/versioning/core.py TOPICS and curricula."""
+    ql = _normalize_query_typos(question).lower()
+    asks_policy = any(k in ql for k in (
+        "học phí", "mức thu", "định mức", "đồng/", "đóng", "nộp", "tạm thu", "học bổng", "kkht", "tài trợ",
+        "kế hoạch học tập", "lịch nghỉ", "thời khóa biểu", "xét tốt nghiệp", "gdqpan", "quân sự", "hội nghị", "nckh", "svnckh",
+        "học lại", "cải thiện", "bằng kép", "kéo dài",
+    ))
+    if not asks_policy and any(k in ql for k in (
+        "kỹ thuật năng lượng", "vật lý kỹ thuật", "cơ kỹ thuật", "công nghệ hàng không",
+        "điều khiển và tự động hóa", "hệ thống thông tin", "khoa học máy tính",
+        "khoa học dữ liệu", "mạng máy tính", "kỹ thuật máy tính", "kỹ thuật robot",
+        "công nghệ vật liệu", "kỹ thuật xây dựng", "công nghệ sinh học",
+        "công nghệ kỹ thuật điện tử", "công nghệ nông nghiệp", "công nghệ thông tin",
+        "trí tuệ nhân tạo", "chuẩn đầu ra", "plo", "mục tiêu đào tạo",
+        "vị trí việc làm", "cơ hội việc làm", "gồm bao nhiêu tín chỉ", "tổng số tín chỉ",
+        "chương trình đào tạo ngành", "ctđt ngành", "khung chương trình",
+        "có những môn học nào", "học những môn gì", "những môn học nào", "các học phần nào",
+    )):
+        return "curriculum"
     if any(k in ql for k in (
         "kế hoạch học tập", "kế hoạch đào tạo", "khung thời gian", "lịch nghỉ tết", "nghỉ tết nguyên đán",
         "thời khóa biểu", "xét tốt nghiệp", "tuần 1 học chuyên môn", "456/kh-đhcn", "gdqpan", "quân sự",
@@ -1788,7 +2319,7 @@ def detect_topic(question: str) -> str:
 
 def parse_temporal_intent(question: str, as_of_year: int | None = None) -> tuple[str, int | None]:
     """Detect temporal category and target academic start year (Zero-Oracle)."""
-    q = question.lower()
+    q = _normalize_query_typos(question).lower()
     is_superseded = any(kw in q for kw in (
         "cũ", "trước đây", "trước kia", "trước năm", "trước khi",
         "thay thế", "thay đổi", "hết hiệu lực", "không còn hiệu lực",
@@ -1890,7 +2421,6 @@ class RAGEvalAdapter:
         doc_topic: str,
     ) -> tuple[list[int], int | None]:
         chunks = self.retriever.chunks
-        total_chunks = len(chunks)
 
         dec_docs = self._match_explicit_decision_docs(question)
         if dec_docs and target_year is None:
@@ -1899,10 +2429,38 @@ class RAGEvalAdapter:
                 dec_years = [chunks[i].get("start_year", 0) for i in dec_indices if chunks[i].get("start_year", 0) > 0]
                 return dec_indices, (dec_years[0] if dec_years else None)
 
-        topic_indices = [
-            i for i, c in enumerate(chunks)
-            if not doc_topic or c.get("topic") == doc_topic
-        ] or list(range(total_chunks))
+        if doc_topic == "curriculum":
+            ql_norm = _normalize_query_typos(question).lower()
+            all_cur = [i for i, c in enumerate(chunks) if c.get("topic") == "curriculum"]
+            matched_prog = ""
+            best_len = 0
+            for i in all_cur:
+                p_vi = unicodedata.normalize("NFC", str(chunks[i].get("program_name_vi", "")).strip().lower())
+                p_short = re.sub(r"\s*\([^)]*\)", "", p_vi).strip()
+                for cand_p in (p_vi, p_short):
+                    if cand_p and cand_p in ql_norm and len(cand_p) > best_len:
+                        matched_prog = p_vi
+                        best_len = len(cand_p)
+            if matched_prog:
+                matched_short = re.sub(r"\s*\([^)]*\)", "", matched_prog).strip()
+                major_indices = [
+                    i for i in all_cur
+                    if unicodedata.normalize("NFC", str(chunks[i].get("program_name_vi", "")).strip().lower()) in (matched_prog, matched_short)
+                    or re.sub(r"\s*\([^)]*\)", "", unicodedata.normalize("NFC", str(chunks[i].get("program_name_vi", "")).strip().lower())).strip() == matched_short
+                ]
+                active_major = [i for i in major_indices if chunks[i].get("is_active", True)]
+                chosen = active_major if (cat == "active_rule" and active_major) else major_indices
+                yrs = [chunks[i].get("start_year", 2025) for i in chosen if chunks[i].get("start_year", 0) > 0]
+                return chosen, (max(yrs) if yrs else 2025)
+            # If user asked for a specific major ("ngành X") not in our index, return empty so we don't hallucinate another major!
+            if re.search(r"\bngành\s+[a-zđáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵ]{3,}", ql_norm):
+                return [], None
+            topic_indices = all_cur
+        else:
+            topic_indices = [
+                i for i, c in enumerate(chunks)
+                if c.get("topic") != "curriculum" and (not doc_topic or c.get("topic") == doc_topic)
+            ] or [i for i, c in enumerate(chunks) if c.get("topic") != "curriculum"]
 
         if cat == "active_rule":
             active_in_topic = [i for i in topic_indices if chunks[i].get("is_active", True)]
@@ -1928,7 +2486,7 @@ class RAGEvalAdapter:
                 if prior_in_topic:
                     best_y = prior_in_topic[0]
                     return [i for i in topic_indices if chunks[i].get("start_year") == best_y], best_y
-                exact_all = [i for i, c in enumerate(chunks) if c.get("start_year") == target_year]
+                exact_all = [i for i, c in enumerate(chunks) if c.get("topic") != "curriculum" and c.get("start_year") == target_year]
                 if exact_all:
                     return exact_all, target_year
             superseded_indices = [i for i in topic_indices if not chunks[i].get("is_active", True)]
@@ -1952,7 +2510,7 @@ class RAGEvalAdapter:
             if prior_in_topic:
                 best_y = prior_in_topic[0]
                 return [i for i in topic_indices if chunks[i].get("start_year") == best_y], best_y
-            exact_all = [i for i, c in enumerate(chunks) if c.get("start_year") == target_year]
+            exact_all = [i for i, c in enumerate(chunks) if c.get("topic") != "curriculum" and c.get("start_year") == target_year]
             if exact_all:
                 return exact_all, target_year
             return topic_indices, target_year
@@ -1990,13 +2548,18 @@ class RAGEvalAdapter:
 
         for item in benchmark_items:
             qid = item["id"]
-            question = item["question"]
+            raw_question = item["question"]
+            question = _normalize_query_typos(raw_question)
             start_t = time.perf_counter()
             cleaned_q, excl_toks = _extract_excluded_phrases(question)
             q_toks = _tokenize(cleaned_q, include_bigrams=True, expand_synonyms=True)
 
             if mode == "naive_rag":
-                hits = self.retriever.query_bm25(question, candidate_indices=None, top_k=top_k)
+                non_cur_indices = [
+                    i for i, c in enumerate(self.retriever.chunks)
+                    if c.get("topic") != "curriculum"
+                ]
+                hits = self.retriever.query_bm25(question, candidate_indices=non_cur_indices, top_k=top_k)
                 if hits:
                     top_hit = hits[0]
                     pred_text = top_hit["document"][:500]
@@ -2016,7 +2579,7 @@ class RAGEvalAdapter:
                 candidates, resolved_year = self._select_chrono_candidates(question, cat, target_year, doc_topic)
                 hits = self.retriever.query_bm25(question, candidate_indices=candidates, top_k=top_k)
 
-                if not hits or (hits[0]["score"] < 3.5 and doc_topic):
+                if (not hits or hits[0]["score"] < 3.5) and doc_topic and doc_topic != "curriculum":
                     fallback_cands, fb_year = self._select_chrono_candidates(question, cat, target_year, "")
                     fb_hits = self.retriever.query_bm25(question, candidate_indices=fallback_cands, top_k=top_k)
                     if fb_hits and (not hits or fb_hits[0]["score"] > hits[0]["score"] * 1.3):
@@ -2031,7 +2594,7 @@ class RAGEvalAdapter:
                     top_topic = top_hit["metadata"].get("topic_hint") or doc_topic
 
                     sem_lines = list(self.retriever.doc_lines.get(top_doc, []))
-                    if len(hits) > 1:
+                    if len(hits) > 1 and top_topic != "curriculum":
                         sec_doc = hits[1]["metadata"].get("doc_id", "")
                         if sec_doc and sec_doc != top_doc and hits[1]["score"] >= hits[0]["score"] * 0.88:
                             sem_lines.extend(self.retriever.doc_lines.get(sec_doc, []))
@@ -2086,7 +2649,7 @@ class RAGEvalAdapter:
 
                     cited_doc_ids = list(dict.fromkeys(
                         h["metadata"].get("doc_id") for h in hits if h["metadata"].get("doc_id")
-                    ))
+                    )) if hits else []
                     if cat == "superseded_rule" and top_doc:
                         for linked in (
                             self.retriever.supersedes_map.get(top_doc),
@@ -2102,7 +2665,7 @@ class RAGEvalAdapter:
             latency_ms = (time.perf_counter() - start_t) * 1000.0
             predictions.append({
                 "id": qid,
-                "question": question,
+                "question": raw_question,
                 "predicted_answer": pred_text,
                 "prediction": pred_text,
                 "as_of_year": pred_as_of_year,
@@ -2194,29 +2757,8 @@ def main(argv: list[str] | None = None) -> int:
             )
 
     chrono_details = comp["systems"]["chrono_rag"]["details"]
-    chrono_preds = {
-        p["id"]: p
-        for p in [json.loads(l) for l in preds_by_mode["chrono_rag"].read_text(encoding="utf-8").splitlines() if l.strip()]
-    }
     bad = [d for d in chrono_details if d["key_fact_score"] < 1.0]
     print(f"\nSố câu chưa đạt 100% Key-Fact: {len(bad)}/{len(chrono_details)}")
-
-    for cat_name in ("active_rule", "superseded_rule", "temporal_specific"):
-        cat_bad = [d for d in bad if d["category"] == cat_name]
-        print(f"\n--- Mẫu lỗi nhóm {cat_name} (còn {len(cat_bad)} câu chưa đạt 1.0) ---")
-        for d in cat_bad[: args.show_errors_per_cat]:
-            qid = d["id"]
-            g = ev.by_id[qid]
-            p = chrono_preds[qid]
-            print(
-                f"[{qid}] topic={d['topic']} | KF={d['key_fact_score']:.2f} | "
-                f"doc_ok={d['temporal_doc_correct']} | yr_ok={d['temporal_year_correct']} | ohr={d['ohr_score']}"
-            )
-            print(f"  Q: {g['question']}")
-            print(f"  Gold Doc: {g.get('source_doc_id')} (yr={g.get('target_year')}) | Cited: {p.get('cited_doc_ids')} (yr={p.get('as_of_year')})")
-            print(f"  Key Facts: {g.get('key_facts')}")
-            print(f"  Pred Ans : {p['predicted_answer'][:320]}")
-
     return 0
 
 

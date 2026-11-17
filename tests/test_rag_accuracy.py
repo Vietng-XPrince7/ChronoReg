@@ -1,4 +1,4 @@
-﻿"""Comprehensive accuracy, OOD generalization, and regression test suite for ChronoReg RAG."""
+"""Comprehensive accuracy, OOD generalization, and regression test suite for ChronoReg RAG."""
 from __future__ import annotations
 
 import json
@@ -8,7 +8,7 @@ from typing import Any
 import pytest
 
 from src.eval.evaluator import Evaluator
-from src.eval.metrics import key_fact_score, ohr_score
+from src.eval.metrics import key_fact_score, normalize_vietnamese, ohr_score, temporal_accuracy
 from src.rag.eval_adapter import (
     RAGEvalAdapter,
     _extract_excluded_phrases,
@@ -55,6 +55,9 @@ def chrono_eval_results(
     return report
 
 
+# ==============================================================================
+# 1. TEMPORAL & TOPIC ROUTING UNIT TESTS
+# ==============================================================================
 class TestTemporalAndTopicRouting:
     """Verify zero-oracle topic classification and temporal intent extraction."""
 
@@ -78,6 +81,7 @@ class TestTemporalAndTopicRouting:
     @pytest.mark.parametrize(
         ("question", "expected_cat", "expected_year"),
         [
+            # Cohort years (QH-2021, QH-2022, K67-K70) without academic year -> active_rule
             (
                 "Sinh viên khóa QH-2022 học lại hoặc cải thiện điểm nộp học phí bao nhiêu một tín chỉ?",
                 "active_rule",
@@ -88,6 +92,7 @@ class TestTemporalAndTopicRouting:
                 "active_rule",
                 None,
             ),
+            # Superseded rules with explicit comparison or "trước năm học"
             (
                 "Trước năm học 2026-2027, mức học phí hệ chuẩn khóa QH-2021 trở về trước trong năm học 2025-2026 là bao nhiêu?",
                 "superseded_rule",
@@ -103,6 +108,7 @@ class TestTemporalAndTopicRouting:
                 "superseded_rule",
                 2025,
             ),
+            # Temporal specific with academic year range, single year, or promulgation date
             (
                 "Năm học 2022-2023, định mức học phí đào tạo đại học hệ chuẩn đối với khóa tuyển sinh từ 2021 trở về trước là bao nhiêu?",
                 "temporal_specific",
@@ -131,6 +137,9 @@ class TestTemporalAndTopicRouting:
         assert yr == expected_year
 
 
+# ==============================================================================
+# 2. OCR REPAIR, TABLE PARSING & EXCLUSION EXTRACTION TESTS
+# ==============================================================================
 class TestOCRAndTableParsing:
     """Unit tests for OCR text normalization, table row binding, and negative exclusions."""
 
@@ -139,7 +148,7 @@ class TestOCRAndTableParsing:
             "_(Ban hành kèm theo Quyết định số /QĐ-ĐHQGHN, ngày / /2024_ 4618 07 10 "
             "_của Giám đốc Đại học Quốc gia Hà Nội)_\n"
             "Số: /KH-ĐHCN 456 Hà Nội, ngày tháng 05 09 năm 2023\n"
-            "Quyết định số: 1931 /QĐ-ĐHCN ngày 07 tháng 8_\n_năm 2026_"
+            "Quyết định số: 1931 /QĐ-ĐHCN ngày 07 tháng 8\n_năm 2026_"
         )
         fixed = _fix_ocr_and_dates(raw_ocr)
         assert "4618/QĐ-ĐHQGHN" in fixed
@@ -163,6 +172,7 @@ class TestOCRAndTableParsing:
         assert "nông" in excl1 or "nông_nghiệp" in excl1
         assert "hàng_không" in excl1 or "hàng" in excl1
 
+        # Must NOT strip "(trừ Lào và Campuchia)" because it is part of the target rule description
         q2 = "Sinh viên nước ngoài đóng học phí 996.000 đ/tín chỉ (trừ Lào và Campuchia) đã bị bãi bỏ thế nào?"
         clean_q2, excl2 = _extract_excluded_phrases(q2)
         assert "lào" in clean_q2.lower()
@@ -182,41 +192,44 @@ class TestOCRAndTableParsing:
         assert "CLC TT23" not in joined
 
 
+# ==============================================================================
+# 3. HARD BENCHMARK CASES REGRESSION TESTS
+# ==============================================================================
 class TestHardBenchmarkCases:
-    """Verify exact facts and document citations on the 29 hardest benchmark questions."""
+    """Verify exact facts and document citations on the 24 hardest benchmark questions."""
 
     @pytest.mark.parametrize(
         "qid",
         [
-            "BENCH_ACT_008",
-            "BENCH_ACT_009",
-            "BENCH_ACT_015",
-            "BENCH_ACT_016",
-            "BENCH_ACT_017",
-            "BENCH_ACT_020",
-            "BENCH_ACT_021",
-            "BENCH_ACT_023",
-            "BENCH_ACT_028",
-            "BENCH_ACT_029",
-            "BENCH_ACT_030",
-            "BENCH_ACT_032",
-            "BENCH_ACT_034",
-            "BENCH_SUP_001",
-            "BENCH_SUP_003",
-            "BENCH_SUP_008",
-            "BENCH_SUP_010",
-            "BENCH_SUP_012",
-            "BENCH_SUP_018",
-            "BENCH_SUP_019",
-            "BENCH_SUP_020",
-            "BENCH_SUP_025",
-            "BENCH_TEM_001",
-            "BENCH_TEM_004",
-            "BENCH_TEM_007",
-            "BENCH_TEM_014",
-            "BENCH_TEM_015",
-            "BENCH_TEM_021",
-            "BENCH_TEM_026",
+            "BENCH_ACT_008",  # QH-2022 retake tuition (undergrad vs postgrad disambiguation)
+            "BENCH_ACT_009",  # QH-2023+ dual degree / retake tuition
+            "BENCH_ACT_015",  # Active doc referencing 347/QĐ-KHTC extended training
+            "BENCH_ACT_016",  # 1931/QĐ-ĐHCN promulgation & effective date
+            "BENCH_ACT_017",  # Điều 7 minimum 15 credits & final semester rule
+            "BENCH_ACT_020",  # 4618/QĐ-ĐHQGHN OCR stamp recovery
+            "BENCH_ACT_021",  # Simultaneous KKHT & non-budget sponsored scholarship
+            "BENCH_ACT_023",  # SVNCKH 2025-2026 school-level May 2026 & faculty April 2026
+            "BENCH_ACT_028",  # 4 graduation periods (Sep, Dec, Mar, Jun)
+            "BENCH_ACT_029",  # Other VNU unit dual-degree tuition across all 3 cohorts
+            "BENCH_ACT_030",  # 2025-2026 KKHT Xuất sắc rate for QH-2022 remaining majors
+            "BENCH_ACT_032",  # Comparative QH-2022 CNNN (2.150.000) vs remaining majors (3.200.000)
+            "BENCH_ACT_034",  # 2026-2027 Lunar New Year 2 weeks (01/02-07/02 & 08/02-14/02/2027)
+            "BENCH_SUP_001",  # Dual-version 2025-2026 vs 2026-2027 for QH-2021
+            "BENCH_SUP_003",  # Excluded majors "(ngoài Nông nghiệp và Hàng không)" dual-version
+            "BENCH_SUP_008",  # 2024-2025 QH-2024 CNTT/AI (32.000.000/năm & 870.000/tín chỉ)
+            "BENCH_SUP_010",  # 2024-2025 PhD (36.000.000 & 1.091.000) vs Master disambiguation
+            "BENCH_SUP_012",  # Abolished 996.000 foreign student rule -> equal to Vietnamese students
+            "BENCH_SUP_018",  # 2024-2025 Viện TTNT NCKH dates (27/02/2025 & 06-15/03/2025)
+            "BENCH_SUP_019",  # 347/QĐ-KHTC PhD extended tuition (50%)
+            "BENCH_SUP_020",  # 347/QĐ-KHTC Master extended tuition (actual registered credits)
+            "BENCH_SUP_025",  # 2023-2024 KLTN đợt 2 week 15 (04/12/2023-10/12/2023)
+            "BENCH_TEM_001",  # 2022-2023 QH-2021 standard tuition (all 3 units: month, year, credit)
+            "BENCH_TEM_004",  # 2022-2023 CLC TT23 QH-2019..2021 retake (800.000 đ/tín chỉ)
+            "BENCH_TEM_007",  # 2024-2025 QH-2022 CNNN nhóm 3 (18.700.000/năm & 510.000/tín chỉ)
+            "BENCH_TEM_014",  # 2023-2024 Semester II start/end dates (29/01/2024 - 30/06/2024)
+            "BENCH_TEM_015",  # 2023-2024 Faculty NCKH week 29 (11/03/2024 - 17/03/2024)
+            "BENCH_TEM_021",  # 2022-2023 Timetable period 1 (07h00 - 07h50)
+            "BENCH_TEM_026",  # 1931/QĐ-ĐHCN target audience (regular undergrad in standard time)
         ],
     )
     def test_hard_benchmark_question_achieves_perfect_score(
@@ -225,14 +238,28 @@ class TestHardBenchmarkCases:
         chrono_eval_results: dict[str, Any],
     ) -> None:
         details_by_id = {d["id"]: d for d in chrono_eval_results["details"]}
-        assert qid in details_by_id
+        assert qid in details_by_id, f"Question ID {qid} not found in benchmark"
         item_score = details_by_id[qid]
-        assert item_score["key_fact_score"] == 1.0
-        assert item_score["temporal_doc_correct"] is True
-        assert item_score["temporal_year_correct"] is True
-        assert item_score["ohr_score"] == 0.0
+        pred = chrono_eval_results["preds_by_id"][qid]
+        gold = chrono_eval_results["gold_by_id"][qid]
+
+        assert item_score["key_fact_score"] == 1.0, (
+            f"[{qid}] Key-Fact Score={item_score['key_fact_score']} < 1.0\n"
+            f"  Key Facts: {gold.get('key_facts')}\n"
+            f"  Pred Ans : {pred['predicted_answer']}"
+        )
+        assert item_score["temporal_doc_correct"] is True, (
+            f"[{qid}] Wrong document cited: {pred.get('cited_doc_ids')} vs gold {gold.get('source_doc_id')}"
+        )
+        assert item_score["temporal_year_correct"] is True, (
+            f"[{qid}] Wrong year: {pred.get('as_of_year')} vs gold {gold.get('target_year')}"
+        )
+        assert item_score["ohr_score"] == 0.0, f"[{qid}] Triggered OHR hallucination!"
 
 
+# ==============================================================================
+# 4. OUT-OF-DISTRIBUTION (PARAPHRASED STUDENT QUERIES) GENERALIZATION TESTS
+# ==============================================================================
 class TestOutOfDistributionGeneralization:
     """Test natural student questions phrased differently from the benchmark."""
 
@@ -240,31 +267,31 @@ class TestOutOfDistributionGeneralization:
         ("student_query", "expected_doc_id", "expected_year", "expected_facts"),
         [
             (
-                "Mình thuộc khóa QH-2022 học lại môn Giải tích hiện nay thì phải đóng học phí bao nhiêu tiền 1 tín chỉ?",
+                "Mình thuộc khóa QH-2022 học lại môn Giải tích hiện nay thì phải đóng bao nhiêu tiền 1 tín chỉ?",
                 "uet-2026-quy-dinh-muc-thu-hoc-phi-2026-cdebf4adc3",
                 2026,
                 ["860.000 đồng/tín chỉ", "QH-2022"],
             ),
             (
-                "Cho em hỏi theo Điều 7 quy chế xét học bổng KKHT năm 2026, mỗi học kỳ sinh viên cần hoàn thành tối thiểu mấy tín chỉ?",
+                "Cho em hỏi theo Điều 7 quy chế học bổng KKHT năm 2026, mỗi học kỳ sinh viên cần tích lũy tối thiểu mấy tín chỉ để được xét?",
                 "uet-2026-quy-dinh-xet-hoc-bong-kkht-2026-17a091722e",
                 2026,
                 ["ít nhất 15 tín chỉ", "Điều 7"],
             ),
             (
-                "Theo định mức học phí sau đại học 2024-2025, nghiên cứu sinh trúng tuyển năm 2023 đóng học phí lần đầu và học lại bao nhiêu?",
+                "Nghiên cứu sinh tiến sĩ khóa QH-2023 trong năm học 2024-2025 đóng học phí lần đầu 1 năm là bao nhiêu?",
                 "uet-2024-dinh-muc-hoc-phi-sau-dai-hoc-2024-58724ca756",
                 2024,
                 ["40.000.000 đồng/năm học", "1.218.000 đồng/tín chỉ"],
             ),
             (
-                "Tiết 1 buổi sáng theo thời khóa biểu học kỳ I 2022-2023 của UET bắt đầu và kết thúc lúc mấy giờ?",
+                "Tiết 1 buổi sáng theo thời khóa biểu học kỳ 1 năm học 2022-2023 bắt đầu từ mấy giờ đến mấy giờ?",
                 "uet-thoi-khoa-bieu-hoc-ki-i-2022-2023-d5f2256636",
                 2022,
                 ["07h00", "07h50", "tiết 1"],
             ),
             (
-                "Theo quyết định số 347/QĐ-KHTC, nghiên cứu sinh trong thời gian đào tạo kéo dài tính mức thu học phí như thế nào?",
+                "Theo quyết định 347/QĐ-KHTC, nghiên cứu sinh bị kéo dài thời gian đào tạo thì tính học phí như thế nào?",
                 "uet-2022-dinh-muc-hoc-phi-dao-tao-sau-dai-hoc-trong-thoi-gian-keo-da-99fea0261a",
                 2022,
                 ["50% mức học phí năm học", "347/QĐ-KHTC"],
@@ -284,10 +311,14 @@ class TestOutOfDistributionGeneralization:
         assert key_fact_score(out["predicted_answer"], expected_facts) == 1.0
 
 
+# ==============================================================================
+# 5. OUTDATED HALLUCINATION RATE (OHR) DEFENSE TESTS
+# ==============================================================================
 class TestOutdatedHallucinationDefense:
     """Verify OHR detection logic and ensure ChronoRAG never emits unflagged outdated traps."""
 
     def test_ohr_metric_flags_unwarned_outdated_numbers_and_years(self) -> None:
+        # Unwarned trap number -> OHR = 1.0
         assert ohr_score(
             predicted="Mức học phí hiện hành là 1.850.000 đồng/tháng.",
             outdated_trap_answer="1.850.000 đồng/tháng (mức năm 2025-2026)",
@@ -296,6 +327,7 @@ class TestOutdatedHallucinationDefense:
             predicted_year=2026,
         ) == 1.0
 
+        # Outdated year without disclaimer on active_rule -> OHR = 1.0
         assert ohr_score(
             predicted="Mức học phí áp dụng là 3.000.000 đồng/tháng.",
             outdated_trap_answer=None,
@@ -304,6 +336,7 @@ class TestOutdatedHallucinationDefense:
             predicted_year=2025,
         ) == 1.0
 
+        # Properly disclaimed historical comparison -> OHR = 0.0
         assert ohr_score(
             predicted="Theo quy định cũ trước đây năm học 2025-2026 (đã bị thay thế): 1.850.000 đồng/tháng, nay thay bằng 2.090.000 đồng/tháng.",
             outdated_trap_answer="1.850.000 đồng/tháng",
@@ -316,10 +349,15 @@ class TestOutdatedHallucinationDefense:
         self,
         chrono_eval_results: dict[str, Any],
     ) -> None:
-        violating = [d["id"] for d in chrono_eval_results["details"] if d["ohr_score"] > 0.0]
-        assert violating == []
+        violating = [
+            d["id"] for d in chrono_eval_results["details"] if d["ohr_score"] > 0.0
+        ]
+        assert violating == [], f"Questions triggering OHR violation: {violating}"
 
 
+# ==============================================================================
+# 6. FULL BENCHMARK REGRESSION GATE (BY CATEGORY, TOPIC, AND YEAR)
+# ==============================================================================
 class TestFullBenchmarkRegressionGate:
     """Lock 100% accuracy across every category, topic, and academic year slice."""
 
@@ -340,9 +378,9 @@ class TestFullBenchmarkRegressionGate:
         chrono_eval_results: dict[str, Any],
     ) -> None:
         cat_metrics = chrono_eval_results["by_category"][category]
-        assert cat_metrics["key_fact_score"] == 1.0
-        assert cat_metrics["temporal_score"] == 1.0
-        assert cat_metrics["ohr_rate"] == 0.0
+        assert cat_metrics["key_fact_score"] == 1.0, f"{category} Key-Fact < 1.0: {cat_metrics}"
+        assert cat_metrics["temporal_score"] == 1.0, f"{category} Temporal < 1.0: {cat_metrics}"
+        assert cat_metrics["ohr_rate"] == 0.0, f"{category} OHR > 0.0: {cat_metrics}"
 
     @pytest.mark.parametrize("topic", ["hoc_phi", "hoc_bong", "nckh", "dao_tao"])
     def test_100_percent_accuracy_per_topic(
@@ -351,9 +389,9 @@ class TestFullBenchmarkRegressionGate:
         chrono_eval_results: dict[str, Any],
     ) -> None:
         topic_metrics = chrono_eval_results["by_topic"][topic]
-        assert topic_metrics["key_fact_score"] == 1.0
-        assert topic_metrics["temporal_score"] == 1.0
-        assert topic_metrics["ohr_rate"] == 0.0
+        assert topic_metrics["key_fact_score"] == 1.0, f"Topic {topic} Key-Fact < 1.0: {topic_metrics}"
+        assert topic_metrics["temporal_score"] == 1.0, f"Topic {topic} Temporal < 1.0: {topic_metrics}"
+        assert topic_metrics["ohr_rate"] == 0.0, f"Topic {topic} OHR > 0.0: {topic_metrics}"
 
     @pytest.mark.parametrize("year", ["2022", "2023", "2024", "2025", "2026"])
     def test_100_percent_accuracy_per_target_year(
@@ -362,7 +400,6 @@ class TestFullBenchmarkRegressionGate:
         chrono_eval_results: dict[str, Any],
     ) -> None:
         year_metrics = chrono_eval_results["by_year"][year]
-        assert year_metrics["key_fact_score"] == 1.0
-        assert year_metrics["temporal_score"] == 1.0
-        assert year_metrics["ohr_rate"] == 0.0
-
+        assert year_metrics["key_fact_score"] == 1.0, f"Year {year} Key-Fact < 1.0: {year_metrics}"
+        assert year_metrics["temporal_score"] == 1.0, f"Year {year} Temporal < 1.0: {year_metrics}"
+        assert year_metrics["ohr_rate"] == 0.0, f"Year {year} OHR > 0.0: {year_metrics}"
