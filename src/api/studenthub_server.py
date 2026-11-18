@@ -108,7 +108,7 @@ except Exception as _e:
 _superseded_doc_ids: set = set()
 for _rel in _approved_relations:
     if _rel.get("relation_type") == "same_series":
-        _superseded_doc_ids.add(_rel.get("from_doc_id", ""))
+        _superseded_doc_ids.add(_rel.get("to_doc_id", ""))
 
 # ---------------------------------------------------------------------------
 # Continual LoRA 3B Engine — load real model or verified evaluation predictions
@@ -229,6 +229,68 @@ def _run_rag_engine(question: str, mode: str) -> dict:
     return {"latency_ms": 0.0, "cited_doc_ids": []}
 
 
+def _format_rag_answer(raw: str) -> str:
+    """
+    Convert the raw structured chunk string from RAGEvalAdapter into a
+    human-friendly answer suitable for display in the StudentHub chat UI.
+
+    The eval adapter returns pipe/semicolon-delimited structured text from the
+    versioned chunk corpus (e.g. "Theo tháng: 2.090.000 đồng/tháng | Theo tín
+    chỉ: 570.000 đồng/tín chỉ ; QUY ĐỊNH ...").  We clean it up without losing
+    any critical information.
+    """
+    if not raw:
+        return raw
+
+    # Split on ; (section breaks) first
+    sections = [s.strip() for s in raw.split(";") if s.strip()]
+
+    # The first section usually contains the actual fact lines (pipe-separated),
+    # the remaining sections contain document provenance / metadata.
+    fact_lines: list[str] = []
+    source_line: str = ""
+
+    for i, sec in enumerate(sections):
+        # Strip bracket-enclosed category headers at section level before pipe-split
+        sec_clean = re.sub(r"\[[^\]]*\]", "", sec).strip()
+        # Identify the provenance / source section by characteristic keywords
+        is_source = any(kw in sec.upper() for kw in [
+            "QUY ĐỊNH ĐỊNH MỨC", "BAN HÀNH KÈM THEO", "QUYẾT ĐỊNH SỐ",
+            "HIỆU TRƯỞNG", "KẾ HOẠCH HỌC TẬP", "CỘNG HÒA XÃ HỘI",
+            "TRƯỜNG ĐẠI HỌC CÔNG NGHỆ",
+        ])
+        if is_source and i > 0:
+            # Keep one clean provenance line
+            # Extract the QD number and date if available
+            qd_match = re.search(r"Quyết định số[:\s]*([^,\n(]+)", sec, re.IGNORECASE)
+            date_match = re.search(r"ngày\s+(\d{1,2}[/\.]\d{1,2}[/\.]\d{4})", sec, re.IGNORECASE)
+            if qd_match:
+                qd = qd_match.group(1).strip().rstrip(".")
+                date = f" ngày {date_match.group(1)}" if date_match else ""
+                source_line = f"📄 Căn cứ: {qd}{date}"
+            break
+        else:
+            # Fact section: split on | to get individual data rows
+            rows = [r.strip() for r in sec_clean.split("|") if r.strip()]
+            for row in rows:
+                # Skip overly long raw header rows with no facts
+                if len(row) > 160:
+                    continue
+                # Remove bracket-enclosed category headers like [ĐẠI HỌC | A. ...]
+                row = re.sub(r"\[[^\]]*\]", "", row).strip()
+                if row:
+                    fact_lines.append(row)
+
+    if not fact_lines:
+        # Fallback: return the raw text truncated
+        return raw[:600]
+
+    result = "\n".join(f"• {ln}" for ln in fact_lines if ln)
+    if source_line:
+        result += f"\n\n{source_line}"
+    return result.strip()
+
+
 def _answer_text_from_pred(pred: dict, question: str) -> str:
     """Build answer text from pred dict, pulling chunk content if retriever available."""
     text = pred.get("predicted_answer") or pred.get("answer") or ""
@@ -241,6 +303,14 @@ def _answer_text_from_pred(pred: dict, question: str) -> str:
 
     if not text:
         text = "Không tìm thấy thông tin phù hợp với câu hỏi của bạn."
+        return text
+
+    # For RAG responses: apply structured formatting to raw chunk output
+    if pred.get("mode") != "continual_lora" and pred.get("engine_mode") is None:
+        # This is a RAG prediction — apply the formatter
+        formatted = _format_rag_answer(text)
+        if formatted:
+            text = formatted
 
     return _truncate(text)
 
@@ -445,6 +515,43 @@ def chat(req: ChatRequest):
 def compare(req: CompareRequest):
     question = req.question.strip()
     routing: RoutingAnalysis = _router.route_decision(question)
+
+    # Chặn sớm: nếu router đã xác định RED, không gọi bất kỳ engine nào
+    if routing.selected_engine == "safety_gate_red":
+        blocked = {
+            "question": question,
+            "routing": {
+                "selected_engine": "safety_gate_red",
+                "actual_engine_used": "safety_gate_red",
+                "risk_tier": "RED",
+                "detected_signals": routing.detected_signals,
+                "routing_reason": routing.routing_reason,
+                "lora_pros_cons": routing.lora_pros_cons,
+                "rag_pros_cons": routing.rag_pros_cons,
+            },
+            "answer": (
+                "⚠️ Câu hỏi này liên quan đến xin ngoại lệ vượt quy chế hoặc văn bản đang tạm khóa "
+                "(Publication Hold). Hệ thống tự động kích hoạt Cổng An toàn (Safety Gate RED) để từ "
+                "chối trả lời nhằm đảm bảo tính pháp lý. Vui lòng liên hệ trực tiếp Bộ phận Một cửa / "
+                "Phòng Đào tạo UET để được hướng dẫn chính thức."
+            ),
+            "metadata": {
+                "doc_id": None,
+                "doc_title": None,
+                "effective_year": None,
+                "sha256_short": None,
+                "superseded_warning": None,
+                "source_type": "safety_gate",
+                "source_label": "🛑 Cổng An toàn Pháp lý (Publication Hold / Cứu xét ngoại lệ)",
+                "latency_ms": 0.0,
+                "engine_note": "Blocked by safety gate RED",
+            },
+        }
+        return JSONResponse(content={
+            "chrono_rag": blocked,
+            "continual_lora": blocked,
+            "naive_rag": blocked,
+        })
 
     # chrono_rag
     pred_chrono = _run_rag_engine(question, "chrono_rag")

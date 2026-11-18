@@ -108,6 +108,14 @@ _RE_TOKEN_SEP = re.compile(r"[\s\.,;:!?()\[\]{}/\\\"']+")
 
 _HEX_RE = re.compile(r"^[0-9a-f]+$")
 
+# Slug tokens that are too generic/common in Vietnamese to be reliable discriminators.
+# A doc must match via a NON-stop-word slug token, or via 2+ slug tokens simultaneously.
+_SLUG_STOPWORDS: set[str] = {
+    "dinh", "khoa", "bieu", "thoi", "nckh", "danh", "sach", "bong",
+    "dung", "theo", "dieu", "chinh", "nganh", "hoach", "nghi", "quyet",
+    "thuc", "hien", "hanh", "bien", "nhan", "vien", "sinh", "luan",
+}
+
 
 def _is_hex(s: str) -> bool:
     """Return True if the string looks like a hex hash fragment."""
@@ -205,8 +213,13 @@ class AdaptiveQueryRouter:
 
         Strategy: split each doc_id on hyphens to get word tokens, ignore very
         short tokens and pure-numeric hash suffixes, then check intersection with
-        question tokens.  We deliberately skip the ``scope`` / ``academic_year``
-        field-substring approach because those fields are prose and match too broadly.
+        question tokens.
+
+        Guard against false positives from generic Vietnamese words (e.g. "khoa",
+        "dinh", "bong") that appear in many slugs but also in unrelated questions:
+        - If the matching token is in _SLUG_STOPWORDS, require at least 2 tokens to
+          match simultaneously (not just 1) before marking the doc as matched.
+        - Otherwise (the token is a meaningful discriminator), 1 match suffices.
         """
         matched: set[str] = set()
         # Tokenise the question on whitespace and punctuation (not hyphens, so
@@ -223,8 +236,17 @@ class AdaptiveQueryRouter:
                 p for p in slug_parts
                 if len(p) >= 4 and not p.isdigit() and not _is_hex(p)
             ]
-            if any(p in q_tokens for p in meaningful):
-                matched.add(doc_id)
+            # Tokens in the slug that also appear in the question
+            hit_tokens = [p for p in meaningful if p in q_tokens]
+            if not hit_tokens:
+                continue
+            # If ALL matching tokens are stop-words, require >= 2 of them to co-occur
+            # (prevents "khoa" in "Khoa học dịch vụ K70" from matching the
+            # "uet-thoi-khoa-bieu-hoc-ki-i-2022-2023" timetable doc).
+            all_stopwords = all(t in _SLUG_STOPWORDS for t in hit_tokens)
+            if all_stopwords and len(hit_tokens) < 2:
+                continue
+            matched.add(doc_id)
 
         return matched
 

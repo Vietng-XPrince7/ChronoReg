@@ -1467,17 +1467,40 @@ class InMemoryRetriever:
         ]
 
         curricula_dir = md_root / "curricula"
+        manifest_path = root / "data/raw/uet/curricula/manifest.json"
+
+        eligible_curricula: set[str] = set()
+        curriculum_program_slug: dict[str, str] = {}
+        if manifest_path.is_file():
+            try:
+                manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+                for rec in manifest.get("records", []):
+                    cid = rec.get("doc_id", "")
+                    if not cid:
+                        continue
+                    curriculum_program_slug[cid] = rec.get("program_slug", "")
+                    if rec.get("retrieval_eligible"):
+                        eligible_curricula.add(cid)
+            except Exception:
+                pass  # manifest lỗi -> coi như không có chương trình nào sẵn sàng
+
         if curricula_dir.is_dir():
             for p_curr in sorted(curricula_dir.glob("*.md")):
                 if p_curr.name == "INDEX.md":
                     continue
                 cid = p_curr.stem
+                # Chỉ nạp vào corpus nếu manifest xác nhận đã sẵn sàng để trả lời;
+                # nếu cid không có trong manifest, giữ hành vi cũ (coi là eligible)
+                # để không chặn nhầm các curriculum không được quản lý qua manifest này.
+                if cid in curriculum_program_slug and cid not in eligible_curricula:
+                    continue
                 if not any(d.get("doc_id") == cid for d in docs):
                     docs.append({
                         "doc_id": cid,
                         "relative_path": f"curricula/{p_curr.name}",
                         "title_hint": cid.replace("-", " "),
                         "topic_hint": "training_rules",
+                        "program_slug": curriculum_program_slug.get(cid, ""),
                     })
 
         superseded_by: dict[str, str] = {}

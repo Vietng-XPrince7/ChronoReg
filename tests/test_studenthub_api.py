@@ -83,6 +83,15 @@ class TestCompareEndpoint:
         assert "continual_lora" in d
         assert "naive_rag" in d
 
+    def test_compare_safety_gate_blocked(self, client):
+        r = client.post("/api/compare", json={"question": "Tôi muốn xin cứu xét ngoại lệ miễn học phí"})
+        assert r.status_code == 200
+        d = r.json()
+        assert d["chrono_rag"]["routing"]["risk_tier"] == "RED"
+        assert d["chrono_rag"]["routing"]["selected_engine"] == "safety_gate_red"
+        assert d["continual_lora"]["routing"]["risk_tier"] == "RED"
+        assert "Cổng An toàn" in d["chrono_rag"]["answer"]
+
 class TestSampleQuestions:
     def test_sample_questions_returns_6(self, client):
         r = client.get("/api/sample-questions")
