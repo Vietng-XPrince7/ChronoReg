@@ -82,29 +82,6 @@ source_pages: {"overview": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-n
 
   Thực hiện theo đề án tuyển sinh hàng năm của Nhà trường.
 
-						  Bài trước
-
-							 Chương trình đào tạo ngành Cơ kỹ thuật
-
-							15/09/2025
-
-						  Bài tiếp theo
-
-							 Chương trình đào tạo ngành Công nghệ hàng không vũ trụ
-
-							15/09/2025
-
-### Bài viết liên quan
-
-							  Mời báo giá linh kiện, thiết bị phục vụ hoạt động nghiên cứu
-								22/12/2025
-
-							  Mời báo giá vật tư, linh kiện, thiết bị phục vụ giảng dạy, thực hành
-								24/11/2025
-
-							  Đấu giá tài sản về quyền khai thác dịch vụ bán lẻ hàng hóa (cửa hàng tiện ích) tại Khu giảng đường Kiều Mai, Trường Đại học Công nghệ
-								14/11/2025
-
 ## Chuẩn đầu ra
 
 **Nguồn chính thức:** https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-hang-khong-vu-tru-11/
@@ -163,29 +140,6 @@ source_pages: {"overview": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-n
 | PLO5 | Có khả năng làm việc hiệu quả trong nhóm, thể hiện khả năng lãnh đạo, xây dựng môi trường hợp tác, thiết lập mục tiêu, lập kế hoạch công việc và hoàn thành nhiệm vụ. |  | x |  |
 | PLO6 | Có khả năng tiếp thu và áp dụng kiến thức mới khi cần thiết, sử dụng các chiến lược học tập phù hợp bảo đảm khả năng học tập suốt đời. |  |  | x |
 | PLO7 | Có khả năng nhận thức trách nhiệm đạo đức và nghề nghiệp trong các tình huống kỹ thuật và đưa ra quyết định có cân nhắc đến tác động toàn cầu, kinh tế, môi trường và xã hội. |  |  | x |
-
-						  Bài trước
-
-							 Chương trình đào tạo ngành Công nghệ hàng không vũ trụ
-
-							15/09/2025
-
-						  Bài tiếp theo
-
-							 Chương trình đào tạo ngành Công nghệ hàng không vũ trụ
-
-							15/09/2025
-
-### Bài viết liên quan
-
-							  Mời báo giá linh kiện, thiết bị phục vụ hoạt động nghiên cứu
-								22/12/2025
-
-							  Mời báo giá vật tư, linh kiện, thiết bị phục vụ giảng dạy, thực hành
-								24/11/2025
-
-							  Đấu giá tài sản về quyền khai thác dịch vụ bán lẻ hàng hóa (cửa hàng tiện ích) tại Khu giảng đường Kiều Mai, Trường Đại học Công nghệ
-								14/11/2025
 
 ## Nội dung chương trình đào tạo
 
@@ -344,29 +298,6 @@ source_pages: {"overview": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-n
 
   *– Học phần với giờ tự học đánh dấu * là học phần sinh viên tham gia học tập, thực hiện dự án, nghiên cứu khoa học và thực tập, thực tế tại phòng thí nghiệm của Nhà trường hoặc tại doanh nghiệp đối tác.*
 
-						  Bài trước
-
-							 Chương trình đào tạo ngành Công nghệ hàng không vũ trụ
-
-							15/09/2025
-
-						  Bài tiếp theo
-
-							 Chương trình đào tạo ngành Công nghệ hàng không vũ trụ
-
-							15/09/2025
-
-### Bài viết liên quan
-
-							  Mời báo giá linh kiện, thiết bị phục vụ hoạt động nghiên cứu
-								22/12/2025
-
-							  Mời báo giá vật tư, linh kiện, thiết bị phục vụ giảng dạy, thực hành
-								24/11/2025
-
-							  Đấu giá tài sản về quyền khai thác dịch vụ bán lẻ hàng hóa (cửa hàng tiện ích) tại Khu giảng đường Kiều Mai, Trường Đại học Công nghệ
-								14/11/2025
-
 ## Hướng dẫn thực hiện chương trình đào tạo
 
 **Nguồn chính thức:** https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-hang-khong-vu-tru-13/
@@ -471,25 +402,3 @@ Bảng tiến trình đào tạo dự kiến
 | 4 |  | Lựa chọn đủ 06 tín chỉ trong Nhóm học phần tự chọn cốt lõi ngành II.2.2 | 6 | Tự chọn |
 |  |  | **Tổng số tín chỉ** | **13** |  |
 
-						  Bài trước
-
-							 Chương trình đào tạo ngành Công nghệ hàng không vũ trụ
-
-							15/09/2025
-
-						  Bài tiếp theo
-
-							 Chương trình đào tạo ngành Công nghệ kỹ thuật xây dựng
-
-							16/09/2025
-
-### Bài viết liên quan
-
-							  Mời báo giá linh kiện, thiết bị phục vụ hoạt động nghiên cứu
-								22/12/2025
-
-							  Mời báo giá vật tư, linh kiện, thiết bị phục vụ giảng dạy, thực hành
-								24/11/2025
-
-							  Đấu giá tài sản về quyền khai thác dịch vụ bán lẻ hàng hóa (cửa hàng tiện ích) tại Khu giảng đường Kiều Mai, Trường Đại học Công nghệ
-								14/11/2025

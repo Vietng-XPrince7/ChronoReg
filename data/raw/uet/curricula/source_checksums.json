@@ -632,7 +632,7 @@
       }
     },
     "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-space-engineering-QH-2026-plus.md",
-    "sha256_markdown": "9b6f78029df2c0a4b773d07a3754a5f0c212d4e5ab2177c4a4b65c3dc4fec74c"
+    "sha256_markdown": "6c7170a0d0075df009064aba9f1d28ec464c898fd2befc25531319c1017fe314"
   },
   "uet-curriculum-space-engineering-QH-2025": {
     "complete": true,
@@ -679,7 +679,7 @@
       }
     },
     "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-space-engineering-QH-2025.md",
-    "sha256_markdown": "c6bbcf42c1ad51830a97e35408f6248ac5ba8d15db2b5ee94c9779e701b3cb4b"
+    "sha256_markdown": "46ec537825af86ccb318eaab157e713c059c54c7241f7d1485a5b3b1eb93ed29"
   },
   "uet-curriculum-space-engineering-QH-2022-to-2024": {
     "complete": true,
@@ -716,7 +716,7 @@
       }
     },
     "output_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-space-engineering-QH-2022-to-2024.md",
-    "sha256_markdown": "522c4f911407ff8a462a4342358b0393f3465a7527cb98cd65dead726a10b64b"
+    "sha256_markdown": "ffcd83ac90e92b2b33145e50d19548e4f6e7fe8639f85e9f7d2b6911d40797b1"
   },
   "uet-curriculum-engineering-mechanics-QH-2025-plus": {
     "complete": true,

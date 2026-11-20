@@ -72,37 +72,6 @@ source_pages: {"overview": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-n
 
   **3. Thông tin tuyển sinh****: **Theo Quy chế, Quy định về công tác tuyển sinh đại học hàng năm của Bộ Giáo dục và Đào tạo; hướng dẫn của Đại học Quốc gia Hà Nội và Đề án tuyển sinh hàng năm của Trường Đại học Công nghệ.
 
-							Tuyết Nga
-
-						  Bài trước
-
-							 Chương trình đào tạo ngành Vật lý kỹ thuật
-
-							22/09/2023
-
-						  Bài tiếp theo
-
-							 Chương trình đào tạo ngành Vật lý kỹ thuật
-
-							22/09/2023
-
-### Bài viết liên quan
-
-							  Chương trình đào tạo ngành An toàn thông tin
-								07/08/2026
-
-							 Bảng tiến trình đào tạo dự kiến  STT Mã số Học phần Số tín chỉ Ghi chú I Học kỳ 1 1 UET.COM1050 Tư duy tính toán 5 Bắt buộc 2 UET.MAT1050 Giải tích 1 5 Bắt buộc 3 UET.MAT1053 …
-
-							  Chương trình đào tạo ngành An toàn thông tin
-								07/08/2026
-
-							 1. Tóm tắt chương trình đào tạo STT Nội dung Số TC I Khối kiến thức Giáo dục đại cương 56 I.1 Nhóm học phần bắt buộc của ĐHQGHN 21 I.2 Nhóm học phần đại cương theo lĩnh vực 35 …
-
-							  Chương trình đào tạo ngành An toàn thông tin
-								07/08/2026
-
-							 A. Chuẩn đầu ra (PLO) Các Chuẩn đầu ra (CĐR) của Chương trình đào tạo (CTĐT) bao gồm CĐR kiến thức, CĐR kỹ năng và CĐR mức tự chủ và trách nhiệm. CĐR bao gồm các mục (1) đến (7) …
-
 ## Chuẩn đầu ra
 
 **Nguồn chính thức:** https://uet.edu.vn/chuong-trinh-dao-tao-nganh-vat-ly-ky-thuat-11/
@@ -176,37 +145,6 @@ Người học sau khi tốt nghiệp chương trình đào tạo phải đạt 
   **5. Khả năng học tập, nâng cao trình độ sau tốt nghiệp**
 
   Sinh viên tốt nghiệp ngành Công nghệ Hàng không Vũ trụ có thể học tiếp các chương trình đào tạo thạc sĩ, tiến sĩ các ngành học về công nghệ kỹ thuật: Công nghệ Hàng không Vũ trụ, Công nghệ thông tin, Điện tử viễn thông, Cơ kỹ thuật, Cơ điện tử, …ở trong và ngoài nước.
-
-							Tuyết Nga
-
-						  Bài trước
-
-							 Chương trình đào tạo ngành Công nghệ hàng không vũ trụ
-
-							22/09/2023
-
-						  Bài tiếp theo
-
-							 Chương trình đào tạo ngành Công nghệ hàng không vũ trụ
-
-							22/09/2023
-
-### Bài viết liên quan
-
-							  Chương trình đào tạo ngành An toàn thông tin
-								07/08/2026
-
-							 Bảng tiến trình đào tạo dự kiến  STT Mã số Học phần Số tín chỉ Ghi chú I Học kỳ 1 1 UET.COM1050 Tư duy tính toán 5 Bắt buộc 2 UET.MAT1050 Giải tích 1 5 Bắt buộc 3 UET.MAT1053 …
-
-							  Chương trình đào tạo ngành An toàn thông tin
-								07/08/2026
-
-							 1. Tóm tắt chương trình đào tạo STT Nội dung Số TC I Khối kiến thức Giáo dục đại cương 56 I.1 Nhóm học phần bắt buộc của ĐHQGHN 21 I.2 Nhóm học phần đại cương theo lĩnh vực 35 …
-
-							  Chương trình đào tạo ngành An toàn thông tin
-								07/08/2026
-
-							 A. Chuẩn đầu ra (PLO) Các Chuẩn đầu ra (CĐR) của Chương trình đào tạo (CTĐT) bao gồm CĐR kiến thức, CĐR kỹ năng và CĐR mức tự chủ và trách nhiệm. CĐR bao gồm các mục (1) đến (7) …
 
 ## Nội dung chương trình đào tạo
 
@@ -348,33 +286,3 @@ Người học sau khi tốt nghiệp chương trình đào tạo phải đạt 
 
 -  *01 giờ tín chỉ thực hành tương ứng với 02 giờ thực tế trên lớp.*
 
-							Tuyết Nga
-
-						  Bài trước
-
-							 Chương trình đào tạo ngành Vật lý kỹ thuật
-
-							22/09/2023
-
-						  Bài tiếp theo
-
-							 Phiên họp lần thứ tám Hội đồng Trường Đại học Công nghệ nhiệm kỳ 2022-2027
-
-							22/09/2023
-
-### Bài viết liên quan
-
-							  Chương trình đào tạo ngành An toàn thông tin
-								07/08/2026
-
-							 Bảng tiến trình đào tạo dự kiến  STT Mã số Học phần Số tín chỉ Ghi chú I Học kỳ 1 1 UET.COM1050 Tư duy tính toán 5 Bắt buộc 2 UET.MAT1050 Giải tích 1 5 Bắt buộc 3 UET.MAT1053 …
-
-							  Chương trình đào tạo ngành An toàn thông tin
-								07/08/2026
-
-							 1. Tóm tắt chương trình đào tạo STT Nội dung Số TC I Khối kiến thức Giáo dục đại cương 56 I.1 Nhóm học phần bắt buộc của ĐHQGHN 21 I.2 Nhóm học phần đại cương theo lĩnh vực 35 …
-
-							  Chương trình đào tạo ngành An toàn thông tin
-								07/08/2026
-
-							 A. Chuẩn đầu ra (PLO) Các Chuẩn đầu ra (CĐR) của Chương trình đào tạo (CTĐT) bao gồm CĐR kiến thức, CĐR kỹ năng và CĐR mức tự chủ và trách nhiệm. CĐR bao gồm các mục (1) đến (7) …

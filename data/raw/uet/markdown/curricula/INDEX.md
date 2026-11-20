@@ -65,3 +65,30 @@ Phân biệt **khóa tuyển sinh QH**, **phiên bản nội dung**, và **năm 
 
 - Tài liệu đã xử lý: 31
 - Đầy đủ 100% phần nguồn: 31
+
+
+## Bàn giao riêng 7 ngành (phần việc QLoRA của thành viên)
+
+Bảng dưới **liên kết trực tiếp đến tài liệu Markdown có bảng học phần**, không chỉ tới trang chỉ mục. Tài liệu đã trích xuất và kiểm tra checksum, nhưng `retrieval_eligible: false` tới khi được duyệt độc lập.
+
+| Ngành | Phiên bản / phạm vi khóa | Tổng TC | Markdown nguồn |
+| --- | --- | ---: | --- |
+| Công nghệ hàng không vũ trụ / Kỹ thuật không gian | QH-2022-to-2024 · QH-2022–QH-2024 | 152 | [uet-curriculum-space-engineering-QH-2022-to-2024](./uet-curriculum-space-engineering-QH-2022-to-2024.md) |
+| Công nghệ hàng không vũ trụ / Kỹ thuật không gian | QH-2025 · QH-2025 riêng | 150 | [uet-curriculum-space-engineering-QH-2025](./uet-curriculum-space-engineering-QH-2025.md) |
+| Công nghệ hàng không vũ trụ / Kỹ thuật không gian | QH-2026-plus · QH-2026 trở đi | 150 | [uet-curriculum-space-engineering-QH-2026-plus](./uet-curriculum-space-engineering-QH-2026-plus.md) |
+| Công nghệ kỹ thuật xây dựng / Kỹ thuật xây dựng | QH-2022-to-2024 · QH-2022–QH-2024 | 150 | [uet-curriculum-civil-engineering-QH-2022-to-2024](./uet-curriculum-civil-engineering-QH-2022-to-2024.md) |
+| Công nghệ kỹ thuật xây dựng / Kỹ thuật xây dựng | QH-2025 · QH-2025 riêng | 150 | [uet-curriculum-civil-engineering-QH-2025](./uet-curriculum-civil-engineering-QH-2025.md) |
+| Công nghệ kỹ thuật xây dựng / Kỹ thuật xây dựng | QH-2026-plus · QH-2026 trở đi | 150 | [uet-curriculum-civil-engineering-QH-2026-plus](./uet-curriculum-civil-engineering-QH-2026-plus.md) |
+| Thiết kế công nghiệp và đồ họa | QH-2024 · QH-2024 riêng | 135 | [uet-curriculum-industrial-graphic-design-QH-2024](./uet-curriculum-industrial-graphic-design-QH-2024.md) |
+| Thiết kế công nghiệp và đồ họa | QH-2025-plus · QH-2025 trở đi | 135 | [uet-curriculum-industrial-graphic-design-QH-2025-plus](./uet-curriculum-industrial-graphic-design-QH-2025-plus.md) |
+| Công nghệ nông nghiệp | QH-2022-to-2024 · QH-2022–QH-2024 | 150 | [uet-curriculum-agricultural-technology-QH-2022-to-2024](./uet-curriculum-agricultural-technology-QH-2022-to-2024.md) |
+| Công nghệ nông nghiệp | QH-2025-plus · QH-2025 trở đi | 150 | [uet-curriculum-agricultural-technology-QH-2025-plus](./uet-curriculum-agricultural-technology-QH-2025-plus.md) |
+| Công nghệ sinh học | QH-2025-plus · QH-2025 trở đi | 150 | [uet-curriculum-biotechnology-QH-2025-plus](./uet-curriculum-biotechnology-QH-2025-plus.md) |
+| Công nghệ sinh học | opening-proposal · **Đề án, không phải khóa tuyển sinh** | 150 | [uet-curriculum-biotechnology-opening-proposal](./uet-curriculum-biotechnology-opening-proposal.md) |
+| Trí tuệ nhân tạo | QH-2022-to-2024-original · QH-2022–QH-2024 | 124 | [uet-curriculum-artificial-intelligence-QH-2022-to-2024-original](./uet-curriculum-artificial-intelligence-QH-2022-to-2024-original.md) |
+| Trí tuệ nhân tạo | QH-2022-to-2024-updated · QH-2022–QH-2024 | 123 | [uet-curriculum-artificial-intelligence-QH-2022-to-2024-updated](./uet-curriculum-artificial-intelligence-QH-2022-to-2024-updated.md) |
+| Trí tuệ nhân tạo | QH-2025-plus · QH-2025 trở đi | 135 | [uet-curriculum-artificial-intelligence-QH-2025-plus](./uet-curriculum-artificial-intelligence-QH-2025-plus.md) |
+| Khoa học dữ liệu | QH-2025-plus · QH-2025 trở đi | 135 | [uet-curriculum-data-science-QH-2025-plus](./uet-curriculum-data-science-QH-2025-plus.md) |
+| Khoa học dữ liệu | opening-proposal · **Đề án, không phải khóa tuyển sinh** | 130 | [uet-curriculum-data-science-opening-proposal](./uet-curriculum-data-science-opening-proposal.md) |
+
+**Lưu ý:** AI QH-2022–2024 có bản gốc và bản cập nhật, chưa chốt ngày đổi hiệu lực; không áp dụng cả hai đồng thời. Ngành sinh học và khoa học dữ liệu chỉ có chương trình áp dụng từ QH-2025 trong phạm vi kiểm tra.
