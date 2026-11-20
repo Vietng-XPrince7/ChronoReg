@@ -1,0 +1,70 @@
+{
+  "scope": "COURSE_MODE_EXPERIMENT_NOT_OFFICIAL_POLICY_RELEASE",
+  "original_repo_zip_sha256": "fde3fabf8dc1894975f628676b439ee400a72ad46011949d3c38727a07dd3d46",
+  "retention_zip_sha256": "89c386afa124888469f715098a663b2206ea3fdeab9cc5421ba0389931469938",
+  "manifest_entries_verified": 60,
+  "historical_manifest_discrepancy": {
+    "file": "reproduction/test_course_runner.py",
+    "recorded": "a70241b1bbba140fe9f4ad8db0d97da6a88bfbe313e5f14afc17520ac56079ad",
+    "actual": "bc24b30f7fdbaa3344f867b9094af5592f3b82d387d498709d617aab4012715a"
+  },
+  "unexpected_manifest_discrepancies": [],
+  "train_qa_rows": 200,
+  "train_year_distribution": {
+    "2022": 40,
+    "2023": 37,
+    "2024": 36,
+    "2025": 49,
+    "2026": 38
+  },
+  "qa_source_sha_and_quote_pass": 200,
+  "qa_course_code_credit_column_checked": 64,
+  "qa_independent_review_approved_count": 0,
+  "adapters": [
+    {
+      "year": 2022,
+      "rows": 40,
+      "sha256": "8e0d89454d303f2f1dc2fa9d09af58b126008f4249ac50850fdbcef652f767b7",
+      "train_loss": 0.8093383312225342
+    },
+    {
+      "year": 2023,
+      "rows": 37,
+      "sha256": "5992e13dcaa5a1ccb122ebef1b380aec3dba7e5be30394dfb69eef609e14f7b8",
+      "train_loss": 1.4218665758768718
+    },
+    {
+      "year": 2024,
+      "rows": 36,
+      "sha256": "f946bcb87f79dbc6ebe65583372160f67ea73556b3e59752f25857db360ba7fc",
+      "train_loss": 1.4816958109537761
+    },
+    {
+      "year": 2025,
+      "rows": 49,
+      "sha256": "443a00dd671d4a3326da8f976adf059ae9ad98a2cc11f28fd9ddbd5f831a7209",
+      "train_loss": 1.35319185256958
+    },
+    {
+      "year": 2026,
+      "rows": 38,
+      "sha256": "95c82416cd768f75145f220a670d563dc4f77c3c01ea39abf2ed4b54cf38dba3",
+      "train_loss": 1.579797585805257
+    }
+  ],
+  "benchmark_rows": 90,
+  "benchmark_document_overlap_with_course_train": 49,
+  "benchmark_exact_question_overlap": 0,
+  "benchmark_generated_predictions": 450,
+  "benchmark_token_f1_proxy_by_checkpoint": {
+    "2022": 0.4616,
+    "2023": 0.443,
+    "2024": 0.4042,
+    "2025": 0.3613,
+    "2026": 0.3723
+  },
+  "retention_train_cases": 25,
+  "retention_model_predictions": 45,
+  "retention_scoring": "Reproduce with analyze_retention.py in prior adjudication package",
+  "confidence_note": "Computational reproducibility only. Official source effectivity, semantic leakage, and human approval are not verified."
+}
