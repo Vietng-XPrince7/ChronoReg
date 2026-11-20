@@ -10,7 +10,9 @@
 **Thời gian đào tạo:** 4.5 năm
 **Tín chỉ theo nội dung nguồn:** 150
 
-**Trạng thái:** Đã xác minh liên kết nguồn và trích xuất đầy đủ bảng học phần vào file markdown.
+**Trạng thái:** Đã lưu bản Markdown nội dung chương trình và bảng học phần; đang chờ đối chiếu nội dung, khóa áp dụng và phê duyệt độc lập.
+
+**Markdown đầy đủ:** [Mở tài liệu QH-2026-plus](../uet-curriculum-space-engineering-QH-2026-plus.md)
 
 ## Các phần nguồn chính thức
 
@@ -29,4 +31,4 @@ https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-hang-khong-vu-tru-4/
 
 ## Phạm vi sử dụng
 
-Bản metadata này không thay thế tài liệu chương trình đầy đủ, không có xác nhận ngày hiệu lực, và không được tự động làm căn cứ trả lời RAG. Chạy bộ nhập dữ liệu và review thủ công để trích xuất học phần.
+Bản Markdown trích xuất đã tồn tại nhưng chưa được chứng nhận đúng đầy đủ từng học phần, khóa áp dụng hoặc hiệu lực; chưa được tự động làm nguồn trả lời RAG/LoRA trước khi có review độc lập.
