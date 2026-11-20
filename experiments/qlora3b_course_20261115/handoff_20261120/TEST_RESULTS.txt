@@ -1,0 +1,24 @@
+ChronoReg QLoRA 3B final closeout verification — 2026-11-20
+
+REAL DATA checks:
+PASS: Original repository ZIP SHA256 pinned and ZIP CRC valid
+PASS: Retention GPU ZIP SHA256 pinned and ZIP CRC valid
+PASS: Checked 60 COURSE_MANIFEST recorded entries; 59 byte-identical, ONE known historical mismatch in reproduction/test_course_runner.py; not silently waived
+PASS: 5/5 actual safetensors SHA256 and prior-adapter chain
+PASS: 200/200 course training QA source SHA256 and exact quote
+PASS: 64/64 course-credit training QA question code = answer code = source table code; answer credits = table credit column
+PASS: 90 benchmark entries and hash; 450 unique model outputs and benchmark QA match
+PASS: Token F1 independently recomputed from 450 outputs
+PASS: 25 probes equal original training QA; 45 GPU predictions complete and mapped to correct checkpoints
+PASS: Retention scoring re-executed with existing adjudication script, exact SHA256 of scored and paired CSV reproduced
+PASS: Deliberately tampered GPU ZIP was rejected by SHA256 gate
+
+SCIENTIFIC/CONTENT GATES NOT PASSED:
+HOLD: 0/200 independently approved QA and effective-year verification
+HOLD: 90-case benchmark not blind; document-level train overlap on 49/90 cases
+HOLD: AI V6 review has 8 REVISE, 29 PENDING (not human approval)
+HOLD: Verified policy version/effectivity, semantic leakage and official source authority
+HOLD: v5 release approval: source-gate status BLOCKED
+HOLD: LoRA factual reliability: 2/45 exact numeric in-sample retention answers
+
+No files in repository, checkpoints, training QA or source documents were modified by this audit.
