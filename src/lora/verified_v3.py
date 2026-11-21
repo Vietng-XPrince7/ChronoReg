@@ -127,12 +127,12 @@ class VerifiedV3Inference:
             tok.pad_token = tok.eos_token
         config = {"local_files_only": True, "trust_remote_code": False}
         if device.startswith("cuda"):
-            config.update({"device_map": {"": 0}, "dtype": torch.float16,
+            config.update({"device_map": {"": 0}, "torch_dtype": torch.float16,
                            "quantization_config": BitsAndBytesConfig(load_in_4bit=True,
                                bnb_4bit_quant_type="nf4", bnb_4bit_use_double_quant=True,
                                bnb_4bit_compute_dtype=torch.float16)})
         else:
-            config.update({"dtype": torch.float32, "low_cpu_mem_usage": True})
+            config.update({"torch_dtype": torch.float32, "low_cpu_mem_usage": True})
         base = AutoModelForCausalLM.from_pretrained(str(self.base), **config)
         model = PeftModel.from_pretrained(
             base, str(self.root / f"year-{self.year}"),
