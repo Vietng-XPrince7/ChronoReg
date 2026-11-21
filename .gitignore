@@ -228,3 +228,6 @@ data/versioning/relation_review_queue.jsonl
 data/versioning/relations.jsonl
 data/versioning/review_worklist.csv
 data/versioning/rag_chunks_draft.jsonl
+
+# Local verified LoRA checkpoints and multi-GB base model (never commit artifacts)
+.local_models/
