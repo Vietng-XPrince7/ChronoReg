@@ -1,563 +1,352 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UET StudentHub — ChronoReg AI Workspace</title>
-
-  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChronoReg | Hỏi đáp học vụ UET</title>
   <style>
     :root {
-      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-      --primary: #005BAA;
-      --primary-hover: #004d91;
-      --navy-950: #0B1528;
+      --ink:#242b32;
+      --ink-soft:#444d54;
+      --paper:#faf9f5;
+      --white:#ffffff;
+      --background:#f6f5f1;
+      --blue:#0867a3;
+      --blue-hover:#095788;
+      --blue-light:#e3f0f9;
+      --blue-faint:#f2f8fc;
+      --line:#d9d9d4;
+      --red:#bd4e48;
+      --amber:#96692c;
+      --green:#377e5d;
+      --shadow:4px 4px 0 #26323c;
+      --font: Arial, "Helvetica Neue", Helvetica, sans-serif;
     }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{background:var(--background);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.45;overflow:hidden}
+    button,input{font:inherit}
+    button{cursor:pointer;color:inherit}
+    button:disabled{cursor:wait;opacity:.72}
+    a{color:inherit;text-decoration:none}
+    button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #427ba2;outline-offset:3px}
+    ::-webkit-scrollbar{width:8px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:#b4b0a7;border:2px solid var(--background);border-radius:6px}
+    .app{display:flex;flex-direction:column;height:100vh;min-width:1110px}
+    .masthead{height:78px;min-height:78px;display:flex;align-items:center;justify-content:space-between;gap:18px;background:var(--paper);border-bottom:2px solid var(--ink);padding:0 27px;position:relative;z-index:10}
+    .brand{display:flex;gap:12px;align-items:center;min-width:292px}
+    .brand-block{height:52px;width:52px;display:flex;align-items:center;justify-content:center;border:1px solid #d9e6f0;border-radius:50%;background:white;flex-shrink:0;overflow:hidden}
+    .brand-block img{width:100%;height:100%;object-fit:contain;display:block}
+    .brand-word{font-size:23px;font-weight:900;letter-spacing:-.9px;line-height:1}
+    .brand-sub{font-size:10px;margin-top:5px;text-transform:uppercase;letter-spacing:.85px;font-weight:800;color:#536576}
+    .top-navigation{display:flex;align-items:center;gap:9px;justify-content:center;flex:1}
+    .top-navigation button{background:var(--white);border:2px solid var(--ink);border-radius:1px;box-shadow:3px 3px 0 var(--ink);padding:10px 14px;font-size:12px;line-height:1.1;font-weight:800;white-space:nowrap;transition:background .12s,transform .12s}
+    .top-navigation button:hover{background:var(--blue-light);transform:translate(-1px,-1px)}
+    .top-navigation button.is-active{background:var(--blue);color:white}
+    .header-meta{min-width:172px;text-align:right;letter-spacing:.2px;color:#76746e;font-size:11px}
+    .header-meta strong{display:block;color:var(--ink);font-weight:800;font-size:12px;letter-spacing:.4px}
+    .workspace-grid{flex:1;display:grid;grid-template-columns:228px minmax(480px,1fr) 286px;gap:27px;padding:25px 29px 28px;min-height:0;max-width:1880px;width:100%;margin:0 auto}
+    .side,.right-sidebar{min-height:0}
+    .outline-panel{background:var(--white);border:2px solid var(--ink);box-shadow:var(--shadow);border-radius:1px}
+    .side-block{padding:17px 16px 16px}
+    .side-block+.side-block{border-top:2px solid var(--ink)}
+    .block-kicker{font-size:10px;font-weight:900;letter-spacing:1.35px;text-transform:uppercase;color:#73736d;margin:0 0 8px}
+    .block-title{font-size:18px;line-height:1.1;font-weight:900;letter-spacing:-.5px;margin:0 0 8px}
+    .side-link{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 9px;border:1px solid transparent;border-bottom:1px solid var(--line);font-weight:700;font-size:12px}
+    .side-link:hover{background:var(--blue-faint)}
+    .side-link.current{background:var(--blue-light);border:2px solid var(--ink);border-left:5px solid var(--blue);padding-left:6px;margin:7px 0;box-shadow:2px 2px 0 var(--ink)}
+    .side-index{font:700 10px/1.2 var(--font);color:#77736d}
+    .side-link.current .side-index{color:var(--ink)}
+    .data-row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding:7px 0;font-size:11px}
+    .data-row:last-child{border-bottom:0}
+    .data-row .field-label{color:#77726b}
+    .data-row .field-value{font-weight:800;text-align:right;max-width:110px}
+    .bottom-note{margin-top:10px;color:#73716a;font-size:11px;line-height:1.5}
+    .profile-empty{font-size:11px;line-height:1.6;color:#736f67;margin:15px 0 12px}
+    .profile-fields{border-top:1px solid var(--line);padding-top:10px}
+    .profile-fields summary{cursor:pointer;font-weight:700;font-size:11px;color:#4d7190;line-height:1.5}
+    .profile-fields[open] summary{margin-bottom:12px}
+    .side-footer{margin-top:14px;display:flex;align-items:center;gap:8px;letter-spacing:.4px;text-transform:uppercase;font-size:10px;font-weight:800}
+    .dot{display:inline-block;width:7px;height:7px;border-radius:99px;background:var(--green);flex-shrink:0}
+    .center{min-width:0;min-height:0;display:flex;flex-direction:column}
+    .eyebrow{display:flex;align-items:center;gap:11px;font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#5a666c}
+    .eyebrow:before{content:"";height:3px;width:24px;background:var(--blue);display:block}
+    .page-intro{padding:3px 0 18px}
+    .page-intro h1{font-size:33px;line-height:1.07;margin:8px 0 5px;letter-spacing:-1.25px;font-weight:900}
+    .page-intro p{font-size:13px;color:#77746c;margin:0}
+    .document-panel{display:flex;flex-direction:column;min-height:0;flex:1}
+    .document-header{min-height:63px;display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:2px solid var(--ink);padding:12px 15px;background:var(--white)}
+    .doc-heading{font-weight:900;font-size:14px;letter-spacing:-.1px}
+    .doc-sub{color:#76736c;font-size:10px;letter-spacing:.4px;margin-top:2px}
+    .mode-controls{display:flex;gap:5px;flex-wrap:nowrap}
+    .mode-controls button{border:2px solid var(--ink);border-radius:0;padding:8px 10px;background:var(--white);font-size:11px;font-weight:800;white-space:nowrap;box-shadow:none}
+    .mode-controls button:hover{background:var(--blue-light)}
+    .mode-controls button.selected{background:var(--blue);color:#fff;box-shadow:2px 2px 0 var(--ink)}
+    #chatScrollContainer{flex:1;min-height:0;overflow-y:auto;background:#f9f7f2;scroll-behavior:smooth}
+    #chatList{padding:25px 27px 24px;display:flex;flex-direction:column;gap:20px}
+    .welcome{border:1px solid var(--line);background:var(--white);padding:25px 27px;position:relative;max-width:100%}
+    .welcome:before{content:"";position:absolute;width:4px;background:var(--blue);left:-1px;top:-1px;bottom:-1px}
+    .welcome .section-no{font-size:10px;font-weight:900;letter-spacing:1.5px;color:#276c9b}
+    .welcome h2{font-weight:900;font-size:20px;letter-spacing:-.4px;line-height:1.26;margin:11px 0 10px}
+    .welcome p{font-size:13px;color:#5c5a53;line-height:1.65;max-width:660px;margin:0}
+    .topic-index{display:flex;flex-wrap:wrap;gap:0;margin-top:22px;padding-top:14px;border-top:1px solid var(--line)}
+    .topic-index span{font-size:11px;font-weight:750;color:#4f5658;padding:4px 14px 4px 0;margin-right:14px;border-right:1px solid #d6d1c7}
+    .topic-index span:last-child{border:0}
+    .exchange{border:1px solid var(--ink);background:var(--white);display:flex;flex-direction:column}
+    .exchange-hdr{padding:10px 14px;background:#f0ece4;border-bottom:1px solid var(--ink);display:flex;gap:10px;justify-content:space-between;align-items:center}
+    .exchange-title{font-size:10px;font-weight:900;letter-spacing:1.3px;text-transform:uppercase;color:#67645d}
+    .exchange-body{padding:15px 18px;font-size:13px;line-height:1.65}
+    .exchange-body.answer{white-space:pre-line;overflow-wrap:anywhere}
+    .exchange-hdr .meta-line{font-size:10px;color:#6d6c65}
+    .answer-card{box-shadow:2px 2px 0 rgba(32,34,31,.11)}
+    .answer-card .exchange-hdr{background:var(--blue-light)}
+    .answer-meta{border-top:1px solid var(--line);padding:12px 15px 13px;display:flex;flex-wrap:wrap;gap:9px;align-items:center;justify-content:space-between}
+    .meta-list{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+    .chip{border:1px solid var(--ink);background:var(--white);padding:4px 7px;font-size:10px;font-weight:800}
+    .chip.mode{background:var(--blue-light)}
+    .chip.red{background:#f5dfdd;color:#85352c}
+    .chip.yellow{background:#fff0d6;color:#795820}
+    .chip.green{background:#e8f3ea;color:#345f46}
+    .metadata-row{margin:0 15px 13px;font-size:11px;color:#77746d;line-height:1.5;overflow-wrap:anywhere}
+    .metadata-row strong{color:#3d4340}
+    details.reason{margin:0 15px 13px;background:#f7f5ef;border-left:3px solid #8eafc7;padding:7px 10px;font-size:11px;line-height:1.5}
+    details.reason summary{cursor:pointer;font-weight:800}
+    details.reason div{margin-top:7px;color:#60615d}
+    .warning{margin:0 15px 12px;background:#fff0d6;border:1px solid #c9a06f;color:#77592a;padding:10px;font-size:11px}
+    .compare-action{border:2px solid var(--ink);padding:8px 10px;font-size:10px;font-weight:900;background:var(--white);box-shadow:2px 2px 0 var(--ink)}
+    .compare-action:hover{background:var(--blue-light)}
+    .comparison-slot{padding:0 15px 15px}
+    .comparison{background:#f3f0e9;border:1px solid var(--ink);padding:12px}
+    .comparison h4{font-size:12px;margin:0 0 12px}
+    .comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .comparison-column{background:var(--white);border:1px solid var(--ink);padding:12px;min-width:0}
+    .comparison-column h5{font-size:11px;margin:0 0 6px}
+    .comparison-column p{font-size:12px;color:#4e4b46;line-height:1.5;white-space:pre-line;margin:0 0 10px;overflow-wrap:anywhere}
+    .comparison-column small{font-size:10px;color:#7f7c73}
+    .loading-line{padding:16px;border:1px solid var(--line);background:var(--white);font-size:12px;font-weight:700;color:#716c64}
+    .loading-line::after{content:"";display:inline-block;width:6px;height:6px;margin-left:10px;background:var(--blue);animation:flash 1s infinite alternate}
+    @keyframes flash{to{opacity:.2}}
+    .prompt-area{border-top:2px solid var(--ink);background:var(--white);padding:15px 16px 14px}
+    .prompt-label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1.15px;margin-bottom:9px}
+    .prompt-line{display:flex;gap:9px}
+    .prompt-line input{min-width:0;flex:1;padding:12px 13px;background:#f9f7f3;border:2px solid var(--ink);border-radius:0;outline:0;font-size:12px}
+    .prompt-line input:focus{background:var(--white);box-shadow:0 0 0 3px #c0ddf2}
+    .primary{background:var(--blue);color:white;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:11px 17px;font-size:12px;font-weight:900;border-radius:0;white-space:nowrap}
+    .primary:hover{background:var(--blue-hover)}
+    .prompt-foot{margin-top:9px;display:flex;gap:10px;justify-content:space-between;font-size:10px;color:#837d73}
+    .right-sidebar{display:flex;flex-direction:column;gap:17px;overflow-y:auto;padding:0 7px 8px 0}
+    .right-sidebar .outline-panel{overflow:hidden;flex-shrink:0}
+    .right-heading{padding:15px 15px 12px;border-bottom:2px solid var(--ink);display:flex;align-items:center;justify-content:space-between}
+    .right-heading h2{font-size:17px;margin:0;font-weight:900;letter-spacing:-.45px}
+    .aside-link{font-size:10px;font-weight:800;text-decoration:underline;cursor:pointer;background:none;border:0;padding:0}
+    .scenario-section{padding:13px 15px 12px}
+    .scenario-section+.scenario-section{border-top:1px solid var(--line)}
+    .scenario-caption{color:#2e658d;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:900;margin:0 0 8px}
+    .question-button{width:100%;display:flex;justify-content:space-between;gap:10px;background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;text-align:left;padding:10px 0;font-size:12px;line-height:1.45;margin-top:0}
+    .question-button:hover{background:var(--blue-faint);border-color:var(--blue-hover);padding-left:5px;padding-right:5px}
+    .question-button .arrow{font-weight:900;color:var(--blue);flex:0 0 auto}
+    .status-panel{padding:0 15px 15px}
+    .status-panel .status-row{font-size:11px;display:flex;align-items:start;justify-content:space-between;gap:7px;padding:10px 0;border-bottom:1px solid var(--line)}
+    .status-panel .status-row label{color:#77716b;flex:0 0 40%}
+    .status-panel .status-row strong{flex:1;text-align:right;font-size:11px;overflow-wrap:anywhere}
+    .reason-inline{font-size:11px;line-height:1.6;color:#68645d;padding-top:11px}
+    .right-notice{background:#f2f1eb;padding:12px 14px;font-size:11px;line-height:1.55;color:#65625d;border-top:1px solid var(--line)}
+    .right-notice strong{color:var(--ink)}
+    .overlay{position:fixed;inset:0;background:rgba(30,33,33,.55);display:flex;align-items:center;justify-content:center;padding:26px;z-index:40}
+    .overlay.hidden{display:none}
+    .modal{width:min(810px,96vw);max-height:88vh;overflow:auto;background:var(--paper);border:2px solid var(--ink);box-shadow:7px 7px 0 var(--ink)}
+    .modal-head{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:17px 20px;border-bottom:2px solid var(--ink);background:var(--white)}
+    .modal-head h2{font-size:21px;letter-spacing:-.5px;margin:0}
+    .modal-head p{font-size:11px;color:#74706a;margin:5px 0 0}
+    .modal-close{border:2px solid var(--ink);font-size:19px;font-weight:900;background:var(--white);padding:0;width:35px;height:35px;box-shadow:2px 2px 0 var(--ink)}
+    .modal-body{padding:19px 20px;overflow:auto}
+    .benchmark-table{border-collapse:collapse;width:100%;font-size:12px;background:var(--white);border:1px solid var(--ink)}
+    .benchmark-table th{background:var(--blue-light);text-align:left;font-size:11px;border-bottom:2px solid var(--ink);padding:12px 10px}
+    .benchmark-table td{border-bottom:1px solid var(--line);padding:12px 10px;vertical-align:top}
+    .benchmark-table td:not(:first-child){font-family:Consolas,monospace;font-size:11px}
+    .benchmark-note{background:var(--blue-light);margin-top:13px;padding:12px 14px;font-size:11px;line-height:1.6;color:#3c586c;border:1px solid #b9d4e7}
+    .modal-foot{padding:13px 20px;display:flex;justify-content:flex-end;border-top:1px solid var(--ink)}
+    @media (max-width:1390px){.workspace-grid{grid-template-columns:206px minmax(480px,1fr) 260px;gap:18px;padding:22px 20px 22px}.masthead{padding:0 19px}.top-navigation button{padding:10px}.right-sidebar{gap:12px}}
+    @media (max-width:1120px){.app{min-width:1050px}.workspace-grid{grid-template-columns:192px minmax(480px,1fr) 230px;gap:15px;padding:18px 14px 18px}}
 
-    body {
-      font-family: var(--font-sans);
-      background-color: #F8FAFC;
-      color: #0F172A;
-    }
-
-    .font-mono {
-      font-family: var(--font-mono);
-    }
-
-    /* Smart Highlight Badge */
-    mark {
-      background: #EEF2FF;
-      color: #3730A3;
-      font-weight: 600;
-      padding: 1.5px 6px;
-      border-radius: 6px;
-      border: 1px solid #C7D2FE;
-      font-family: var(--font-mono);
-      font-size: 0.88em;
-      display: inline-block;
-      margin: 0 1px;
-    }
-
-    /* Custom Scrollbars */
-    ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #CBD5E1;
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #94A3B8;
-    }
-
-    /* Typing Skeleton Pulse */
-    .skeleton-wave {
-      background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
-      background-size: 200% 100%;
-      animation: wave 1.5s infinite;
-    }
-    @keyframes wave {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
+    /* UET visual identity: use light backgrounds and white type on solid blue */
+    .brand-block{box-shadow:none}
+    .top-navigation button.is-active:hover,.mode-controls button.selected:hover,.primary:hover{color:#fff}
+    .top-navigation button.is-active:focus-visible,.mode-controls button.selected:focus-visible,.primary:focus-visible{outline-color:#0a4d7c}
+    .right-heading{background:var(--white)}
+    .document-header{background:#fdfdfc}
+    .question-card .exchange-hdr{background:#f1f3f3}
+    .chip.mode{background:var(--blue-light);color:#225c84}
+    .profile-fields summary{color:#205f8c}
+    .aside-link:hover{color:var(--blue-hover)}
+    .welcome{background:var(--white)}
+    .prompt-line input:focus{box-shadow:0 0 0 3px #aecfe5}
+    button{transition:background .12s ease,color .12s ease,transform .12s ease}
+    .modal-close:hover{background:var(--blue-light)}
   </style>
+  <link rel="icon" type="image/png" href="/static/assets/uet-logo.png">
 </head>
-
-<body class="h-screen w-screen overflow-hidden flex flex-row">
-
-  <!-- =========================================================================
-       COLUMN 1: LEFT NAVIGATION SIDEBAR (Enterprise Dark Navy #0B1528)
-       ========================================================================= -->
-  <aside class="w-64 bg-[#0B1528] text-white flex flex-col justify-between shrink-0 border-r border-slate-800 select-none z-20">
-    <!-- Top Brand & Profile -->
-    <div class="p-4 space-y-4">
-      <!-- Brand Logo -->
-      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-bold text-white shadow-md shadow-blue-500/20">
-            <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
-          </div>
-          <div>
-            <div class="font-extrabold text-sm tracking-tight leading-tight">UET StudentHub</div>
-            <div class="text-[10px] text-blue-300 font-medium">ChronoReg AI Workspace</div>
-          </div>
-        </div>
-        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-semibold">v2.0</span>
+<body>
+  <div class="app">
+    <header class="masthead">
+      <div class="brand" aria-label="ChronoReg UET">
+        <div class="brand-block" aria-hidden="true"><img src="/static/assets/uet-logo.png" alt="" width="52" height="52"></div>
+        <div><div class="brand-word">ChronoReg</div><div class="brand-sub">Hỏi đáp học vụ · UET</div></div>
       </div>
-
-      <!-- Student Profile Card (Glassmorphism) -->
-      <div class="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-3.5 space-y-3 backdrop-blur-sm">
-        <div class="flex items-center gap-3">
-          <div class="relative">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-xs text-white shadow-inner">
-              NMQ
-            </div>
-            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-[#0B1528]"></span>
-          </div>
-          <div class="min-w-0 flex-1">
-            <div class="font-bold text-xs truncate text-slate-100">Nguyễn Minh Quân</div>
-            <div class="text-[11px] font-mono text-slate-400">MSSV: 23020123</div>
-          </div>
-        </div>
-
-        <div class="space-y-1.5 pt-1 border-t border-white/[0.06] text-[11px] text-slate-300">
-          <div class="flex justify-between items-center">
-            <span class="text-slate-400">Khóa học:</span>
-            <span class="font-semibold text-slate-200">QH-2023 (K68)</span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="text-slate-400">Ngành:</span>
-            <span class="font-semibold text-slate-200 truncate max-w-[120px]">CNTT Chuẩn</span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="text-slate-400">GPA tích lũy:</span>
-            <span class="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold text-[10px]">3.45 / 4.0</span>
-          </div>
-
-          <!-- Progress Bar -->
-          <div class="pt-1.5">
-            <div class="flex justify-between text-[10px] text-slate-400 mb-1">
-              <span>Tiến độ tín chỉ</span>
-              <span class="font-mono text-blue-300 font-semibold">82/130 (63%)</span>
-            </div>
-            <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-              <div class="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" style="width: 63%"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Navigation Menu -->
-      <nav class="space-y-1 pt-1">
-        <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-2 mb-1.5">Phân hệ sinh viên</div>
-        <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] transition">
-          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-          <span>Tổng quan học tập</span>
-        </a>
-        <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] transition">
-          <i data-lucide="calendar" class="w-4 h-4"></i>
-          <span>Thời khóa biểu</span>
-        </a>
-        <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] transition">
-          <i data-lucide="credit-card" class="w-4 h-4"></i>
-          <span>Học phí &amp; Học bổng</span>
-        </a>
-        <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-white bg-blue-600/20 border-l-2 border-blue-500 text-blue-400 transition">
-          <i data-lucide="bot" class="w-4 h-4 text-blue-400"></i>
-          <span>Trợ lý Quy chế AI</span>
-        </a>
+      <nav class="top-navigation" aria-label="Điều hướng tra cứu">
+        <button class="is-active" type="button" onclick="focusSearch()">Hỏi đáp</button>
+        <button type="button" onclick="openBenchmarkModal()">Bảng đánh giá</button>
+        <button type="button" onclick="focusTopics()">Câu hỏi thường gặp</button>
       </nav>
-    </div>
-
-    <!-- Bottom System Status -->
-    <div class="p-3.5 border-t border-slate-800 text-[11px] text-slate-400 space-y-1 bg-black/20">
-      <div class="flex items-center justify-between">
-        <span class="flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Engine Status</span>
-        </span>
-        <span class="font-mono text-emerald-400 text-[10px]">READY</span>
-      </div>
-      <div class="text-[10px] text-slate-500">Dual-Engine: LoRA 3B + Chrono-RAG</div>
-    </div>
-  </aside>
-
-
-  <!-- =========================================================================
-       COLUMN 2: MAIN AI WORKSPACE (Center Chat Stream & Prompt Dock)
-       ========================================================================= -->
-  <main class="flex-1 flex flex-col min-w-0 bg-slate-50/70 relative h-full">
-
-    <!-- Top Workspace Header Bar -->
-    <header class="h-14 border-b border-slate-200/80 bg-white/80 backdrop-blur-md px-6 flex items-center justify-between shrink-0 z-10">
-      <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2 text-slate-800 font-bold text-sm">
-          <i data-lucide="message-square-code" class="w-4 h-4 text-blue-600"></i>
-          <span>Trợ lý Học vụ AI</span>
-        </div>
-        <span class="hidden md:inline text-xs text-slate-400">|</span>
-        <span class="hidden md:inline text-xs text-slate-500 font-medium">Hỏi đáp quy chế đào tạo &amp; định mức tài chính UET</span>
-      </div>
-
-      <!-- Segmented Pill Control for Engine Selection -->
-      <div class="flex items-center gap-3">
-        <div class="bg-slate-100 p-0.5 rounded-xl border border-slate-200/80 flex items-center text-xs font-semibold select-none">
-          <button id="btnModeAuto" onclick="setEngineMode('auto')"
-                  class="px-3 py-1 rounded-lg transition-all text-blue-600 bg-white shadow-sm font-bold flex items-center gap-1.5">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-            <span>Auto Router</span>
-          </button>
-          <button id="btnModeLora" onclick="setEngineMode('continual_lora')"
-                  class="px-3 py-1 rounded-lg transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
-            <i data-lucide="zap" class="w-3.5 h-3.5 text-indigo-500"></i>
-            <span>LoRA 3B</span>
-          </button>
-          <button id="btnModeRag" onclick="setEngineMode('chrono_rag')"
-                  class="px-3 py-1 rounded-lg transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
-            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-teal-600"></i>
-            <span>Chrono-RAG</span>
-          </button>
-        </div>
-
-        <button onclick="openBenchmarkModal()"
-                class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 shadow-sm transition active:scale-95">
-          <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 text-blue-600"></i>
-          <span class="hidden sm:inline">Benchmark 90 câu</span>
-        </button>
-      </div>
+      <div class="header-meta"><strong>TRƯỜNG ĐẠI HỌC CÔNG NGHỆ</strong>Đại học Quốc gia Hà Nội</div>
     </header>
-
-    <!-- Chat Message Container (Centered max-w-3xl) -->
-    <div id="chatScrollContainer" class="flex-1 overflow-y-auto px-4 py-6 scroll-smooth">
-      <div id="chatList" class="max-w-3xl mx-auto space-y-5 pb-32">
-
-        <!-- Welcome Message from Assistant -->
-        <div class="flex items-start gap-3.5">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shrink-0 text-white shadow-md shadow-blue-500/20">
-            <i data-lucide="bot" class="w-4 h-4"></i>
-          </div>
-          <div class="flex-1 max-w-2xl bg-white rounded-2xl rounded-tl-none p-5 border border-slate-200/90 shadow-sm space-y-3">
-            <div class="font-bold text-sm text-slate-900 flex items-center gap-2">
-              <span>Xin chào Nguyễn Minh Quân! 👋</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-200 font-semibold">ChronoReg v2.0 Ready</span>
-            </div>
-            <p class="text-xs text-slate-600 leading-relaxed">
-              Tôi là <strong>Trợ lý Học vụ Thông minh UET</strong>, được trang bị kiến trúc định tuyến thích ứng giữa <strong>Continual LoRA 3B</strong> và <strong>Chrono-RAG 3B</strong> để giải đáp toàn diện các vấn đề học vụ:
-            </p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              <div class="p-2.5 rounded-xl bg-indigo-50/60 border border-indigo-100 flex items-start gap-2">
-                <i data-lucide="zap" class="w-4 h-4 text-indigo-600 shrink-0 mt-0.5"></i>
-                <div>
-                  <div class="font-bold text-indigo-900">Continual LoRA 3B</div>
-                  <div class="text-[11px] text-indigo-700">Tư vấn quy trình học vụ, bảo lưu, cảnh báo học vụ, chuẩn đầu ra mượt mà.</div>
-                </div>
-              </div>
-              <div class="p-2.5 rounded-xl bg-teal-50/60 border border-teal-100 flex items-start gap-2">
-                <i data-lucide="shield-check" class="w-4 h-4 text-teal-700 shrink-0 mt-0.5"></i>
-                <div>
-                  <div class="font-bold text-teal-900">Chrono-RAG 3B + SHA Lock</div>
-                  <div class="text-[11px] text-teal-700">Tra cứu định mức học phí, học bổng theo năm học 2021–2026 chính xác 100%.</div>
-                </div>
-              </div>
-            </div>
-            <p class="text-[11px] text-slate-400 italic">
-              💡 Bạn có thể chọn nhanh các kịch bản thử nghiệm ở cột bên phải hoặc gõ câu hỏi vào thanh nhập liệu bên dưới.
-            </p>
-          </div>
+    <div class="workspace-grid">
+      <aside class="side">
+        <div class="outline-panel">
+          <section class="side-block">
+            <div class="block-kicker">Dịch vụ sinh viên</div>
+            <h2 class="block-title">Danh mục</h2>
+            <nav aria-label="Phân hệ sinh viên">
+              <a href="#" class="side-link"><span>Tổng quan học tập</span><span class="side-index">01</span></a>
+              <a href="#" class="side-link"><span>Thời khóa biểu</span><span class="side-index">02</span></a>
+              <a href="#" class="side-link"><span>Học phí &amp; Học bổng</span><span class="side-index">03</span></a>
+              <a href="#" class="side-link current" aria-current="page"><span>Hỏi đáp học vụ</span><span class="side-index">04</span></a>
+            </nav>
+          </section>
+          <section class="side-block profile-block">
+            <div class="block-kicker">Tài khoản</div>
+            <h2 class="block-title">Thông tin sinh viên</h2>
+            <p class="profile-empty">Hồ sơ sinh viên chưa được liên kết với hệ thống.</p>
+            <details class="profile-fields"><summary>Xem các trường thông tin</summary>
+              <div class="data-row"><span class="field-label">Tên sinh viên</span><span class="field-value">Chưa kết nối</span></div>
+              <div class="data-row"><span class="field-label">MSSV</span><span class="field-value">Chưa kết nối</span></div>
+              <div class="data-row"><span class="field-label">Khóa</span><span class="field-value">Chưa kết nối</span></div>
+              <div class="data-row"><span class="field-label">Ngành</span><span class="field-value">Chưa kết nối</span></div>
+              <div class="data-row"><span class="field-label">GPA tích lũy</span><span class="field-value">Chưa kết nối</span></div>
+              <div class="data-row"><span class="field-label">Tiến độ tín chỉ</span><span class="field-value">Chưa kết nối</span></div>
+            </details>
+          </section>
+          <section class="side-block">
+            <div class="block-kicker">Phương thức xử lý</div>
+            <div class="side-footer"><span class="dot"></span><span>Tự động · LoRA · RAG</span></div>
+          </section>
         </div>
-
-      </div>
-    </div>
-
-    <!-- Floating Prompt Input Dock (Anchored at Bottom Center) -->
-    <div class="absolute bottom-4 left-0 right-0 max-w-3xl mx-auto px-4 pointer-events-none z-10">
-      <div class="pointer-events-auto bg-white/95 backdrop-blur-md rounded-2xl shadow-xl shadow-slate-900/10 border border-slate-200/90 p-2 flex items-center gap-2 transition-all focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-400">
-        <div class="pl-2 text-slate-400">
-          <i data-lucide="help-circle" class="w-5 h-5"></i>
+      </aside>
+      <main class="center">
+        <div class="page-intro">
+          <div class="eyebrow">UET · HỖ TRỢ SINH VIÊN</div>
+          <h1>Hỏi đáp học vụ</h1>
+          <p>Quy chế đào tạo, thủ tục, học phí và học bổng dành cho sinh viên UET.</p>
         </div>
-        <input id="promptInput" type="text"
-               placeholder="Hỏi về học phí 2026, quy trình bảo lưu, học bổng KKHT, tín chỉ..."
-               class="flex-1 bg-transparent px-2 py-2 text-sm text-slate-800 placeholder-slate-400 outline-none"
-               onkeydown="if(event.key === 'Enter') handleSend();" />
-        <button id="btnSend" onclick="handleSend()"
-                class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold text-xs flex items-center gap-1.5 shadow-md shadow-blue-500/20 transition">
-          <span>Gửi</span>
-          <i data-lucide="send" class="w-3.5 h-3.5"></i>
-        </button>
-      </div>
-      <div class="text-center text-[10px] text-slate-400 mt-1.5 flex items-center justify-center gap-3">
-        <span>Nhấn <kbd class="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-[9px] font-mono text-slate-600">Enter ↵</kbd> để gửi</span>
-        <span>•</span>
-        <span>Kiến trúc độc lập Continual LoRA vs Chrono-RAG</span>
-      </div>
-    </div>
-
-  </main>
-
-
-  <!-- =========================================================================
-       COLUMN 3: RIGHT INSPECTOR & SCENARIO PANEL (w-80 Border Left)
-       ========================================================================= -->
-  <aside class="w-80 border-l border-slate-200 bg-white p-5 hidden xl:flex flex-col overflow-y-auto space-y-6 shrink-0 z-10 select-none">
-
-    <!-- Block 1: Scenarios Library (Categorized into 3 neat groups) -->
-    <div>
-      <div class="flex items-center gap-2 mb-3">
-        <i data-lucide="layers" class="w-4 h-4 text-blue-600"></i>
-        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-700">Kịch bản Kiểm thử Nhanh</h3>
-      </div>
-
-      <div class="space-y-4">
-        <!-- Group 1: LoRA Strength -->
-        <div class="space-y-1.5">
-          <div class="text-[11px] font-bold text-indigo-700 flex items-center gap-1.5">
-            <i data-lucide="zap" class="w-3 h-3 text-indigo-600"></i>
-            <span>Ưu thế Continual LoRA 3B (Quy trình)</span>
-          </div>
-          <button onclick="runScenario('Quy trình bảo lưu kết quả học tập tại UET như thế nào?')"
-                  class="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/40 text-xs text-slate-700 transition flex items-center justify-between group">
-            <span class="line-clamp-2">Quy trình bảo lưu kết quả học tập tại UET?</span>
-            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 shrink-0"></i>
-          </button>
-          <button onclick="runScenario('Sinh viên bị cảnh báo học vụ cần làm gì để cải thiện?')"
-                  class="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/40 text-xs text-slate-700 transition flex items-center justify-between group">
-            <span class="line-clamp-2">Cách xử lý khi bị cảnh báo kết quả học tập?</span>
-            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 shrink-0"></i>
-          </button>
-        </div>
-
-        <!-- Group 2: RAG Strength -->
-        <div class="space-y-1.5">
-          <div class="text-[11px] font-bold text-teal-700 flex items-center gap-1.5">
-            <i data-lucide="shield-check" class="w-3 h-3 text-teal-600"></i>
-            <span>Ưu thế Chrono-RAG (Định mức &amp; Năm)</span>
-          </div>
-          <button onclick="runScenario('Học phí tín chỉ chương trình chuẩn năm học 2026-2027 là bao nhiêu?')"
-                  class="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-teal-300 hover:bg-teal-50/40 text-xs text-slate-700 transition flex items-center justify-between group">
-            <span class="line-clamp-2">Định mức học phí tín chỉ chuẩn 2026-2027?</span>
-            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-teal-600 shrink-0"></i>
-          </button>
-          <button onclick="runScenario('Điều kiện GPA để nhận học bổng KKHT mới nhất hiện hành là gì?')"
-                  class="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-teal-300 hover:bg-teal-50/40 text-xs text-slate-700 transition flex items-center justify-between group">
-            <span class="line-clamp-2">Điều kiện GPA xét học bổng KKHT mới nhất?</span>
-            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-teal-600 shrink-0"></i>
-          </button>
-        </div>
-
-        <!-- Group 3: Risk Gates (Yellow / Red) -->
-        <div class="space-y-1.5">
-          <div class="text-[11px] font-bold text-amber-700 flex items-center gap-1.5">
-            <i data-lucide="alert-triangle" class="w-3 h-3 text-amber-600"></i>
-            <span>Cổng Rủi ro: Giao thoa &amp; Chặn An toàn</span>
-          </div>
-          <button onclick="runScenario('Quy định học phí năm 2023 khác gì so với năm 2026?')"
-                  class="w-full text-left p-2.5 rounded-xl border border-amber-200 bg-amber-50/30 hover:bg-amber-50 text-xs text-amber-900 transition flex items-center justify-between group">
-            <span class="line-clamp-2 font-medium">So sánh học phí năm 2023 và 2026 (YELLOW)</span>
-            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-amber-500 group-hover:text-amber-700 shrink-0"></i>
-          </button>
-          <button onclick="runScenario('Xin cứu xét ngoại lệ miễn học phí do hoàn cảnh khó khăn đặc biệt')"
-                  class="w-full text-left p-2.5 rounded-xl border border-rose-200 bg-rose-50/30 hover:bg-rose-50 text-xs text-rose-900 transition flex items-center justify-between group">
-            <span class="line-clamp-2 font-medium">Xin ngoại lệ vượt quy chế (RED Gate)</span>
-            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-rose-500 group-hover:text-rose-700 shrink-0"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Block 2: Live Decision Telemetry -->
-    <div class="pt-4 border-t border-slate-200">
-      <div class="flex items-center gap-2 mb-3">
-        <i data-lucide="activity" class="w-4 h-4 text-blue-600"></i>
-        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-700">Live Decision Telemetry</h3>
-      </div>
-
-      <div id="telemetryBox" class="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 space-y-3">
-        <div class="text-[11px] text-slate-500 flex items-center justify-between">
-          <span>Trạng thái định tuyến:</span>
-          <span id="telemetryStatus" class="font-mono text-emerald-600 font-bold">READY</span>
-        </div>
-
-        <div class="space-y-2 text-[11px]">
-          <!-- Dimension 1: Temporal -->
-          <div>
-            <div class="flex justify-between text-slate-600 mb-0.5">
-              <span>Độ nhạy thời gian (Temporal)</span>
-              <span id="telMetricTemporal" class="font-mono font-semibold text-slate-800">100%</span>
-            </div>
-            <div class="w-full h-1 bg-slate-200 rounded-full overflow-hidden">
-              <div id="telBarTemporal" class="h-full bg-blue-500 rounded-full" style="width: 100%"></div>
+        <section class="outline-panel document-panel" aria-label="Phiên tra cứu học vụ">
+          <div class="document-header">
+            <div><div class="doc-heading">Nội dung trao đổi</div><div class="doc-sub">Câu hỏi và phản hồi trong phiên hiện tại</div></div>
+            <div class="mode-controls" role="group" aria-label="Chế độ mô hình">
+              <button id="btnModeAuto" class="selected" type="button" onclick="setEngineMode('auto')">Tự động</button>
+              <button id="btnModeLora" type="button" onclick="setEngineMode('continual_lora')">LoRA 3B</button>
+              <button id="btnModeRag" type="button" onclick="setEngineMode('chrono_rag')">Chrono-RAG</button>
             </div>
           </div>
+          <div id="chatScrollContainer">
+            <div id="chatList">
+              <section class="welcome">
+                <div class="section-no">BẮT ĐẦU</div>
+                <h2>Đặt câu hỏi về học vụ</h2>
+                <p>Nhập nội dung cần hỏi vào ô bên dưới hoặc chọn câu hỏi thường gặp theo từng nhóm ở bên phải.</p>
 
-          <!-- Dimension 2: Numeric -->
-          <div>
-            <div class="flex justify-between text-slate-600 mb-0.5">
-              <span>Độ chính xác số liệu (Precision)</span>
-              <span id="telMetricNumeric" class="font-mono font-semibold text-slate-800">100%</span>
-            </div>
-            <div class="w-full h-1 bg-slate-200 rounded-full overflow-hidden">
-              <div id="telBarNumeric" class="h-full bg-teal-500 rounded-full" style="width: 100%"></div>
-            </div>
-          </div>
-
-          <!-- Dimension 3: Speed -->
-          <div>
-            <div class="flex justify-between text-slate-600 mb-0.5">
-              <span>Tốc độ phản hồi (Speed)</span>
-              <span id="telMetricSpeed" class="font-mono font-semibold text-slate-800">&lt; 15ms</span>
-            </div>
-            <div class="w-full h-1 bg-slate-200 rounded-full overflow-hidden">
-              <div id="telBarSpeed" class="h-full bg-emerald-500 rounded-full" style="width: 95%"></div>
+              </section>
             </div>
           </div>
-
-          <!-- Dimension 4: Synthesis -->
-          <div>
-            <div class="flex justify-between text-slate-600 mb-0.5">
-              <span>Nội suy quy trình (Synthesis)</span>
-              <span id="telMetricSynthesis" class="font-mono font-semibold text-slate-800">92%</span>
+          <div class="prompt-area">
+            <div class="prompt-label">Câu hỏi của bạn</div>
+            <div class="prompt-line">
+              <input id="promptInput" autocomplete="off" type="text" placeholder="Nhập nội dung cần hỏi về học vụ, học phí, học bổng..." onkeydown="if(event.key==='Enter') handleSend()">
+              <button class="primary" id="btnSend" type="button" onclick="handleSend()">Gửi câu hỏi</button>
             </div>
-            <div class="w-full h-1 bg-slate-200 rounded-full overflow-hidden">
-              <div id="telBarSynthesis" class="h-full bg-indigo-500 rounded-full" style="width: 92%"></div>
-            </div>
+            <div class="prompt-foot"><span>Nhấn Enter để gửi câu hỏi</span><span>ChronoReg · UET</span></div>
           </div>
-        </div>
-
-        <div id="telReasonText" class="text-[10px] text-slate-500 italic pt-1 border-t border-slate-200/60 leading-normal">
-          Sẵn sàng định tuyến câu hỏi dựa trên tín hiệu thời gian, định mức con số và quy chế đào tạo UET.
-        </div>
-      </div>
-    </div>
-
-  </aside>
-
-
-  <!-- =========================================================================
-       BENCHMARK MODAL (90 Q&A Formal Verification)
-       ========================================================================= -->
-  <div id="benchmarkModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full border border-slate-200 overflow-hidden flex flex-col max-h-[85vh]">
-      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-            <i data-lucide="award" class="w-4 h-4"></i>
+        </section>
+      </main>
+      <aside class="right-sidebar" aria-label="Câu hỏi thường gặp và chi tiết phản hồi">
+        <section class="outline-panel" id="sampleQuestions">
+          <div class="right-heading"><h2>Câu hỏi thường gặp</h2><button class="aside-link" type="button" onclick="focusSearch()">Tự đặt câu hỏi</button></div>
+          <div class="scenario-section">
+            <p class="scenario-caption">Học tập và thủ tục</p>
+            <button class="question-button" onclick="runScenario('Quy trình bảo lưu kết quả học tập tại UET như thế nào?')"><span>Quy trình bảo lưu kết quả học tập tại UET?</span><span class="arrow">↗</span></button>
+            <button class="question-button" onclick="runScenario('Sinh viên bị cảnh báo học vụ cần làm gì để cải thiện?')"><span>Cách xử lý khi bị cảnh báo kết quả học tập?</span><span class="arrow">↗</span></button>
           </div>
-          <div>
-            <h2 class="font-bold text-sm text-slate-900">Bảng So sánh Benchmark Khoa học</h2>
-            <p class="text-[11px] text-slate-500">Đánh giá trên bộ 90 câu hỏi chuẩn hóa có yếu tố thời gian UET 2021–2026</p>
+          <div class="scenario-section">
+            <p class="scenario-caption">Học phí và học bổng</p>
+            <button class="question-button" onclick="runScenario('Học phí tín chỉ chương trình chuẩn năm học 2026-2027 là bao nhiêu?')"><span>Định mức học phí tín chỉ chuẩn 2026–2027?</span><span class="arrow">↗</span></button>
+            <button class="question-button" onclick="runScenario('Điều kiện GPA để nhận học bổng KKHT mới nhất hiện hành là gì?')"><span>Điều kiện GPA xét học bổng KKHT hiện hành?</span><span class="arrow">↗</span></button>
           </div>
-        </div>
-        <button onclick="closeBenchmarkModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 transition">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <div class="p-6 overflow-y-auto space-y-4">
-        <table class="w-full text-xs border-collapse">
-          <thead>
-            <tr class="text-left border-b border-slate-200">
-              <th class="py-2.5 px-3 text-slate-500 font-semibold">Chỉ số Đánh giá (Metrics)</th>
-              <th class="py-2.5 px-3 text-slate-500 font-semibold">Naive RAG</th>
-              <th class="py-2.5 px-3 text-teal-700 font-bold bg-teal-50/80 rounded-t-lg">Chrono-RAG 3B ⭐</th>
-              <th class="py-2.5 px-3 text-indigo-700 font-bold bg-indigo-50/80 rounded-t-lg">Continual LoRA 3B</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100 font-mono">
-            <tr>
-              <td class="py-3 px-3 font-sans font-medium text-slate-700">Key Fact Score (Chính xác số liệu)</td>
-              <td class="py-3 px-3 text-rose-600 font-bold">49.85%</td>
-              <td class="py-3 px-3 text-teal-700 font-bold bg-teal-50/50">100.0% ✅</td>
-              <td class="py-3 px-3 text-slate-400 bg-indigo-50/50">N/A *</td>
-            </tr>
-            <tr>
-              <td class="py-3 px-3 font-sans font-medium text-slate-700">Temporal Doc Accuracy (Đúng văn bản)</td>
-              <td class="py-3 px-3 text-amber-600 font-bold">66.67%</td>
-              <td class="py-3 px-3 text-teal-700 font-bold bg-teal-50/50">100.0% ✅</td>
-              <td class="py-3 px-3 text-slate-400 bg-indigo-50/50">N/A *</td>
-            </tr>
-            <tr>
-              <td class="py-3 px-3 font-sans font-medium text-slate-700">Temporal Year Accuracy (Đúng mốc năm)</td>
-              <td class="py-3 px-3 text-amber-600 font-bold">71.11%</td>
-              <td class="py-3 px-3 text-teal-700 font-bold bg-teal-50/50">100.0% ✅</td>
-              <td class="py-3 px-3 text-slate-400 bg-indigo-50/50">N/A *</td>
-            </tr>
-            <tr>
-              <td class="py-3 px-3 font-sans font-medium text-slate-700">Độ trễ trung bình (Latency)</td>
-              <td class="py-3 px-3 text-slate-600">31.47 ms</td>
-              <td class="py-3 px-3 text-teal-700 font-bold bg-teal-50/50">7.44 ms ⚡</td>
-              <td class="py-3 px-3 text-indigo-700 font-bold bg-indigo-50/50">16.40 ms (Param)</td>
-            </tr>
-            <tr>
-              <td class="py-3 px-3 font-sans font-medium text-slate-700">Bảo chứng toàn vẹn pháp lý (SHA Lock)</td>
-              <td class="py-3 px-3 text-slate-400">Không hỗ trợ</td>
-              <td class="py-3 px-3 text-teal-700 font-bold bg-teal-50/50">SHA-256 Lock ✅</td>
-              <td class="py-3 px-3 text-indigo-700 bg-indigo-50/50">Parametric LoRA</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-500 leading-relaxed">
-          * <strong>Ghi chú nghiên cứu:</strong> Continual LoRA 3B hoạt động dựa trên Parametric Memory từ 5 adapter (2022–2026), xuất sắc trong nội suy quy trình học vụ và thuật ngữ nhưng không trích xuất trực tiếp văn bản gốc. Chrono-RAG giải quyết triệt để rủi ro ảo giác số liệu bằng cơ chế truy xuất có lọc năm học và đối chiếu quan hệ pháp lý.
-        </div>
-      </div>
-
-      <div class="px-6 py-3.5 border-t border-slate-200 bg-slate-50/50 flex justify-end">
-        <button onclick="closeBenchmarkModal()"
-                class="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold text-xs hover:bg-blue-700 transition">
-          Đóng cửa sổ
-        </button>
-      </div>
+          <div class="scenario-section">
+            <p class="scenario-caption">Trường hợp khác</p>
+            <button class="question-button" onclick="runScenario('Quy định học phí năm 2023 khác gì so với năm 2026?')"><span>So sánh học phí năm 2023 và năm 2026</span><span class="arrow">↗</span></button>
+            <button class="question-button" onclick="runScenario('Xin cứu xét ngoại lệ miễn học phí do hoàn cảnh khó khăn đặc biệt')"><span>Xin xét ngoại lệ miễn học phí</span><span class="arrow">↗</span></button>
+          </div>
+          <div class="right-notice">Chọn một câu hỏi ở trên để bắt đầu, hoặc nhập câu hỏi khác trong khung trao đổi.</div>
+        </section>
+        <section class="outline-panel">
+          <div class="right-heading"><h2>Chi tiết phản hồi</h2></div>
+          <div class="status-panel" id="telemetryBox">
+            <div class="status-row"><label>Chế độ</label><strong id="telemetryStatus">Chưa gửi câu hỏi</strong></div>
+            <div class="status-row"><label>Yếu tố thời gian</label><strong id="telMetricTemporal">—</strong></div>
+            <div class="status-row"><label>Yếu tố số liệu</label><strong id="telMetricNumeric">—</strong></div>
+            <div class="status-row"><label>Độ trễ</label><strong id="telMetricSpeed">—</strong></div>
+            <div class="status-row"><label>Phân loại tín hiệu</label><strong id="telMetricSynthesis">—</strong></div>
+            <p class="reason-inline" id="telReasonText">Thông tin định tuyến được hiển thị sau khi có phản hồi.</p>
+          </div>
+        </section>
+      </aside>
     </div>
   </div>
-
-
-  <!-- =========================================================================
-       JAVASCRIPT LOGIC
-       ========================================================================= -->
+  <div id="benchmarkModal" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="benchmarkTitle" onclick="if(event.target===this) closeBenchmarkModal()">
+    <section class="modal">
+      <header class="modal-head"><div><div class="block-kicker">THÔNG TIN ĐÁNH GIÁ</div><h2 id="benchmarkTitle">Bảng đánh giá</h2><p>Đối chiếu các kết quả đã được lưu trong hệ thống.</p></div><button class="modal-close" type="button" aria-label="Đóng" onclick="closeBenchmarkModal()">×</button></header>
+      <div class="modal-body">
+        <table class="benchmark-table"><thead><tr><th>Chỉ số</th><th>Naive RAG</th><th>Chrono-RAG</th><th>Continual LoRA 3B</th></tr></thead><tbody>
+          <tr><td>Key Fact Score (Chính xác số liệu)</td><td>49.85%</td><td>100.0%</td><td>N/A *</td></tr>
+          <tr><td>Temporal Doc Accuracy (Đúng văn bản)</td><td>66.67%</td><td>100.0%</td><td>N/A *</td></tr>
+          <tr><td>Temporal Year Accuracy (Đúng mốc năm)</td><td>71.11%</td><td>100.0%</td><td>N/A *</td></tr>
+          <tr><td>Độ trễ trung bình (Latency)</td><td>31.47 ms</td><td>7.44 ms</td><td>16.40 ms (Param)</td></tr>
+          <tr><td>SHA Lock</td><td>Không hỗ trợ</td><td>SHA-256 Lock</td><td>Parametric LoRA</td></tr>
+        </tbody></table>
+        <p class="benchmark-note">* Bảng trên giữ các con số đang hiển thị ở giao diện cũ nhằm bảo toàn nội dung trong lượt sửa phong cách. Đây không phải chứng nhận độ chính xác mới; cần đối chiếu với bộ benchmark chính thức trước khi công bố.</p>
+      </div><div class="modal-foot"><button type="button" class="primary" onclick="closeBenchmarkModal()">Đóng bảng</button></div>
+    </section>
+  </div>
   <script>
+    'use strict';
     let currentEngineMode = 'auto';
+    let currentMessageIndex = 0;
 
     function setEngineMode(mode) {
       currentEngineMode = mode;
-      const btnAuto = document.getElementById('btnModeAuto');
-      const btnLora = document.getElementById('btnModeLora');
-      const btnRag  = document.getElementById('btnModeRag');
-
-      [btnAuto, btnLora, btnRag].forEach(btn => {
-        btn.className = 'px-3 py-1 rounded-lg transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5';
-      });
-
-      if (mode === 'auto') {
-        btnAuto.className = 'px-3 py-1 rounded-lg transition-all text-blue-600 bg-white shadow-sm font-bold flex items-center gap-1.5';
-      } else if (mode === 'continual_lora') {
-        btnLora.className = 'px-3 py-1 rounded-lg transition-all text-indigo-700 bg-white shadow-sm font-bold flex items-center gap-1.5';
-      } else if (mode === 'chrono_rag') {
-        btnRag.className = 'px-3 py-1 rounded-lg transition-all text-teal-700 bg-white shadow-sm font-bold flex items-center gap-1.5';
+      for (const [name, id] of [['auto','btnModeAuto'],['continual_lora','btnModeLora'],['chrono_rag','btnModeRag']]) {
+        const button = document.getElementById(id);
+        button.classList.toggle('selected', mode === name);
+        button.setAttribute('aria-pressed', String(mode === name));
       }
     }
-
-    function openBenchmarkModal() {
-      document.getElementById('benchmarkModal').classList.remove('hidden');
-    }
-    function closeBenchmarkModal() {
-      document.getElementById('benchmarkModal').classList.add('hidden');
-    }
-
-    function runScenario(question) {
-      document.getElementById('promptInput').value = question;
-      handleSend();
-    }
+    function focusSearch() { document.getElementById('promptInput').focus(); }
+    function focusTopics() { document.getElementById('sampleQuestions').scrollIntoView({behavior:'smooth',block:'nearest'}); }
+    function openBenchmarkModal() { document.getElementById('benchmarkModal').classList.remove('hidden'); document.querySelector('.modal-close').focus(); }
+    function closeBenchmarkModal() { document.getElementById('benchmarkModal').classList.add('hidden'); }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBenchmarkModal(); });
+    function runScenario(question) { document.getElementById('promptInput').value=question; handleSend(); }
 
     async function handleSend() {
       const input = document.getElementById('promptInput');
       const question = input.value.trim();
       if (!question) return;
-
       input.value = '';
       appendUserMessage(question);
       appendTypingSkeleton();
-
       try {
-        const res = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: question, force_engine: currentEngineMode })
-        });
+        // Preserve original StudentHub API and request contract.
+        const res = await fetch('/api/chat', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:question,force_engine:currentEngineMode})});
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         removeTypingSkeleton();
@@ -568,354 +357,113 @@
         appendErrorMessage('Lỗi kết nối server: ' + err.message);
       }
     }
-
     function appendUserMessage(text) {
-      const list = document.getElementById('chatList');
-      const div = document.createElement('div');
-      div.className = 'flex items-start justify-end gap-3';
-      div.innerHTML = `
-        <div class="max-w-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl rounded-tr-none px-4 py-2.5 text-xs shadow-md shadow-blue-500/10 leading-relaxed font-medium">
-          ${escapeHtml(text)}
-        </div>
-        <div class="w-8 h-8 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center font-bold text-xs text-slate-700 shrink-0">
-          NMQ
-        </div>
-      `;
-      list.appendChild(div);
+      // Replace the initial help text with conversation content once a question is sent.
+      document.querySelector('.welcome')?.remove();
+      const div = document.createElement('section');
+      div.className = 'exchange question-card';
+      div.innerHTML = `<div class="exchange-hdr"><span class="exchange-title">Câu hỏi đã gửi</span><span class="meta-line">${String(++currentMessageIndex).padStart(2,'0')} / QUERY</span></div><div class="exchange-body">${escapeHtml(text)}</div>`;
+      document.getElementById('chatList').appendChild(div);
       scrollToBottom();
-      lucide.createIcons();
     }
-
     function appendTypingSkeleton() {
-      const list = document.getElementById('chatList');
+      removeTypingSkeleton();
       const div = document.createElement('div');
-      div.id = 'typingSkeleton';
-      div.className = 'flex items-start gap-3.5';
-      div.innerHTML = `
-        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shrink-0 text-white shadow-md">
-          <i data-lucide="bot" class="w-4 h-4"></i>
-        </div>
-        <div class="flex-1 max-w-xl bg-white rounded-2xl rounded-tl-none p-4 border border-slate-200/80 shadow-sm space-y-2">
-          <div class="h-3.5 w-1/3 rounded-md skeleton-wave"></div>
-          <div class="h-3 w-5/6 rounded-md skeleton-wave"></div>
-          <div class="h-3 w-2/3 rounded-md skeleton-wave"></div>
-        </div>
-      `;
-      list.appendChild(div);
+      div.id = 'typingSkeleton'; div.className = 'loading-line';
+      div.textContent = 'Đang tìm nội dung trả lời';
+      document.getElementById('chatList').appendChild(div);
       scrollToBottom();
-      lucide.createIcons();
     }
-
-    function removeTypingSkeleton() {
-      const sk = document.getElementById('typingSkeleton');
-      if (sk) sk.remove();
-    }
-
+    function removeTypingSkeleton() { document.getElementById('typingSkeleton')?.remove(); }
     function appendErrorMessage(msg) {
-      const list = document.getElementById('chatList');
-      const div = document.createElement('div');
-      div.className = 'flex items-start gap-3.5';
-      div.innerHTML = `
-        <div class="w-8 h-8 rounded-xl bg-rose-500 flex items-center justify-center shrink-0 text-white shadow-md">
-          <i data-lucide="alert-octagon" class="w-4 h-4"></i>
-        </div>
-        <div class="flex-1 max-w-xl bg-rose-50 border border-rose-200 rounded-2xl rounded-tl-none p-4 text-xs text-rose-700">
-          <strong>Thông báo hệ thống:</strong> ${escapeHtml(msg)}
-        </div>
-      `;
-      list.appendChild(div);
-      scrollToBottom();
-      lucide.createIcons();
+      const div=document.createElement('section');div.className='exchange';
+      div.innerHTML=`<div class="exchange-hdr"><span class="exchange-title">Thông báo</span></div><div class="exchange-body" style="color:var(--red)">${escapeHtml(msg)}</div>`;
+      document.getElementById('chatList').appendChild(div); scrollToBottom();
     }
-
+    function engineLabel(engine,riskTier) {
+      if(engine==='continual_lora') return 'Continual LoRA 3B';
+      if(engine==='meta_greeting') return 'Tổng quan hệ thống';
+      if(engine==='safety_gate_red'||riskTier==='RED') return 'Cổng an toàn';
+      return 'Chrono-RAG 3B';
+    }
     function appendAssistantMessage(data) {
-      const list = document.getElementById('chatList');
-      const r = data.routing || {};
-      const m = data.metadata || {};
-      const answer = data.answer || '';
-      const actualEngine = r.actual_engine_used || r.selected_engine || 'chrono_rag';
-      const riskTier = r.risk_tier || 'GREEN';
-      const signals = r.detected_signals || [];
-      const latency = m.latency_ms || 0.0;
-      const compareId = 'cmp_' + Math.random().toString(36).substring(2, 9);
-
-      // Tier 1: Engine Badge styling
-      let engineBadge = '';
-      if (actualEngine === 'meta_greeting') {
-        engineBadge = `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200 flex items-center gap-1"><i data-lucide="sparkles" class="w-3 h-3"></i><span>System Overview</span></span>`;
-      } else if (actualEngine === 'continual_lora') {
-        engineBadge = `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center gap-1"><i data-lucide="zap" class="w-3 h-3 text-indigo-600"></i><span>Continual LoRA 3B</span></span>`;
-      } else if (actualEngine === 'safety_gate_red' || riskTier === 'RED') {
-        engineBadge = `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-1"><i data-lucide="shield-alert" class="w-3 h-3 text-rose-600"></i><span>Safety Gate Blocked</span></span>`;
-      } else {
-        engineBadge = `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-50 text-teal-700 border border-teal-200 flex items-center gap-1"><i data-lucide="shield-check" class="w-3 h-3 text-teal-600"></i><span>Chrono-RAG 3B</span></span>`;
-      }
-
-      // Tier 1: Signals tags
-      const signalTags = signals.length
-        ? signals.map(s => `<span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-mono border border-slate-200">#${escapeHtml(s)}</span>`).join(' ')
-        : `<span class="text-[10px] text-slate-400 italic">Không có tín hiệu đặc biệt</span>`;
-
-      // Tier 3: Risk Tier Badge
-      let riskBadge = '';
-      if (riskTier === 'RED') {
-        riskBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span><span>RED — Hạn chế/Ngoại lệ</span></span>`;
-      } else if (riskTier === 'YELLOW') {
-        riskBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span><span>YELLOW — Giao thoa phiên bản</span></span>`;
-      } else {
-        riskBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span><span>GREEN — Auto Verified</span></span>`;
-      }
-
-      // Tier 3: Source Citation Block (Strict separation between LoRA & RAG)
-      let sourceInfo = '';
-      if (actualEngine === 'continual_lora') {
-        const loraLabel = m.source_label || 'Nguồn: Trí nhớ Tham số LoRA 3B (31 văn bản UET 2021–2026) | Không tốn độ trễ Retrieval';
-        sourceInfo = `
-          <div class="flex items-center gap-1.5 text-[11px] text-indigo-700 bg-indigo-50/60 px-2.5 py-1 rounded-lg border border-indigo-100 font-medium">
-            <i data-lucide="brain" class="w-3.5 h-3.5 shrink-0"></i>
-            <span>${escapeHtml(loraLabel)}</span>
-          </div>
-        `;
-      } else if (actualEngine === 'meta_greeting' || actualEngine === 'safety_gate_red') {
-        sourceInfo = `
-          <div class="text-[11px] text-slate-500 font-medium">${escapeHtml(m.source_label || '')}</div>
-        `;
-      } else {
-        const docTitle = m.doc_title || m.doc_id || 'Văn bản quy định UET';
-        const year = m.effective_year ? `(${m.effective_year})` : '';
-        const sha = m.sha256_short ? `<span class="font-mono bg-slate-100 px-1 py-0.5 rounded border border-slate-200 text-slate-700 font-semibold">${m.sha256_short}</span>` : '';
-        sourceInfo = `
-          <div class="text-[11px] text-slate-600 flex items-center gap-1.5 flex-wrap">
-            <i data-lucide="file-check" class="w-3.5 h-3.5 text-slate-400"></i>
-            <span>Căn cứ: <strong class="text-slate-800">${escapeHtml(docTitle)}</strong> ${year}</span>
-            ${sha ? `<span>| 🔒 SHA-256: ${sha}</span>` : ''}
-          </div>
-        `;
-      }
-
-      // Superseded warning
-      let warnAlert = '';
-      if (m.superseded_warning) {
-        warnAlert = `
-          <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[11px] flex items-start gap-2">
-            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
-            <div>${escapeHtml(m.superseded_warning)}</div>
-          </div>
-        `;
-      }
-
-      // Counterfactual comparison target
-      const otherModelLabel = (actualEngine === 'continual_lora') ? 'Chrono-RAG 3B' : 'Continual LoRA 3B';
-
-      const div = document.createElement('div');
-      div.className = 'flex items-start gap-3.5';
-      div.innerHTML = `
-        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shrink-0 text-white shadow-md shadow-blue-500/20">
-          <i data-lucide="bot" class="w-4 h-4"></i>
-        </div>
-
-        <!-- 3-Tier Enterprise Message Card -->
-        <div class="flex-1 max-w-3xl bg-white rounded-2xl rounded-tl-none border border-slate-200/90 shadow-sm hover:shadow transition-shadow p-5 space-y-4">
-
-          <!-- TIER 1: Routing X-Ray Header Bar -->
-          <div class="bg-slate-50 border border-slate-200/70 rounded-xl p-3 space-y-2">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                ${engineBadge}
-                <span class="text-[10px] font-mono text-slate-400 flex items-center gap-1">
-                  <i data-lucide="clock" class="w-3 h-3"></i>
-                  <span>${latency.toFixed(1)} ms</span>
-                </span>
-              </div>
-              <div class="flex items-center gap-1.5 flex-wrap">
-                ${signalTags}
-              </div>
-            </div>
-
-            <!-- Routing Reason Collapsible -->
-            <details class="text-[11px] text-slate-500 pt-1 border-t border-slate-200/50">
-              <summary class="cursor-pointer font-medium hover:text-blue-600 transition flex items-center gap-1 select-none">
-                <i data-lucide="info" class="w-3 h-3"></i>
-                <span>Xem chẩn đoán vì sao chọn mô hình này</span>
-              </summary>
-              <div class="mt-1.5 pl-4 text-slate-600 leading-normal border-l-2 border-blue-400 italic">
-                ${escapeHtml(r.routing_reason || 'Định tuyến tự động dựa trên tín hiệu đặc thù của câu hỏi.')}
-              </div>
-            </details>
-          </div>
-
-          <!-- TIER 2: Main Answer Body with Smart Highlight Badges -->
-          <div class="text-xs text-slate-800 leading-relaxed space-y-2 whitespace-pre-line">
-            ${answer}
-          </div>
-
-          <!-- TIER 3: Security & Counterfactual Footer -->
-          <div class="pt-3 border-t border-slate-100 space-y-2.5">
-            ${warnAlert}
-
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2 flex-wrap">
-                ${riskBadge}
-                ${sourceInfo}
-              </div>
-
-              <button onclick="runComparison('${escapeJs(data.question)}', '${compareId}', this)"
-                      class="px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px] font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-sm">
-                <i data-lucide="git-compare" class="w-3.5 h-3.5 text-blue-600"></i>
-                <span>Đối chiếu với ${otherModelLabel}</span>
-              </button>
-            </div>
-
-            <!-- Container for Side-by-Side Diff Comparison -->
-            <div id="${compareId}" class="mt-3"></div>
-          </div>
-
-        </div>
-      `;
-      list.appendChild(div);
+      const r=data.routing||{}; const m=data.metadata||{};
+      const actualEngine=r.actual_engine_used||r.selected_engine||'chrono_rag';
+      const riskTier=r.risk_tier||'GREEN';
+      const signals=Array.isArray(r.detected_signals)?r.detected_signals:[];
+      const latency=Number(m.latency_ms||0);
+      const compareId='cmp_'+Math.random().toString(36).slice(2,9);
+      const sourceLabel=actualEngine==='continual_lora'
+        ? (m.source_label||'Phản hồi sinh từ trọng số LoRA; không có trích dẫn tài liệu trực tiếp')
+        : (actualEngine==='meta_greeting'||actualEngine==='safety_gate_red')
+          ? (m.source_label||'')
+          : ('Căn cứ: '+(m.doc_title||m.doc_id||'Văn bản quy định UET')+(m.effective_year?' ('+m.effective_year+')':'')+(m.sha256_short?' · SHA-256 '+m.sha256_short:''));
+      const riskClass = riskTier==='RED'?'red':(riskTier==='YELLOW'?'yellow':'green');
+      const signalHtml=signals.length?signals.map(s=>`<span class="chip">${escapeHtml(s)}</span>`).join(''):'';
+      const sourceInfo=sourceLabel?`<div class="metadata-row"><strong>Nguồn tham chiếu:</strong> ${escapeHtml(sourceLabel)}</div>`:'';
+      const warning=m.superseded_warning?`<div class="warning">${escapeHtml(m.superseded_warning)}</div>`:'';
+      const otherModelLabel=actualEngine==='continual_lora'?'Chrono-RAG 3B':'Continual LoRA 3B';
+      const div=document.createElement('section');div.className='exchange answer-card';
+      // Like the original UI, the server may return <mark> tags in a formatted answer.
+      // Only allow the existing highlight markup; all other HTML remains escaped.
+      const answer=allowHighlightMarkup(data.answer||'');
+      div.innerHTML=`
+        <div class="exchange-hdr"><span class="exchange-title">Nội dung trả lời</span><span class="meta-line">${latency>0?latency.toFixed(1)+' ms':'Chưa có thời gian'}</span></div>
+        <div class="exchange-body answer">${answer}</div>
+        <div class="answer-meta"><div class="meta-list"><span class="chip mode">${escapeHtml(engineLabel(actualEngine,riskTier))}</span><span class="chip ${riskClass}">${escapeHtml(riskTier)}</span>${signalHtml}</div>
+        <button type="button" class="compare-action compare-trigger">So sánh với ${escapeHtml(otherModelLabel)}</button></div>
+        ${sourceInfo}${warning}
+        <details class="reason"><summary>Thông tin xử lý</summary><div>${escapeHtml(r.routing_reason||'Không có thông tin định tuyến bổ sung.')}</div></details>
+        <div id="${compareId}" class="comparison-slot"></div>`;
+      document.getElementById('chatList').appendChild(div);
+      div.querySelector('.compare-trigger').addEventListener('click',function(){runComparison(data.question||'',compareId,this)});
       scrollToBottom();
-      lucide.createIcons();
     }
-
-    async function runComparison(question, targetDivId, btn) {
-      btn.disabled = true;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Đang nạp đối chiếu...</span>`;
-      lucide.createIcons();
-
-      const container = document.getElementById(targetDivId);
-      container.innerHTML = `
-        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-xs text-slate-500 flex items-center gap-2">
-          <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-blue-600"></i>
-          <span>Đang truy xuất phản hồi song song từ Continual LoRA 3B và Chrono-RAG 3B...</span>
-        </div>
-      `;
-      lucide.createIcons();
-
+    async function runComparison(question,targetDivId,btn) {
+      btn.disabled=true; btn.textContent='Đang đối chiếu...';
+      const container=document.getElementById(targetDivId);
+      container.innerHTML='<div class="loading-line">Đang lấy kết quả từ hai phương pháp</div>';
       try {
-        const res = await fetch('/api/compare', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: question })
-        });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
-        renderComparisonCard(data, container);
-        btn.style.display = 'none';
-      } catch (err) {
-        container.innerHTML = `<div class="p-2 text-xs text-rose-600">Lỗi đối chiếu: ${escapeHtml(err.message)}</div>`;
-        btn.disabled = false;
-        btn.innerHTML = `<i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i><span>Thử lại</span>`;
-        lucide.createIcons();
+        // Preserve original comparison endpoint and request contract.
+        const res=await fetch('/api/compare',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:question})});
+        if(!res.ok)throw new Error('HTTP '+res.status);
+        renderComparisonCard(await res.json(),container);
+        btn.style.display='none';
+      } catch(err) {
+        container.innerHTML=`<div class="warning">Lỗi đối chiếu: ${escapeHtml(err.message)}</div>`;
+        btn.disabled=false;btn.textContent='Thử lại ↗';
       }
     }
-
-    function renderComparisonCard(data, container) {
-      const lora = data.continual_lora || {};
-      const chrono = data.chrono_rag || {};
-      const naive = data.naive_rag || {};
-
-      container.innerHTML = `
-        <div class="mt-2 bg-slate-50/70 border border-slate-200 rounded-2xl p-4 space-y-3">
-          <div class="flex items-center justify-between pb-2 border-b border-slate-200/70">
-            <div class="font-bold text-xs text-slate-800 flex items-center gap-1.5">
-              <i data-lucide="columns-2" class="w-4 h-4 text-blue-600"></i>
-              <span>Bảng Đối chiếu Song song (Counterfactual Comparison)</span>
-            </div>
-            <span class="text-[10px] text-slate-400 font-mono">3-Model Evaluation</span>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-            <!-- Col 1: Continual LoRA 3B -->
-            <div class="bg-white rounded-xl p-3.5 border border-indigo-200/80 shadow-sm space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center gap-1">
-                  <i data-lucide="zap" class="w-3 h-3"></i> Continual LoRA 3B
-                </span>
-                <span class="text-[10px] font-mono text-slate-400">${(lora.metadata?.latency_ms || 16.4).toFixed(1)} ms</span>
-              </div>
-              <div class="text-[11px] text-indigo-950/80 leading-relaxed max-h-48 overflow-y-auto whitespace-pre-line">
-                ${lora.answer || '—'}
-              </div>
-              <div class="pt-2 border-t border-slate-100 text-[10px] text-slate-500 italic space-y-0.5">
-                <div>🧠 ${escapeHtml(lora.metadata?.source_label || 'Trí nhớ Tham số (QLoRA 3B)')}</div>
-                ${lora.metadata?.token_f1_proxy ? `<div class="font-mono text-indigo-600 font-semibold not-italic">Token F1: ${lora.metadata.token_f1_proxy.toFixed(3)}</div>` : ''}
-              </div>
-            </div>
-
-            <!-- Col 2: Chrono-RAG 3B -->
-            <div class="bg-white rounded-xl p-3.5 border border-teal-200/80 shadow-sm space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-50 text-teal-800 border border-teal-100 flex items-center gap-1">
-                  <i data-lucide="shield-check" class="w-3 h-3"></i> Chrono-RAG 3B
-                </span>
-                <span class="text-[10px] font-mono text-slate-400">${(chrono.metadata?.latency_ms || 7.4).toFixed(1)} ms</span>
-              </div>
-              <div class="text-[11px] text-teal-950/80 leading-relaxed max-h-48 overflow-y-auto whitespace-pre-line">
-                ${chrono.answer || '—'}
-              </div>
-              <div class="pt-2 border-t border-slate-100 text-[10px] text-slate-500">
-                📄 Khóa điều khoản chính xác theo năm học (SHA-256 Lock)
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-      lucide.createIcons();
+    function renderComparisonCard(data,container) {
+      const lora=data.continual_lora||{}; const chrono=data.chrono_rag||{};
+      const source=escapeHtml(lora.metadata?.source_label||'Trọng số mô hình LoRA 3B');
+      const f1=lora.metadata?.token_f1_proxy;
+      container.innerHTML=`<div class="comparison"><h4>Đối chiếu câu trả lời</h4><div class="comparison-grid">
+        <div class="comparison-column"><h5>Continual LoRA 3B</h5><p>${allowHighlightMarkup(lora.answer||'—')}</p><small>${source}${Number.isFinite(Number(f1))&&f1!==undefined&&f1!==null?' · Token F1: '+Number(f1).toFixed(3):''}</small></div>
+        <div class="comparison-column"><h5>Chrono-RAG 3B</h5><p>${allowHighlightMarkup(chrono.answer||'—')}</p><small>Trích xuất và đối chiếu văn bản theo năm</small></div>
+      </div></div>`;
     }
-
     function updateTelemetry(data) {
-      const r = data.routing || {};
-      const m = data.metadata || {};
-      const engine = r.actual_engine_used || r.selected_engine || 'chrono_rag';
-      const risk = r.risk_tier || 'GREEN';
-
-      document.getElementById('telemetryStatus').textContent = `${engine.toUpperCase()} (${risk})`;
-      document.getElementById('telReasonText').textContent = r.routing_reason || 'Định tuyến hoàn tất.';
-
-      const speedVal = m.latency_ms ? `${m.latency_ms.toFixed(1)} ms` : '< 10 ms';
-      document.getElementById('telMetricSpeed').textContent = speedVal;
-
-      if (engine === 'continual_lora') {
-        document.getElementById('telBarTemporal').style.width = '75%';
-        document.getElementById('telMetricTemporal').textContent = '75%';
-        document.getElementById('telBarNumeric').style.width = '70%';
-        document.getElementById('telMetricNumeric').textContent = '70%';
-        document.getElementById('telBarSynthesis').style.width = '98%';
-        document.getElementById('telMetricSynthesis').textContent = '98%';
-      } else {
-        document.getElementById('telBarTemporal').style.width = '100%';
-        document.getElementById('telMetricTemporal').textContent = '100%';
-        document.getElementById('telBarNumeric').style.width = '100%';
-        document.getElementById('telMetricNumeric').textContent = '100%';
-        document.getElementById('telBarSynthesis').style.width = '80%';
-        document.getElementById('telMetricSynthesis').textContent = '80%';
-      }
+      const r=data.routing||{};const m=data.metadata||{};
+      const engine=r.actual_engine_used||r.selected_engine||'chrono_rag';
+      const risk=r.risk_tier||'GREEN';
+      const signals=Array.isArray(r.detected_signals)?r.detected_signals:[];
+      const signalText=signals.map(s=>String(s).toLowerCase()).join(' ');
+      document.getElementById('telemetryStatus').textContent=engineLabel(engine,risk)+' / '+risk;
+      document.getElementById('telReasonText').textContent=r.routing_reason||'Định tuyến đã hoàn tất.';
+      document.getElementById('telMetricSpeed').textContent=Number(m.latency_ms)>0?Number(m.latency_ms).toFixed(1)+' ms':'Chưa đo';
+      document.getElementById('telMetricTemporal').textContent=/year|temporal|date|năm|mốc/.test(signalText)?'Có tín hiệu':'Chưa xác định';
+      document.getElementById('telMetricNumeric').textContent=/numeric|money|fee|học phí|số liệu|tiền/.test(signalText)?'Có tín hiệu':'Chưa xác định';
+      document.getElementById('telMetricSynthesis').textContent=signals.length?signals.length+' tín hiệu':'Không có dữ liệu';
     }
-
-    function scrollToBottom() {
-      const container = document.getElementById('chatScrollContainer');
-      container.scrollTop = container.scrollHeight;
+    function scrollToBottom(){const c=document.getElementById('chatScrollContainer');c.scrollTop=c.scrollHeight;}
+    function escapeHtml(str){return String(str??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+    function allowHighlightMarkup(str){
+      const encoded=escapeHtml(str);
+      return encoded.replace(/&lt;mark&gt;/g,'<mark>').replace(/&lt;\/mark&gt;/g,'</mark>');
     }
-
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
-    function escapeJs(str) {
-      if (!str) return '';
-      return String(str).replace(/'/g, "\\'").replace(/"/g, '\\"');
-    }
-
-    // Initialize Lucide Icons on load
-    document.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
-    });
+    function escapeJs(str){return String(str??'').replace(/'/g,"\\'").replace(/"/g,'\\"');}
+    setEngineMode('auto');
   </script>
 </body>
 </html>
