@@ -1,0 +1,35 @@
+{
+  "status": "DIAGNOSTIC_NOT_CERTIFIED",
+  "timestamp": "2026-11-21",
+  "benchmark_sha256": "47497e6bea518c95fa9c3b674fc63ccf022cc625e73da056c3e87bc63a70596f",
+  "predictions": 90,
+  "engine_mode": "LIVE_PEFT_GENERATION",
+  "checkpoint_year": 2026,
+  "exact_normalized": 0,
+  "exact_rate": 0.0,
+  "categories": {
+    "active_rule": {
+      "count": 37,
+      "answered": 37,
+      "exact": 0
+    },
+    "superseded_rule": {
+      "count": 27,
+      "answered": 27,
+      "exact": 0
+    },
+    "temporal_specific": {
+      "count": 26,
+      "answered": 26,
+      "exact": 0
+    }
+  },
+  "gold_answers_with_explicit_dong_amounts": 49,
+  "rows_with_any_exact_dong_amount_repeated": 0,
+  "measurement_caveat": "Numeric-match is only a textual money amount screen (requires explicit đồng); not semantic correctness.",
+  "mean_latency_ms": 3390.0,
+  "benchmark_certified": false,
+  "loRA_regulation_release_allowed": false,
+  "auto_select_lora_for_nonregulatory_advice": false,
+  "reason": "No validated per-domain superiority on independent held-out benchmark; baseline unsuitable for factual regulatory answers."
+}

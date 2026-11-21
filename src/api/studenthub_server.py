@@ -354,6 +354,10 @@ class ChatRequest(BaseModel):
 class CompareRequest(BaseModel):
     question: str
 
+class AcademicDispatchRequest(BaseModel):
+    question: str
+    compare: bool = False
+
 
 # ---------------------------------------------------------------------------
 # Endpoints
@@ -407,7 +411,7 @@ def chat(req: ChatRequest):
 
     # 2. Override engine if requested
     selected_engine = routing.selected_engine
-    if req.force_engine and req.force_engine != "auto":
+    if routing.risk_tier != "RED" and req.force_engine and req.force_engine != "auto":
         selected_engine = req.force_engine
 
     # 3. Execute engine
@@ -587,3 +591,16 @@ def compare(req: CompareRequest):
         "continual_lora": resp_lora,
         "naive_rag": resp_naive,
     })
+# ---------------------------------------------------------------------------
+# Experimental safe dispatch (opt-in API; legacy /api/chat unchanged except
+# RED force_engine bypass fix). NOT a semantic correctness certification.
+# ---------------------------------------------------------------------------
+@app.post("/api/answer-v2")
+def academic_answer_v2(req: AcademicDispatchRequest):
+    from src.api.academic_dispatch import build_dispatch
+    # Router publication hold and RED classification take precedence.
+    routing = _router.route_decision(req.question)
+    dispatch = build_dispatch(REPO_ROOT, lambda q: _run_rag_engine(q, "chrono_rag"))
+    answer = dispatch.answer(req.question, compare=req.compare,
+                             held=routing.risk_tier == "RED")
+    return JSONResponse(content=answer)
