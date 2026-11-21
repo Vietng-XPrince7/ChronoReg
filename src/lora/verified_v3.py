@@ -16,6 +16,7 @@ from typing import Any
 
 YEARS = (2022, 2023, 2024, 2025, 2026)
 BASE_ID = "Qwen/Qwen2.5-3B-Instruct"
+BASE_REVISION = "aa8e72537993ba99e69dfaafa59ed015b17504d1"
 SHA_RE = re.compile(r"^[a-f0-9]{64}$")
 
 
@@ -43,6 +44,8 @@ def verify_v3(root: Path | str, *, require_all_years: bool = True) -> dict:
     run = json.loads(run_file.read_text(encoding="utf-8"))
     if run.get("model") != BASE_ID or run.get("years") != list(YEARS):
         raise ArtifactIntegrityError("Model ID or year order differs from trained V3")
+    if run.get("revision") not in (None, BASE_REVISION):
+        raise ArtifactIntegrityError("Base revision differs from trained V3")
     checkpoint_rows = run.get("checkpoints", [])
     if len(checkpoint_rows) != len(YEARS):
         raise ArtifactIntegrityError("Expected exactly five checkpoint manifest rows")
@@ -80,6 +83,7 @@ def verify_v3(root: Path | str, *, require_all_years: bool = True) -> dict:
         validated.append({"year": year, "sha256": actual, "training_rows": stage["training_rows"]})
         previous_sha = expected
     return {"status": "ARTIFACT_INTEGRITY_PASS", "model": BASE_ID,
+            "revision": run.get("revision"), "revision_present": bool(run.get("revision")),
             "years": list(YEARS), "checkpoints": validated,
             "scope": "396 curated QA / 53 sources; not full corpus, not quality-certified"}
 
@@ -171,8 +175,19 @@ class VerifiedV3Inference:
 
 
 def from_environment() -> VerifiedV3Inference:
-    root = os.environ.get("CHRONOREG_V3_ARTIFACT_DIR", "")
-    base = os.environ.get("CHRONOREG_BASE_MODEL", "")
-    if not root or not base:
-        raise RuntimeError("Set CHRONOREG_V3_ARTIFACT_DIR and CHRONOREG_BASE_MODEL")
+    """Resolve explicit paths first, otherwise use the verified local install.
+
+    No implicit downloads and no fake-answer fallbacks. A fresh Git clone needs
+    the Kaggle adapter installed by scripts/setup_lora_v3.py first.
+    """
+    repo_root = Path(__file__).resolve().parents[2]
+    models_root = Path(os.environ.get("CHRONOREG_MODELS_ROOT", "") or
+                       (repo_root / ".local_models")).expanduser().resolve()
+    root = os.environ.get("CHRONOREG_V3_ARTIFACT_DIR") or str(models_root / "chronoreg-v3")
+    base = os.environ.get("CHRONOREG_BASE_MODEL") or str(models_root / "Qwen2.5-3B-Instruct")
+    if not Path(root).is_dir():
+        raise RuntimeError("V3 adapter missing. Run python scripts/setup_lora_v3.py --archive <trained-v3.zip>")
+    from src.lora.runtime_setup import base_files_present
+    if not base_files_present(Path(base)):
+        raise RuntimeError("Qwen base incomplete. Run python scripts/setup_lora_v3.py --download-base")
     return VerifiedV3Inference(root, base)
