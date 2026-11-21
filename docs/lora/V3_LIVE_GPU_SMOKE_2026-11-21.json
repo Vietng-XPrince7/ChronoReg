@@ -1,0 +1,33 @@
+{
+  "status": "LIVE_PEFT_SMOKE_PASS_NOT_QUALITY_CERTIFICATION",
+  "artifact_integrity": "ARTIFACT_INTEGRITY_PASS",
+  "trained_years": [
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "training_qa": 396,
+  "final_adapter_sha256": "8fa4bb0436b96d9a6512d38b240b7f28c854d776c6db7d618efea4feee6ad24a",
+  "base_revision_expected": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "base_revision_verified": true,
+  "base_model_present": true,
+  "live_inference_tested": true,
+  "quality_qualified": false,
+  "scope": "396 curated QA / 53 sources; not full corpus, not quality-certified",
+  "versions": {
+    "torch": "2.11.0+cu130",
+    "transformers": "4.57.6",
+    "peft": "0.21.2",
+    "bitsandbytes": "0.50.2",
+    "accelerate": "1.15.0"
+  },
+  "checkpoint_year": 2026,
+  "requested_year": 2025,
+  "question": "Trong năm học 2025-2026, học phí UET được quy định như thế nào?",
+  "model_output": "Học phí UET năm học 2025-2026 sẽ được công bố vào tháng 12/2024.",
+  "latency_ms": 46596.92,
+  "engine_mode": "LIVE_PEFT_GENERATION",
+  "generated_at_utc": "2026-11-21T12:13:34.941793+00:00"
+}
