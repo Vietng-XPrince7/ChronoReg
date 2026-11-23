@@ -46,3 +46,9 @@ Nhánh GitHub `feature/rag-versioned`, commit `e6686dc9b623b178324d7e9caff8e2107
 **Quy tắc tích hợp:** merge nhánh dữ liệu chuẩn hóa này trước, sau đó **rebase/reconcile** nhánh RAG của Tuấn. Không merge nguyên vẹn phần xóa năm bản gốc hoặc reintroduce 53 wrapper phụ từ nhánh cũ. Các test catalog sẽ chặn việc thiếu tài liệu chính tắc. Cần Tuấn kiểm tra riêng phần thay đổi thuật toán RAG và chạy test lại trước khi merge.
 
 Nhánh `feature/rag-versioned` còn để `source_records=130`, `unique_source_records=49`, `duplicate_archive_occurrences=76`; các số này **không nhất quán** vì `49 + 76 = 125`, không phải 130. Bộ kiểm toán mới kiểm tra công thức tổng và số bản ghi để lỗi này không bị bỏ qua khi hợp nhất.
+
+---
+
+## Cập nhật sau báo cáo gốc — quyết định của chủ dự án ngày 23/11/2026
+
+Khuyến nghị bảo toàn 5 bản gốc được ghi trong báo cáo trên là quan điểm kiểm toán trước khi có quyết định mới. **Chủ dự án sau đó đã yêu cầu xóa 5 bản gốc riêng biệt của CNTT CLC và CNTT Nhật Bản**. Thao tác này là loại trừ theo phạm vi dự án, **không phải xóa dữ liệu trùng**. Bản ghi và SHA-256 được giữ tại `tuan_2022_2026/manifest.json` (`owner_excluded_documents`) và báo cáo `docs/data/CURRICULA_OWNER_EXCLUSION_20261123.md`. Chỉ có 48/53 CTĐT gốc do nhóm cung cấp còn hoạt động; catalog còn 79. Các số 54 và 130 mô tả *lịch sử dữ liệu đầu vào ban đầu*, không phải số file còn trên ổ.

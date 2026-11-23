@@ -46,14 +46,39 @@ def build_catalog(root: Path) -> dict:
     content_checksums = set()
     if len(site_manifest['records']) != 31:
         raise ValueError('EXPECTED_31_OFFICIAL_SITE_RECORDS')
-    if len(tuan_manifest['documents']) != 54:
-        raise ValueError('EXPECTED_54_UNIQUE_UPLOAD_RECORDS')
+    if len(tuan_manifest['documents']) != 49:
+        raise ValueError('EXPECTED_49_ACTIVE_UPLOAD_RECORDS')
+    excluded_by_owner = tuan_manifest.get('owner_excluded_documents', [])
+    if (len(excluded_by_owner) != 5 or
+            tuan_manifest.get('owner_excluded_original_records') != 5 or
+            tuan_manifest.get('active_unique_source_records') != 49 or
+            len(tuan_manifest['documents']) + len(excluded_by_owner) != tuan_manifest['unique_source_records']):
+        raise ValueError('OWNER_EXCLUSION_HISTORY_INCONSISTENT')
+    expected_removed_names = {
+        'chuan_dau_ra_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md',
+        'chuan_dau_ra_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md',
+        'gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md',
+        'gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md',
+        'noi_dung_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md',
+    }
+    if {x['file_name'] for x in excluded_by_owner} != expected_removed_names:
+        raise ValueError('UNEXPECTED_OWNER_EXCLUDED_FILES')
+    remaining_doc_ids = {x['doc_id'] for x in tuan_manifest['documents']}
+    for item in excluded_by_owner:
+        if item['doc_id'] in remaining_doc_ids:
+            raise ValueError(f'EXCLUDED_DOC_STILL_ACTIVE: {item["doc_id"]}')
+        if (root / item['source_path']).exists():
+            raise ValueError(f'EXCLUDED_ORIGINAL_STILL_PRESENT: {item["source_path"]}')
+    original_dir = base / 'tuan_2022_2026/original'
+    actual_originals = {p.name for p in original_dir.glob('*.md')}
+    expected_originals = {x['file_name'] for x in tuan_manifest['documents']}
+    if actual_originals != expected_originals:
+        raise ValueError(f'ACTIVE_ORIGINAL_SET_MISMATCH: {sorted(actual_originals ^ expected_originals)}')
     # Historical ZIP occurrence counts are immutable dedup provenance.
     if (tuan_manifest['source_records'] !=
             tuan_manifest['unique_source_records'] + tuan_manifest['duplicate_archive_occurrences']):
         raise ValueError('ARCHIVE_OCCURRENCE_COUNTS_INCONSISTENT')
-    if (tuan_manifest['unique_source_records'] != len(tuan_manifest['documents']) or
-            tuan_manifest['curriculum_records'] != 53 or
+    if (tuan_manifest['curriculum_records'] != 48 or
             tuan_manifest['excluded_non_curriculum_records'] != 1):
         raise ValueError('UPLOAD_MANIFEST_RECORD_COUNTS_INCONSISTENT')
 
@@ -140,7 +165,7 @@ def build_catalog(root: Path) -> dict:
             'retrieval_eligible': False,
         })
 
-    if len(results) != 84 or len(excluded) != 1:
+    if len(results) != 79 or len(excluded) != 1:
         raise ValueError('CATALOG_COUNTS_MISMATCH')
     expected_file_names = {r['doc_id'] + '.md' for r in site_manifest['records']}
     listed_file_names = {p.name for p in (root / CURR_MD_REL).glob('uet-curriculum-*.md')}
@@ -175,12 +200,15 @@ def build_catalog(root: Path) -> dict:
         'purpose': 'One content locator for UET curricula, no duplicated full-text payloads',
         'scope': 'UET QH-2022 to QH-2026; not the full set of UET regulations',
         'official_site_extractions': 31,
-        'team_original_curriculum_sections': 53,
+        'team_original_curriculum_sections': 48,
+        'owner_excluded_original_sections': 5,
+        'archived_unique_upload_records': 54,
         'canonical_content_count': len(results),
         'non_curriculum_excluded_count': len(excluded),
         'retrieval_eligibility_policy': 'human_review_required; all false at this snapshot',
         'records': results,
         'excluded_documents': excluded,
+        'owner_excluded_documents': excluded_by_owner,
     }
 
 
