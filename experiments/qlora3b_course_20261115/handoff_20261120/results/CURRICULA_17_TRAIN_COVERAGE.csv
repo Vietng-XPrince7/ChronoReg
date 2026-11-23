@@ -1,0 +1,18 @@
+﻿industry,program_slug,file,cohort,status,total_credits_from_metadata,md_exists,md_sha_pass,md_line_count,md_table_lines,retrieval_eligible,course_train_qa,full_v5_train_qa
+Công nghệ nông nghiệp,agricultural-technology,data/raw/uet/markdown/curricula/uet-curriculum-agricultural-technology-QH-2022-to-2024.md,QH-2022-to-2024,curriculum,150,True,True,331,169,False,8,0
+Công nghệ nông nghiệp,agricultural-technology,data/raw/uet/markdown/curricula/uet-curriculum-agricultural-technology-QH-2025-plus.md,QH-2025-plus,curriculum,150,True,True,362,179,False,0,124
+Trí tuệ nhân tạo,artificial-intelligence,data/raw/uet/markdown/curricula/uet-curriculum-artificial-intelligence-QH-2022-to-2024-original.md,QH-2022-to-2024-original,curriculum,124,True,True,257,97,False,8,0
+Trí tuệ nhân tạo,artificial-intelligence,data/raw/uet/markdown/curricula/uet-curriculum-artificial-intelligence-QH-2022-to-2024-updated.md,QH-2022-to-2024-updated,curriculum,123,True,True,234,73,False,0,0
+Trí tuệ nhân tạo,artificial-intelligence,data/raw/uet/markdown/curricula/uet-curriculum-artificial-intelligence-QH-2025-plus.md,QH-2025-plus,curriculum,135,True,True,371,192,False,0,132
+Công nghệ sinh học,biotechnology,data/raw/uet/markdown/curricula/uet-curriculum-biotechnology-opening-proposal.md,opening-proposal,opening_proposal,150,True,True,448,205,False,0,0
+Công nghệ sinh học,biotechnology,data/raw/uet/markdown/curricula/uet-curriculum-biotechnology-QH-2025-plus.md,QH-2025-plus,curriculum,150,True,True,356,165,False,0,110
+Kỹ thuật xây dựng,civil-engineering,data/raw/uet/markdown/curricula/uet-curriculum-civil-engineering-QH-2022-to-2024.md,QH-2022-to-2024,curriculum,150,True,True,270,98,False,8,0
+Kỹ thuật xây dựng,civil-engineering,data/raw/uet/markdown/curricula/uet-curriculum-civil-engineering-QH-2025.md,QH-2025,curriculum,150,True,True,351,168,False,1,116
+Kỹ thuật xây dựng,civil-engineering,data/raw/uet/markdown/curricula/uet-curriculum-civil-engineering-QH-2026-plus.md,QH-2026-plus,curriculum,150,True,True,328,178,False,1,116
+Khoa học dữ liệu,data-science,data/raw/uet/markdown/curricula/uet-curriculum-data-science-opening-proposal.md,opening-proposal,opening_proposal,130,True,True,396,197,False,0,0
+Khoa học dữ liệu,data-science,data/raw/uet/markdown/curricula/uet-curriculum-data-science-QH-2025-plus.md,QH-2025-plus,curriculum,135,True,True,347,170,False,0,112
+Thiết kế CN và đồ họa,industrial-graphic-design,data/raw/uet/markdown/curricula/uet-curriculum-industrial-graphic-design-QH-2024.md,QH-2024,curriculum,135,True,True,316,122,False,9,0
+Thiết kế CN và đồ họa,industrial-graphic-design,data/raw/uet/markdown/curricula/uet-curriculum-industrial-graphic-design-QH-2025-plus.md,QH-2025-plus,curriculum,135,True,True,399,194,False,0,0
+Hàng không vũ trụ,space-engineering,data/raw/uet/markdown/curricula/uet-curriculum-space-engineering-QH-2022-to-2024.md,QH-2022-to-2024,curriculum,152,True,True,380,105,False,9,166
+Hàng không vũ trụ,space-engineering,data/raw/uet/markdown/curricula/uet-curriculum-space-engineering-QH-2025.md,QH-2025,curriculum,150,True,True,495,205,False,1,0
+Hàng không vũ trụ,space-engineering,data/raw/uet/markdown/curricula/uet-curriculum-space-engineering-QH-2026-plus.md,QH-2026-plus,curriculum,150,True,True,501,212,False,1,148

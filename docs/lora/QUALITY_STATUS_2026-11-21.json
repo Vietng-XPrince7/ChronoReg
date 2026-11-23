@@ -1,0 +1,41 @@
+{
+  "project": "ChronoReg",
+  "date": "2026-11-21",
+  "branch": "continual_lora_3b",
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "training_years": [
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "training_qa": 396,
+  "training_source_documents": 53,
+  "adapter_chain_integrity": "PASS",
+  "final_adapter_sha256": "8fa4bb0436b96d9a6512d38b240b7f28c854d776c6db7d618efea4feee6ad24a",
+  "in_sample_v3": {
+    "n": 50,
+    "exact_normalized": 3,
+    "exact_rate": 0.06,
+    "token_f1_diagnostic": 0.4749
+  },
+  "out_of_sample_qualification": "NOT_COMPLETED_AND_V8_BENCHMARK_NOT_CERTIFIED",
+  "rag_comparison_qualification": "NOT_COMPLETED",
+  "regulation_answer_status": "NOT_RELEASED",
+  "note": "These diagnostic scores are not held-out semantic factual accuracy. Do not label this adapter authoritative.",
+  "real_peft_90qa_diagnostic": {
+    "benchmark_sha256": "47497e6bea518c95fa9c3b674fc63ccf022cc625e73da056c3e87bc63a70596f",
+    "total": 90,
+    "live_predictions": 90,
+    "normalized_exact_count": 0,
+    "active_rule_exact": "0/37",
+    "superseded_rule_exact": "0/27",
+    "temporal_specific_exact": "0/26",
+    "gold_with_explicit_dong_amount": 49,
+    "any_matching_dong_amount": "0/49",
+    "certification": "DIAGNOSTIC_NOT_CERTIFIED",
+    "note": "Exact match not semantic fact accuracy; numeric screen is partial (explicit đồng only)."
+  },
+  "nonregulatory_lora_auto_route": "BLOCKED_UNTIL_INDEPENDENT_CAPABILITY_QUALIFIED"
+}

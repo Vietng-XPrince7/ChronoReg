@@ -1,0 +1,44 @@
+{
+  "status": "REPRODUCIBLE_IN_SAMPLE_NUMERIC_ADJUDICATION_NOT_LEGAL_CERTIFICATION",
+  "base_zip_sha256": "89c386afa124888469f715098a663b2206ea3fdeab9cc5421ba0389931469938",
+  "source_repo_zip_sha256": "fde3fabf8dc1894975f628676b439ee400a72ad46011949d3c38727a07dd3d46",
+  "source_probe_case_digest": "777cab604cc0c22ef2c91e268fde54ced9023bd564c0797c7485bd4bd50ee226",
+  "number_of_training_cases": 25,
+  "number_of_inference_rows": 45,
+  "evidence_quotes_verified_against_md": 25,
+  "source_sha256_validated": 25,
+  "observed_numeric_value_counts": {
+    "WRONG_VALUE": 39,
+    "NO_TARGET_VALUE": 4,
+    "CORRECT_VALUE": 2
+  },
+  "per_checkpoint_numeric_counts": {
+    "2022": {
+      "WRONG_VALUE": 3,
+      "NO_TARGET_VALUE": 1,
+      "CORRECT_VALUE": 1
+    },
+    "2023": {
+      "WRONG_VALUE": 5
+    },
+    "2024": {
+      "CORRECT_VALUE": 1,
+      "WRONG_VALUE": 4
+    },
+    "2025": {
+      "WRONG_VALUE": 5
+    },
+    "2026": {
+      "WRONG_VALUE": 22,
+      "NO_TARGET_VALUE": 3
+    }
+  },
+  "paired_case_transitions": {
+    "INCORRECT_AT_BOTH_STAGES": 18,
+    "CORRECT_TO_INCORRECT": 2,
+    "NEW_2026_CONTROL": 5
+  },
+  "train_in_sample_not_held_out": true,
+  "original_question_and_reference_exact_train_matches": 25,
+  "source_independently_reviewed": false
+}
