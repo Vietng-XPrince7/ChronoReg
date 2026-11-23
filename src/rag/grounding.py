@@ -44,6 +44,24 @@ def _verify_answer_grounding(
         if dcode not in s_clean:
             return False
 
+    # 1b. Program total-credit queries must never be answered with a single course line (e.g. 3 TC elective)
+    asks_program_total_credits = (
+        bool(re.search(r"(?:bao\s+nhiêu|mấy|tổng\s+(?:cộng|số))[^?]{0,20}tín\s+chỉ", q_clean))
+        and any(k in q_clean for k in ("ngành ", "chương trình đào tạo", "ctđt"))
+        and not any(
+            k in q_clean
+            for k in ("môn ", "học phần", "học bổng", "kkht", "học phí", "mỗi học kỳ", "học kỳ cuối", "cảnh báo", "tự chọn")
+        )
+    )
+    if asks_program_total_credits:
+        has_program_total = (
+            "[tổng hợp chương trình đào tạo]" in s_clean
+            or "tổng số tín chỉ" in s_clean
+            or bool(re.search(r"\b1\d{2}\s*(?:tín\s*chỉ|tc)\b", s_clean))
+        )
+        if not has_program_total:
+            return False
+
     # 2. Check substantive anchor tokens of the question
     q_uni = _tokenize(q_clean, include_bigrams=False, expand_synonyms=False)
     s_uni_set = set(_tokenize(s_clean, include_bigrams=False, expand_synonyms=True))

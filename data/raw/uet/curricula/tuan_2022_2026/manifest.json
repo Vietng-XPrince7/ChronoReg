@@ -3,15 +3,15 @@
   "generated_at": "2026-11-13",
   "input_archive": "ctdt_phan_loai_2022_2026_all(1).zip",
   "source_records": 130,
-  "unique_source_records": 54,
+  "unique_source_records": 49,
   "duplicate_archive_occurrences": 76,
-  "curriculum_records": 53,
+  "curriculum_records": 48,
   "excluded_non_curriculum_records": 1,
   "review_status": "needs_human_review",
   "rag_lora_release": "blocked",
   "notes": [
     "Source document names and archive-year placement are hints, not reviewed cohort applicability.",
-    "No original UET citation for 53 curriculum files was supplied. Preserve as unverified source."
+    "No original UET citation for 48 curriculum files was supplied. Preserve as unverified source."
   ],
   "documents": [
     {
@@ -71,72 +71,6 @@
         "official_source_url_missing_in_upload"
       ],
       "table_line_count": 0
-    },
-    {
-      "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-338b06c6",
-      "file_name": "chuan_dau_ra_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-      "kind": "learning_outcomes",
-      "program_hint": "cntt_clc",
-      "cohort_hint": "QH-2022 onward (filename hint only)",
-      "present_in_archive_years": [
-        2022,
-        2023,
-        2024,
-        2025,
-        2026
-      ],
-      "archive_paths": [
-        "2022/chuan_dau_ra_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-        "2023/chuan_dau_ra_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-        "2024/chuan_dau_ra_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-        "2025/chuan_dau_ra_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-        "2026/chuan_dau_ra_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md"
-      ],
-      "source_sha256": "338b06c61121519fd817d5e2646afa8fe6cbdd7603c97234fd407f11174a0f70",
-      "source_bytes": 5153,
-      "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-338b06c6.md",
-      "official_source_url": null,
-      "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
-      "review_status": "needs_human_review",
-      "retrieval_eligible": false,
-      "review_flags": [
-        "official_source_url_missing_in_upload"
-      ],
-      "table_line_count": 0
-    },
-    {
-      "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-64d98214",
-      "file_name": "chuan_dau_ra_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
-      "kind": "learning_outcomes",
-      "program_hint": "cntt_nhat_ban",
-      "cohort_hint": "QH-2022 onward (filename hint only)",
-      "present_in_archive_years": [
-        2022,
-        2023,
-        2024,
-        2025,
-        2026
-      ],
-      "archive_paths": [
-        "2022/chuan_dau_ra_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
-        "2023/chuan_dau_ra_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
-        "2024/chuan_dau_ra_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
-        "2025/chuan_dau_ra_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
-        "2026/chuan_dau_ra_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md"
-      ],
-      "source_sha256": "64d98214a9c50d28668bcff723fa26d10d5ad716fc99a9efacd22986b79a307d",
-      "source_bytes": 6301,
-      "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-64d98214.md",
-      "official_source_url": null,
-      "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
-      "review_status": "needs_human_review",
-      "retrieval_eligible": false,
-      "review_flags": [
-        "official_source_url_missing_in_upload"
-      ],
-      "table_line_count": 9
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-ktmt-2022-2024-d181a43b",
@@ -312,72 +246,6 @@
       "table_line_count": 0
     },
     {
-      "doc_id": "uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-9bc2f86b",
-      "file_name": "gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-      "kind": "overview",
-      "program_hint": "cntt_clc",
-      "cohort_hint": "QH-2022 onward (filename hint only)",
-      "present_in_archive_years": [
-        2022,
-        2023,
-        2024,
-        2025,
-        2026
-      ],
-      "archive_paths": [
-        "2022/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-        "2023/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-        "2024/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-        "2025/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-        "2026/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md"
-      ],
-      "source_sha256": "9bc2f86b419ba865c0daca64f7d184d26f32e6ba89bef089b42bf55ee991b3c3",
-      "source_bytes": 3536,
-      "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-9bc2f86b.md",
-      "official_source_url": null,
-      "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
-      "review_status": "needs_human_review",
-      "retrieval_eligible": false,
-      "review_flags": [
-        "official_source_url_missing_in_upload"
-      ],
-      "table_line_count": 0
-    },
-    {
-      "doc_id": "uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-297149ea",
-      "file_name": "gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
-      "kind": "overview",
-      "program_hint": "cntt_nhat_ban",
-      "cohort_hint": "QH-2022 onward (filename hint only)",
-      "present_in_archive_years": [
-        2022,
-        2023,
-        2024,
-        2025,
-        2026
-      ],
-      "archive_paths": [
-        "2022/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
-        "2023/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
-        "2024/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
-        "2025/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
-        "2026/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md"
-      ],
-      "source_sha256": "297149eac2e8103cc795753e52c27e97f874019b602d45c2a2917dac25d3331d",
-      "source_bytes": 2395,
-      "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-297149ea.md",
-      "official_source_url": null,
-      "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
-      "review_status": "needs_human_review",
-      "retrieval_eligible": false,
-      "review_flags": [
-        "official_source_url_missing_in_upload"
-      ],
-      "table_line_count": 0
-    },
-    {
       "doc_id": "uet-tuan-gioi-thieu-chuong-trinh-dao-tao-khmt-2022-2024-4620be46",
       "file_name": "gioi_thieu_chuong_trinh_dao_tao_khmt_2022_2024.md",
       "kind": "overview",
@@ -521,40 +389,6 @@
         "filename_mentions_2019_do_not_infer_cohort_2022"
       ],
       "table_line_count": 0
-    },
-    {
-      "doc_id": "uet-tuan-noi-dung-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-60a2276b",
-      "file_name": "noi_dung_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-      "kind": "curriculum_content",
-      "program_hint": "cntt_clc",
-      "cohort_hint": "QH-2022 onward (filename hint only)",
-      "present_in_archive_years": [
-        2022,
-        2023,
-        2024,
-        2025,
-        2026
-      ],
-      "archive_paths": [
-        "2022/noi_dung_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-        "2023/noi_dung_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-        "2024/noi_dung_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-        "2025/noi_dung_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-        "2026/noi_dung_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md"
-      ],
-      "source_sha256": "60a2276b441ef6b6ce7883db59226b8e28235ce53a07d3110bfe3523dc07633c",
-      "source_bytes": 17426,
-      "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-60a2276b.md",
-      "official_source_url": null,
-      "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
-      "review_status": "needs_human_review",
-      "retrieval_eligible": false,
-      "review_flags": [
-        "html_line_breaks_in_table",
-        "official_source_url_missing_in_upload"
-      ],
-      "table_line_count": 159
     },
     {
       "doc_id": "uet-tuan-noi-dung-chuong-trinh-dao-tao-httt-2022-2024-a57bca64",

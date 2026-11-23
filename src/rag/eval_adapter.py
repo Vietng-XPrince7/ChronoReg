@@ -516,6 +516,7 @@ def _synthesize_curriculum_info(
     prog_name: str,
     cohort_scope: str,
     entries_from_index: list[str],
+    section_type: str = "",
 ) -> list[str]:
     """Build structured summary lines for a curriculum document (credits, major courses, jobs)."""
     out: list[str] = []
@@ -526,12 +527,22 @@ def _synthesize_curriculum_info(
     s_no_fm = re.sub(r"\A---\s*\n.*?\n---\s*\n", "", s_raw, flags=re.DOTALL)
     lines = [l.strip() for l in s_no_fm.splitlines() if l.strip()]
 
-    if not out and prog_name:
-        m_tc = re.search(r"tổng\s+số\s+tín\s+chỉ[^0-9]{0,25}(\d{2,3})\b", s_no_fm, re.IGNORECASE)
+    if not out and prog_name and section_type not in ("learning_outcomes", "implementation"):
+        s_plain = re.sub(r"[*_`]+", "", s_no_fm)
+        s_plain = re.sub(r"<br\s*/?>", " ", s_plain, flags=re.IGNORECASE)
+        tc_val = ""
+        m_tc = (
+            re.search(r"tổng\s+số\s+tín\s+chỉ[^\n]{0,160}?\b(1\d{2})\s*tín\s*chỉ\b", s_plain, re.IGNORECASE)
+            or re.search(r"tổng\s+số\s+tín\s+chỉ[^0-9\n]{0,30}\b(1\d{2})\b", s_plain, re.IGNORECASE)
+            or re.search(r"chỉ\s+của\s+chương\s+trình\s+đào\s+tạo[^0-9\n]{0,35}\b(1\d{2})\s*tín\s*chỉ\b", s_plain, re.IGNORECASE)
+            or re.search(r"\|\s*tổng(?:\s+cộng)?(?:\s+|\s*\|\s*\|?\s*)(1\d{2})\s*\|", s_plain, re.IGNORECASE)
+        )
         if m_tc:
+            tc_val = m_tc.group(1)
+        if tc_val:
             out.append(
                 f"[Tổng hợp Chương trình đào tạo] Chương trình đào tạo ngành {prog_name} "
-                f"({cohort_scope or 'hiện hành'}) gồm tổng số {m_tc.group(1)} tín chỉ."
+                f"({cohort_scope or 'hiện hành'}) gồm tổng số {tc_val} tín chỉ."
             )
 
     all_courses: list[str] = []
@@ -604,6 +615,8 @@ def _extract_timetable_curriculum_docs(md_root: Path, existing_progs: set[str]) 
         "quảnlý": "quản lý",
         "Thươngmại": "Thương mại",
         "thươngmại": "thương mại",
+        "thốngthương": "thống thương",
+        "tử(": "tử (",
         "An toànvà": "An toàn và",
         "Mạngmáy": "Mạng máy",
         "mạngmáy": "mạng máy",
@@ -1551,10 +1564,11 @@ def extract_relevant_snippet(
             if line.startswith("[Tổng hợp Chương trình đào tạo]") and q_cohorts:
                 l_cohs = set(re.findall(r"\bqh\s*[-–]?\s*(20[12]\d)\b", l_lower))
                 if l_cohs and not (l_cohs & q_cohorts):
-                    covers_plus = ("2025 trở đi" in l_lower and any(int(c) >= 2025 for c in q_cohorts)) or (
-                        "2026 trở đi" in l_lower and any(int(c) >= 2026 for c in q_cohorts)
-                    ) or (
-                        "2022" in l_cohs and "2024" in l_cohs and any(2022 <= int(c) <= 2024 for c in q_cohorts)
+                    m_plus = re.search(r"(20[12]\d)\s*trở\s+đi", l_lower)
+                    m_span = re.search(r"qh\s*[-–]?\s*(20[12]\d)\s*(?:đến|[-–])\s*(?:qh\s*[-–]?\s*)?(20[12]\d)", l_lower)
+                    covers_plus = (
+                        bool(m_plus and any(int(c) >= int(m_plus.group(1)) for c in q_cohorts))
+                        or bool(m_span and any(int(m_span.group(1)) <= int(c) <= int(m_span.group(2)) for c in q_cohorts))
                     )
                     if not covers_plus:
                         continue
@@ -2022,16 +2036,19 @@ class InMemoryRetriever:
                         reviewed_by_id[rec["doc_id"]] = rec
 
         manifest_meta: dict[str, dict[str, Any]] = {}
-        manifest_path = root / "data/raw/uet/curricula/manifest.json"
-        if manifest_path.is_file():
-            try:
-                manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-                for rec in manifest.get("records", []):
-                    cid = rec.get("doc_id", "")
-                    if cid:
-                        manifest_meta[cid] = rec
-            except Exception:
-                pass
+        for manifest_path, list_key in (
+            (root / "data/raw/uet/curricula/manifest.json", "records"),
+            (root / "data/raw/uet/curricula/tuan_2022_2026/manifest.json", "documents"),
+        ):
+            if manifest_path.is_file():
+                try:
+                    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+                    for rec in manifest.get(list_key, []):
+                        cid = rec.get("doc_id", "")
+                        if cid:
+                            manifest_meta[cid] = rec
+                except Exception:
+                    pass
 
         raw_docs = [
             json.loads(line)
@@ -2102,9 +2119,43 @@ class InMemoryRetriever:
                 if short_p != key_p:
                     index_credits_map.setdefault(short_p, []).append(summary_entry)
 
+        _TUAN_PROGRAM_HINT_MAP: dict[str, str] = {
+            "cntt": "Công nghệ thông tin",
+            "httt": "Hệ thống thông tin",
+            "khmt": "Khoa học máy tính",
+            "ktmt": "Kỹ thuật máy tính",
+            "ktrb": "Kỹ thuật Robot",
+            "ktvt": "Kỹ thuật điện tử - viễn thông",
+            "mmtttdl": "Mạng máy tính và truyền thông dữ liệu",
+            "mmtthdl": "Mạng máy tính và truyền thông dữ liệu",
+        }
+
+        def _parse_cohort_bounds(cohort_text: str, doc_id_text: str) -> tuple[str, int, int, int]:
+            """Normalize cohort scope string and extract (clean_scope, start_year, cohort_min, cohort_max)."""
+            src = f"{cohort_text} {doc_id_text}".lower()
+            m_span = re.search(r"(?:qh\s*[-–]?\s*)?(20[12]\d)\s*(?:to|đến|-|–)\s*(?:qh\s*[-–]?\s*)?(20[12]\d)", src)
+            if m_span:
+                y1, y2 = int(m_span.group(1)), int(m_span.group(2))
+                if y2 >= y1:
+                    return f"QH-{y1} đến QH-{y2}", y1, y1, y2
+            m_onward = re.search(r"(?:qh\s*[-–]?\s*)?(20[12]\d)\s*(?:onward|plus|trở\s*đi|tro-?di)", src)
+            if m_onward:
+                y1 = int(m_onward.group(1))
+                return f"QH-{y1} trở đi", y1, y1, 2099
+            m_single = re.search(r"\b(20[12]\d)\b", src)
+            if m_single:
+                y1 = int(m_single.group(1))
+                clean_s = re.sub(r"\s*\(filename hint only\)", "", cohort_text, flags=re.IGNORECASE).strip()
+                return (clean_s or f"QH-{y1}"), y1, y1, y1
+            return cohort_text.strip(), 0, 0, 0
+
         known_rel_paths = {str(d.get("relative_path", "")).replace("\\", "/") for d in docs}
         if curricula_dir.is_dir():
-            for cur_md in sorted(curricula_dir.glob("*.md")):
+            cur_md_files = list(sorted(curricula_dir.glob("*.md")))
+            tuan_dir = curricula_dir / "tuan_2022_2026"
+            if tuan_dir.is_dir():
+                cur_md_files.extend(sorted(tuan_dir.glob("*.md")))
+            for cur_md in cur_md_files:
                 if cur_md.name.upper() == "INDEX.MD":
                     continue
                 cid = cur_md.stem
@@ -2112,16 +2163,19 @@ class InMemoryRetriever:
                     continue
                 rel_p = cur_md.relative_to(md_root).as_posix()
                 if rel_p not in known_rel_paths:
-                    sy = 2025 if "2025" in cur_md.stem else (2022 if "2022" in cur_md.stem else (2023 if "opening-proposal" in cur_md.stem else 2025))
+                    man_r = manifest_meta.get(cid, {})
+                    _, sy_hint, _, _ = _parse_cohort_bounds(str(man_r.get("cohort_hint", "")), cid)
+                    sy = sy_hint or (2025 if "2025" in cid else (2022 if "2022" in cid else (2023 if "opening-proposal" in cid else 2025)))
                     docs.append({
-                        "doc_id": cur_md.stem,
+                        "doc_id": cid,
                         "relative_path": rel_p,
                         "academic_year_verified": f"{sy}-{sy + 1}",
-                        "title_hint": cur_md.stem.replace("-", " "),
+                        "title_hint": cid.replace("-", " "),
                         "topic_hint": "curriculum",
+                        "is_tuan_pack": "tuan_2022_2026/" in rel_p,
                     })
 
-        cur_docs_by_prog: dict[str, list[tuple[int, str]]] = {}
+        cur_docs_by_prog: dict[tuple[str, str], list[tuple[int, str]]] = {}
         existing_prog_names: set[str] = set()
         for d in docs:
             doc_id = d["doc_id"]
@@ -2132,7 +2186,14 @@ class InMemoryRetriever:
             if topic == "curriculum":
                 full_raw = p.read_text(encoding="utf-8", errors="ignore")
                 fm = _extract_yaml_frontmatter_meta(full_raw)
+                is_tuan = bool(d.get("is_tuan_pack")) or "tuan_2022_2026/" in str(d.get("relative_path", "")).replace("\\", "/")
+                d["is_tuan_pack"] = is_tuan
+                sec_type = fm.get("section_type", "").strip().lower()
+                d["section_type"] = sec_type
                 prog_vi = fm.get("program_name_vi", "").strip()
+                if not prog_vi and is_tuan:
+                    p_hint = fm.get("program_hint", "").strip().lower()
+                    prog_vi = _TUAN_PROGRAM_HINT_MAP.get(p_hint, "")
                 if not prog_vi:
                     m_h1 = re.search(r"^#\s+([^—\n-]+)", full_raw, re.MULTILINE)
                     if m_h1:
@@ -2140,21 +2201,26 @@ class InMemoryRetriever:
                 if prog_vi:
                     prog_vi = unicodedata.normalize("NFC", prog_vi)
                     d["program_name_vi"] = prog_vi
-                    d["cohort_scope"] = fm.get("cohort_scope", "") or fm.get("edition", "")
+                    raw_cohort = fm.get("cohort_scope", "") or fm.get("cohort_hint", "") or fm.get("edition", "")
+                    clean_cohort, sy_coh, coh_min, coh_max = _parse_cohort_bounds(raw_cohort, doc_id)
+                    d["cohort_scope"] = clean_cohort or raw_cohort
+                    d["cohort_min"] = coh_min
+                    d["cohort_max"] = coh_max
                     d["outcomes_url_mismatch"] = (
                         fm.get("program_slug", "") == "space-engineering"
                         and "vat-ly-ky-thuat" in fm.get("source_pages", "").lower()
                     )
-                    if sy == 0:
-                        sy = 2025 if "2025" in doc_id else (2023 if "opening-proposal" in doc_id else 2022)
+                    if sy == 0 or (is_tuan and sy_coh > 0):
+                        sy = sy_coh or (2025 if "2025" in doc_id else (2023 if "opening-proposal" in doc_id else 2022))
                         d["academic_year_verified"] = f"{sy}-{sy + 1}"
                     p_low = prog_vi.lower()
                     p_short = re.sub(r"\s*\([^)]*\)", "", p_low).strip()
-                    existing_prog_names.add(p_low)
-                    existing_prog_names.add(p_short)
-                    cur_docs_by_prog.setdefault(p_low, []).append((sy, doc_id))
+                    if not is_tuan:
+                        existing_prog_names.add(p_low)
+                        existing_prog_names.add(p_short)
+                    cur_docs_by_prog.setdefault((p_low, sec_type if is_tuan else ""), []).append((sy, doc_id))
 
-        for prog_low, ver_list in cur_docs_by_prog.items():
+        for (_, _), ver_list in cur_docs_by_prog.items():
             if len(ver_list) >= 2:
                 ver_list.sort()
                 for idx_v in range(len(ver_list) - 1):
@@ -2205,29 +2271,42 @@ class InMemoryRetriever:
             )
 
             sem_lines = _parse_markdown_lines_and_tables(raw_text, doc_id=doc_id, topic=topic)
+            is_tuan_pack = bool(d.get("is_tuan_pack", False))
+            section_type = str(d.get("section_type", ""))
+            cohort_min = int(d.get("cohort_min", 0) or 0)
+            cohort_max = int(d.get("cohort_max", 0) or 0)
+            has_total_credits = False
             if topic == "curriculum":
                 p_low = prog_vi_name.lower()
                 p_short = re.sub(r"\s*\([^)]*\)", "", p_low).strip()
-                idx_entries = index_credits_map.get(p_low) or index_credits_map.get(p_short) or []
-                cur_synth = _synthesize_curriculum_info(raw_text, prog_vi_name or title, cohort_scope, idx_entries)
+                idx_entries = [] if is_tuan_pack else (index_credits_map.get(p_low) or index_credits_map.get(p_short) or [])
+                cur_synth = _synthesize_curriculum_info(
+                    raw_text,
+                    prog_vi_name or title,
+                    cohort_scope,
+                    idx_entries,
+                    section_type=section_type,
+                )
                 if cur_synth:
                     sem_lines = list(dict.fromkeys(cur_synth)) + sem_lines
-                for c_code, c_name, c_cred in _extract_curriculum_courses(raw_text):
-                    c_norm = _norm_course_name(c_name)
-                    if c_norm:
-                        course_catalog.append({
-                            "code": c_code,
-                            "code_lower": c_code.lower(),
-                            "name": c_name,
-                            "name_norm": c_norm,
-                            "credits": c_cred,
-                            "doc_id": doc_id,
-                            "program": prog_vi_name or title,
-                            "cohort": cohort_scope or (f"QH-{start_year}" if start_year else ""),
-                            "start_year": start_year,
-                            "is_tkb": False,
-                            "is_proposal": "opening-proposal" in doc_id,
-                        })
+                has_total_credits = any(l.startswith("[Tổng hợp Chương trình đào tạo]") for l in sem_lines)
+                if not is_tuan_pack:
+                    for c_code, c_name, c_cred in _extract_curriculum_courses(raw_text):
+                        c_norm = _norm_course_name(c_name)
+                        if c_norm:
+                            course_catalog.append({
+                                "code": c_code,
+                                "code_lower": c_code.lower(),
+                                "name": c_name,
+                                "name_norm": c_norm,
+                                "credits": c_cred,
+                                "doc_id": doc_id,
+                                "program": prog_vi_name or title,
+                                "cohort": cohort_scope or (f"QH-{start_year}" if start_year else ""),
+                                "start_year": start_year,
+                                "is_tkb": False,
+                                "is_proposal": "opening-proposal" in doc_id,
+                            })
 
             if eff_from:
                 eff_note = f"[Thông tin ban hành & hiệu lực] Hiệu lực xác minh từ ngày {eff_from}"
@@ -2268,6 +2347,11 @@ class InMemoryRetriever:
                 "issued_date": issued_date,
                 "retrieval_eligible": retrieval_eligible,
                 "outcomes_url_mismatch": outcomes_url_mismatch,
+                "has_total_credits": has_total_credits,
+                "section_type": section_type,
+                "cohort_min": cohort_min,
+                "cohort_max": cohort_max,
+                "is_tuan_pack": is_tuan_pack,
             }
 
             cur_batch: list[str] = []
@@ -2297,6 +2381,11 @@ class InMemoryRetriever:
                         "effective_until_exclusive": eff_until,
                         "issued_date": issued_date,
                         "retrieval_eligible": retrieval_eligible,
+                        "has_total_credits": has_total_credits,
+                        "section_type": section_type,
+                        "cohort_min": cohort_min,
+                        "cohort_max": cohort_max,
+                        "is_tuan_pack": is_tuan_pack,
                         "metadata": {
                             "doc_id": doc_id,
                             "academic_year": ay,
@@ -2333,6 +2422,11 @@ class InMemoryRetriever:
                     "effective_until_exclusive": eff_until,
                     "issued_date": issued_date,
                     "retrieval_eligible": retrieval_eligible,
+                    "has_total_credits": has_total_credits,
+                    "section_type": section_type,
+                    "cohort_min": cohort_min,
+                    "cohort_max": cohort_max,
+                    "is_tuan_pack": is_tuan_pack,
                     "metadata": {
                         "doc_id": doc_id,
                         "academic_year": ay,
@@ -2358,6 +2452,12 @@ class InMemoryRetriever:
                 "is_sub_inst": False,
                 "is_clc_tt23": False,
                 "is_timetable": False,
+                "retrieval_eligible": True,
+                "has_total_credits": False,
+                "section_type": "tkb_courses",
+                "cohort_min": 0,
+                "cohort_max": 0,
+                "is_tuan_pack": False,
             }
             doc_body = "\n".join(vdoc["sem_lines"])
             chunks.append({
@@ -2376,6 +2476,12 @@ class InMemoryRetriever:
                 "is_sub_inst": False,
                 "is_clc_tt23": False,
                 "is_timetable": False,
+                "retrieval_eligible": True,
+                "has_total_credits": False,
+                "section_type": "tkb_courses",
+                "cohort_min": 0,
+                "cohort_max": 0,
+                "is_tuan_pack": False,
                 "metadata": {
                     "doc_id": did,
                     "academic_year": vdoc["academic_year"],
@@ -2737,8 +2843,17 @@ class RAGEvalAdapter:
 
         if doc_topic == "curriculum":
             ql_norm = _normalize_query_typos(question).lower()
-            ql_expanded = re.sub(r"\bcntt\b", "công nghệ thông tin", ql_norm)
+            ql_expanded = re.sub(r"\bcntt\s+nhật\s+bản\b", "công nghệ thông tin định hướng thị trường nhật bản", ql_norm)
+            ql_expanded = re.sub(r"\bcntt\b", "công nghệ thông tin", ql_expanded)
+            ql_expanded = re.sub(r"\bclc\b", "chất lượng cao", ql_expanded)
             ql_expanded = re.sub(r"\bai\b", "trí tuệ nhân tạo", ql_expanded)
+            ql_expanded = re.sub(r"\bhttt\b", "hệ thống thông tin", ql_expanded)
+            ql_expanded = re.sub(r"\bkhmt\b", "khoa học máy tính", ql_expanded)
+            ql_expanded = re.sub(r"\bktmt\b", "kỹ thuật máy tính", ql_expanded)
+            ql_expanded = re.sub(r"\bktrb\b", "kỹ thuật robot", ql_expanded)
+            ql_expanded = re.sub(r"\bktvt\b", "kỹ thuật điện tử viễn thông", ql_expanded)
+            ql_expanded = re.sub(r"\bmmtttdl\b", "mạng máy tính và truyền thông dữ liệu", ql_expanded)
+            ql_flat = re.sub(r"[\s\-–—]+", " ", ql_expanded)
             all_cur = [i for i, c in enumerate(chunks) if c.get("topic") == "curriculum"]
             matched_prog = ""
             best_len = 0
@@ -2746,30 +2861,87 @@ class RAGEvalAdapter:
                 p_vi = unicodedata.normalize("NFC", str(chunks[i].get("program_name_vi", "")).strip().lower())
                 p_short = re.sub(r"\s*\([^)]*\)", "", p_vi).strip()
                 for cand_p in (p_vi, p_short):
-                    if cand_p and (cand_p in ql_norm or cand_p in ql_expanded) and len(cand_p) > best_len:
+                    cand_flat = re.sub(r"[\s\-–—]+", " ", cand_p).strip()
+                    if cand_flat and (cand_p in ql_norm or cand_p in ql_expanded or cand_flat in ql_flat) and len(cand_flat) > best_len:
                         matched_prog = p_vi
-                        best_len = len(cand_p)
+                        best_len = len(cand_flat)
             if matched_prog:
                 matched_short = re.sub(r"\s*\([^)]*\)", "", matched_prog).strip()
+                matched_flat = re.sub(r"[\s\-–—]+", " ", matched_short).strip()
                 major_indices = [
                     i for i in all_cur
-                    if unicodedata.normalize("NFC", str(chunks[i].get("program_name_vi", "")).strip().lower()) in (matched_prog, matched_short)
-                    or re.sub(r"\s*\([^)]*\)", "", unicodedata.normalize("NFC", str(chunks[i].get("program_name_vi", "")).strip().lower())).strip() == matched_short
+                    if re.sub(
+                        r"[\s\-–—]+",
+                        " ",
+                        re.sub(
+                            r"\s*\([^)]*\)",
+                            "",
+                            unicodedata.normalize("NFC", str(chunks[i].get("program_name_vi", "")).strip().lower()),
+                        ).strip(),
+                    ).strip() == matched_flat
                 ]
+
+                asks_program_total_credits = (
+                    bool(re.search(r"(?:bao\s+nhiêu|mấy|tổng\s+(?:cộng|số))[^?]{0,20}tín\s+chỉ", ql_norm))
+                    and not any(k in ql_norm for k in ("môn ", "học phần", "tự chọn"))
+                )
+                asks_cur_courses = any(k in ql_norm for k in ("môn học", "môn gì", "những môn", "các học phần"))
+                asks_cur_outcomes = any(k in ql_norm for k in ("chuẩn đầu ra", "plo"))
+                asks_cur_jobs = any(k in ql_norm for k in ("việc làm", "nghề nghiệp", "vị trí nào"))
+
                 q_cohs = set(re.findall(r"\bqh\s*[-–]?\s*(20[12]\d)\b", ql_norm))
                 if q_cohs:
-                    coh_major = [
-                        i for i in major_indices
-                        if any(cy in chunks[i].get("doc_id", "") for cy in q_cohs)
-                        or ("2022-to-2024" in chunks[i].get("doc_id", "") and any(2022 <= int(cy) <= 2024 for cy in q_cohs))
-                        or ("2025-plus" in chunks[i].get("doc_id", "") and any(int(cy) >= 2025 for cy in q_cohs))
-                        or ("2026-plus" in chunks[i].get("doc_id", "") and any(int(cy) >= 2026 for cy in q_cohs))
-                    ]
-                    if coh_major:
+                    q_years = [int(cy) for cy in q_cohs]
+                    coh_scored: list[tuple[int, int]] = []
+                    for i in major_indices:
+                        c_min = int(chunks[i].get("cohort_min", 0) or 0)
+                        c_max = int(chunks[i].get("cohort_max", 0) or 0)
+                        did_l = chunks[i].get("doc_id", "").lower()
+                        if c_min > 0 and c_max >= c_min and any(c_min <= cy <= c_max for cy in q_years):
+                            coh_scored.append((c_min, i))
+                        elif any(cy in did_l for cy in q_cohs):
+                            coh_scored.append((max(q_years), i))
+                    if coh_scored:
+                        # If asking total credits, filter within cohort-matched docs first; abstain if cohort lacks credit total
+                        if asks_program_total_credits:
+                            cred_scored = [(cm, i) for cm, i in coh_scored if chunks[i].get("has_total_credits")]
+                            if not cred_scored:
+                                return [], None
+                            coh_scored = cred_scored
+                        elif asks_cur_outcomes:
+                            out_scored = [(cm, i) for cm, i in coh_scored if chunks[i].get("section_type") in ("", "learning_outcomes")]
+                            if out_scored:
+                                coh_scored = out_scored
+                        elif asks_cur_jobs:
+                            job_scored = [(cm, i) for cm, i in coh_scored if chunks[i].get("section_type") in ("", "overview")]
+                            if job_scored:
+                                coh_scored = job_scored
+                        max_cmin = max(cm for cm, _ in coh_scored)
+                        coh_major = [i for cm, i in coh_scored if cm == max_cmin]
                         yrs = [chunks[i].get("start_year", 2022) for i in coh_major if chunks[i].get("start_year", 0) > 0]
                         return coh_major, (max(yrs) if yrs else 2022)
-                active_major = [i for i in major_indices if chunks[i].get("is_active", True)]
-                chosen = active_major if (cat == "active_rule" and active_major) else major_indices
+
+                pool = major_indices
+                if asks_program_total_credits:
+                    cred_pool = [i for i in pool if chunks[i].get("has_total_credits")]
+                    if not cred_pool:
+                        return [], None
+                    pool = cred_pool
+                elif asks_cur_courses:
+                    verified_pool = [i for i in pool if chunks[i].get("retrieval_eligible", True)]
+                    if verified_pool:
+                        pool = verified_pool
+                elif asks_cur_outcomes:
+                    out_pool = [i for i in pool if chunks[i].get("section_type") in ("", "learning_outcomes")]
+                    if out_pool:
+                        pool = out_pool
+                elif asks_cur_jobs:
+                    job_pool = [i for i in pool if chunks[i].get("section_type") in ("", "overview")]
+                    if job_pool:
+                        pool = job_pool
+
+                active_major = [i for i in pool if chunks[i].get("is_active", True)]
+                chosen = active_major if (cat == "active_rule" and active_major) else pool
                 yrs = [chunks[i].get("start_year", 2025) for i in chosen if chunks[i].get("start_year", 0) > 0]
                 return chosen, (max(yrs) if yrs else 2025)
             topic_indices = all_cur

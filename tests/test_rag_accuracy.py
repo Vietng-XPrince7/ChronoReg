@@ -495,8 +495,16 @@ class TestOutOfDistributionGeneralization:
 
         # 3.1b: Strict mode (respect_retrieval_eligible=True) excludes all unreviewed manifest curricula
         strict_ret = InMemoryRetriever.from_corpus(respect_retrieval_eligible=True)
-        assert not any(did.startswith("uet-curriculum-") for did in strict_ret.doc_lines)
+        assert not any(did.startswith(("uet-curriculum-", "uet-tuan-")) for did in strict_ret.doc_lines)
         assert "uet-ctdt-cong-nghe-thong-tin-tkb" in strict_ret.doc_lines
+        # Strict mode must abstain on total-credit query for TKB-only majors instead of returning a 3 TC course
+        strict_adapter = RAGEvalAdapter(strict_ret)
+        strict_httt = strict_adapter.run_benchmark(
+            [{"id": "strict_httt", "question": "Ngành Hệ thống thông tin khóa QH-2022 gồm bao nhiêu tín chỉ?"}],
+            mode="chrono_rag",
+        )[0]
+        assert strict_httt["cited_doc_ids"] == []
+        assert "không tìm thấy thông tin" in strict_httt["predicted_answer"].lower()
 
         # 3.2a: AI QH-2022–2024 surfaces both original (124 TC) and updated (123 TC) with unconfirmed date note
         out_ai22 = answer("Ngành Trí tuệ nhân tạo khóa QH-2022 gồm bao nhiêu tín chỉ?", mode="chrono_rag")
@@ -681,6 +689,99 @@ class TestOutOfDistributionGeneralization:
         out = answer(ood_query, mode="chrono_rag")
         assert out["cited_doc_ids"] == []
         assert "Không tìm thấy thông tin phù hợp" in out["predicted_answer"]
+
+    @pytest.mark.parametrize(
+        ("cur_query", "expected_facts", "should_abstain"),
+        [
+            (
+                "Ngành Hệ thống thông tin khóa QH-2022 gồm bao nhiêu tín chỉ?",
+                ["Hệ thống thông tin", "136 tín chỉ", "chưa duyệt độc lập"],
+                False,
+            ),
+            (
+                "Ngành Hệ thống thông tin khóa QH-2025 gồm bao nhiêu tín chỉ?",
+                [],
+                True,
+            ),
+            (
+                "Ngành Công nghệ thông tin khóa QH-2022 gồm bao nhiêu tín chỉ?",
+                ["Công nghệ thông tin", "136 tín chỉ"],
+                False,
+            ),
+            (
+                "Ngành Công nghệ thông tin khóa QH-2025 gồm bao nhiêu tín chỉ?",
+                ["Công nghệ thông tin", "135 tín chỉ"],
+                False,
+            ),
+            (
+                "Ngành Công nghệ thông tin gồm bao nhiêu tín chỉ?",
+                ["Công nghệ thông tin", "135 tín chỉ"],
+                False,
+            ),
+            (
+                "Ngành Công nghệ thông tin chất lượng cao gồm bao nhiêu tín chỉ?",
+                [],
+                True,
+            ),
+            (
+                "Ngành CNTT CLC gồm bao nhiêu tín chỉ?",
+                [],
+                True,
+            ),
+            (
+                "Ngành CNTT Nhật Bản gồm bao nhiêu tín chỉ?",
+                [],
+                True,
+            ),
+            (
+                "Ngành Khoa học máy tính khóa QH-2022 gồm bao nhiêu tín chỉ?",
+                ["Khoa học máy tính", "136 tín chỉ"],
+                False,
+            ),
+            (
+                "Ngành Kỹ thuật máy tính khóa QH-2022 gồm bao nhiêu tín chỉ?",
+                ["Kỹ thuật máy tính", "150 tín chỉ"],
+                False,
+            ),
+            (
+                "Ngành Kỹ thuật Robot khóa QH-2025 gồm bao nhiêu tín chỉ?",
+                ["Kỹ thuật Robot", "150 tín chỉ"],
+                False,
+            ),
+            (
+                "Ngành Kỹ thuật điện tử viễn thông khóa QH-2025 gồm bao nhiêu tín chỉ?",
+                ["135 tín chỉ"],
+                False,
+            ),
+            (
+                "Ngành Mạng máy tính và truyền thông dữ liệu khóa QH-2023 gồm bao nhiêu tín chỉ?",
+                ["150 tín chỉ"],
+                False,
+            ),
+        ],
+    )
+    def test_tuan_curricula_total_credits_and_grounding_guard(
+        self,
+        cur_query: str,
+        expected_facts: list[str],
+        should_abstain: bool,
+    ) -> None:
+        from src.rag.grounding import _verify_answer_grounding
+
+        # Grounding guard must reject a single 3 TC elective line as an answer to a program total-credit query
+        assert not _verify_answer_grounding(
+            "Ngành Hệ thống thông tin khóa QH-2022 gồm bao nhiêu tín chỉ?",
+            "Học phần Các hệ thống thương mại điện tử (môn tự chọn) (INT3506E, 3 TC)",
+            35.0,
+            {"hệ": 2.0, "thống": 2.0, "thông": 2.0, "tin": 2.0},
+        )
+        out = answer(cur_query, mode="chrono_rag")
+        if should_abstain:
+            assert out["cited_doc_ids"] == []
+            assert "không tìm thấy thông tin" in out["predicted_answer"].lower()
+        else:
+            assert key_fact_score(out["predicted_answer"], expected_facts) == 1.0
+            assert "3 TC" not in out["predicted_answer"]
 
 
 # ==============================================================================
