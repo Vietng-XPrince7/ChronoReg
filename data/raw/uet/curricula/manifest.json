@@ -31,7 +31,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "2026 ngành/mã đổi sang Kỹ thuật xây dựng (7580201); không sửa tên ngành các chương trình cũ. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "2026 ngành/mã đổi sang Kỹ thuật xây dựng (7580201); không sửa tên ngành các chương trình cũ. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-civil-engineering-QH-2026-plus.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-civil-engineering-QH-2026-plus.md"
     },
     {
       "doc_id": "uet-curriculum-civil-engineering-QH-2025",
@@ -54,7 +56,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "Ngành/mã 7510103; áp dụng riêng QH-2025 theo chỉ mục. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "Ngành/mã 7510103; áp dụng riêng QH-2025 theo chỉ mục. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-civil-engineering-QH-2025.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-civil-engineering-QH-2025.md"
     },
     {
       "doc_id": "uet-curriculum-civil-engineering-QH-2022-to-2024",
@@ -76,7 +80,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng 2022–2024 do có các phiên bản riêng cho 2025 và 2026. Đây là suy luận phân giải phiên bản. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng 2022–2024 do có các phiên bản riêng cho 2025 và 2026. Đây là suy luận phân giải phiên bản. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-civil-engineering-QH-2022-to-2024.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-civil-engineering-QH-2022-to-2024.md"
     },
     {
       "doc_id": "uet-curriculum-industrial-graphic-design-QH-2025-plus",
@@ -99,7 +105,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-industrial-graphic-design-QH-2025-plus.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-industrial-graphic-design-QH-2025-plus.md"
     },
     {
       "doc_id": "uet-curriculum-industrial-graphic-design-QH-2024",
@@ -121,7 +129,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "UET xác nhận tuyển sinh lần đầu năm 2024; chỉ mục nói QH-2024 trở đi nhưng đã có phiên bản QH-2025 riêng. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "UET xác nhận tuyển sinh lần đầu năm 2024; chỉ mục nói QH-2024 trở đi nhưng đã có phiên bản QH-2025 riêng. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-industrial-graphic-design-QH-2024.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-industrial-graphic-design-QH-2024.md"
     },
     {
       "doc_id": "uet-curriculum-agricultural-technology-QH-2025-plus",
@@ -144,7 +154,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-agricultural-technology-QH-2025-plus.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-agricultural-technology-QH-2025-plus.md"
     },
     {
       "doc_id": "uet-curriculum-agricultural-technology-QH-2022-to-2024",
@@ -166,7 +178,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "Chỉ mục ghi QH-2022 trở đi; phiên bản QH-2025 khác. Phân vùng 2022–2024 để tránh chọn nhầm. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "Chỉ mục ghi QH-2022 trở đi; phiên bản QH-2025 khác. Phân vùng 2022–2024 để tránh chọn nhầm. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-agricultural-technology-QH-2022-to-2024.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-agricultural-technology-QH-2022-to-2024.md"
     },
     {
       "doc_id": "uet-curriculum-biotechnology-QH-2025-plus",
@@ -189,7 +203,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "Năm đầu tiên tuyển sinh ngành là 2025 theo thông tin UET. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "Năm đầu tiên tuyển sinh ngành là 2025 theo thông tin UET. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-biotechnology-QH-2025-plus.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-biotechnology-QH-2025-plus.md"
     },
     {
       "doc_id": "uet-curriculum-biotechnology-opening-proposal",
@@ -211,7 +227,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "Tài liệu theo đề án mở ngành, KHÔNG gán cho QH-2022..2024; không dùng như quy định áp dụng. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "Tài liệu theo đề án mở ngành, KHÔNG gán cho QH-2022..2024; không dùng như quy định áp dụng. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-biotechnology-opening-proposal.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-biotechnology-opening-proposal.md"
     },
     {
       "doc_id": "uet-curriculum-artificial-intelligence-QH-2025-plus",
@@ -234,7 +252,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-artificial-intelligence-QH-2025-plus.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-artificial-intelligence-QH-2025-plus.md"
     },
     {
       "doc_id": "uet-curriculum-artificial-intelligence-QH-2022-to-2024-updated",
@@ -256,7 +276,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "UET ghi rõ cập nhật. Ngày bắt đầu áp dụng bản cập nhật và mối quan hệ pháp lý cần xác minh; không tự động coi bản gốc hết hiệu lực tại một ngày cụ thể. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "UET ghi rõ cập nhật. Ngày bắt đầu áp dụng bản cập nhật và mối quan hệ pháp lý cần xác minh; không tự động coi bản gốc hết hiệu lực tại một ngày cụ thể. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-artificial-intelligence-QH-2022-to-2024-updated.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-artificial-intelligence-QH-2022-to-2024-updated.md"
     },
     {
       "doc_id": "uet-curriculum-artificial-intelligence-QH-2022-to-2024-original",
@@ -278,7 +300,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "Bản gốc được lưu song song để so sánh. Không cho RAG chọn tự động nếu chưa xác định ngày/thông báo cập nhật. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "Bản gốc được lưu song song để so sánh. Không cho RAG chọn tự động nếu chưa xác định ngày/thông báo cập nhật. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-artificial-intelligence-QH-2022-to-2024-original.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-artificial-intelligence-QH-2022-to-2024-original.md"
     },
     {
       "doc_id": "uet-curriculum-data-science-QH-2025-plus",
@@ -301,7 +325,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "Năm đầu tiên tuyển sinh ngành là 2025 theo thông tin UET. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "Năm đầu tiên tuyển sinh ngành là 2025 theo thông tin UET. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-data-science-QH-2025-plus.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-data-science-QH-2025-plus.md"
     },
     {
       "doc_id": "uet-curriculum-data-science-opening-proposal",
@@ -323,7 +349,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "Tài liệu theo đề án mở ngành; 130 tín chỉ KHÔNG đồng nhất với bản áp dụng QH-2025 (135 TC). | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "Tài liệu theo đề án mở ngành; 130 tín chỉ KHÔNG đồng nhất với bản áp dụng QH-2025 (135 TC). | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-data-science-opening-proposal.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-data-science-opening-proposal.md"
     },
     {
       "doc_id": "uet-curriculum-space-engineering-QH-2026-plus",
@@ -346,7 +374,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "Áp dụng cho khóa QH-2026 trở đi. CTĐT Kỹ thuật Hàng không vũ trụ – Ngành Kỹ thuật không gian (mã số 7520121). | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "Áp dụng cho khóa QH-2026 trở đi. CTĐT Kỹ thuật Hàng không vũ trụ – Ngành Kỹ thuật không gian (mã số 7520121). | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-space-engineering-QH-2026-plus.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-space-engineering-QH-2026-plus.md"
     },
     {
       "doc_id": "uet-curriculum-space-engineering-QH-2025",
@@ -369,7 +399,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "Áp dụng riêng cho khóa tuyển sinh QH-2025 (mã ngành 7519001). | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "Áp dụng riêng cho khóa tuyển sinh QH-2025 (mã ngành 7519001). | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-space-engineering-QH-2025.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-space-engineering-QH-2025.md"
     },
     {
       "doc_id": "uet-curriculum-space-engineering-QH-2022-to-2024",
@@ -391,7 +423,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted; human_review_pending",
       "retrieval_eligible": false,
-      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng QH-2022–2024 do có các phiên bản riêng cho 2025 và 2026. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval."
+      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng QH-2022–2024 do có các phiên bản riêng cho 2025 và 2026. | Full Markdown and source card already present in repository; no need to regenerate. Extraction does not imply independent approval.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-space-engineering-QH-2022-to-2024.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-space-engineering-QH-2022-to-2024.md"
     },
     {
       "doc_id": "uet-curriculum-engineering-mechanics-QH-2025-plus",
@@ -414,7 +448,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted",
       "retrieval_eligible": false,
-      "notes": "Áp dụng cho khóa QH-2025 trở đi (mã số 7520101)."
+      "notes": "Áp dụng cho khóa QH-2025 trở đi (mã số 7520101).",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-engineering-mechanics-QH-2025-plus.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-engineering-mechanics-QH-2025-plus.md"
     },
     {
       "doc_id": "uet-curriculum-engineering-mechanics-QH-2022-to-2024",
@@ -436,7 +472,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted",
       "retrieval_eligible": false,
-      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng QH-2022–2024 do có phiên bản riêng cho 2025 trở đi."
+      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng QH-2022–2024 do có phiên bản riêng cho 2025 trở đi.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-engineering-mechanics-QH-2022-to-2024.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-engineering-mechanics-QH-2022-to-2024.md"
     },
     {
       "doc_id": "uet-curriculum-control-and-automation-QH-2025-plus",
@@ -459,7 +497,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted",
       "retrieval_eligible": false,
-      "notes": "Áp dụng cho khóa QH-2025 trở đi (mã số 7520216)."
+      "notes": "Áp dụng cho khóa QH-2025 trở đi (mã số 7520216).",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-control-and-automation-QH-2025-plus.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-control-and-automation-QH-2025-plus.md"
     },
     {
       "doc_id": "uet-curriculum-control-and-automation-QH-2022-to-2024",
@@ -481,7 +521,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted",
       "retrieval_eligible": false,
-      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng QH-2022–2024 do có phiên bản riêng cho 2025 trở đi."
+      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng QH-2022–2024 do có phiên bản riêng cho 2025 trở đi.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-control-and-automation-QH-2022-to-2024.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-control-and-automation-QH-2022-to-2024.md"
     },
     {
       "doc_id": "uet-curriculum-mechatronics-engineering-QH-2026-plus",
@@ -504,7 +546,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted",
       "retrieval_eligible": false,
-      "notes": "Áp dụng cho khóa QH-2026 trở đi (mã số ngành 7520114)."
+      "notes": "Áp dụng cho khóa QH-2026 trở đi (mã số ngành 7520114).",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-mechatronics-engineering-QH-2026-plus.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-mechatronics-engineering-QH-2026-plus.md"
     },
     {
       "doc_id": "uet-curriculum-mechatronics-engineering-QH-2025",
@@ -527,7 +571,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted",
       "retrieval_eligible": false,
-      "notes": "Áp dụng riêng cho khóa QH-2025 (mã ngành 7510203)."
+      "notes": "Áp dụng riêng cho khóa QH-2025 (mã ngành 7510203).",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-mechatronics-engineering-QH-2025.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-mechatronics-engineering-QH-2025.md"
     },
     {
       "doc_id": "uet-curriculum-mechatronics-engineering-QH-2022-to-2024",
@@ -549,7 +595,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted",
       "retrieval_eligible": false,
-      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng QH-2022–2024 do có các bản riêng cho 2025 và 2026."
+      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng QH-2022–2024 do có các bản riêng cho 2025 và 2026.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-mechatronics-engineering-QH-2022-to-2024.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-mechatronics-engineering-QH-2022-to-2024.md"
     },
     {
       "doc_id": "uet-curriculum-materials-engineering-QH-2026-plus",
@@ -572,7 +620,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted",
       "retrieval_eligible": false,
-      "notes": "Áp dụng cho khóa QH-2026 trở đi (CT Kỹ thuật vật liệu và Vi điện tử, mã số 7520309)."
+      "notes": "Áp dụng cho khóa QH-2026 trở đi (CT Kỹ thuật vật liệu và Vi điện tử, mã số 7520309).",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-materials-engineering-QH-2026-plus.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-materials-engineering-QH-2026-plus.md"
     },
     {
       "doc_id": "uet-curriculum-materials-engineering-QH-2025",
@@ -595,7 +645,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted",
       "retrieval_eligible": false,
-      "notes": "Áp dụng cho khóa QH-2025 (mã ngành 7510402)."
+      "notes": "Áp dụng cho khóa QH-2025 (mã ngành 7510402).",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-materials-engineering-QH-2025.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-materials-engineering-QH-2025.md"
     },
     {
       "doc_id": "uet-curriculum-materials-engineering-opening-proposal",
@@ -617,7 +669,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted",
       "retrieval_eligible": false,
-      "notes": "Đề án mở ngành; nguồn tham khảo KHÔNG phải phiên bản học tập đã áp dụng."
+      "notes": "Đề án mở ngành; nguồn tham khảo KHÔNG phải phiên bản học tập đã áp dụng.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-materials-engineering-opening-proposal.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-materials-engineering-opening-proposal.md"
     },
     {
       "doc_id": "uet-curriculum-energy-engineering-QH-2025-plus",
@@ -640,7 +694,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted",
       "retrieval_eligible": false,
-      "notes": "Áp dụng cho khóa QH-2025 trở đi (mã số 7520115)."
+      "notes": "Áp dụng cho khóa QH-2025 trở đi (mã số 7520115).",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-energy-engineering-QH-2025-plus.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-energy-engineering-QH-2025-plus.md"
     },
     {
       "doc_id": "uet-curriculum-energy-engineering-QH-2022-to-2024",
@@ -662,7 +718,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted",
       "retrieval_eligible": false,
-      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng QH-2022–2024 do có phiên bản riêng cho 2025 trở đi."
+      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng QH-2022–2024 do có phiên bản riêng cho 2025 trở đi.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-energy-engineering-QH-2022-to-2024.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-energy-engineering-QH-2022-to-2024.md"
     },
     {
       "doc_id": "uet-curriculum-engineering-physics-QH-2025-plus",
@@ -685,7 +743,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted",
       "retrieval_eligible": false,
-      "notes": "Áp dụng cho khóa QH-2025 trở đi (mã số 7520401)."
+      "notes": "Áp dụng cho khóa QH-2025 trở đi (mã số 7520401).",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-engineering-physics-QH-2025-plus.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-engineering-physics-QH-2025-plus.md"
     },
     {
       "doc_id": "uet-curriculum-engineering-physics-QH-2022-to-2024",
@@ -707,7 +767,9 @@
       "source_status": "verified_official_index_links",
       "review_status": "metadata_reviewed; course_table_extracted",
       "retrieval_eligible": false,
-      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng QH-2022–2024 do có phiên bản riêng cho 2025 trở đi."
+      "notes": "Chỉ mục ghi QH-2022 trở đi; khoanh vùng QH-2022–2024 do có phiên bản riêng cho 2025 trở đi.",
+      "content_md_path": "data/raw/uet/markdown/curricula/uet-curriculum-engineering-physics-QH-2022-to-2024.md",
+      "source_card_path": "data/raw/uet/markdown/curricula/source_cards/uet-curriculum-engineering-physics-QH-2022-to-2024.md"
     }
   ],
   "excluded_future": [

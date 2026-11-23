@@ -33,7 +33,7 @@
       "source_sha256": "553df3807024af1c0b9168ef8f06ef5a7cb70dce834ed0beafa972a8219c01c2",
       "source_bytes": 5464,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh-dao_tao_httt_2022_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-httt-2022-2024-553df380.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -41,7 +41,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh-dao_tao_httt_2022_2024.md",
+      "content_sha256": "553df3807024af1c0b9168ef8f06ef5a7cb70dce834ed0beafa972a8219c01c2"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-2022-2024-f1ba4e00",
@@ -62,7 +64,7 @@
       "source_sha256": "f1ba4e00159b4fdac65c50dd33379a38b6924673278fa6f3ab9bb7926bba6b9a",
       "source_bytes": 4645,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_cntt_2022_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-2022-2024-f1ba4e00.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -70,7 +72,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_cntt_2022_2024.md",
+      "content_sha256": "f1ba4e00159b4fdac65c50dd33379a38b6924673278fa6f3ab9bb7926bba6b9a"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-338b06c6",
@@ -95,7 +99,7 @@
       "source_sha256": "338b06c61121519fd817d5e2646afa8fe6cbdd7603c97234fd407f11174a0f70",
       "source_bytes": 5153,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-338b06c6.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -103,7 +107,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
+      "content_sha256": "338b06c61121519fd817d5e2646afa8fe6cbdd7603c97234fd407f11174a0f70"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-64d98214",
@@ -128,7 +134,7 @@
       "source_sha256": "64d98214a9c50d28668bcff723fa26d10d5ad716fc99a9efacd22986b79a307d",
       "source_bytes": 6301,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-64d98214.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -136,7 +142,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 9
+      "table_line_count": 9,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
+      "content_sha256": "64d98214a9c50d28668bcff723fa26d10d5ad716fc99a9efacd22986b79a307d"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-ktmt-2022-2024-d181a43b",
@@ -157,7 +165,7 @@
       "source_sha256": "d181a43b6cc437e190fcf9b0ebae70544a14f1b5b53b3f5a98c3d3998ffd9bab",
       "source_bytes": 3682,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_ktmt_2022_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-ktmt-2022-2024-d181a43b.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -165,7 +173,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_ktmt_2022_2024.md",
+      "content_sha256": "d181a43b6cc437e190fcf9b0ebae70544a14f1b5b53b3f5a98c3d3998ffd9bab"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-ktrb-2022-2024-763a72cf",
@@ -186,7 +196,7 @@
       "source_sha256": "763a72cfeece9059328e5dbe94f24e6138885c3daa6bea4fb0ea43b6cefa76fd",
       "source_bytes": 4490,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_ktrb-2022_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-ktrb-2022-2024-763a72cf.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -194,7 +204,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_ktrb-2022_2024.md",
+      "content_sha256": "763a72cfeece9059328e5dbe94f24e6138885c3daa6bea4fb0ea43b6cefa76fd"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-ktvt-2019-trodi-689dfc4f",
@@ -215,7 +227,7 @@
       "source_sha256": "689dfc4fe340de3b3641b4ec341d0c045738b2963ec30e39bb741897a6fa394d",
       "source_bytes": 19036,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_ktvt_2019_trodi.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-ktvt-2019-trodi-689dfc4f.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -224,7 +236,9 @@
         "official_source_url_missing_in_upload",
         "filename_mentions_2019_do_not_infer_cohort_2022"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_ktvt_2019_trodi.md",
+      "content_sha256": "689dfc4fe340de3b3641b4ec341d0c045738b2963ec30e39bb741897a6fa394d"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-mmtttdl-2019-2022-ba946e55",
@@ -241,7 +255,7 @@
       "source_sha256": "ba946e55851afef7edb94286952cfb5db6922c737f8df68f5e7856c0ee7c3151",
       "source_bytes": 14560,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_mmtttdl_2019_2022.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-mmtttdl-2019-2022-ba946e55.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -251,7 +265,9 @@
         "official_source_url_missing_in_upload",
         "filename_mentions_2019_do_not_infer_cohort_2022"
       ],
-      "table_line_count": 86
+      "table_line_count": 86,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_mmtttdl_2019_2022.md",
+      "content_sha256": "ba946e55851afef7edb94286952cfb5db6922c737f8df68f5e7856c0ee7c3151"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-cua-chuong-trinh-dao-tao-khmt-2022-2024-56128e92",
@@ -272,7 +288,7 @@
       "source_sha256": "56128e923831418b335603d1324cf3fc46094832e27740f5d9cf717d3e12e0f5",
       "source_bytes": 5090,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_cua_chuong_trinh_dao_tao_khmt_2022_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-cua-chuong-trinh-dao-tao-khmt-2022-2024-56128e92.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -280,7 +296,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_cua_chuong_trinh_dao_tao_khmt_2022_2024.md",
+      "content_sha256": "56128e923831418b335603d1324cf3fc46094832e27740f5d9cf717d3e12e0f5"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-2022-2024-33a373ad",
@@ -301,7 +319,7 @@
       "source_sha256": "33a373ad9dfc3ac5e51836a71d4c7bb314b4c796cdc499a6fac61a028f3418b4",
       "source_bytes": 3235,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_2022_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-2022-2024-33a373ad.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -309,7 +327,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_2022_2024.md",
+      "content_sha256": "33a373ad9dfc3ac5e51836a71d4c7bb314b4c796cdc499a6fac61a028f3418b4"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-9bc2f86b",
@@ -334,7 +354,7 @@
       "source_sha256": "9bc2f86b419ba865c0daca64f7d184d26f32e6ba89bef089b42bf55ee991b3c3",
       "source_bytes": 3536,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-9bc2f86b.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -342,7 +362,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
+      "content_sha256": "9bc2f86b419ba865c0daca64f7d184d26f32e6ba89bef089b42bf55ee991b3c3"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-297149ea",
@@ -367,7 +389,7 @@
       "source_sha256": "297149eac2e8103cc795753e52c27e97f874019b602d45c2a2917dac25d3331d",
       "source_bytes": 2395,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-297149ea.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -375,7 +397,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md",
+      "content_sha256": "297149eac2e8103cc795753e52c27e97f874019b602d45c2a2917dac25d3331d"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chuong-trinh-dao-tao-khmt-2022-2024-4620be46",
@@ -396,7 +420,7 @@
       "source_sha256": "4620be4615e37624d747b037c3792a5eb432fceec73cf526ad894c4a21e12261",
       "source_bytes": 3828,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_khmt_2022_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chuong-trinh-dao-tao-khmt-2022-2024-4620be46.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -404,7 +428,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_khmt_2022_2024.md",
+      "content_sha256": "4620be4615e37624d747b037c3792a5eb432fceec73cf526ad894c4a21e12261"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chuong-trinh-dao-tao-ktmt-2022-2024-65d60b41",
@@ -425,7 +451,7 @@
       "source_sha256": "65d60b415f2545db6ce01ae1110eb112202bb57b6fb58b200b8a523d7adb9535",
       "source_bytes": 2063,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_ktmt_2022_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chuong-trinh-dao-tao-ktmt-2022-2024-65d60b41.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -433,7 +459,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_ktmt_2022_2024.md",
+      "content_sha256": "65d60b415f2545db6ce01ae1110eb112202bb57b6fb58b200b8a523d7adb9535"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chuong-trinh-dao-tao-ktrb-2022-2024-68064ea3",
@@ -454,7 +482,7 @@
       "source_sha256": "68064ea3acff57c881ca1679a35d37f05b8a3a87fdb08ca7e1522df1c061b44a",
       "source_bytes": 2432,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_ktrb_2022_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chuong-trinh-dao-tao-ktrb-2022-2024-68064ea3.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -462,7 +490,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_ktrb_2022_2024.md",
+      "content_sha256": "68064ea3acff57c881ca1679a35d37f05b8a3a87fdb08ca7e1522df1c061b44a"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chuong-trinh-dao-tao-ktvt-2019-trodi-bca0095c",
@@ -485,7 +515,7 @@
       "source_sha256": "bca0095c658d08a0a7d2e8b4d956c409ae0c46e6a26cd9ec28971dd7186ea051",
       "source_bytes": 4460,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_ktvt_2019_trodi.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chuong-trinh-dao-tao-ktvt-2019-trodi-bca0095c.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -494,7 +524,9 @@
         "official_source_url_missing_in_upload",
         "filename_mentions_2019_do_not_infer_cohort_2022"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_ktvt_2019_trodi.md",
+      "content_sha256": "bca0095c658d08a0a7d2e8b4d956c409ae0c46e6a26cd9ec28971dd7186ea051"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chuong-trinh-dao-tao-mmtttdl-2019-2022-f77e7489",
@@ -511,7 +543,7 @@
       "source_sha256": "f77e7489ac61ab5e78021a8b1aa46958e3da0552e71f70302ab4dc91607c72cf",
       "source_bytes": 5587,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_mmtttdl_2019_2022.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chuong-trinh-dao-tao-mmtttdl-2019-2022-f77e7489.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -520,7 +552,9 @@
         "official_source_url_missing_in_upload",
         "filename_mentions_2019_do_not_infer_cohort_2022"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_mmtttdl_2019_2022.md",
+      "content_sha256": "f77e7489ac61ab5e78021a8b1aa46958e3da0552e71f70302ab4dc91607c72cf"
     },
     {
       "doc_id": "uet-tuan-noi-dung-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-60a2276b",
@@ -545,7 +579,7 @@
       "source_sha256": "60a2276b441ef6b6ce7883db59226b8e28235ce53a07d3110bfe3523dc07633c",
       "source_bytes": 17426,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-60a2276b.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -554,7 +588,9 @@
         "html_line_breaks_in_table",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 159
+      "table_line_count": 159,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md",
+      "content_sha256": "60a2276b441ef6b6ce7883db59226b8e28235ce53a07d3110bfe3523dc07633c"
     },
     {
       "doc_id": "uet-tuan-noi-dung-chuong-trinh-dao-tao-httt-2022-2024-a57bca64",
@@ -575,7 +611,7 @@
       "source_sha256": "a57bca6453f67860ba671ff94dedf1e1572b07f9cf62558b6593c3b754ef945d",
       "source_bytes": 13813,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_httt_2022_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-httt-2022-2024-a57bca64.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -584,7 +620,9 @@
         "html_line_breaks_in_table",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 128
+      "table_line_count": 128,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_httt_2022_2024.md",
+      "content_sha256": "a57bca6453f67860ba671ff94dedf1e1572b07f9cf62558b6593c3b754ef945d"
     },
     {
       "doc_id": "uet-tuan-noi-dung-chuong-trinh-dao-tao-khmt-2022-2024-a8323e80",
@@ -605,7 +643,7 @@
       "source_sha256": "a8323e80adb4aea2e7adcca4e6b952eabfd9a1bf971ee5dbbf15e9dfebd875e6",
       "source_bytes": 16188,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_khmt_2022_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-khmt-2022-2024-a8323e80.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -614,7 +652,9 @@
         "html_line_breaks_in_table",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 148
+      "table_line_count": 148,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_khmt_2022_2024.md",
+      "content_sha256": "a8323e80adb4aea2e7adcca4e6b952eabfd9a1bf971ee5dbbf15e9dfebd875e6"
     },
     {
       "doc_id": "uet-tuan-noi-dung-chuong-trinh-dao-tao-ktmt-2022-2024-dea45cbf",
@@ -635,7 +675,7 @@
       "source_sha256": "dea45cbf22d81d561530c1e6354d151ade3fd908e54b43d66a731816d8259860",
       "source_bytes": 17880,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_ktmt_2022_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-ktmt-2022-2024-dea45cbf.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -644,7 +684,9 @@
         "html_line_breaks_in_table",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 174
+      "table_line_count": 174,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_ktmt_2022_2024.md",
+      "content_sha256": "dea45cbf22d81d561530c1e6354d151ade3fd908e54b43d66a731816d8259860"
     },
     {
       "doc_id": "uet-tuan-noi-dung-chuong-trinh-dao-tao-ktrb-2022-2024-a93ed74e",
@@ -665,7 +707,7 @@
       "source_sha256": "a93ed74e585d9b8d07f1d2e80c6e660a9ce208f8765be05a2cfbc7dedc1e727c",
       "source_bytes": 15614,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_ktrb_2022_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-ktrb-2022-2024-a93ed74e.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -674,7 +716,9 @@
         "html_line_breaks_in_table",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 161
+      "table_line_count": 161,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_ktrb_2022_2024.md",
+      "content_sha256": "a93ed74e585d9b8d07f1d2e80c6e660a9ce208f8765be05a2cfbc7dedc1e727c"
     },
     {
       "doc_id": "uet-tuan-noi-dung-chuong-trinh-dao-tao-ktvt-2019-trodi-1e372dd0",
@@ -695,7 +739,7 @@
       "source_sha256": "1e372dd0eec355b3b369e2b570c0b0405fe58659f0cf5e00b3988cad378f6c87",
       "source_bytes": 16563,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_ktvt_2019_trodi.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-ktvt-2019-trodi-1e372dd0.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -706,7 +750,9 @@
         "official_source_url_missing_in_upload",
         "filename_mentions_2019_do_not_infer_cohort_2022"
       ],
-      "table_line_count": 179
+      "table_line_count": 179,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_ktvt_2019_trodi.md",
+      "content_sha256": "1e372dd0eec355b3b369e2b570c0b0405fe58659f0cf5e00b3988cad378f6c87"
     },
     {
       "doc_id": "uet-tuan-noi-dung-chuong-trinh-dao-tao-mmtttdl-2019-2022-5eae7ace",
@@ -723,7 +769,7 @@
       "source_sha256": "5eae7ace39c44cd3d272588a8d6b694a47ede209991328cc60b96bbfd8a5fd59",
       "source_bytes": 16573,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_mmtttdl_2019_2022.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-mmtttdl-2019-2022-5eae7ace.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -734,7 +780,9 @@
         "official_source_url_missing_in_upload",
         "filename_mentions_2019_do_not_infer_cohort_2022"
       ],
-      "table_line_count": 164
+      "table_line_count": 164,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_mmtttdl_2019_2022.md",
+      "content_sha256": "5eae7ace39c44cd3d272588a8d6b694a47ede209991328cc60b96bbfd8a5fd59"
     },
     {
       "doc_id": "uet-tuan-noi-dung-cua-chuong-trinh-dao-tao-cntt-2022-2024-46f225e3",
@@ -755,7 +803,7 @@
       "source_sha256": "46f225e304b2eab9da55eae289de37f6853ac1b70d27a4067994f79a92055fec",
       "source_bytes": 15712,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_cua_chuong_trinh_dao_tao_cntt_2022_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-cua-chuong-trinh-dao-tao-cntt-2022-2024-46f225e3.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -764,7 +812,9 @@
         "html_line_breaks_in_table",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 161
+      "table_line_count": 161,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_cua_chuong_trinh_dao_tao_cntt_2022_2024.md",
+      "content_sha256": "46f225e304b2eab9da55eae289de37f6853ac1b70d27a4067994f79a92055fec"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-mmtttdl-2023-2024-004ef8c6",
@@ -783,7 +833,7 @@
       "source_sha256": "004ef8c6aa66c400c1f4634a9efb4f28397db1ea9503359ade99dd29ba6f73d4",
       "source_bytes": 5081,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_mmtttdl_2023_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-mmtttdl-2023-2024-004ef8c6.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -791,7 +841,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_mmtttdl_2023_2024.md",
+      "content_sha256": "004ef8c6aa66c400c1f4634a9efb4f28397db1ea9503359ade99dd29ba6f73d4"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chuong-trinh-dao-tao-mmtttdl-2023-2024-5b53cf9d",
@@ -810,7 +862,7 @@
       "source_sha256": "5b53cf9d7b0b1eb2ac41b5b42c145d1bf90f7d1d3e11d209847cd6cf68164c25",
       "source_bytes": 2543,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_mmtttdl_2023_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chuong-trinh-dao-tao-mmtttdl-2023-2024-5b53cf9d.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -818,7 +870,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_mmtttdl_2023_2024.md",
+      "content_sha256": "5b53cf9d7b0b1eb2ac41b5b42c145d1bf90f7d1d3e11d209847cd6cf68164c25"
     },
     {
       "doc_id": "uet-tuan-noi-dung-chuong-trinh-dao-tao-mmtttdl-2023-2024-b6376839",
@@ -837,7 +891,7 @@
       "source_sha256": "b6376839a747c001526d29068bceff1bf711b2e25f62e804e008cc02c1ff8983",
       "source_bytes": 15538,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_mmtttdl_2023_2024.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-mmtttdl-2023-2024-b6376839.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -847,7 +901,9 @@
         "multiple_table_header_widths",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 136
+      "table_line_count": 136,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_mmtttdl_2023_2024.md",
+      "content_sha256": "b6376839a747c001526d29068bceff1bf711b2e25f62e804e008cc02c1ff8983"
     },
     {
       "doc_id": "uet-tuan-huong-dan-dang-ky-xet-tuyen-2024-34fcba33",
@@ -873,7 +929,9 @@
         "not_curriculum",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": null,
+      "content_sha256": null
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-khmt-2025-tro-di-10b179b0",
@@ -892,7 +950,7 @@
       "source_sha256": "10b179b04f06eab7d043967cc477030ba8260b7cdb3e6ee9f60e2d1b30b02140",
       "source_bytes": 28315,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_khmt_2025_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-khmt-2025-tro-di-10b179b0.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -903,7 +961,9 @@
         "suspected_ocr_corruption",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 107
+      "table_line_count": 107,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_khmt_2025_tro_di.md",
+      "content_sha256": "10b179b04f06eab7d043967cc477030ba8260b7cdb3e6ee9f60e2d1b30b02140"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-ktrb-2025-trodi-91c1949d",
@@ -922,7 +982,7 @@
       "source_sha256": "91c1949daae830c8d3bcc52c20d8dc85aedac62f9c872df4845df862111dc7bc",
       "source_bytes": 24476,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_ktrb_2025_trodi.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-ktrb-2025-trodi-91c1949d.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -933,7 +993,9 @@
         "suspected_ocr_corruption",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 88
+      "table_line_count": 88,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_ktrb_2025_trodi.md",
+      "content_sha256": "91c1949daae830c8d3bcc52c20d8dc85aedac62f9c872df4845df862111dc7bc"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-ktvt-2025-9c33e6ce",
@@ -950,7 +1012,7 @@
       "source_sha256": "9c33e6ce9a16c6ef13c3485b1f1eeac8e5a6061c1982a90e7c53e332df9b44ff",
       "source_bytes": 25154,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_ktvt_2025.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-ktvt-2025-9c33e6ce.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -961,7 +1023,9 @@
         "suspected_ocr_corruption",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 131
+      "table_line_count": 131,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_ktvt_2025.md",
+      "content_sha256": "9c33e6ce9a16c6ef13c3485b1f1eeac8e5a6061c1982a90e7c53e332df9b44ff"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-mmtttdl-2025-tro-di-19a9bc52",
@@ -980,7 +1044,7 @@
       "source_sha256": "19a9bc52cb15b81ee2e4fe437be66424ca3536ee22f12bffe91bbd38551e45bd",
       "source_bytes": 23695,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_mmtttdl_2025_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-mmtttdl-2025-tro-di-19a9bc52.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -991,7 +1055,9 @@
         "suspected_ocr_corruption",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 73
+      "table_line_count": 73,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_mmtttdl_2025_tro_di.md",
+      "content_sha256": "19a9bc52cb15b81ee2e4fe437be66424ca3536ee22f12bffe91bbd38551e45bd"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-cntt-2025-tro-di-a3636df7",
@@ -1010,7 +1076,7 @@
       "source_sha256": "a3636df788b3888bf52f77ca83b2050161ff5ed77ab34830e723330f220645e8",
       "source_bytes": 26084,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_cntt_2025_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-cntt-2025-tro-di-a3636df7.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1021,7 +1087,9 @@
         "suspected_ocr_corruption",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 100
+      "table_line_count": 100,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_cntt_2025_tro_di.md",
+      "content_sha256": "a3636df788b3888bf52f77ca83b2050161ff5ed77ab34830e723330f220645e8"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-cua-chuong-trinh-dao-tao-httt-2025-tro-di-184b17e9",
@@ -1040,7 +1108,7 @@
       "source_sha256": "184b17e91136e2a0eabc530206f778761cd9096fb0ba5b8697e46cf0166c3f04",
       "source_bytes": 27934,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_cua_chuong_trinh_dao_tao_httt_2025_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-cua-chuong-trinh-dao-tao-httt-2025-tro-di-184b17e9.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1051,7 +1119,9 @@
         "suspected_ocr_corruption",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 104
+      "table_line_count": 104,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_cua_chuong_trinh_dao_tao_httt_2025_tro_di.md",
+      "content_sha256": "184b17e91136e2a0eabc530206f778761cd9096fb0ba5b8697e46cf0166c3f04"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chung-chuong-trinh-dao-tao-httt-2025-tro-di-1cbf5318",
@@ -1070,7 +1140,7 @@
       "source_sha256": "1cbf5318be1081961f5410c026bf3bab5208db35416d078f75222fd7fe05f515",
       "source_bytes": 4469,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chung_chuong_trinh_dao_tao_httt_2025_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chung-chuong-trinh-dao-tao-httt-2025-tro-di-1cbf5318.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1078,7 +1148,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chung_chuong_trinh_dao_tao_httt_2025_tro_di.md",
+      "content_sha256": "1cbf5318be1081961f5410c026bf3bab5208db35416d078f75222fd7fe05f515"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-2025-tro-di-0afa9ab9",
@@ -1097,7 +1169,7 @@
       "source_sha256": "0afa9ab989d27317e98856a1472e59c0426fb9635454a0c639901b38521a1958",
       "source_bytes": 4654,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_2025_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-2025-tro-di-0afa9ab9.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1105,7 +1177,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_2025_tro_di.md",
+      "content_sha256": "0afa9ab989d27317e98856a1472e59c0426fb9635454a0c639901b38521a1958"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-khmt-2025-tro-di-00c68828",
@@ -1124,7 +1198,7 @@
       "source_sha256": "00c6882892ded7179834bba47df49b004ce144dd74bf4943a553ad1d4785397c",
       "source_bytes": 4439,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chung_ve_chuong_trinh_dao_tao_khmt_2025_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-khmt-2025-tro-di-00c68828.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1132,7 +1206,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chung_ve_chuong_trinh_dao_tao_khmt_2025_tro_di.md",
+      "content_sha256": "00c6882892ded7179834bba47df49b004ce144dd74bf4943a553ad1d4785397c"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chuong-trinh-dao-tao-ktmt-2025-tro-di-850e25e3",
@@ -1151,7 +1227,7 @@
       "source_sha256": "850e25e3059e00e7ea9af6c05390f485570fcbee0df13f9809138fcd07f814ea",
       "source_bytes": 4044,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_ktmt_2025_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chuong-trinh-dao-tao-ktmt-2025-tro-di-850e25e3.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1159,7 +1235,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_ktmt_2025_tro_di.md",
+      "content_sha256": "850e25e3059e00e7ea9af6c05390f485570fcbee0df13f9809138fcd07f814ea"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chuong-trinh-dao-tao-ktrb-2025-trodi-e394c788",
@@ -1178,7 +1256,7 @@
       "source_sha256": "e394c788c3c8a4f5525cb86ae83beb664d0b63ab37aca5d44055cdc1276554c2",
       "source_bytes": 3830,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_ktrb_2025_trodi.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chuong-trinh-dao-tao-ktrb-2025-trodi-e394c788.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1186,7 +1264,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_ktrb_2025_trodi.md",
+      "content_sha256": "e394c788c3c8a4f5525cb86ae83beb664d0b63ab37aca5d44055cdc1276554c2"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chuong-trinh-dao-tao-mmtthdl-2025-tro-di-d82d51f8",
@@ -1205,7 +1285,7 @@
       "source_sha256": "d82d51f8f334d5cae6869e5a8247d938b7f9928cc219c669e661bb451b5ebd3b",
       "source_bytes": 4286,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_mmtthdl_2025_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chuong-trinh-dao-tao-mmtthdl-2025-tro-di-d82d51f8.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1213,7 +1293,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_mmtthdl_2025_tro_di.md",
+      "content_sha256": "d82d51f8f334d5cae6869e5a8247d938b7f9928cc219c669e661bb451b5ebd3b"
     },
     {
       "doc_id": "uet-tuan-huong-dan-noi-dung-cua-chuong-trinh-dao-tao-cntt-2025-063996c8",
@@ -1232,7 +1314,7 @@
       "source_sha256": "063996c8e05d139a34b5dc88f2b1719fee895213e11d6a2d9d73c1e0433d213b",
       "source_bytes": 4537,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/huong_dan_noi_dung_cua_chuong_trinh_dao_tao_cntt_2025.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-huong-dan-noi-dung-cua-chuong-trinh-dao-tao-cntt-2025-063996c8.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1240,7 +1322,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 91
+      "table_line_count": 91,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/huong_dan_noi_dung_cua_chuong_trinh_dao_tao_cntt_2025.md",
+      "content_sha256": "063996c8e05d139a34b5dc88f2b1719fee895213e11d6a2d9d73c1e0433d213b"
     },
     {
       "doc_id": "uet-tuan-huong-dan-thuc-hien-chuong-trinh-dao-tao-httt-2025-tro-di-60a466dc",
@@ -1259,7 +1343,7 @@
       "source_sha256": "60a466dccda2223732fd0682f8dc33752c172d7a6de059e0612356aea4c49983",
       "source_bytes": 3960,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/huong_dan_thuc_hien_chuong_trinh_dao_tao_httt_2025_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-huong-dan-thuc-hien-chuong-trinh-dao-tao-httt-2025-tro-di-60a466dc.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1267,7 +1351,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 80
+      "table_line_count": 80,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/huong_dan_thuc_hien_chuong_trinh_dao_tao_httt_2025_tro_di.md",
+      "content_sha256": "60a466dccda2223732fd0682f8dc33752c172d7a6de059e0612356aea4c49983"
     },
     {
       "doc_id": "uet-tuan-huong-dan-thuc-hien-chuong-trinh-dao-tao-ktrb-2025-trodi-9cf5412d",
@@ -1286,7 +1372,7 @@
       "source_sha256": "9cf5412d694b62116516149ebfc43598ea2cbbe386ba70aacf7fbe77a2783238",
       "source_bytes": 4398,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/huong_dan_thuc_hien_chuong_trinh_dao_tao_ktrb_2025_trodi.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-huong-dan-thuc-hien-chuong-trinh-dao-tao-ktrb-2025-trodi-9cf5412d.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1294,7 +1380,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 86
+      "table_line_count": 86,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/huong_dan_thuc_hien_chuong_trinh_dao_tao_ktrb_2025_trodi.md",
+      "content_sha256": "9cf5412d694b62116516149ebfc43598ea2cbbe386ba70aacf7fbe77a2783238"
     },
     {
       "doc_id": "uet-tuan-huong-dan-thuc-hien-chuong-trinh-dao-tao-ktvt-2025-64b7339e",
@@ -1311,7 +1399,7 @@
       "source_sha256": "64b7339e42706bf5caa337da246e41cda2fb9f3524cbd7f338a7ab193a677367",
       "source_bytes": 5083,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/huong_dan_thuc_hien_chuong_trinh_dao_tao_ktvt_2025.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-huong-dan-thuc-hien-chuong-trinh-dao-tao-ktvt-2025-64b7339e.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1319,7 +1407,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 98
+      "table_line_count": 98,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/huong_dan_thuc_hien_chuong_trinh_dao_tao_ktvt_2025.md",
+      "content_sha256": "64b7339e42706bf5caa337da246e41cda2fb9f3524cbd7f338a7ab193a677367"
     },
     {
       "doc_id": "uet-tuan-huong-dan-thuc-hien-chuong-trinh-dao-tao-mmtttdl-2025-tro-di-445c0831",
@@ -1338,7 +1428,7 @@
       "source_sha256": "445c0831cb72d5d1f7df363e9d86d42a7eafa7fd9cc2500ee6a9175e7b3f561b",
       "source_bytes": 4352,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/huong_dan_thuc_hien_chuong_trinh_dao_tao_mmtttdl_2025_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-huong-dan-thuc-hien-chuong-trinh-dao-tao-mmtttdl-2025-tro-di-445c0831.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1346,7 +1436,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 90
+      "table_line_count": 90,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/huong_dan_thuc_hien_chuong_trinh_dao_tao_mmtttdl_2025_tro_di.md",
+      "content_sha256": "445c0831cb72d5d1f7df363e9d86d42a7eafa7fd9cc2500ee6a9175e7b3f561b"
     },
     {
       "doc_id": "uet-tuan-noi-dung-chuong-trinh-dao-tao-ktrb-2025-tro-di-5ea19370",
@@ -1365,7 +1457,7 @@
       "source_sha256": "5ea19370e6ad1d80b4bb5604fe4e0c5e66ff18a60d325d2366b088bfba23f2d9",
       "source_bytes": 11138,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_ktrb_2025_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-ktrb-2025-tro-di-5ea19370.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1375,7 +1467,9 @@
         "multiple_table_header_widths",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 108
+      "table_line_count": 108,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_ktrb_2025_tro_di.md",
+      "content_sha256": "5ea19370e6ad1d80b4bb5604fe4e0c5e66ff18a60d325d2366b088bfba23f2d9"
     },
     {
       "doc_id": "uet-tuan-noi-dung-chuong-trinh-dao-tao-ktvt-2025-078591e1",
@@ -1392,7 +1486,7 @@
       "source_sha256": "078591e10a83b836a9cad47a0b2759194328a2bc85044f445ebbade2347f9520",
       "source_bytes": 12086,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_ktvt_2025.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-ktvt-2025-078591e1.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1401,7 +1495,9 @@
         "html_line_breaks_in_table",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 131
+      "table_line_count": 131,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_ktvt_2025.md",
+      "content_sha256": "078591e10a83b836a9cad47a0b2759194328a2bc85044f445ebbade2347f9520"
     },
     {
       "doc_id": "uet-tuan-noi-dung-chuong-trinh-dao-tao-mmtttdl-2025-tro-di-7f3fcd98",
@@ -1420,7 +1516,7 @@
       "source_sha256": "7f3fcd98a6a8e4fca258feaad149f7155c21ff4aa38c55f378899fc49131b149",
       "source_bytes": 10378,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_mmtttdl_2025_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-mmtttdl-2025-tro-di-7f3fcd98.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1429,7 +1525,9 @@
         "html_line_breaks_in_table",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 117
+      "table_line_count": 117,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_mmtttdl_2025_tro_di.md",
+      "content_sha256": "7f3fcd98a6a8e4fca258feaad149f7155c21ff4aa38c55f378899fc49131b149"
     },
     {
       "doc_id": "uet-tuan-noi-dung-cua-chuong-trinh-dao-tao-cntt-2025-tro-di-a352d04e",
@@ -1448,7 +1546,7 @@
       "source_sha256": "a352d04ee34bf429e076ffa2df99eee6a95c7bda9c356c7d4160f0427eb6dd57",
       "source_bytes": 17529,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_cua_chuong_trinh_dao_tao_cntt_2025_tro_di.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-cua-chuong-trinh-dao-tao-cntt-2025-tro-di-a352d04e.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1458,7 +1556,9 @@
         "multiple_table_header_widths",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 176
+      "table_line_count": 176,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_cua_chuong_trinh_dao_tao_cntt_2025_tro_di.md",
+      "content_sha256": "a352d04ee34bf429e076ffa2df99eee6a95c7bda9c356c7d4160f0427eb6dd57"
     },
     {
       "doc_id": "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-ktvt-2026-trodi-7abca1be",
@@ -1475,7 +1575,7 @@
       "source_sha256": "7abca1be7e095b9f3148850f650ef88bb282171e46f7a4ba95fa8e66b8603237",
       "source_bytes": 29091,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_ktvt_2026_trodi.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-ktvt-2026-trodi-7abca1be.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1486,7 +1586,9 @@
         "suspected_ocr_corruption",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 127
+      "table_line_count": 127,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/chuan_dau_ra_chuong_trinh_dao_tao_ktvt_2026_trodi.md",
+      "content_sha256": "7abca1be7e095b9f3148850f650ef88bb282171e46f7a4ba95fa8e66b8603237"
     },
     {
       "doc_id": "uet-tuan-gioi-thieu-chuong-trinh-dao-tao-ktvt-2026-trodi-57edc711",
@@ -1503,7 +1605,7 @@
       "source_sha256": "57edc71127042f0a96be7bd13afb0e9e572e6d4351d01fe7492ab3198130bf1a",
       "source_bytes": 4391,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_ktvt_2026_trodi.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chuong-trinh-dao-tao-ktvt-2026-trodi-57edc711.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1511,7 +1613,9 @@
       "review_flags": [
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 0
+      "table_line_count": 0,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/gioi_thieu_chuong_trinh_dao_tao_ktvt_2026_trodi.md",
+      "content_sha256": "57edc71127042f0a96be7bd13afb0e9e572e6d4351d01fe7492ab3198130bf1a"
     },
     {
       "doc_id": "uet-tuan-huong-dan-thuc-hien-chuong-trinh-dao-tao-ktvt-2026-trodi-b44fc282",
@@ -1528,7 +1632,7 @@
       "source_sha256": "b44fc282b2625fc35cdca0581fe708c352cfe8371fcc5bbe66a2f1110ad50ab5",
       "source_bytes": 6670,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/huong_dan_thuc_hien_chuong_trinh_dao_tao_ktvt_2026_trodi.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-huong-dan-thuc-hien-chuong-trinh-dao-tao-ktvt-2026-trodi-b44fc282.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1537,7 +1641,9 @@
         "html_line_breaks_in_table",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 90
+      "table_line_count": 90,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/huong_dan_thuc_hien_chuong_trinh_dao_tao_ktvt_2026_trodi.md",
+      "content_sha256": "b44fc282b2625fc35cdca0581fe708c352cfe8371fcc5bbe66a2f1110ad50ab5"
     },
     {
       "doc_id": "uet-tuan-noi-dung-chuong-trinh-dao-tao-ktvt-2026-trodi-b08d95d5",
@@ -1554,7 +1660,7 @@
       "source_sha256": "b08d95d500f4a2f639acaad0c68d9d151c3c6cd403db281f76908d3ee00bd4df",
       "source_bytes": 17819,
       "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_ktvt_2026_trodi.md",
-      "normalized_path": "data/raw/uet/markdown/curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-ktvt-2026-trodi-b08d95d5.md",
+      "normalized_path": null,
       "official_source_url": null,
       "provenance": "tuans_uploaded_markdown_zip_not_independently_verified",
       "review_status": "needs_human_review",
@@ -1564,7 +1670,11 @@
         "multiple_table_header_widths",
         "official_source_url_missing_in_upload"
       ],
-      "table_line_count": 187
+      "table_line_count": 187,
+      "content_md_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_chuong_trinh_dao_tao_ktvt_2026_trodi.md",
+      "content_sha256": "b08d95d500f4a2f639acaad0c68d9d151c3c6cd403db281f76908d3ee00bd4df"
     }
-  ]
+  ],
+  "normalized_representation": "removed_duplicate_wrappers; canonical_body_is_original_path",
+  "normalized_copies_removed": 53
 }
