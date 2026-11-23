@@ -1,3 +1,8 @@
+import pytest
+
+pytest.importorskip("fastapi", reason="FastAPI not installed in current venv")
+pytest.importorskip("httpx", reason="httpx required for fastapi.testclient")
+
 from fastapi.testclient import TestClient
 from src.api.studenthub_server import app
 

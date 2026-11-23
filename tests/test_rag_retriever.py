@@ -184,3 +184,36 @@ def test_question_naming_an_article_prefers_that_article():
         assert len({h["document"] for h in hits}) == len(hits)        # không trùng
         # Điều N chỉ được hiểu trong đúng năm học: không kéo Điều 17 của năm khác vào
         assert all(h["metadata"]["start_year"] == 2024 for h in hits)
+
+
+def test_multi_year_hits_are_grouped_not_interleaved():
+    extra = [
+        ("hp24:1", "Học phí 2024 đoạn 1", dict(doc_id="hp-2024", academic_year="2024-2025", start_year=2024, topic_hint="tuition")),
+        ("hp24:2", "Học phí 2024 đoạn 2", dict(doc_id="hp-2024", academic_year="2024-2025", start_year=2024, topic_hint="tuition")),
+        ("hp22:1", "Học phí 2022 đoạn 1", dict(doc_id="hp-2022", academic_year="2022-2023", start_year=2022, topic_hint="tuition")),
+        ("hp22:2", "Học phí 2022 đoạn 2", dict(doc_id="hp-2022", academic_year="2022-2023", start_year=2022, topic_hint="tuition")),
+    ]
+    with fake_index(extra):
+        plan = plan_version("So sánh học phí năm học 2024-2025 và năm học 2022-2023")
+        hits, _ = retriever.retrieve("học phí", plan, {"top_k": 4, "embedding_model": "fake"})
+    years = [h["metadata"]["start_year"] for h in hits]
+    assert set(years) == {2024, 2022}
+    # Không xen kẽ [2024, 2022, 2024, 2022] mà gom liền theo từng năm
+    transitions = sum(1 for a, b in zip(years, years[1:]) if a != b)
+    assert transitions == 1
+
+
+def test_latest_fallback_skips_superseded_when_flag_missing():
+    extra = [
+        ("sup:1", "Học phí cũ bị thay thế", dict(doc_id="hp-sup", academic_year="2022-2023", start_year=2022, topic_hint="tuition", latest_in_topic=0, is_superseded=1)),
+        ("act:1", "Học phí mới còn hiệu lực", dict(doc_id="hp-act", academic_year="2024-2025", start_year=2024, topic_hint="tuition", latest_in_topic=0, is_superseded=0)),
+    ]
+    with tempfile.TemporaryDirectory() as d:
+        col = FakeCollection()
+        for cid, text, meta in extra:
+            col.upsert([cid], [text], [_vec(text)], [{**_BASE_META, **meta}])
+        with patch.object(embedder, "embed", lambda cfg, texts: [_vec(t) for t in texts]), \
+                patch.object(store, "get_collection", lambda cfg, reset=False: col):
+            plan = plan_version("Học phí hiện nay?")
+            hits, _ = retriever.retrieve("Học phí", plan, CFG)
+    assert hits and all(h["metadata"].get("is_superseded", 0) != 1 for h in hits)

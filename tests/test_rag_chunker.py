@@ -150,3 +150,30 @@ def test_latest_in_topic_flag():
               [_rec("a", 0, "x", ay="2024-2025"), _rec("b", 0, "y", ay="2025-2026")])
     flags = {c.metadata["doc_id"]: c.metadata["latest_in_topic"] for c in env.load()}
     assert flags == {"a": 0, "b": 1}
+
+
+def test_heading_detection_handles_plain_bullet_and_mark_dieu():
+    assert match_dieu("Điều 5 Học phí") == ("5", "Học phí")
+    assert match_dieu("- **Điều 5. Cách thức nộp học phí**") == ("5", "Cách thức nộp học phí")
+    assert match_dieu("**<mark>Điều 3. Mục đích</mark>**") == ("3", "Mục đích")
+    assert match_dieu("Điều 5 quy định rõ hơn về việc này") is None
+
+
+def test_relations_override_latest_in_topic_and_keep_referenced_docs():
+    env = Env(
+        {"old": BANG, "new": BANG, "ref": BANG},
+        [_rec("old", 0, "x", ay="2026-2027"), _rec("new", 0, "y", ay="2026-2027"), _rec("ref", 0, "z", ay="2022-2023")],
+    )
+    rel_file = env.root / "approved_relations.jsonl"
+    rel_file.write_text(
+        "\n".join([
+            json.dumps({"from_doc_id": "new", "to_doc_id": "old", "relation_type": "same_series"}),
+            json.dumps({"from_doc_id": "new", "to_doc_id": "ref", "relation_type": "references"}),
+        ]),
+        encoding="utf-8",
+    )
+    chunks = env.load(relations_file=rel_file)
+    by_doc = {c.metadata["doc_id"]: c.metadata for c in chunks}
+    assert by_doc["old"]["is_superseded"] == 1 and by_doc["old"]["latest_in_topic"] == 0
+    assert by_doc["new"]["is_superseded"] == 0 and by_doc["new"]["latest_in_topic"] == 1
+    assert by_doc["ref"]["is_superseded"] == 0 and by_doc["ref"]["latest_in_topic"] == 1

@@ -25,6 +25,11 @@ top_k: 5
 #   start: 2023 -> 2023-2024     end: 2023 -> 2022-2023
 single_year_means: start
 
+# Curricula governance (31 files tracked in data/raw/uet/curricula/manifest.json)
+curricula:
+  respect_retrieval_eligible: false   # true = only index curricula marked retrieval_eligible=true
+  warn_unreviewed: true               # append a concise disclaimer when answering from unreviewed curricula
+
 # How the answer is written from the retrieved passages (RAG needs no training):
 #   none      print the retrieved passages only (for checking retrieval)
 #   local     model on this machine via transformers, no API key.

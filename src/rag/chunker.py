@@ -65,19 +65,57 @@ def year_info(rec: dict) -> tuple[str, int, str]:
 
 # ── Nhận diện Điều / Chương / Phụ lục ──────────────────────────────────────
 
+_HTML_TAG = re.compile(r"</?mark\b[^>]*>|</?(?:b|strong|em|i|span|u)\b[^>]*>", re.IGNORECASE)
+_PLAIN_PROSE_STARTERS = (
+    "của ", "quy định", "này ", "trên ", "đây ", "đó ", "là ", "có ", "được ",
+    "sẽ ", "về ", "tại ", "theo ", "nếu ", "khi ", "và ", "hoặc ", "cho ",
+    "trong ", "từ ", "đến ", "bị ", "với ", "như ", "vì ", "do ", "để ", "nhằm ",
+)
+
+
 def _clean(s: str) -> str:
-    return s.strip(" \t*_#–—-.:")
+    return _HTML_TAG.sub("", s).strip(" \t*_#–—-.:")
+
+
+def _prep_heading_line(line: str) -> str | None:
+    s = line.lstrip()
+    if not s or s.startswith("|"):
+        return None
+    s = _HTML_TAG.sub("", s)
+    # Một số văn bản (vd Quy_dinh_nop_hoc_phi_2021.md) để "- **Điều 5. ...**"
+    s = re.sub(r"^[-+]\s+(?=(?:\*\*|__)?\s*(?:Điều|Chương|CHƯƠNG|Phụ lục|PHỤ LỤC)\b)", "", s)
+    return s
 
 
 def match_dieu(line: str) -> tuple[str, str] | None:
-    m = _DIEU.match(line)
-    if not m or not (m.group("hash") or m.group("bold") or m.group("punct")):
+    prepped = _prep_heading_line(line)
+    if prepped is None:
         return None
-    return m.group("num"), _clean(m.group("rest"))[:120]
+    m = _DIEU.match(prepped)
+    if not m:
+        return None
+    has_marker = bool(m.group("hash") or m.group("bold") or m.group("punct"))
+    rest = _clean(m.group("rest"))
+    if not has_marker:
+        # Cho phép tiêu đề thuần dạng "Điều 5 Học phí" (không markdown/dấu câu),
+        # nhưng loại trừ câu văn thường đầu dòng như "Điều 5 của Quy chế quy định rõ hơn".
+        rest_low = rest.lower()
+        if (
+            not rest
+            or len(rest) > 100
+            or "." in rest[:-1]
+            or any(rest_low.startswith(p) for p in _PLAIN_PROSE_STARTERS)
+            or not rest[0].isupper()
+        ):
+            return None
+    return m.group("num"), rest[:120]
 
 
 def match_chuong(line: str) -> str | None:
-    m = _CHUONG.match(line)
+    prepped = _prep_heading_line(line)
+    if prepped is None:
+        return None
+    m = _CHUONG.match(prepped)
     if not m:
         return None
     title = _clean(m.group("rest"))
@@ -85,7 +123,10 @@ def match_chuong(line: str) -> str | None:
 
 
 def match_phuluc(line: str) -> str | None:
-    m = _PHULUC.match(line)
+    prepped = _prep_heading_line(line)
+    if prepped is None:
+        return None
+    m = _PHULUC.match(prepped)
     if not m or not (m.group("hash") or m.group("bold") or m.group("kw") == "PHỤ LỤC"):
         return None
     return f"Phụ lục {m.group('num')}".strip()
@@ -212,6 +253,7 @@ def _metadata(base: dict, issued: str, **extra) -> dict:
         "chunking": "span",
         "part": 0,
         "latest_in_topic": 0,   # được tính sau trong load_chunks
+        "is_superseded": 0,     # được tính từ approved_relations.jsonl nếu có
     }
     meta.update(extra)
     return meta
@@ -252,13 +294,32 @@ def _span_chunks(recs: list[dict], issued: str) -> list[Chunk]:
     return out
 
 
+def _load_relations(rel_path: Path) -> tuple[set[str], dict[str, set[str]]]:
+    superseded: set[str] = set()
+    references: dict[str, set[str]] = {}
+    if not rel_path.exists():
+        return superseded, references
+    for r in _read_jsonl(rel_path):
+        rtype = r.get("relation_type")
+        from_id = r.get("from_doc_id") or ""
+        to_id = r.get("to_doc_id") or ""
+        if rtype in ("same_series", "supersedes") and to_id:
+            superseded.add(to_id)
+        elif rtype == "references" and from_id and to_id:
+            references.setdefault(from_id, set()).add(to_id)
+    return superseded, references
+
+
 def load_chunks(chunks_file: str | Path, reviewed_file: str | Path | None = None,
                 documents_file: str | Path | None = None, only_ready: bool = False,
                 min_articles: int = 3, max_article_chars: int = 2000,
-                source_root: str | Path | None = None) -> list[Chunk]:
+                source_root: str | Path | None = None,
+                relations_file: str | Path | None = None) -> list[Chunk]:
     root = Path(source_root) if source_root else ROOT
     issued = _issued_dates(reviewed_file)
     sources = _source_paths(documents_file)
+    rel_path = Path(relations_file) if relations_file else Path(chunks_file).parent / "approved_relations.jsonl"
+    superseded_ids, references_by_from = _load_relations(rel_path)
 
     by_doc: dict[str, list[dict]] = {}
     for r in _read_jsonl(chunks_file):
@@ -279,25 +340,59 @@ def load_chunks(chunks_file: str | Path, reviewed_file: str | Path | None = None
             chunks.extend(_article_chunks(base, sections, iss, max_article_chars))
         else:
             chunks.extend(_span_chunks(recs, iss))
-    _flag_latest_in_topic(chunks)
+    _flag_latest_in_topic(chunks, superseded_ids=superseded_ids, references_by_from=references_by_from)
     return chunks
 
 
-def _flag_latest_in_topic(chunks: list[Chunk]) -> None:
-    """Đánh dấu chunk thuộc năm học mới nhất CỦA CHỦ ĐỀ của nó (latest_in_topic = 1).
+def _flag_latest_in_topic(
+    chunks: list[Chunk],
+    superseded_ids: set[str] | None = None,
+    references_by_from: dict[str, set[str]] | None = None,
+) -> None:
+    """Đánh dấu chunk thuộc bản mới nhất còn hiệu lực CỦA CHỦ ĐỀ (latest_in_topic = 1).
 
-    Dùng cho câu hỏi không nêu năm: lọc các chunk này rồi để độ giống chọn chủ đề, thay vì
-    đoán chủ đề từ kết quả đầu tiên (đoán sai chủ đề kéo theo sai văn bản).
+    Kết hợp hai tín hiệu:
+    1. Loại bỏ các doc_id đã bị thay thế (same_series / supersedes) trong approved_relations.jsonl.
+    2. Chọn năm học mới nhất trong các văn bản còn hiệu lực của từng topic_hint, và giữ lại
+       các văn bản đang có hiệu lực được văn bản mới nhất dẫn chiếu (relation_type == 'references').
     """
+    superseded = superseded_ids or set()
+    refs = references_by_from or {}
+
     latest: dict[str, int] = {}
     for c in chunks:
+        did = c.metadata["doc_id"]
+        is_sup = did in superseded
+        c.metadata["is_superseded"] = int(is_sup)
         sy = c.metadata["start_year"]
-        if sy:
+        if sy and not is_sup:
             t = c.metadata["topic_hint"]
             latest[t] = max(latest.get(t, 0), sy)
+
+    # Fallback nếu tất cả văn bản trong 1 topic đều bị đánh dấu superseded
     for c in chunks:
         sy = c.metadata["start_year"]
-        c.metadata["latest_in_topic"] = int(bool(sy) and sy == latest.get(c.metadata["topic_hint"]))
+        t = c.metadata["topic_hint"]
+        if sy and t not in latest:
+            latest[t] = max(latest.get(t, 0), sy)
+
+    latest_docs: set[str] = set()
+    for c in chunks:
+        did = c.metadata["doc_id"]
+        sy = c.metadata["start_year"]
+        is_latest = bool(sy) and did not in superseded and sy == latest.get(c.metadata["topic_hint"])
+        c.metadata["latest_in_topic"] = int(is_latest)
+        if is_latest:
+            latest_docs.add(did)
+
+    if refs and latest_docs:
+        referenced_active: set[str] = set()
+        for ldoc in latest_docs:
+            referenced_active.update(refs.get(ldoc, set()))
+        for c in chunks:
+            did = c.metadata["doc_id"]
+            if did in referenced_active and did not in superseded and c.metadata["start_year"]:
+                c.metadata["latest_in_topic"] = 1
 
 
 def summarize(chunks: list[Chunk]) -> dict:

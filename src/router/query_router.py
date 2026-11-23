@@ -90,16 +90,16 @@ _COMPARISON_WORDS = [
     "so sánh", "năm trước", "cũ hơn",
 ]
 _EXCEPTION_WORDS = [
-    "ngoại lệ", "xin cứu xét", "xin miễn", "cứu xét", "đặc cách",
+    "ngoại lệ", "xin cứu xét", "cứu xét", "đặc cách", "vượt quy chế", "ngoài quy định",
 ]
 
 _GREETING_PATTERNS = [
-    r"^(xin\s+)?chào(\s+(bạn|bot|cậu|ad|anh|em))?$",
-    r"^(hi|hello|hey)(\s+(bot|bạn))?$",
-    r".*(bạn|mày|m|bot)\s+(là\s+ai|tên\s+là\s+gì).*",
-    r".*(bạn|mày|m|bot)\s+(biết\s+làm\s+gì|làm\s+được\s+gì|có\s+thể\s+làm\s+gì).*",
-    r".*(giúp\s+gì\s+được|hỗ\s+trợ\s+gì\s+được)\s+(cho\s+)?(tôi|sinh\s+viên|mình|em).*",
-    r".*(giới\s+thiệu\s+(về\s+)?(bản\s+thân|hệ\s+thống|chức\s+năng)).*",
+    r"^(?:xin\s+)?chào(?:\s+(?:bạn|bot|cậu|ad|anh|em))?[\s!?.]*$",
+    r"^(?:hi|hello|hey)(?:\s+(?:bot|bạn))?[\s!?.]*$",
+    r"^(?:(?:xin\s+)?chào(?:\s+(?:bạn|bot))?[,!\s]+)?(?:bạn|mày|m|bot)\s+(?:là\s+ai|tên\s+(?:là\s+)?gì)[\s!?.]*$",
+    r"^(?:(?:xin\s+)?chào(?:\s+(?:bạn|bot))?[,!\s]+)?(?:bạn|mày|m|bot)\s+(?:biết\s+làm\s+gì|làm\s+được\s+gì|có\s+thể\s+làm\s+gì)[\s!?.]*$",
+    r"^(?:(?:bạn|bot)\s+)?(?:giúp\s+gì\s+được|hỗ\s+trợ\s+gì\s+được)(?:\s+cho)?(?:\s+(?:tôi|sinh\s+viên|mình|em))?[\s!?.]*$",
+    r"^(?:hãy\s+)?giới\s+thiệu\s+(?:về\s+)?(?:bản\s+thân|hệ\s+thống|chức\s+năng)[\s!?.]*$",
 ]
 _RE_GREETING = [re.compile(p, re.IGNORECASE) for p in _GREETING_PATTERNS]
 
@@ -114,6 +114,7 @@ _SLUG_STOPWORDS: set[str] = {
     "dinh", "khoa", "bieu", "thoi", "nckh", "danh", "sach", "bong",
     "dung", "theo", "dieu", "chinh", "nganh", "hoach", "nghi", "quyet",
     "thuc", "hien", "hanh", "bien", "nhan", "vien", "sinh", "luan",
+    "quydinh", "truong", "cong", "nghe", "thong",
 }
 
 
@@ -228,6 +229,9 @@ class AdaptiveQueryRouter:
 
         for doc_id in self._reviewed_documents:
             doc_id_norm = _normalise(doc_id)
+            if doc_id_norm in q_tokens:
+                matched.add(doc_id)
+                continue
             # Split on hyphens to get the meaningful slug segments
             slug_parts = doc_id_norm.split("-")
             # Keep only alphabetic (Vietnamese) segments longer than 3 chars;

@@ -21,6 +21,7 @@ def test_prompt_contains_scope_years_and_trims_context():
     plan = VersionPlan("year", 2026, "x", (2026, 2025))
     user = g.build_user("Học phí là bao nhiêu?", HITS, plan, max_hits=2, max_chars=200)
     assert "2026-2027 và 2025-2026" in user
+    assert "NĂM HỌC 2026-2027" in user and "NĂM HỌC 2025-2026" in user
     assert "hp-2026 - Điều 2 - năm học 2026-2027" in user
     assert "hp-x" not in user                         # vượt max_hits
     assert len(user) < 900                            # đoạn dài bị cắt
