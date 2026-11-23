@@ -12,7 +12,8 @@ V7_TEN={'BENCH_SUP_008','BENCH_SUP_012','BENCH_SUP_001','BENCH_SUP_002',
 CHANGES=V7_TEN|set(RETRO)
 def sha(b):return hashlib.sha256(b).hexdigest()
 def sha_norm(b):return hashlib.sha256(b.replace(b'\r\n', b'\n') if isinstance(b, (bytes, bytearray)) else b).hexdigest()
-def sha_matches(b, expected):return sha(b)==expected or sha_norm(b)==expected
+def sha_crlf(b):return hashlib.sha256(b.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n') if isinstance(b, (bytes, bytearray)) else b).hexdigest()
+def sha_matches(b, expected):return sha(b)==expected or sha_norm(b)==expected or sha_crlf(b)==expected
 def read(p):return [json.loads(x) for x in p.read_text(encoding='utf-8').splitlines() if x.strip()]
 def digest(r):return sha(json.dumps(r,sort_keys=True,ensure_ascii=False,separators=(',',':')).encode('utf-8'))
 

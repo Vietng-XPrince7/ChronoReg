@@ -1,0 +1,310 @@
+# Externalized Vietnamese legal & UET curriculum lexicons for ChronoReg RAG.
+# Loaded by src/rag/lexicon.py (falls back to built-in defaults if missing).
+
+topic_map:
+  hoc_phi: tuition
+  hoc_bong: scholarship
+  nckh: research
+  dao_tao: training_rules
+  ke_hoach: academic_calendar
+  tuyen_sinh: admissions
+  cong_tac_sinh_vien: scholarship
+
+typo_map:
+  "đạo tạo": "đào tạo"
+  "nghành": "ngành"
+  "học kì": "học kỳ"
+  "kì thi": "kỳ thi"
+  "cở sở": "cơ sở"
+
+stopwords:
+  - theo
+  - quy
+  - định
+  - của
+  - cho
+  - trong
+  - các
+  - và
+  - là
+  - được
+  - với
+  - tại
+  - về
+  - này
+  - đó
+  - ra
+  - vào
+  - như
+  - thế
+  - nào
+  - bao
+  - nhiêu
+  - trường
+  - đại
+  - công
+  - nghệ
+  - uet
+  - việc
+  - những
+  - khi
+  - nếu
+  - thì
+  - có
+  - ở
+  - từ
+  - đến
+
+query_synonyms:
+  tối_thiểu: [ít, nhất, ít_nhất]
+  tối_đa: [nhiều, nhất, không_quá]
+  hiện_nay: [hiện_hành, mới_nhất]
+  còn_lại: [khác, chuẩn, kỹ_thuật]
+  kỹ_thuật: [còn_lại, khác, chuẩn]
+  nghiên_cứu: [tiến_sĩ, ncs]
+  tiến_sĩ: [nghiên_cứu, nghiên_cứu_sinh, ncs]
+  cao_học: [thạc_sĩ, hv]
+  bãi_bỏ: [thay_thế, áp_dụng, hủy_bỏ]
+  đồng_thời: [cùng_lúc, quyền_nhận]
+  khóa_luận: [kltn, đatn]
+
+general_course_names:
+  - triết học
+  - kinh tế chính trị
+  - chủ nghĩa xã hội
+  - lịch sử đảng
+  - tư tưởng hồ chí minh
+  - nhà nước và pháp luật
+  - tiếng anh
+  - ngoại ngữ
+  - giáo dục thể chất
+  - giáo dục quốc phòng
+  - kỹ năng bổ trợ
+  - nhập môn công nghệ số
+  - đại số
+  - giải tích 1
+  - giải tích 2
+  - vật lý đại cương
+
+vi_ascii_tail_words:
+  - minh
+  - anh
+  - nam
+  - trung
+  - hoa
+  - phap
+  - duc
+  - nhat
+  - han
+  - nga
+  - la
+  - ma
+
+generic_intent_words:
+  - chương
+  - trình
+  - đào
+  - tạo
+  - chương_trình
+  - đào_tạo
+  - ngành
+  - các
+  - tín
+  - chỉ
+  - tín_chỉ
+  - sinh
+  - viên
+  - sinh_viên
+  - học
+  - kỳ
+  - học_kỳ
+  - năm
+  - mức
+  - bao
+  - nhiêu
+  - gồm
+  - mấy
+  - quy
+  - định
+  - quy_định
+  - trường
+  - đại
+  - công
+  - nghệ
+  - hiện
+  - nay
+  - hiện_nay
+  - chuẩn
+  - hệ
+  - khóa
+  - khoá
+  - đóng
+  - nộp
+  - tiền
+  - đồng
+  - tháng
+  - thu
+  - phí
+  - học_phí
+  - xét
+  - cấp
+  - bậc
+  - của
+  - cho
+  - trong
+  - với
+  - tại
+  - về
+  - như
+  - thế
+  - nào
+  - những
+  - môn
+  - môn_học
+  - học_phần
+  - phần
+  - làm
+  - gì
+  - đâu
+  - ai
+  - khi
+  - được
+  - không
+  - có
+  - là
+  - và
+  - hoặc
+  - theo
+  - từ
+  - đến
+  - trước
+  - sau
+  - em
+  - mình
+  - hỏi
+  - ạ
+  - vậy
+  - thì
+  - phải
+  - cần
+  - muốn
+  - biết
+  - bổng
+  - học_bổng
+  - khuyến
+  - khích
+  - khuyến_khích
+  - tập
+  - học_tập
+  - kkht
+
+grounding_extra_words:
+  - nhất
+  - lớn
+  - nhỏ
+  - bằng
+  - lần
+  - đầu
+  - loại
+  - mỗi
+  - toàn
+  - khoảng
+  - đợt
+  - ngày
+  - tháng
+  - tuần
+  - tiết
+  - lúc
+  - bắt
+  - kết
+  - thúc
+  - thời
+  - học_bổng
+  - học_kỳ
+  - năm_học
+  - văn_bản
+  - thông_tin
+  - quy_chế
+  - hiện_hành
+  - mới_nhất
+  - trước_đây
+  - thay_đổi
+  - so_với
+  - áp_dụng
+  - đối_với
+  - hết
+  - hiệu
+  - lực
+  - ngoài
+  - trừ
+  - còn
+  - lại
+  - khác
+  - bài
+  - nếu
+  - trường
+  - đhqghn
+  - vnu
+  - uet
+  - bậc
+  - người
+  - như
+  - vậy
+  - đều
+  - lưu
+  - ý
+  - mức
+  - thu
+  - đóng
+  - nộp
+  - xét
+  - cấp
+  - thế
+  - ra
+  - sao
+  - thời_gian
+  - quyết_định
+  - thông_báo
+  - kế_hoạch
+  - hướng
+  - dẫn
+  - trình
+  - bày
+  - những
+  - gì
+  - cách
+  - thức
+  - hình
+  - việc
+  - chính
+  - cụ
+  - thể
+  - kèm
+  - theo
+  - ban
+  - hành
+  - hôm
+  - nay
+  - thời_điểm
+  - hiện_tại
+  - đang
+  - kế
+  - hoạch
+  - tập
+  - bảng
+  - phụ
+  - lục
+  - tổng
+  - nhóm
+  - thuộc
+  - đã
+  - bị
+  - nhận
+  - một
+  - hai
+  - ba
+  - bốn
+  - quyết
+  - định
+  - phân
+  - chia

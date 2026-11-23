@@ -359,6 +359,314 @@ class TestOutOfDistributionGeneralization:
         assert key_fact_score(out["predicted_answer"], expected_facts) == 1.0
 
     @pytest.mark.parametrize(
+        ("course_query", "expected_facts"),
+        [
+            ("Môn Cơ sở dữ liệu có bao nhiêu tín chỉ?", ["Cơ sở dữ liệu", "INT2211", "4"]),
+            ("Học phần INT2210 bao nhiêu tín chỉ?", ["INT2210", "4"]),
+            ("Môn Lập trình hướng đối tượng có mấy tín chỉ?", ["Lập trình hướng đối tượng", "INT2204", "3"]),
+        ],
+    )
+    def test_course_queries_omit_redundant_major_prefix(
+        self,
+        course_query: str,
+        expected_facts: list[str],
+    ) -> None:
+        out = answer(course_query, mode="chrono_rag")
+        assert "Học phần ngành " not in out["predicted_answer"]
+        assert key_fact_score(out["predicted_answer"], expected_facts) == 1.0
+
+    @pytest.mark.parametrize(
+        ("summer_query", "expected_doc_id", "expected_year", "expected_facts"),
+        [
+            (
+                "Học kỳ phụ năm học 2026-2027 diễn ra từ ngày nào đến ngày nào?",
+                "uet-2026-ke-hoach-hoc-tap-2026-413e3e36cd",
+                2026,
+                ["05/07/2027", "29/08/2027"],
+            ),
+            (
+                "Học kỳ phụ năm học 2025-2026 diễn ra từ ngày nào đến ngày nào?",
+                "uet-2025-ke-hoach-hoc-tap-2025-1372cdf5f4",
+                2025,
+                ["06/07/2026", "31/08/2026"],
+            ),
+            (
+                "Học kỳ phụ năm học 2024-2025 diễn ra từ ngày nào đến ngày nào?",
+                "uet-2024-ke-hoach-hoc-tap-2024-ad259a29a6",
+                2024,
+                ["07/07/2025", "31/08/2025"],
+            ),
+            (
+                "Học kỳ phụ năm học 2023-2024 diễn ra từ ngày nào đến ngày nào?",
+                "uet-2023-ke-hoach-hoc-tap-2023-3ad1bf476e",
+                2023,
+                ["01/07/2024", "18/08/2024"],
+            ),
+        ],
+    )
+    def test_summer_term_date_ranges(
+        self,
+        summer_query: str,
+        expected_doc_id: str,
+        expected_year: int,
+        expected_facts: list[str],
+    ) -> None:
+        out = answer(summer_query, mode="chrono_rag")
+        assert out["as_of_year"] == expected_year
+        assert expected_doc_id in out["cited_doc_ids"]
+        assert key_fact_score(out["predicted_answer"], expected_facts) == 1.0
+
+    @pytest.mark.parametrize(
+        ("course_query", "expected_facts"),
+        [
+            ("Học phần MAT1041 Giải tích 1 có mấy tín chỉ?", ["Giải tích 1", "MAT1041", "4"]),
+            ("Môn Giải tích 1 có bao nhiêu tín chỉ?", ["MAT1041", "4", "UET.MAT1050", "5"]),
+            ("Môn Đại số có mấy tín chỉ?", ["Đại số", "MAT1093", "4"]),
+            ("Môn Trí tuệ nhân tạo có mấy tín chỉ?", ["Trí tuệ nhân tạo", "INT3401", "3"]),
+            ("Môn Mạng máy tính có bao nhiêu tín chỉ?", ["UET.CN2042", "3", "INT2213", "4"]),
+            ("Môn Mạng máy tính khóa QH-2025 có bao nhiêu tín chỉ?", ["UET.CN2042", "3"]),
+        ],
+    )
+    def test_general_and_disambiguated_course_lookup(
+        self,
+        course_query: str,
+        expected_facts: list[str],
+    ) -> None:
+        out = answer(course_query, mode="chrono_rag")
+        assert key_fact_score(out["predicted_answer"], expected_facts) == 1.0
+        assert "Nhập môn công nghệ số" not in out["predicted_answer"]
+
+    def test_unknown_course_abstains(self) -> None:
+        out = answer("Môn Vũ trụ học lượng tử có bao nhiêu tín chỉ?", mode="chrono_rag")
+        assert "không tìm thấy thông tin" in out["predicted_answer"].lower()
+        assert out["cited_doc_ids"] == []
+
+    def test_non_superseding_docs_have_accurate_temporal_prefix(self) -> None:
+        out_pay = answer("Sinh viên không nộp học phí từ bao nhiêu học kỳ trở lên sẽ bị xem xét buộc thôi học?", mode="chrono_rag")
+        assert "thay cho quy định cũ" not in out_pay["predicted_answer"].lower()
+        assert "ban hành năm 2021" in out_pay["predicted_answer"].lower()
+
+        out_tkb = answer("Tiết 13 buổi tối tại UET bắt đầu và kết thúc lúc mấy giờ?", mode="chrono_rag")
+        assert "thay cho quy định cũ" not in out_tkb["predicted_answer"].lower()
+        assert out_tkb["predicted_answer"].startswith("Theo thời khóa biểu năm học 2022-2023:")
+
+        out_hist = answer("Học kỳ phụ năm học 2024-2025 diễn ra từ ngày nào đến ngày nào?", mode="chrono_rag")
+        assert "thay cho quy định cũ" not in out_hist["predicted_answer"].lower()
+
+    def test_section2_answer_quality_refinements(self, rag_adapter: RAGEvalAdapter) -> None:
+        # 2.1: No trailing unrelated Điều 4 or older cohort lines
+        q1 = "Các học phần học trong học kỳ hè được tính vào học kỳ nào để xét học bổng khuyến khích học tập năm 2026?"
+        out1 = answer(q1, mode="chrono_rag")
+        assert "học kỳ 2" in out1["predicted_answer"].lower()
+        assert "[Điều 4]" not in out1["predicted_answer"]
+
+        q8 = "Ngành Trí tuệ nhân tạo khóa QH-2025 trở đi có tổng cộng bao nhiêu tín chỉ?"
+        out8 = answer(q8, mode="chrono_rag")
+        assert "135 tín chỉ" in out8["predicted_answer"]
+        assert "123 tín chỉ" not in out8["predicted_answer"]
+        assert "124 tín chỉ" not in out8["predicted_answer"]
+
+        # 2.2: Correct [Điều 5] label and merged Cách 3 (Phòng 101B-E3)
+        q5 = "Nếu không chuyển khoản được học phí thì sinh viên nộp tiền mặt trực tiếp ở phòng nào?"
+        out5 = answer(q5, mode="chrono_rag")
+        assert "[Điều 5]" in out5["predicted_answer"]
+        assert "101b-e3" in out5["predicted_answer"].lower()
+
+        # 2.3: Clean boundary truncation (never ends mid-word like ', T')
+        q_cntt = "Ngành Công nghệ thông tin có những môn học nào?"
+        out_cntt = answer(q_cntt, mode="chrono_rag")
+        assert not out_cntt["predicted_answer"].endswith(", T")
+        assert out_cntt["predicted_answer"].endswith(".")
+
+        # 2.4: TKB virtual curriculum doc_ids preserve 'd' for 'đ' and split sticky OCR words
+        doc_ids = set(rag_adapter.retriever.doc_lines.keys())
+        assert "uet-ctdt-cong-nghe-ky-thuat-dien-tu-vien-thong-tkb" in doc_ids
+        assert "uet-ctdt-ky-thuat-may-tinh-tkb" in doc_ids
+        assert "uet-ctdt-co-hoc-ky-thuat-tkb" in doc_ids
+        assert "uet-ctdt-cong-nghe-thong-tin-dinh-huong-thi-truong-nhat-ban-tkb" in doc_ids
+        assert "uet-ctdt-kythuat-ieu-khien-va-tu-ong-hoa-tkb" not in doc_ids
+
+    def test_section3_governance_and_effective_dates(self, rag_adapter: RAGEvalAdapter) -> None:
+        from src.rag.eval_adapter import InMemoryRetriever
+
+        # 3.1a: Unreviewed curricula carry warning notice when warn_unreviewed=True
+        out_ds = answer("Ngành Khoa học dữ liệu gồm bao nhiêu tín chỉ?", mode="chrono_rag")
+        assert "chưa duyệt độc lập" in out_ds["predicted_answer"]
+
+        # 3.1b: Strict mode (respect_retrieval_eligible=True) excludes all unreviewed manifest curricula
+        strict_ret = InMemoryRetriever.from_corpus(respect_retrieval_eligible=True)
+        assert not any(did.startswith("uet-curriculum-") for did in strict_ret.doc_lines)
+        assert "uet-ctdt-cong-nghe-thong-tin-tkb" in strict_ret.doc_lines
+
+        # 3.2a: AI QH-2022–2024 surfaces both original (124 TC) and updated (123 TC) with unconfirmed date note
+        out_ai22 = answer("Ngành Trí tuệ nhân tạo khóa QH-2022 gồm bao nhiêu tín chỉ?", mode="chrono_rag")
+        assert "124 tín chỉ" in out_ai22["predicted_answer"]
+        assert "123 tín chỉ" in out_ai22["predicted_answer"]
+        assert "chưa được xác định" in out_ai22["predicted_answer"].lower()
+
+        # 3.2b: Space Engineering QH-2022–2024 flags mismatched outcomes URL when asked about Chuẩn đầu ra / PLO
+        out_space = answer("Chuẩn đầu ra ngành Công nghệ hàng không vũ trụ khóa QH-2022 như thế nào?", mode="chrono_rag")
+        assert "vật lý kỹ thuật" in out_space["predicted_answer"].lower()
+
+        # 3.3: Effective dates loaded from reviewed_documents.jsonl & date-aware filtering before 2026-08-07
+        kkht26_meta = rag_adapter.retriever.doc_meta["uet-2026-quy-dinh-xet-hoc-bong-kkht-2026-17a091722e"]
+        assert kkht26_meta["effective_from"] == "2026-08-07"
+        out_before = answer(
+            "Tính đến ngày 01/05/2026, quy định xét học bổng KKHT nào đang áp dụng?",
+            mode="chrono_rag",
+        )
+        assert "uet-2026-quy-dinh-xet-hoc-bong-kkht-2026-17a091722e" not in out_before["cited_doc_ids"]
+
+    @pytest.mark.parametrize(
+        ("unseen_query", "expected_facts", "should_abstain"),
+        [
+            (
+                "Các học phần học trong học kỳ hè được tính vào học kỳ nào để xét học bổng khuyến khích học tập năm 2026?",
+                ["học kỳ 2"],
+                False,
+            ),
+            (
+                "Khi xét học bổng KKHT năm 2026, nếu hai sinh viên có cùng điểm học tập hệ 4 và cùng điểm rèn luyện mà kinh phí không đủ thì chọn ai?",
+                ["nhiều tín chỉ hơn", "hệ 10"],
+                False,
+            ),
+            (
+                "Sinh viên đang hưởng trợ cấp xã hội hoặc học bổng chính sách có được xét học bổng khuyến khích học tập không?",
+                ["vẫn được xét", "trợ cấp xã hội"],
+                False,
+            ),
+            (
+                "Sinh viên không nộp học phí từ bao nhiêu học kỳ trở lên sẽ bị xem xét buộc thôi học?",
+                ["hai học kỳ", "buộc thôi học"],
+                False,
+            ),
+            (
+                "Nếu không chuyển khoản được học phí thì sinh viên nộp tiền mặt trực tiếp ở phòng nào?",
+                ["101B-E3", "Phòng Kế hoạch - Tài chính"],
+                False,
+            ),
+            (
+                "Học kỳ phụ năm học 2026-2027 diễn ra từ ngày nào đến ngày nào?",
+                ["05/07/2027", "29/08/2027"],
+                False,
+            ),
+            (
+                "Tiết 13 buổi tối tại UET bắt đầu và kết thúc lúc mấy giờ?",
+                ["19h00", "19h50"],
+                False,
+            ),
+            (
+                "Ngành Trí tuệ nhân tạo khóa QH-2025 trở đi có tổng cộng bao nhiêu tín chỉ?",
+                ["135 tín chỉ"],
+                False,
+            ),
+            (
+                "Học phần MAT1041 Giải tích 1 có mấy tín chỉ?",
+                ["Giải tích 1", "MAT1041", "4"],
+                False,
+            ),
+            (
+                "Môn Trí tuệ nhân tạo có mấy tín chỉ?",
+                ["Trí tuệ nhân tạo", "INT3401", "3"],
+                False,
+            ),
+            (
+                "Tiền thuê phòng ký túc xá Mỹ Đình của ĐHQGHN năm 2026 là bao nhiêu một tháng?",
+                [],
+                True,
+            ),
+            (
+                "Ngành An toàn thông tin khóa QH-2025 tại UET cần tích lũy bao nhiêu tín chỉ?",
+                [],
+                True,
+            ),
+        ],
+    )
+    def test_twelve_unseen_student_queries_section5(
+        self,
+        unseen_query: str,
+        expected_facts: list[str],
+        should_abstain: bool,
+    ) -> None:
+        out = answer(unseen_query, mode="chrono_rag")
+        if should_abstain:
+            assert "không tìm thấy thông tin" in out["predicted_answer"].lower()
+            assert out["cited_doc_ids"] == []
+        else:
+            assert key_fact_score(out["predicted_answer"], expected_facts) == 1.0
+
+    def test_section4_modular_hybrid_llm_and_formatter(self) -> None:
+        from src.rag.grounding import verify_llm_grounding
+        from src.rag.hybrid import HybridDenseIndex, reciprocal_rank_fusion
+        from src.rag.intent import detect_topic as intent_detect_topic, parse_temporal_intent as intent_parse_temporal
+        from src.rag.lexicon import load_lexicon
+
+        # 4.1: Externalized lexicon & modular intent imports
+        lex = load_lexicon()
+        assert "typo_map" in lex and "query_synonyms" in lex
+        assert intent_detect_topic("Học kỳ phụ năm học 2026-2027 diễn ra từ ngày nào?") == "academic_calendar"
+        assert intent_parse_temporal("Học phí năm học 2025-2026?") == ("temporal_specific", 2025)
+
+        # 4.2: mode="chrono_rag_llm" grounded pass-through and hallucination fallback
+        q_llm = "Mức học phí tín chỉ khóa QH-2023 hệ chuẩn năm học 2026-2027 là bao nhiêu?"
+        out_ok = answer(
+            q_llm,
+            mode="chrono_rag_llm",
+            llm_fn=lambda q, hits, plan, cfg: "Theo quy định năm học 2026-2027, khóa QH-2023 hệ chuẩn đóng 974.000 đồng/tín chỉ.",
+        )
+        assert out_ok["llm_used"] is True
+        assert "974.000" in out_ok["predicted_answer"]
+
+        # Hallucinated currency amount (9.999.000 not in context) must trigger fallback to extractive answer
+        out_fb = answer(
+            q_llm,
+            mode="chrono_rag_llm",
+            llm_fn=lambda q, hits, plan, cfg: "Theo quy định năm học 2026-2027, mức thu là 9.999.000 đồng/tín chỉ.",
+        )
+        assert out_fb["llm_used"] is False
+        assert "9.999.000" not in out_fb["predicted_answer"]
+        assert "974.000" in out_fb["predicted_answer"]
+        assert verify_llm_grounding(q_llm, "9.999.000 đồng/tín chỉ", "974.000 đồng/tín chỉ", 30.0, {"học": 1.0}) is False
+
+        # 4.3: Hybrid RRF merges BM25 + Dense hits cleanly with injected embed_fn
+        mini_chunks = [
+            {"chunk_id": "d1:0", "doc_id": "doc-tuition", "document": "Mức thu học phí đại học 974.000 đồng/tín chỉ", "metadata": {"doc_id": "doc-tuition"}},
+            {"chunk_id": "d2:0", "doc_id": "doc-leave", "document": "Thủ tục bảo lưu kết quả học tập", "metadata": {"doc_id": "doc-leave"}},
+        ]
+        def _mock_embed(texts: list[str]) -> list[list[float]]:
+            vecs = []
+            for t in texts:
+                tl = t.lower()
+                vecs.append([1.0, 0.0] if ("học phí" in tl or "đóng tiền" in tl) else [0.0, 1.0])
+            return vecs
+
+        dense_idx = HybridDenseIndex(mini_chunks, embed_fn=_mock_embed)
+        d_hits = dense_idx.query("sinh viên phải đóng tiền bao nhiêu?")
+        assert d_hits and d_hits[0]["metadata"]["doc_id"] == "doc-tuition"
+        fused = reciprocal_rank_fusion([], d_hits, top_k=2)
+        assert fused and fused[0]["metadata"]["doc_id"] == "doc-tuition"
+
+        out_hyb = answer("Học phí tín chỉ khóa QH-2023 năm 2026?", backend="hybrid", embed_fn=lambda ts: [[1.0] for _ in ts])
+        assert out_hyb["debug"]["backend"] == "hybrid_v9"
+        assert "974.000" in out_hyb["predicted_answer"]
+
+        # 4.4: StudentHub _format_rag_answer keeps long legal clauses (>160 chars) intact
+        import ast
+        server_src = (REPO_ROOT / "src/api/studenthub_server.py").read_text(encoding="utf-8")
+        tree = ast.parse(server_src)
+        fmt_node = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "_format_rag_answer")
+        ns: dict[str, Any] = {"re": __import__("re")}
+        exec(compile(ast.Module(body=[fmt_node], type_ignores=[]), "<fmt>", "exec"), ns)
+        long_clause = (
+            "Điểm trung bình chung học kỳ để xét học bổng khuyến khích học tập được tính từ điểm thi, "
+            "kiểm tra hết môn học lần thứ nhất trong học kỳ của các học phần nằm trong khung chương trình "
+            "đào tạo tính đến thời điểm xét học bổng (bao gồm cả các học phần học lại, học cải thiện)."
+        )
+        assert len(long_clause) > 160
+        formatted = ns["_format_rag_answer"](f"Ngắn | {long_clause}")
+        assert "điểm thi, kiểm tra hết môn học" in formatted.lower()
+
+    @pytest.mark.parametrize(
         "ood_query",
         [
             "Ngành Y khoa có những môn học nào?",

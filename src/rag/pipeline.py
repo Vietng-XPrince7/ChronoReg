@@ -41,15 +41,29 @@ def answer(
     cfg: dict[str, Any] | None = None,
     backend: str = "bm25",
     clean_display: bool = False,
+    embed_fn: Any = None,
+    llm_fn: Any = None,
 ) -> dict[str, Any]:
     if not isinstance(question, str) or not question.strip():
         raise ValueError("Question must be a non-empty string.")
-    if mode not in ("chrono_rag", "naive_rag"):
-        raise ValueError(f"Unsupported mode: {mode}. Expected 'chrono_rag' or 'naive_rag'.")
+    if mode not in ("chrono_rag", "chrono_rag_llm", "naive_rag"):
+        raise ValueError(f"Unsupported mode: {mode}. Expected 'chrono_rag', 'chrono_rag_llm', or 'naive_rag'.")
+    if backend not in ("bm25", "hybrid"):
+        raise ValueError(f"Unsupported backend: {backend}. Expected 'bm25' or 'hybrid'.")
 
     adapter = _get_adapter()
     item = {"id": "RUNTIME_QUERY", "question": question.strip()}
-    preds = adapter.run_benchmark([item], mode=mode, top_k=4, as_of_year=as_of_year)
+    use_cfg = cfg if cfg is not None else (load_config() if mode == "chrono_rag_llm" else None)
+    preds = adapter.run_benchmark(
+        [item],
+        mode=mode,
+        top_k=4,
+        as_of_year=as_of_year,
+        backend=backend,
+        embed_fn=embed_fn,
+        llm_fn=llm_fn,
+        cfg=use_cfg,
+    )
     res = preds[0]
 
     pred_year = res.get("as_of_year")
@@ -70,8 +84,8 @@ def answer(
             "doc_id": did,
             "dieu_so": "",
             "academic_year": src.get("academic_year") or d_meta.get("academic_year", ay_label),
-            "year_status": "verified",
-            "review_status": "verified_against_source",
+            "year_status": "verified" if d_meta.get("retrieval_eligible", True) else "unverified",
+            "review_status": "verified_against_source" if d_meta.get("retrieval_eligible", True) else "needs_human_review",
             "topic": d_meta.get("topic") or inferred_topic,
         })
 
@@ -88,13 +102,16 @@ def answer(
         "as_of_year": pred_year,
         "sources": enriched_sources,
         "cited_doc_ids": res.get("cited_doc_ids", []),
+        "unreviewed_sources": res.get("unreviewed_sources", []),
+        "llm_used": bool(res.get("llm_used", False)),
         "latency_ms": res.get("latency_ms", 0.0),
         "mode": mode,
         "debug": {
-            "backend": "bm25_v9",
+            "backend": f"{backend}_v9",
             "mode": inferred_cat,
             "topic": inferred_topic,
             "academic_year": ay_label,
+            "llm_used": bool(res.get("llm_used", False)),
             "reason": f"category={inferred_cat}, topic={inferred_topic or 'all'}, start_year={pred_year}",
         },
     }
@@ -104,11 +121,12 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="ChronoReg RAG Question Answering CLI")
     ap.add_argument("question", help="Câu hỏi quy chế cần tra cứu")
     ap.add_argument("--year", type=int, default=None, help="Năm bắt đầu của năm học (vd: 2024 cho 2024-2025)")
-    ap.add_argument("--mode", choices=["chrono_rag", "naive_rag"], default="chrono_rag")
+    ap.add_argument("--mode", choices=["chrono_rag", "chrono_rag_llm", "naive_rag"], default="chrono_rag")
+    ap.add_argument("--backend", choices=["bm25", "hybrid"], default="bm25")
     ap.add_argument("--json", action="store_true", help="Xuất kết quả dạng JSON")
     args = ap.parse_args(argv)
 
-    out = answer(args.question, args.year, mode=args.mode, clean_display=True)
+    out = answer(args.question, args.year, mode=args.mode, backend=args.backend, clean_display=True)
     if args.json:
         print(json.dumps(out, ensure_ascii=False, indent=2))
         return 0

@@ -273,13 +273,14 @@ def _format_rag_answer(raw: str) -> str:
             # Fact section: split on | to get individual data rows
             rows = [r.strip() for r in sec_clean.split("|") if r.strip()]
             for row in rows:
-                # Skip overly long raw header rows with no facts
-                if len(row) > 160:
-                    continue
                 # Remove bracket-enclosed category headers like [ĐẠI HỌC | A. ...]
                 row = re.sub(r"\[[^\]]*\]", "", row).strip()
-                if row:
-                    fact_lines.append(row)
+                if not row:
+                    continue
+                # Only skip pure uppercase letterhead banners, never drop substantive legal clauses (>160 chars)
+                if row.isupper() and len(row) > 40 and not re.search(r"\d", row):
+                    continue
+                fact_lines.append(row)
 
     if not fact_lines:
         # Fallback: return the raw text truncated
