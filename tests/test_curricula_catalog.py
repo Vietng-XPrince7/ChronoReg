@@ -17,11 +17,11 @@ def test_catalog_has_no_duplicate_content_or_ids():
     expected = json.loads((ROOT / 'data/raw/uet/curricula/catalog.json').read_text(encoding='utf-8'))
     actual = build_catalog(ROOT)
     assert actual == expected
-    assert len(actual['records']) == 84
-    assert len({item['doc_id'] for item in actual['records']}) == 84
-    assert len({item['content_sha256'] for item in actual['records']}) == 84
+    assert len(actual['records']) == 79
+    assert len({item['doc_id'] for item in actual['records']}) == 79
+    assert len({item['content_sha256'] for item in actual['records']}) == 79
     assert sum(item['collection'] == 'official_uet_extractions' for item in actual['records']) == 31
-    assert sum(item['collection'] == 'team_original_uploads' for item in actual['records']) == 53
+    assert sum(item['collection'] == 'team_original_uploads' for item in actual['records']) == 48
     assert all(item['retrieval_eligible'] is False for item in actual['records'])
 
 
@@ -45,7 +45,12 @@ def test_removed_copies_are_exactly_documented_and_absent():
     for p in pairs:
         assert p['body_byte_equal_original'] is True
         assert not (ROOT / p['removed_duplicate_path']).exists()
-        assert hashlib.sha256((ROOT / p['retained_content_path']).read_bytes()).hexdigest() == p['original_body_sha256']
+        excluded_paths = {x['source_path'] for x in report['owner_excluded_original_documents']}
+        if p['retained_content_path'] in excluded_paths:
+            assert not (ROOT / p['retained_content_path']).exists()
+            assert any(x['source_path'] == p['retained_content_path'] and x['source_sha256'] == p['original_body_sha256'] for x in report['owner_excluded_original_documents'])
+        else:
+            assert hashlib.sha256((ROOT / p['retained_content_path']).read_bytes()).hexdigest() == p['original_body_sha256']
 
 
 def test_important_distinct_versions_are_retained():
@@ -85,7 +90,7 @@ def test_source_cards_are_never_canonical_content():
             assert (ROOT / record['source_card_path']).is_file()
 
 
-def test_five_distinct_original_curricula_not_lost_during_branch_reconciliation():
+def test_five_distinct_original_curricula_deliberately_removed_by_owner():
     root = ROOT / 'data/raw/uet/curricula/tuan_2022_2026/original'
     required = (
         'chuan_dau_ra_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md',
@@ -94,6 +99,11 @@ def test_five_distinct_original_curricula_not_lost_during_branch_reconciliation(
         'gioi_thieu_chung_ve_chuong_trinh_dao_tao_cntt_nhat_ban_2022_tro_di.md',
         'noi_dung_chuong_trinh_dao_tao_cntt_clc_2022_tro_di.md',
     )
-    assert all((root / name).is_file() for name in required)
-    hashes = {hashlib.sha256((root / name).read_bytes()).hexdigest() for name in required}
-    assert len(hashes) == len(required)
+    assert all(not (root / name).exists() for name in required)
+    data = json.loads((ROOT / 'data/raw/uet/curricula/tuan_2022_2026/manifest.json').read_text(encoding='utf-8'))
+    removed = data['owner_excluded_documents']
+    assert {x['file_name'] for x in removed} == set(required)
+    assert len({x['source_sha256'] for x in removed}) == 5
+    assert len(data['documents']) == 49
+    assert data['unique_source_records'] == 54  # historical archive count, not current active count
+    assert data['active_unique_source_records'] == 49
