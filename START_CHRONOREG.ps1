@@ -1,7 +1,7 @@
-param([switch]$Native, [switch]$SetupOnly, [switch]$RebuildRag)
+param([switch]$Native, [switch]$SetupOnly, [switch]$RebuildRag, [ValidateSet("auto","cuda","cpu")][string]$Device = "auto")
 $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath $PSScriptRoot
-$flags = @()
+$flags = @('--device', $Device)
 if ($SetupOnly) { $flags += '--setup-only' }
 if ($RebuildRag) { $flags += '--rebuild-rag' }
 # Prefer a configured Ubuntu WSL2 runtime. No security settings are changed.
@@ -12,7 +12,11 @@ if (-not $Native -and (Get-Command wsl.exe -ErrorAction SilentlyContinue)) {
         exit $LASTEXITCODE
     }
 }
-$venv = Join-Path $PSScriptRoot '.local_models\web-runtime-win'
+if ($Device -eq 'cpu') {
+    $venv = Join-Path $PSScriptRoot '.local_models\web-runtime-win-cpu'
+} else {
+    $venv = Join-Path $PSScriptRoot '.local_models\web-runtime-win'
+}
 $exe = Join-Path $venv 'Scripts\python.exe'
 if (-not (Test-Path -LiteralPath $exe)) {
     if (Get-Command py -ErrorAction SilentlyContinue) {
