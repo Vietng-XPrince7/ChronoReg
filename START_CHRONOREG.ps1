@@ -8,9 +8,7 @@ if ($RebuildRag) { $flags += '--rebuild-rag' }
 if (-not $Native -and (Get-Command wsl.exe -ErrorAction SilentlyContinue)) {
     $distros = ((& wsl.exe --list --quiet 2>$null) -join "`n") -replace "`0",''
     if ($LASTEXITCODE -eq 0 -and ($distros -split "`n" | ForEach-Object { $_.Trim() } | Where-Object { $_ -eq 'Ubuntu' })) {
-        $linuxRoot = ((& wsl.exe -d Ubuntu -- wslpath -a "$PSScriptRoot") -join '').Trim()
-        if ($LASTEXITCODE -ne 0 -or -not $linuxRoot) { throw 'Cannot map repository path to Ubuntu' }
-        & wsl.exe -d Ubuntu -- bash "$linuxRoot/start_chronoreg.sh" @flags
+        & wsl.exe -d Ubuntu --exec bash ./start_chronoreg.sh @flags
         exit $LASTEXITCODE
     }
 }
