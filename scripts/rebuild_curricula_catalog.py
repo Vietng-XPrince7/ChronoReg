@@ -171,10 +171,14 @@ def build_catalog(root: Path) -> dict:
     listed_file_names = {p.name for p in (root / CURR_MD_REL).glob('uet-curriculum-*.md')}
     if expected_file_names != listed_file_names:
         raise ValueError(f'OFFICIAL_ORPHAN_OR_MISSING_MARKDOWN: {sorted(expected_file_names ^ listed_file_names)}')
-    # Drop secondary generated copies; original uploaded document is the only content copy.
-    replicas = list((root / CURR_MD_REL / 'tuan_2022_2026').glob('*.md'))
-    if replicas:
-        raise ValueError(f'STALE_TUAN_DUPLICATE_CONTENT_FILES: {len(replicas)}')
+    # Restored legacy wrappers are compatibility copies, never canonical catalog entries.
+    evidence = load_json(base / 'DEDUP_EVIDENCE.json')
+    pairs = evidence['deduplicated_pairs']
+    expected_wrappers = {p['removed_duplicate_path']: p['removed_wrapper_sha256'] for p in pairs}
+    actual_wrappers = {p.relative_to(root).as_posix(): sha256(p.read_bytes())
+                       for p in (root / CURR_MD_REL / 'tuan_2022_2026').glob('*.md')}
+    if len(expected_wrappers) != 53 or actual_wrappers != expected_wrappers:
+        raise ValueError('RESTORED_LEGACY_WRAPPERS_MISSING_OR_CHANGED')
     recorded_site = {r['doc_id']: r for r in csv.DictReader((base / 'versions.csv').open(encoding='utf-8-sig', newline=''))}
     recorded_tuan = {r['doc_id']: r for r in csv.DictReader((base / 'tuan_2022_2026/versions.csv').open(encoding='utf-8-sig', newline=''))}
     if set(recorded_site) != {r['doc_id'] for r in site_manifest['records']}:
