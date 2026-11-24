@@ -556,5 +556,17 @@
       "reason": "explicit_owner_request_remove_five_distinct_CLC_Japan_curricula_2026-11-23"
     }
   ],
-  "owner_exclusion_note": "A separate owner-authorized deletion AFTER historical duplicate-wrapper dedup. These 5 originals were NOT byte-identical duplicates; recorded historical 53 wrapper comparisons remain auditable via Git history."
+  "owner_exclusion_note": "A separate owner-authorized deletion AFTER historical duplicate-wrapper dedup. These 5 originals were NOT byte-identical duplicates; recorded historical 53 wrapper comparisons remain auditable via Git history.",
+  "wrapper_restoration_20261124": {
+    "restored_count": 53,
+    "source_commit": "57f57f8ba85b15247572000bcd6bd92a02ae2780",
+    "excluded_from_automatic_ingestion": [
+      "curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-338b06c6.md",
+      "curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-64d98214.md",
+      "curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-9bc2f86b.md",
+      "curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-297149ea.md",
+      "curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-60a2276b.md"
+    ],
+    "note": "Historical wrapper copies restored for team compatibility; canonical catalog unchanged. Five owner-excluded originals remain deleted; their wrappers are archival only."
+  }
 }

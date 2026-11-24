@@ -2045,6 +2045,10 @@ class InMemoryRetriever:
             and "source_cards/" not in str(d.get("relative_path", "")).replace("\\", "/").lower()
         ]
 
+        # A pre-existing generated registry can still contain owner-excluded legacy copies.
+        from src.versioning.core import is_owner_excluded_curriculum_wrapper
+        docs = [d for d in docs if not is_owner_excluded_curriculum_wrapper(d.get("relative_path", ""))]
+
         superseded_by: dict[str, str] = {}
         supersedes: dict[str, str] = {}
         if rels_path.is_file():

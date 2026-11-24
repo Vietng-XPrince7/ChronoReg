@@ -1,6 +1,6 @@
 # Dữ liệu chương trình đào tạo UET — quy ước thống nhất
 
-**Đọc tại đây trước khi tìm CTĐT.** Một hồ sơ chỉ có **một file Markdown chứa nội dung**; các file JSON/CSV và `source_cards` chỉ là danh mục/metadata. Dữ liệu này **không đại diện cho toàn bộ quy chế UET**, chỉ cho mảng chương trình đào tạo.
+**Đọc tại đây trước khi tìm CTĐT.** Mỗi hồ sơ có **một đường dẫn nội dung chính tắc**; các bản tương thích cũ của Tuấn được giữ riêng; các file JSON/CSV và `source_cards` chỉ là danh mục/metadata. Dữ liệu này **không đại diện cho toàn bộ quy chế UET**, chỉ cho mảng chương trình đào tạo.
 
 ## Điểm vào duy nhất
 
@@ -41,3 +41,7 @@ Chạy `python scripts/rebuild_curricula_catalog.py --repo . --write` nếu **ch
 Chủ dự án yêu cầu loại **5 file gốc khác nhau** của các chương trình CNTT chất lượng cao và CNTT định hướng Nhật Bản. Đây **không phải khử trùng lặp**, vì SHA và nội dung khác nhau. Sau loại bỏ: **49/54 file gốc còn trong working tree**, gồm **48 CTĐT + 1 tài liệu tuyển sinh ngoài phạm vi**. Danh mục chính tắc còn **79** (31 website UET + 48 gốc nhóm).
 
 Không sửa lịch sử nguồn ZIP đầu vào: `source_records=130`, `unique_source_records=54`, `duplicate_archive_occurrences=76`. Năm file đã loại được ghi trong `tuan_2022_2026/manifest.json` ở `owner_excluded_documents`, có SHA-256 để tra trong lịch sử Git khi cần. Chi tiết ở `docs/data/CURRICULA_OWNER_EXCLUSION_20261123.md`.
+
+## Khôi phục tương thích 24/11/2026
+
+Đã khôi phục nguyên byte 53 wrapper tại `../markdown/curricula/tuan_2022_2026/` để nhóm tiếp tục công việc theo đường dẫn cũ. Catalog chính tắc vẫn có 79 mục. Năm wrapper thuộc các tài liệu đã loại chỉ dùng tra cứu lịch sử, không nạp tự động vào registry/RAG; năm file gốc vẫn không được khôi phục. Các wrapper còn lại vẫn chưa được phê duyệt nội dung.

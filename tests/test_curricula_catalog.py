@@ -36,7 +36,7 @@ def test_preserved_sources_and_paths_match_sha256():
     assert hashlib.sha256((ROOT / excluded[0]['original_path']).read_bytes()).hexdigest() == excluded[0]['original_sha256']
 
 
-def test_removed_copies_are_exactly_documented_and_absent():
+def test_restored_legacy_wrappers_are_exactly_documented():
     report = json.loads((ROOT / 'data/raw/uet/curricula/DEDUP_EVIDENCE.json').read_text(encoding='utf-8'))
     assert report['duplicated_normalized_body_replicas_removed'] == 53
     pairs = report['deduplicated_pairs']
@@ -44,7 +44,7 @@ def test_removed_copies_are_exactly_documented_and_absent():
     assert len({p['removed_duplicate_path'] for p in pairs}) == 53
     for p in pairs:
         assert p['body_byte_equal_original'] is True
-        assert not (ROOT / p['removed_duplicate_path']).exists()
+        assert hashlib.sha256((ROOT / p['removed_duplicate_path']).read_bytes()).hexdigest() == p['removed_wrapper_sha256']
         excluded_paths = {x['source_path'] for x in report['owner_excluded_original_documents']}
         if p['retained_content_path'] in excluded_paths:
             assert not (ROOT / p['retained_content_path']).exists()
@@ -107,3 +107,15 @@ def test_five_distinct_original_curricula_deliberately_removed_by_owner():
     assert len(data['documents']) == 49
     assert data['unique_source_records'] == 54  # historical archive count, not current active count
     assert data['active_unique_source_records'] == 49
+
+
+def test_five_owner_excluded_wrappers_are_not_indexed():
+    from src.versioning.core import inventory, is_owner_excluded_curriculum_wrapper
+    evidence = json.loads((ROOT / 'data/raw/uet/curricula/DEDUP_EVIDENCE.json').read_text(encoding='utf-8'))
+    blocked = set(evidence['wrapper_restoration_20261124']['excluded_from_automatic_ingestion'])
+    assert len(blocked) == 5
+    assert all(is_owner_excluded_curriculum_wrapper(p) for p in blocked)
+    rows = inventory(ROOT / 'data/raw/uet/markdown')
+    actual = {r['relative_path'] for r in rows}
+    assert not (actual & blocked)
+    assert sum(p.startswith('curricula/tuan_2022_2026/') for p in actual) == 48
