@@ -6,6 +6,9 @@ from pydantic import BaseModel
 from typing import Optional, Literal
 import time, json, re
 from pathlib import Path
+from contextlib import asynccontextmanager
+from starlette.concurrency import run_in_threadpool
+from src.lora.web_runtime import web_lora
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -18,7 +21,18 @@ EVAL_DIR = REPO_ROOT / "runs" / "eval"
 # ---------------------------------------------------------------------------
 # FastAPI app
 # ---------------------------------------------------------------------------
-app = FastAPI(title="StudentHub — ChronoReg API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await run_in_threadpool(web_lora.preload)
+    yield
+
+
+app = FastAPI(title="StudentHub — ChronoReg API", lifespan=lifespan)
+
+
+@app.get("/api/lora/status")
+def lora_status():
+    return web_lora.status()
 
 # Mount static files for the UI
 if UI_DIR.exists():
@@ -111,15 +125,28 @@ for _rel in _approved_relations:
         _superseded_doc_ids.add(_rel.get("to_doc_id", ""))
 
 # ---------------------------------------------------------------------------
-# Continual LoRA 3B Engine — load real model or verified evaluation predictions
+# Continual LoRA V3 — the shared runtime is preloaded by FastAPI lifespan.
 # ---------------------------------------------------------------------------
-_lora_engine = None
-try:
-    from src.lora.lora_engine import ContinualLoRAEngine
-    _lora_engine = ContinualLoRAEngine(repo_root=REPO_ROOT)
-except Exception as _e:
-    import sys
-    print(f"[studenthub_server] WARNING: ContinualLoRAEngine failed to load: {_e}", file=sys.stderr)
+def _run_web_lora(question: str) -> dict:
+    try:
+        result = web_lora.generate(question, as_of_year=2026)
+        return {
+            "predicted_answer": "[Kết quả LoRA thực nghiệm, chưa được xác nhận là quy chế chính thức]\n" + result["answer"],
+            "latency_ms": result["latency_ms"],
+            "source_label": "QLoRA V3 thực nghiệm (trọng số thật, không trích dẫn tài liệu)",
+            "engine_mode": result["engine_mode"],
+            "checkpoint_year": result["checkpoint_year"],
+            "cited_doc_ids": [],
+        }
+    except Exception as exc:
+        import logging
+        logging.getLogger(__name__).warning("LoRA generation unavailable: %s", exc)
+        return {
+            "predicted_answer": "LoRA V3 chưa sẵn sàng hoặc không sinh được câu trả lời. Kiểm tra trạng thái tại /api/lora/status và log server.",
+            "latency_ms": 0.0, "source_label": "LoRA không khả dụng — không có suy luận từ trọng số",
+            "engine_mode": "LORA_UNAVAILABLE", "checkpoint_year": None,
+            "cited_doc_ids": [],
+        }
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -157,9 +184,10 @@ def _build_metadata(
             "effective_year": p.get("checkpoint_year", 2026),
             "sha256_short": None,
             "superseded_warning": None,
-            "source_type": "lora_parametric",
-            "source_label": p.get("source_label", "Trọng số Continual LoRA 3B (Verified Evaluation Bank)"),
-            "engine_mode": p.get("engine_mode", "VERIFIED_BENCHMARK_PREDICTION"),
+            "source_type": "lora_parametric" if p.get("engine_mode") == "LIVE_PEFT_GENERATION" else "lora_unavailable",
+            "source_label": p.get("source_label", "LoRA không khả dụng"),
+            "engine_mode": p.get("engine_mode", "LORA_UNAVAILABLE"),
+            "quality_qualified": False,
             "benchmark_id": p.get("benchmark_id"),
             "token_f1_proxy": p.get("token_f1_proxy"),
             "latency_ms": round(latency_ms, 2),
@@ -484,24 +512,7 @@ def chat(req: ChatRequest):
         })
 
     elif selected_engine == "continual_lora":
-        if _lora_engine is not None:
-            lora_res = _lora_engine.predict(question, as_of_year=2026, checkpoint_year=2026)
-            pred = {
-                "predicted_answer": lora_res["answer"],
-                "latency_ms": lora_res["latency_ms"],
-                "source_label": lora_res["source_label"],
-                "engine_mode": lora_res["engine_mode"],
-                "checkpoint_year": lora_res.get("checkpoint_year"),
-                "benchmark_id": lora_res.get("benchmark_id"),
-                "token_f1_proxy": lora_res.get("token_f1_proxy"),
-                "cited_doc_ids": [],
-            }
-        else:
-            pred = {
-                "predicted_answer": "ContinualLoRAEngine chưa sẵn sàng.",
-                "latency_ms": 0.0,
-                "cited_doc_ids": [],
-            }
+        pred = _run_web_lora(question)
 
     elif selected_engine in ("chrono_rag", "naive_rag"):
         pred = _run_rag_engine(question, selected_engine)
@@ -566,25 +577,8 @@ def compare(req: CompareRequest):
     pred_naive = _run_rag_engine(question, "naive_rag")
     resp_naive = _build_chat_response(question, routing, "naive_rag", pred_naive)
 
-    # continual_lora: real predictions from ContinualLoRAEngine
-    if _lora_engine is not None:
-        lora_res = _lora_engine.predict(question, as_of_year=2026, checkpoint_year=2026)
-        pred_lora = {
-            "predicted_answer": lora_res["answer"],
-            "latency_ms": lora_res["latency_ms"],
-            "source_label": lora_res["source_label"],
-            "engine_mode": lora_res["engine_mode"],
-            "checkpoint_year": lora_res.get("checkpoint_year"),
-            "benchmark_id": lora_res.get("benchmark_id"),
-            "token_f1_proxy": lora_res.get("token_f1_proxy"),
-            "cited_doc_ids": [],
-        }
-    else:
-        pred_lora = {
-            "predicted_answer": "ContinualLoRAEngine chưa được khởi tạo.",
-            "latency_ms": 0.0,
-            "cited_doc_ids": [],
-        }
+    # continual_lora: reuse the same real V3 model; no stored answers.
+    pred_lora = _run_web_lora(question)
     resp_lora = _build_chat_response(question, routing, "continual_lora", pred_lora)
 
     return JSONResponse(content={

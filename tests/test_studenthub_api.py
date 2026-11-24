@@ -52,7 +52,10 @@ class TestChatEndpoint:
         assert d["routing"]["actual_engine_used"] == "continual_lora"
         assert d["metadata"]["doc_id"] is None
         assert d["metadata"]["sha256_short"] is None
-        assert d["metadata"]["source_type"] == "lora_parametric"
+        expected = ("lora_parametric" if d["metadata"]["engine_mode"] == "LIVE_PEFT_GENERATION"
+                    else "lora_unavailable")
+        assert d["metadata"]["source_type"] == expected
+        assert d["metadata"]["quality_qualified"] is False
 
     def test_chat_force_engine_chrono_rag(self, client):
         r = client.post("/api/chat", json={"question": "Học phí?", "force_engine": "chrono_rag"})
