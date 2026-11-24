@@ -148,6 +148,14 @@ def infer_hints(raw: str, path: Path) -> dict[str, Any]:
     return {'academic_year_candidates': years, 'source_url_in_text': url, 'relation_clues': rel_clues}
 
 
+# Preserve the owner's five exclusions even when historical wrappers are restored.
+_OWNER_EXCLUDED_CURRICULUM_WRAPPERS = frozenset(('curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-338b06c6.md', 'curricula/tuan_2022_2026/uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-64d98214.md', 'curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-9bc2f86b.md', 'curricula/tuan_2022_2026/uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-297149ea.md', 'curricula/tuan_2022_2026/uet-tuan-noi-dung-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-60a2276b.md'))
+
+
+def is_owner_excluded_curriculum_wrapper(relative_path: str | Path) -> bool:
+    return str(relative_path).replace("\\", "/") in _OWNER_EXCLUDED_CURRICULUM_WRAPPERS
+
+
 def inventory(corpus: Path) -> list[dict[str, Any]]:
     if not corpus.is_dir():
         raise FileNotFoundError(f'Markdown corpus not found: {corpus}')
@@ -156,6 +164,8 @@ def inventory(corpus: Path) -> list[dict[str, Any]]:
         if path.is_symlink():
             raise ValueError(f'Symlink not permitted in source corpus: {path}')
         relative = path.relative_to(corpus)
+        if is_owner_excluded_curriculum_wrapper(relative):
+            continue
         raw_bytes = path.read_bytes()
         raw = raw_bytes.decode('utf-8-sig')
         hint = infer_hints(raw, relative)
