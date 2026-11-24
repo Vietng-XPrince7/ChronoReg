@@ -20,6 +20,7 @@ from src.lora.runtime_setup import (
     ARCHIVE_ROOT, NEEDED, BASE_NAME, default_models_root, ensure_base_model, install_v3,
 )
 from src.lora.verified_v3 import BASE_REVISION, verify_v3
+from src.lora.device_policy import choose_device, require_cpu_memory, GIB
 
 ASSET = "ChronoReg_LoRA_3B_V3_Inference.zip"
 RELEASE_URL = ("https://github.com/Vietng-XPrince7/ChronoReg/releases/download/"
@@ -33,12 +34,13 @@ CHECKPOINTS = (
 )
 PACKAGES = {
     "transformers": "4.51.3", "peft": "0.15.2", "accelerate": "1.6.0",
-    "bitsandbytes": "0.48.2", "huggingface_hub": "0.34.4",
+    "huggingface_hub": "0.34.4", "psutil": "7.2.2",
     "fastapi": "0.115.12", "uvicorn": "0.34.2", "pydantic": "2.11.4",
     "pyyaml": "6.0.2", "numpy": "2.2.6", "pandas": "2.2.3",
     "httpx": "0.28.1", "sentence-transformers": "3.4.1",
 }
 MAX_DOWNLOAD = 320 * 1024 * 1024
+RELEASE_SHA256 = "497f24aa0c44e9086a98f246434e45429acf79b5accafd76ed02633c4b2192ac"
 
 def run(*args):
     subprocess.run([str(a) for a in args], cwd=ROOT, check=True)
@@ -57,19 +59,36 @@ def pip(*args):
     else:
         raise RuntimeError("pip/uv missing from runtime environment")
 
-def ensure_deps():
-    if version("torch") != "2.7.1+cu126":
-        pip("torch==2.7.1", "--index-url", "https://download.pytorch.org/whl/cu126")
-    # Reuse compatible installed packages; exact pins keep new installs reproducible.
-    missing = [f"{k}=={v}" for k,v in PACKAGES.items() if version(k) != v]
+def ensure_deps(device):
+    if device == "cpu":
+        if version("psutil") != PACKAGES["psutil"]:
+            pip("psutil==" + PACKAGES["psutil"])
+        print(f"CPU_RAM_READY {require_cpu_memory()/GIB:.1f} GiB available", flush=True)
+        # Explicit CPU mode has its own launcher environment. Avoid switching an
+        # existing CUDA environment in place or importing CUDA-only Triton/BnB.
+        if version("bitsandbytes") is not None:
+            raise RuntimeError("CPU mode requires a clean CPU environment; rerun launcher with -Device cpu (PowerShell) or --device cpu (Bash).")
+    elif sys.platform.startswith("linux") and not (shutil.which(os.environ.get("CC", "gcc"))):
+        raise RuntimeError("CUDA Triton needs GCC: sudo apt update && sudo apt install -y build-essential")
+    torch_build = "cu126" if device == "cuda" else "cpu"
+    if version("torch") != "2.7.1+" + torch_build:
+        pip("torch==2.7.1", "--index-url", "https://download.pytorch.org/whl/" + torch_build)
+    packages = dict(PACKAGES)
+    if device == "cuda":
+        packages["bitsandbytes"] = "0.48.2"
+    missing = [f"{k}=={v}" for k,v in packages.items() if version(k) != v]
     if missing:
         pip(*missing)
-    env = dict(os.environ, CUDA_VISIBLE_DEVICES="0")
-    code = ("import torch,transformers,peft,bitsandbytes,accelerate,fastapi,uvicorn;"
-            "assert torch.cuda.is_available(), 'CUDA unavailable';"
-            "assert torch.cuda.device_count()==1, 'Expected one visible GPU';"
-            "print('CUDA_READY',torch.cuda.get_device_name(0),"
-            "torch.cuda.get_device_properties(0).total_memory//(1024**2),'MiB')")
+    env = dict(os.environ, CUDA_VISIBLE_DEVICES="0" if device == "cuda" else "")
+    code = "import torch,transformers,peft,accelerate,fastapi,uvicorn;"
+    if device == "cuda":
+        code += ("import bitsandbytes;"
+                 "assert torch.cuda.is_available(), 'CUDA unavailable; check driver or select CPU explicitly';"
+                 "assert torch.cuda.device_count()==1, 'Expected one visible GPU';"
+                 "print('CUDA_READY',torch.cuda.get_device_name(0),"
+                 "torch.cuda.get_device_properties(0).total_memory//(1024**2),'MiB')")
+    else:
+        code += "assert not torch.cuda.is_available(), 'Expected CPU runtime'; print('CPU_RUNTIME_READY')"
     subprocess.run([sys.executable,"-c",code], env=env, cwd=ROOT, check=True)
 
 def verify_exact(adapter):
@@ -107,6 +126,12 @@ def download_archive(dest):
             if count > MAX_DOWNLOAD:
                 raise RuntimeError("Release asset exceeds expected size limit")
             f.write(data)
+    digest = hashlib.sha256()
+    with dest.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024*1024), b""):
+            digest.update(chunk)
+    if digest.hexdigest() != RELEASE_SHA256:
+        raise RuntimeError("Release ZIP SHA256 mismatch; download rejected")
 
 def ensure_adapter(models, explicit_archive=None):
     target = models / "chronoreg-v3"
@@ -160,6 +185,7 @@ def main():
     p.add_argument("--archive", type=Path)
     p.add_argument("--models-root", type=Path)
     p.add_argument("--package-release", type=Path)
+    p.add_argument("--device", choices=("auto", "cuda", "cpu"), default="auto")
     p.add_argument("--setup-only", action="store_true")
     p.add_argument("--rebuild-rag", action="store_true")
     args = p.parse_args()
@@ -171,18 +197,21 @@ def main():
         raise RuntimeError("Use Python 3.12 or 3.13 for the pinned runtime")
     if not (ROOT / "src/lora/web_runtime.py").is_file():
         raise RuntimeError("LoRA autoload changes not present in this checkout")
-    ensure_deps()
+    device = choose_device(args.device)
+    print("CHRONOREG_DEVICE_SELECTED", device, flush=True)
+    ensure_deps(device)
     ensure_adapter(models, args.archive)
     ensure_base(models)
     if args.rebuild_rag or not (ROOT/"data/versioning/documents.jsonl").is_file():
         run(sys.executable, "-m", "src.versioning.cli", "build")
     if not (ROOT/"data/versioning/documents.jsonl").is_file():
         raise RuntimeError("RAG registry missing after build")
-    print("SETUP_PASS: GPU detected; artifacts verified; live inference not yet tested", flush=True)
+    print(f"SETUP_PASS: {device} runtime detected; artifacts verified; live inference not yet tested", flush=True)
     if args.setup_only:
         return
     os.environ["CHRONOREG_MODELS_ROOT"] = str(models)
-    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+    os.environ["CHRONOREG_DEVICE"] = device
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0" if device == "cuda" else ""
     os.environ.pop("CHRONOREG_V3_ARTIFACT_DIR", None)
     os.environ.pop("CHRONOREG_BASE_MODEL", None)
     os.environ.pop("QWEN_MODEL_DIR", None)

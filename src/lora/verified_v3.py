@@ -117,11 +117,20 @@ class VerifiedV3Inference:
         import torch
         from peft import PeftModel
         from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
-        if not torch.cuda.is_available() and not self.allow_cpu:
+        requested = os.environ.get("CHRONOREG_DEVICE", "auto")
+        if requested not in ("auto", "cuda", "cpu"):
+            raise ValueError(f"Unknown CHRONOREG_DEVICE: {requested}")
+        cuda = requested != "cpu" and torch.cuda.is_available()
+        if requested == "cuda" and not cuda:
+            raise RuntimeError("NO_GPU: CUDA explicitly requested but unavailable")
+        if not cuda and not self.allow_cpu:
             raise RuntimeError("NO_GPU: real QLoRA generation not available; no cached-answer fallback")
-        if torch.cuda.is_available() and torch.cuda.device_count() != 1:
+        if cuda and torch.cuda.device_count() != 1:
             raise RuntimeError("MULTI_GPU: launch with CUDA_VISIBLE_DEVICES=0 before importing torch")
-        device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        device = "cuda:0" if cuda else "cpu"
+        if device == "cpu":
+            from src.lora.device_policy import require_cpu_memory
+            require_cpu_memory()
         tok = AutoTokenizer.from_pretrained(str(self.base), local_files_only=True, trust_remote_code=False)
         if tok.pad_token_id is None:
             tok.pad_token = tok.eos_token
@@ -190,4 +199,4 @@ def from_environment() -> VerifiedV3Inference:
     from src.lora.runtime_setup import base_files_present
     if not base_files_present(Path(base)):
         raise RuntimeError("Qwen base incomplete. Run python scripts/setup_lora_v3.py --download-base")
-    return VerifiedV3Inference(root, base)
+    return VerifiedV3Inference(root, base, allow_cpu=os.environ.get("CHRONOREG_DEVICE") == "cpu")
