@@ -783,6 +783,29 @@ class TestOutOfDistributionGeneralization:
             assert key_fact_score(out["predicted_answer"], expected_facts) == 1.0
             assert "3 TC" not in out["predicted_answer"]
 
+    def test_retriever_loads_all_markdown_strictly_from_markdown_dir(
+        self,
+        rag_adapter: RAGEvalAdapter,
+    ) -> None:
+        meta_map = rag_adapter.retriever.doc_meta
+        file_backed = [m for m in meta_map.values() if "source_path" in m]
+        # 31 policy/calendar/research docs + 31 official curricula + 48 non-excluded tuan wrappers = 110
+        assert len(file_backed) == 110
+        for m in file_backed:
+            sp = m["source_path"]
+            assert sp.startswith("data/raw/uet/markdown/"), f"Unexpected source_path outside markdown/: {sp}"
+            assert "curricula/tuan_2022_2026/original/" not in sp
+            assert (REPO_ROOT / sp).is_file()
+        # None of the 5 owner-excluded wrappers may be loaded
+        for excluded_id in (
+            "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-338b06c6",
+            "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-64d98214",
+            "uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-9bc2f86b",
+            "uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-297149ea",
+            "uet-tuan-noi-dung-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-60a2276b",
+        ):
+            assert excluded_id not in meta_map
+
 
 # ==============================================================================
 # 5. OUTDATED HALLUCINATION RATE (OHR) DEFENSE TESTS

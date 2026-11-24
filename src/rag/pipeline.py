@@ -87,6 +87,7 @@ def answer(
             "year_status": "verified" if d_meta.get("retrieval_eligible", True) else "unverified",
             "review_status": "verified_against_source" if d_meta.get("retrieval_eligible", True) else "needs_human_review",
             "topic": d_meta.get("topic") or inferred_topic,
+            "source_path": d_meta.get("source_path", "data/raw/uet/markdown/Thoi_khoa_bieu_hoc_ki_I_2022_2023.md"),
         })
 
     if not inferred_topic and enriched_sources:

@@ -2155,84 +2155,60 @@ class InMemoryRetriever:
 
         known_rel_paths = {str(d.get("relative_path", "")).replace("\\", "/") for d in docs}
         known_doc_ids = {str(d.get("doc_id", "")) for d in docs}
-        catalog_path = root / "data/raw/uet/curricula/catalog.json"
-        if catalog_path.is_file():
-            try:
-                catalog_data = json.loads(catalog_path.read_text(encoding="utf-8"))
-                for rec in catalog_data.get("records", []):
-                    cid = rec.get("doc_id", "")
-                    c_path_str = rec.get("content_path", "")
-                    if not cid or not c_path_str:
-                        continue
-                    manifest_meta.setdefault(cid, rec)
-                    if respect_retrieval_eligible and not rec.get("retrieval_eligible"):
-                        continue
-                    c_path = root / c_path_str
-                    if not c_path.is_file() or cid in known_doc_ids:
-                        continue
-                    try:
-                        rel_p = c_path.relative_to(md_root).as_posix()
-                    except ValueError:
-                        rel_p = c_path_str
-                    if rel_p in known_rel_paths:
-                        continue
-                    known_doc_ids.add(cid)
-                    known_rel_paths.add(rel_p)
-                    coh_raw = str(rec.get("cohort_hint_unverified") or rec.get("edition") or "")
-                    _, sy_hint, _, _ = _parse_cohort_bounds(coh_raw, cid)
-                    sy = int(rec.get("cohort_from") or 0) or sy_hint or (
-                        2025 if "2025" in cid else (2022 if "2022" in cid else (2023 if "opening-proposal" in cid else 2025))
-                    )
-                    docs.append({
-                        "doc_id": cid,
-                        "relative_path": rel_p,
-                        "repo_rel_path": c_path_str,
-                        "academic_year_verified": f"{sy}-{sy + 1}",
-                        "title_hint": cid.replace("-", " "),
-                        "topic_hint": "curriculum",
-                        "is_tuan_pack": rec.get("collection") == "team_original_uploads",
-                        "section_type": str(rec.get("content_kind") or ""),
-                        "program_hint": str(rec.get("program_identifier") or ""),
-                        "cohort_hint": coh_raw,
-                    })
-            except Exception:
-                pass
-        elif curricula_dir.is_dir():
-            cur_md_files = list(sorted(curricula_dir.glob("*.md")))
-            tuan_dir = curricula_dir / "tuan_2022_2026"
-            if tuan_dir.is_dir():
-                cur_md_files.extend(sorted(tuan_dir.glob("*.md")))
-            for cur_md in cur_md_files:
-                if cur_md.name.upper() == "INDEX.MD":
-                    continue
-                cid = cur_md.stem
-                if respect_retrieval_eligible and cid in manifest_meta and not manifest_meta[cid].get("retrieval_eligible"):
-                    continue
-                rel_p = cur_md.relative_to(md_root).as_posix()
-                if rel_p not in known_rel_paths:
-                    man_r = manifest_meta.get(cid, {})
-                    _, sy_hint, _, _ = _parse_cohort_bounds(str(man_r.get("cohort_hint", "")), cid)
-                    sy = sy_hint or (2025 if "2025" in cid else (2022 if "2022" in cid else (2023 if "opening-proposal" in cid else 2025)))
-                    docs.append({
-                        "doc_id": cid,
-                        "relative_path": rel_p,
-                        "academic_year_verified": f"{sy}-{sy + 1}",
-                        "title_hint": cid.replace("-", " "),
-                        "topic_hint": "curriculum",
-                        "is_tuan_pack": "tuan_2022_2026/" in rel_p,
-                    })
+        for md_file in sorted(md_root.rglob("*.md")):
+            rel_p = md_file.relative_to(md_root).as_posix()
+            rel_low = rel_p.lower()
+            if (
+                rel_low.endswith("index.md")
+                or "source_cards/" in rel_low
+                or is_owner_excluded_curriculum_wrapper(rel_p)
+                or rel_p in known_rel_paths
+            ):
+                continue
+            cid = md_file.stem
+            if cid in known_doc_ids:
+                continue
+            if respect_retrieval_eligible and cid in manifest_meta and not manifest_meta[cid].get("retrieval_eligible"):
+                continue
+            is_cur = rel_low.startswith("curricula/")
+            man_r = manifest_meta.get(cid, {})
+            if is_cur:
+                _, sy_hint, _, _ = _parse_cohort_bounds(str(man_r.get("cohort_hint", "")), cid)
+                sy = sy_hint or (
+                    2025 if "2025" in cid else (2022 if "2022" in cid else (2023 if "opening-proposal" in cid else 2025))
+                )
+                folder_yr = ""
+            else:
+                first_part = rel_p.split("/", 1)[0]
+                folder_yr = first_part if (first_part.isdigit() and len(first_part) == 4) else ""
+                m_yr = re.search(r"(20[12]\d)", f"{folder_yr} {cid}")
+                sy = int(m_yr.group(1)) if m_yr else 0
+            known_rel_paths.add(rel_p)
+            known_doc_ids.add(cid)
+            docs.append({
+                "doc_id": cid,
+                "relative_path": rel_p,
+                "folder_year_hint": folder_yr,
+                "academic_year_verified": f"{sy}-{sy + 1}" if sy else "",
+                "title_hint": cid.replace("-", " ").replace("_", " "),
+                "topic_hint": "curriculum" if is_cur else "",
+                "is_tuan_pack": "tuan_2022_2026/" in rel_p,
+            })
 
         cur_docs_by_prog: dict[tuple[str, str], list[tuple[int, str]]] = {}
         existing_prog_names: set[str] = set()
         for d in docs:
             doc_id = d["doc_id"]
-            p = (root / d["repo_rel_path"]) if d.get("repo_rel_path") else (md_root / d["relative_path"])
+            p = md_root / d["relative_path"]
             if not p.is_file():
                 continue
             _, sy, topic = _infer_doc_year_and_topic(d)
             if topic == "curriculum":
                 full_raw = p.read_text(encoding="utf-8", errors="ignore")
                 fm = _extract_yaml_frontmatter_meta(full_raw)
+                d["fm_retrieval_eligible"] = (
+                    False if fm.get("retrieval_eligible", "").strip().lower() == "false" else None
+                )
                 is_tuan = bool(d.get("is_tuan_pack")) or "tuan_2022_2026/" in str(d.get("relative_path", "")).replace("\\", "/")
                 d["is_tuan_pack"] = is_tuan
                 sec_type = (fm.get("section_type", "") or str(d.get("section_type", ""))).strip().lower()
@@ -2242,7 +2218,7 @@ class InMemoryRetriever:
                     p_hint = (fm.get("program_hint", "") or str(d.get("program_hint", ""))).strip().lower()
                     prog_vi = _TUAN_PROGRAM_HINT_MAP.get(p_hint, "")
                 if not prog_vi:
-                    m_h1 = re.search(r"^#\s+([^—\n-]+)", full_raw, re.MULTILINE)
+                    m_h1 = re.search(r"^#\s+([^—\n|-]+)", full_raw, re.MULTILINE)
                     if m_h1:
                         prog_vi = m_h1.group(1).strip()
                 if prog_vi:
@@ -2285,12 +2261,22 @@ class InMemoryRetriever:
 
         for d in docs:
             doc_id = d["doc_id"]
-            if respect_retrieval_eligible and doc_id in manifest_meta and not manifest_meta[doc_id].get("retrieval_eligible"):
+            man_rec = manifest_meta.get(doc_id)
+            if man_rec is not None:
+                retrieval_eligible = bool(man_rec.get("retrieval_eligible"))
+            elif d.get("fm_retrieval_eligible") is False:
+                retrieval_eligible = False
+            else:
+                retrieval_eligible = True
+            if respect_retrieval_eligible and not retrieval_eligible:
                 continue
-            p = (root / d["repo_rel_path"]) if d.get("repo_rel_path") else (md_root / d["relative_path"])
+            p = md_root / d["relative_path"]
             if not p.is_file():
                 continue
             raw_text = p.read_text(encoding="utf-8")
+            if d.get("is_tuan_pack") and "## Nội dung từ tài liệu nguồn" in raw_text:
+                raw_text = raw_text.split("## Nội dung từ tài liệu nguồn", 1)[1]
+                raw_text = raw_text.split("\n", 1)[1] if "\n" in raw_text else raw_text
             ay, start_year, topic = _infer_doc_year_and_topic(d)
             prog_vi_name = d.get("program_name_vi", "")
             cohort_scope = d.get("cohort_scope", "")
@@ -2298,8 +2284,6 @@ class InMemoryRetriever:
             eff_from = rev_rec.get("effective_from")
             eff_until = rev_rec.get("effective_until_exclusive")
             issued_date = rev_rec.get("issued_date")
-            man_rec = manifest_meta.get(doc_id)
-            retrieval_eligible = bool(man_rec.get("retrieval_eligible")) if man_rec is not None else True
             outcomes_url_mismatch = bool(d.get("outcomes_url_mismatch", False))
             if topic == "curriculum" and prog_vi_name:
                 title = f"Chương trình đào tạo ngành {prog_vi_name} ({cohort_scope or ay})"
@@ -2392,6 +2376,7 @@ class InMemoryRetriever:
                 "effective_from": eff_from,
                 "effective_until_exclusive": eff_until,
                 "issued_date": issued_date,
+                "source_path": f"data/raw/uet/markdown/{d['relative_path'].replace(chr(92), '/')}",
                 "retrieval_eligible": retrieval_eligible,
                 "outcomes_url_mismatch": outcomes_url_mismatch,
                 "has_total_credits": has_total_credits,
