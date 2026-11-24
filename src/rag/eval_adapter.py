@@ -2150,7 +2150,50 @@ class InMemoryRetriever:
             return cohort_text.strip(), 0, 0, 0
 
         known_rel_paths = {str(d.get("relative_path", "")).replace("\\", "/") for d in docs}
-        if curricula_dir.is_dir():
+        known_doc_ids = {str(d.get("doc_id", "")) for d in docs}
+        catalog_path = root / "data/raw/uet/curricula/catalog.json"
+        if catalog_path.is_file():
+            try:
+                catalog_data = json.loads(catalog_path.read_text(encoding="utf-8"))
+                for rec in catalog_data.get("records", []):
+                    cid = rec.get("doc_id", "")
+                    c_path_str = rec.get("content_path", "")
+                    if not cid or not c_path_str:
+                        continue
+                    manifest_meta.setdefault(cid, rec)
+                    if respect_retrieval_eligible and not rec.get("retrieval_eligible"):
+                        continue
+                    c_path = root / c_path_str
+                    if not c_path.is_file() or cid in known_doc_ids:
+                        continue
+                    try:
+                        rel_p = c_path.relative_to(md_root).as_posix()
+                    except ValueError:
+                        rel_p = c_path_str
+                    if rel_p in known_rel_paths:
+                        continue
+                    known_doc_ids.add(cid)
+                    known_rel_paths.add(rel_p)
+                    coh_raw = str(rec.get("cohort_hint_unverified") or rec.get("edition") or "")
+                    _, sy_hint, _, _ = _parse_cohort_bounds(coh_raw, cid)
+                    sy = int(rec.get("cohort_from") or 0) or sy_hint or (
+                        2025 if "2025" in cid else (2022 if "2022" in cid else (2023 if "opening-proposal" in cid else 2025))
+                    )
+                    docs.append({
+                        "doc_id": cid,
+                        "relative_path": rel_p,
+                        "repo_rel_path": c_path_str,
+                        "academic_year_verified": f"{sy}-{sy + 1}",
+                        "title_hint": cid.replace("-", " "),
+                        "topic_hint": "curriculum",
+                        "is_tuan_pack": rec.get("collection") == "team_original_uploads",
+                        "section_type": str(rec.get("content_kind") or ""),
+                        "program_hint": str(rec.get("program_identifier") or ""),
+                        "cohort_hint": coh_raw,
+                    })
+            except Exception:
+                pass
+        elif curricula_dir.is_dir():
             cur_md_files = list(sorted(curricula_dir.glob("*.md")))
             tuan_dir = curricula_dir / "tuan_2022_2026"
             if tuan_dir.is_dir():
@@ -2179,7 +2222,7 @@ class InMemoryRetriever:
         existing_prog_names: set[str] = set()
         for d in docs:
             doc_id = d["doc_id"]
-            p = md_root / d["relative_path"]
+            p = (root / d["repo_rel_path"]) if d.get("repo_rel_path") else (md_root / d["relative_path"])
             if not p.is_file():
                 continue
             _, sy, topic = _infer_doc_year_and_topic(d)
@@ -2188,11 +2231,11 @@ class InMemoryRetriever:
                 fm = _extract_yaml_frontmatter_meta(full_raw)
                 is_tuan = bool(d.get("is_tuan_pack")) or "tuan_2022_2026/" in str(d.get("relative_path", "")).replace("\\", "/")
                 d["is_tuan_pack"] = is_tuan
-                sec_type = fm.get("section_type", "").strip().lower()
+                sec_type = (fm.get("section_type", "") or str(d.get("section_type", ""))).strip().lower()
                 d["section_type"] = sec_type
                 prog_vi = fm.get("program_name_vi", "").strip()
                 if not prog_vi and is_tuan:
-                    p_hint = fm.get("program_hint", "").strip().lower()
+                    p_hint = (fm.get("program_hint", "") or str(d.get("program_hint", ""))).strip().lower()
                     prog_vi = _TUAN_PROGRAM_HINT_MAP.get(p_hint, "")
                 if not prog_vi:
                     m_h1 = re.search(r"^#\s+([^—\n-]+)", full_raw, re.MULTILINE)
@@ -2201,7 +2244,7 @@ class InMemoryRetriever:
                 if prog_vi:
                     prog_vi = unicodedata.normalize("NFC", prog_vi)
                     d["program_name_vi"] = prog_vi
-                    raw_cohort = fm.get("cohort_scope", "") or fm.get("cohort_hint", "") or fm.get("edition", "")
+                    raw_cohort = fm.get("cohort_scope", "") or fm.get("cohort_hint", "") or str(d.get("cohort_hint", "")) or fm.get("edition", "")
                     clean_cohort, sy_coh, coh_min, coh_max = _parse_cohort_bounds(raw_cohort, doc_id)
                     d["cohort_scope"] = clean_cohort or raw_cohort
                     d["cohort_min"] = coh_min
@@ -2240,7 +2283,7 @@ class InMemoryRetriever:
             doc_id = d["doc_id"]
             if respect_retrieval_eligible and doc_id in manifest_meta and not manifest_meta[doc_id].get("retrieval_eligible"):
                 continue
-            p = md_root / d["relative_path"]
+            p = (root / d["repo_rel_path"]) if d.get("repo_rel_path") else (md_root / d["relative_path"])
             if not p.is_file():
                 continue
             raw_text = p.read_text(encoding="utf-8")

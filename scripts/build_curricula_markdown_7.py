@@ -578,6 +578,8 @@ for plan in editions_plan:
         "source_status": "verified_official_index_links",
         "review_status": "metadata_reviewed; course_table_extracted",
         "retrieval_eligible": False,
+        "content_md_path": f"data/raw/uet/markdown/curricula/{doc_id}.md",
+        "source_card_path": f"data/raw/uet/markdown/curricula/source_cards/{doc_id}.md",
         "notes": meta["version_note"],
     })
 
@@ -596,6 +598,8 @@ for plan in editions_plan:
         "source_index_url": meta["source_index_url"],
         "review_status": "metadata_reviewed; course_table_extracted",
         "retrieval_eligible": "False",
+        "content_md_path": f"data/raw/uet/markdown/curricula/{doc_id}.md",
+        "source_card_path": f"data/raw/uet/markdown/curricula/source_cards/{doc_id}.md",
     })
 
     print(f"Generated: {doc_id}.md ({len(full_md_content)} chars)")
@@ -623,7 +627,10 @@ print(f"Updated {manifest_file}: {len(manifest_data['records'])} total records")
 versions_file = Path("data/raw/uet/curricula/versions.csv")
 with open(versions_file, encoding="utf-8") as f:
     reader = csv.DictReader(f)
-    fieldnames = reader.fieldnames
+    fieldnames = list(reader.fieldnames or [])
+    for path_column in ("content_md_path", "source_card_path"):
+        if path_column not in fieldnames:
+            fieldnames.append(path_column)
     existing_rows = [r for r in reader if r["doc_id"] not in existing_doc_ids]
 
 all_rows = existing_rows + new_version_rows
