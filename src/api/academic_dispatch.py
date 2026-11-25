@@ -1,17 +1,11 @@
 """Opt-in bridge for /api/answer-v2; existing RAG and StudentHub APIs remain unchanged."""
 from __future__ import annotations
 
-from functools import lru_cache
+from src.lora.web_runtime import web_lora
 from pathlib import Path
 
 from src.router.evidence_selector import Candidate, HybridDispatch
 from src.router.source_verifier import SourceVerifier
-
-
-@lru_cache(maxsize=1)
-def _v3():
-    from src.lora.verified_v3 import from_environment
-    return from_environment()
 
 
 def build_dispatch(repo_root: Path, rag_predictor):
@@ -31,7 +25,7 @@ def build_dispatch(repo_root: Path, rag_predictor):
             answer_entailment_verified=False)
 
     def run_lora(question: str) -> Candidate:
-        result = _v3().generate(question)
+        result = web_lora.generate(question)
         return Candidate(engine="continual_lora", answer=result["answer"],
                          engine_mode=result["engine_mode"])
 
