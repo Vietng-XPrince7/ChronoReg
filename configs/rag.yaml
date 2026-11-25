@@ -1,11 +1,11 @@
 # RAG config (branch feature/rag-versioned). Paths are relative to the repo root.
 # Chunks exported by: python -m src.versioning.cli export-chunks --include-unreviewed --max-chars 1500
-#   rag_chunks.jsonl        reviewed documents only (use for real evaluation)
-#   rag_chunks_draft.jsonl  includes unreviewed documents (development only)
-chunks_file: data/versioning/rag_chunks_draft.jsonl
+#   rag_chunks.jsonl        reviewed documents only (tracked in Git; works on clean clone)
+#   rag_chunks_draft.jsonl  includes unreviewed documents (generated via export-chunks --include-unreviewed)
+chunks_file: data/versioning/rag_chunks.jsonl
 reviewed_documents_file: data/versioning/reviewed_documents.jsonl
 
-documents_file: data/versioning/documents.jsonl   # used to find the source .md of each document
+documents_file: data/versioning/documents.jsonl   # auto-built from data/raw/uet/markdown if absent
 
 # Hybrid chunking: documents with at least min_articles "Dieu" are split by article,
 # the rest keep the character-based chunks exported by the data team.
@@ -16,8 +16,9 @@ max_article_chars: 2000
 vector_db_path: data/vectordb
 collection: regulations
 
-# Small model for quick tests. For real runs use BAAI/bge-m3 (about 2GB).
-embedding_model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+# Multilingual model supporting up to 8192 tokens for full Vietnamese legal articles.
+# Lightweight fallback for quick CPU tests: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+embedding_model: BAAI/bge-m3
 
 top_k: 5
 
@@ -40,4 +41,4 @@ llm:
   model: Qwen/Qwen2.5-1.5B-Instruct
   max_new_tokens: 400
   max_hits: 4               # passages given to the model
-  max_context_chars: 1200   # characters kept from each passage
+  max_context_chars: 2000   # matches max_article_chars so full articles are not truncated

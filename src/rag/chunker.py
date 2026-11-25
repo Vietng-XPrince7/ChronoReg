@@ -175,12 +175,31 @@ def split_articles(text: str) -> list[dict]:
     return sections
 
 
+_TABLE_SEP_LINE = re.compile(r"^[ \t]*\|?[ \t:|-]+\|[ \t:|-]*$")
+
+
 def _pack_lines(para: str, limit: int) -> list[str]:
-    out, cur = [], ""
-    for ln in para.split("\n"):
+    """Split a long paragraph/table by lines while repeating Markdown table headers across chunks."""
+    out: list[str] = []
+    cur = ""
+    lines = para.split("\n")
+    active_tbl_hdr = ""
+    for i, ln in enumerate(lines):
+        s = ln.strip()
+        is_tbl = s.startswith("|") and s.endswith("|")
+        if is_tbl and i + 1 < len(lines) and _TABLE_SEP_LINE.match(lines[i + 1].strip()):
+            cand_hdr = f"{ln}\n{lines[i + 1]}"
+            if len(cand_hdr) + 40 < limit:
+                active_tbl_hdr = cand_hdr
+        elif not is_tbl and s:
+            active_tbl_hdr = ""
+
         if cur and len(cur) + 1 + len(ln) > limit:
             out.append(cur)
-            cur = ln
+            if is_tbl and active_tbl_hdr and not _TABLE_SEP_LINE.match(s) and len(active_tbl_hdr) + 1 + len(ln) <= limit:
+                cur = f"{active_tbl_hdr}\n{ln}"
+            else:
+                cur = ln
         else:
             cur = f"{cur}\n{ln}" if cur else ln
     if cur:
@@ -220,9 +239,17 @@ def _issued_dates(path: str | Path | None) -> dict[str, str]:
     return {}
 
 
-def _source_paths(path: str | Path | None) -> dict[str, str]:
+def _source_paths(path: str | Path | None, root: Path | None = None) -> dict[str, str]:
     if path and Path(path).exists():
         return {r["doc_id"]: r.get("source_path") or "" for r in _read_jsonl(path)}
+    if path and root is not None:
+        md_dir = root / "data/raw/uet/markdown"
+        if md_dir.is_dir():
+            try:
+                from src.versioning.core import inventory
+                return {r["doc_id"]: r.get("source_path") or "" for r in inventory(md_dir)}
+            except Exception:
+                pass
     return {}
 
 
@@ -317,7 +344,7 @@ def load_chunks(chunks_file: str | Path, reviewed_file: str | Path | None = None
                 relations_file: str | Path | None = None) -> list[Chunk]:
     root = Path(source_root) if source_root else ROOT
     issued = _issued_dates(reviewed_file)
-    sources = _source_paths(documents_file)
+    sources = _source_paths(documents_file, root=root)
     rel_path = Path(relations_file) if relations_file else Path(chunks_file).parent / "approved_relations.jsonl"
     superseded_ids, references_by_from = _load_relations(rel_path)
 
@@ -344,43 +371,56 @@ def load_chunks(chunks_file: str | Path, reviewed_file: str | Path | None = None
     return chunks
 
 
+def _infer_sub_scope(meta: dict) -> str:
+    """Distinguish sub-scopes within a topic (undergrad vs postgrad vs TT23 CLC vs extended)."""
+    combined = f"{meta.get('doc_id', '')} {meta.get('scope', '')}".lower().replace("_", "-")
+    if "keo-da" in combined or "kéo dài" in combined:
+        return "extended"
+    if any(k in combined for k in ("sau-dai-hoc", "sau đại học", "cao học", "nghiên cứu sinh")) and "đại học, học viên cao học" not in combined:
+        return "postgrad"
+    if any(k in combined for k in ("ct-clc-tt-23", "tt-23", "tt 23", "thông tư 23")):
+        return "clc_tt23"
+    return "default"
+
+
 def _flag_latest_in_topic(
     chunks: list[Chunk],
     superseded_ids: set[str] | None = None,
     references_by_from: dict[str, set[str]] | None = None,
 ) -> None:
-    """Đánh dấu chunk thuộc bản mới nhất còn hiệu lực CỦA CHỦ ĐỀ (latest_in_topic = 1).
+    """Đánh dấu chunk thuộc bản mới nhất còn hiệu lực CỦA (CHỦ ĐỀ, PHẠM VI) (latest_in_topic = 1).
 
     Kết hợp hai tín hiệu:
     1. Loại bỏ các doc_id đã bị thay thế (same_series / supersedes) trong approved_relations.jsonl.
-    2. Chọn năm học mới nhất trong các văn bản còn hiệu lực của từng topic_hint, và giữ lại
+    2. Chọn năm học mới nhất trong các văn bản còn hiệu lực của từng (topic_hint, sub_scope), và giữ lại
        các văn bản đang có hiệu lực được văn bản mới nhất dẫn chiếu (relation_type == 'references').
     """
     superseded = superseded_ids or set()
     refs = references_by_from or {}
 
-    latest: dict[str, int] = {}
+    latest: dict[tuple[str, str], int] = {}
     for c in chunks:
         did = c.metadata["doc_id"]
         is_sup = did in superseded
         c.metadata["is_superseded"] = int(is_sup)
         sy = c.metadata["start_year"]
         if sy and not is_sup:
-            t = c.metadata["topic_hint"]
-            latest[t] = max(latest.get(t, 0), sy)
+            key = (c.metadata["topic_hint"], _infer_sub_scope(c.metadata))
+            latest[key] = max(latest.get(key, 0), sy)
 
-    # Fallback nếu tất cả văn bản trong 1 topic đều bị đánh dấu superseded
+    # Fallback nếu tất cả văn bản trong 1 (topic, sub_scope) đều bị đánh dấu superseded
     for c in chunks:
         sy = c.metadata["start_year"]
-        t = c.metadata["topic_hint"]
-        if sy and t not in latest:
-            latest[t] = max(latest.get(t, 0), sy)
+        key = (c.metadata["topic_hint"], _infer_sub_scope(c.metadata))
+        if sy and key not in latest:
+            latest[key] = max(latest.get(key, 0), sy)
 
     latest_docs: set[str] = set()
     for c in chunks:
         did = c.metadata["doc_id"]
         sy = c.metadata["start_year"]
-        is_latest = bool(sy) and did not in superseded and sy == latest.get(c.metadata["topic_hint"])
+        key = (c.metadata["topic_hint"], _infer_sub_scope(c.metadata))
+        is_latest = bool(sy) and did not in superseded and sy == latest.get(key)
         c.metadata["latest_in_topic"] = int(is_latest)
         if is_latest:
             latest_docs.add(did)

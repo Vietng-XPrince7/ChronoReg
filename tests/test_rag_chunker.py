@@ -177,3 +177,24 @@ def test_relations_override_latest_in_topic_and_keep_referenced_docs():
     assert by_doc["old"]["is_superseded"] == 1 and by_doc["old"]["latest_in_topic"] == 0
     assert by_doc["new"]["is_superseded"] == 0 and by_doc["new"]["latest_in_topic"] == 1
     assert by_doc["ref"]["is_superseded"] == 0 and by_doc["ref"]["latest_in_topic"] == 1
+
+
+def test_long_markdown_table_repeats_header_and_subscope_latest_flag():
+    tbl_rows = "\n".join(f"| Khóa {i:02d} | {1000 + i} đồng/tháng |" for i in range(15))
+    doc_text = (
+        "# **Điều 1. Bảng mức thu**\n\n| Khóa | Mức thu |\n|---|---|\n" + tbl_rows
+        + "\n\n# **Điều 2. B**\n\nngắn\n\n# **Điều 3. C**\n\nngắn\n"
+    )
+    recs = [
+        _rec("ug-2026", 0, "x", ay="2026-2027"),
+        {**_rec("pg-2024", 0, "y", ay="2024-2025"), "scope": "Đào tạo sau đại học"},
+    ]
+    env = Env({"ug-2026": doc_text, "pg-2024": BANG}, recs)
+    chunks = env.load(max_article_chars=220)
+    d1_parts = [c for c in chunks if c.metadata["doc_id"] == "ug-2026" and c.metadata["dieu_so"] == "Điều 1"]
+    assert len(d1_parts) >= 2
+    # Continuation chunk of a split table preserves the Markdown table header
+    assert "| Khóa | Mức thu |" in d1_parts[1].document
+    # Postgraduate tuition doc retains latest_in_topic=1 alongside newer undergraduate tuition doc
+    by_doc = {c.metadata["doc_id"]: c.metadata["latest_in_topic"] for c in chunks}
+    assert by_doc["ug-2026"] == 1 and by_doc["pg-2024"] == 1

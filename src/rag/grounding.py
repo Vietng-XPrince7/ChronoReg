@@ -19,14 +19,20 @@ def _verify_answer_grounding(
     idf_map: dict[str, float],
 ) -> bool:
     """Return False if the retrieved snippet does not genuinely answer the question (triggers Abstention)."""
-    is_small_index = len(idf_map) < 100
-    min_bm25 = 0.5 if is_small_index else 12.0
-    strong_bm25 = 1.5 if is_small_index else 45.0
-    if not snippet or bm25_score < min_bm25:
+    if not snippet:
         return False
+    is_small_index = len(idf_map) < 100
 
     cleaned_q, _ = _extract_excluded_phrases(_normalize_query_typos(question))
     q_clean = cleaned_q.lower()
+    q_uni = _tokenize(q_clean, include_bigrams=False, expand_synonyms=False)
+    q_idf_sum = sum(idf_map.get(t, 2.5) for t in set(q_uni)) if q_uni else 6.0
+
+    # Adaptive IDF-scaled thresholds instead of fragile fixed constants when corpus grows
+    min_bm25 = 0.5 if is_small_index else max(6.5, min(12.0, q_idf_sum * 0.45))
+    strong_bm25 = 1.5 if is_small_index else max(30.0, min(55.0, q_idf_sum * 1.9))
+    if bm25_score < min_bm25:
+        return False
     s_clean = re.sub(
         r"(?:đại học quốc gia hà nội|trường đại học công nghệ|cộng h[oò]a xã hội chủ nghĩa việt nam|độc lập\s*-\s*tự do\s*-\s*hạnh phúc|hà nội,\s*ngày[^;.\n]*)",
         " ",
@@ -63,7 +69,6 @@ def _verify_answer_grounding(
             return False
 
     # 2. Check substantive anchor tokens of the question
-    q_uni = _tokenize(q_clean, include_bigrams=False, expand_synonyms=False)
     s_uni_set = set(_tokenize(s_clean, include_bigrams=False, expand_synonyms=True))
 
     anchor_tokens = [
@@ -82,7 +87,7 @@ def _verify_answer_grounding(
             return False
         return bm25_score >= (0.5 if is_small_index else 15.0)
 
-    oov_tokens = [t for t in anchor_tokens if t not in idf_map and len(t) >= 2]
+    oov_tokens = [t for t in anchor_tokens if t not in idf_map and len(t) >= 2 and not t.isdigit()]
     matched_anchors = [t for t in anchor_tokens if t in s_uni_set]
 
     if not matched_anchors:
@@ -121,6 +126,13 @@ def verify_llm_grounding(
     if llm_decs:
         ctx_low = context_text.lower()
         if any(d not in ctx_low for d in llm_decs):
+            return False
+
+    # Every explicit unit-bearing number (e.g. '15 tín chỉ', '50%') stated by the LLM must appear in context
+    unit_nums = set(re.findall(r"\b(\d{1,3})\s*(?:tín\s*chỉ|%|phần\s*trăm)\b", llm_answer.lower()))
+    if unit_nums:
+        ctx_nums = set(re.findall(r"\b\d{1,3}\b", context_text.lower()))
+        if not unit_nums.issubset(ctx_nums):
             return False
 
     return _verify_answer_grounding(question, llm_answer, bm25_score, idf_map)
