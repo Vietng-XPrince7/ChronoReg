@@ -75,6 +75,10 @@ def retrieve(question: str, plan: VersionPlan, cfg: dict) -> tuple[list[dict], V
     per_year_hits = [_query(cfg, question, w, per) for w in wheres]
     hits = _group_balanced(per_year_hits, k)
 
+    if plan.mode == "year" and not hits:
+        # Không có văn bản khớp đúng năm -> fallback sang văn bản quy định chung chưa gắn năm (start_year=0)
+        hits = _query(cfg, question, {"start_year": 0}, k)
+
     if plan.mode == "latest" and not hits:
         # chỉ mục cũ chưa có cờ latest_in_topic: truy vấn rộng hơn nhưng tránh bản đã bị thay thế / không rõ năm
         raw_hits = _query(cfg, question, None, max(k * 2, k))

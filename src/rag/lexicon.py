@@ -158,9 +158,9 @@ def _normalize_for_match(text: str) -> str:
         return ""
     s = unicodedata.normalize("NFKC", str(text)).lower()
     s = re.sub(r"<[^>]+>", " ", s)
+    s = re.sub(r"(\d)\s*(?:đồng|vnđ|vnd|đ)\b", r"\1 ", s)
     s = re.sub(r"\b(\d{1,3})(?:[.,](\d{3}))+\b", lambda m: re.sub(r"[.,]", "", m.group(0)), s)
     s = re.sub(r"\b(\d+),(\d+)\b", r"\1.\2", s)
-    s = re.sub(r"(\d+)\s*(?:đồng|vnđ|vnd|đ)\b", r"\1", s)
     s = re.sub(r"\b(20\d{2})\s*[-–—/]\s*(20\d{2})\b", r"\1-\2", s)
     return s
 

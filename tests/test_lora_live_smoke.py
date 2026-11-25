@@ -59,6 +59,8 @@ def test_transformers_4_46_uses_torch_dtype_not_dtype(tmp_path, monkeypatch):
     monkeypatch.setitem(sys.modules, "torch", fake_torch)
     monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
     monkeypatch.setitem(sys.modules, "peft", fake_peft)
+    from src.lora import device_policy
+    monkeypatch.setattr(device_policy, "require_cpu_memory", lambda: 24 * device_policy.GIB)
     instance = object.__new__(VerifiedV3Inference)
     instance.root = tmp_path
     instance.base = tmp_path

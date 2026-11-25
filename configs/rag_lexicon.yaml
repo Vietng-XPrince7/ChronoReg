@@ -67,6 +67,7 @@ query_synonyms:
   bãi_bỏ: [thay_thế, áp_dụng, hủy_bỏ]
   đồng_thời: [cùng_lúc, quyền_nhận]
   khóa_luận: [kltn, đatn]
+  điểm_chuẩn: [điểm_trúng_tuyển, trúng_tuyển]
 
 general_course_names:
   - triết học
@@ -308,3 +309,5 @@ grounding_extra_words:
   - định
   - phân
   - chia
+  - hà
+  - nội

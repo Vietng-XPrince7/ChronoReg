@@ -110,9 +110,6 @@ def parse_temporal_intent(question: str, as_of_year: int | None = None) -> tuple
             isolated_years.append(int(m.group(1)))
 
     if is_superseded:
-        if "bãi bỏ" in q and ("nước ngoài" in q or "996.000" in q):
-            return "superseded_rule", 2025
-
         m_truoc_range = re.search(r"trước\s+(?:năm\s*học|năm|khi)\s*(202\d)\s*[-–—/]\s*(202\d)", q)
         m_truoc_single = re.search(r"trước\s+(?:năm\s*học|năm|khi[^0-9]{0,25})\s*(202\d)\b", q)
         if len(academic_years) >= 2:

@@ -33,9 +33,42 @@ def choose_device(requested: str) -> str:
     return "cuda" if nvidia_detected() else "cpu"
 
 
+def _stdlib_available_ram() -> int:
+    if sys.platform == "win32":
+        import ctypes
+
+        class _MEMORYSTATUSEX(ctypes.Structure):
+            _fields_ = [
+                ("dwLength", ctypes.c_ulong),
+                ("dwMemoryLoad", ctypes.c_ulong),
+                ("ullTotalPhys", ctypes.c_ulonglong),
+                ("ullAvailPhys", ctypes.c_ulonglong),
+                ("ullTotalPageFile", ctypes.c_ulonglong),
+                ("ullAvailPageFile", ctypes.c_ulonglong),
+                ("ullTotalVirtual", ctypes.c_ulonglong),
+                ("ullAvailVirtual", ctypes.c_ulonglong),
+                ("ullAvailExtendedVirtual", ctypes.c_ulonglong),
+            ]
+
+        stat = _MEMORYSTATUSEX()
+        stat.dwLength = ctypes.sizeof(_MEMORYSTATUSEX)
+        if ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(stat)):
+            return int(stat.ullAvailPhys)
+    elif sys.platform.startswith("linux") and Path("/proc/meminfo").is_file():
+        for line in Path("/proc/meminfo").read_text(encoding="utf-8", errors="ignore").splitlines():
+            if line.startswith("MemAvailable:"):
+                parts = line.split()
+                if len(parts) >= 2 and parts[1].isdigit():
+                    return int(parts[1]) * 1024
+    raise ModuleNotFoundError("No module named 'psutil'")
+
+
 def effective_available_ram() -> int:
-    import psutil
-    available = int(psutil.virtual_memory().available)
+    try:
+        import psutil
+        available = int(psutil.virtual_memory().available)
+    except ModuleNotFoundError:
+        available = _stdlib_available_ram()
     # WSL reports guest RAM. On Linux also respect a finite cgroup v2 budget.
     try:
         if sys.platform.startswith("linux"):

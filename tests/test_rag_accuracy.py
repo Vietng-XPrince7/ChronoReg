@@ -106,7 +106,7 @@ class TestTemporalAndTopicRouting:
             (
                 "Quy định phân chia sinh viên nước ngoài đóng 996.000 đ/tín chỉ (trừ Lào và Campuchia) đã bị bãi bỏ bằng nguyên tắc nào?",
                 "superseded_rule",
-                2025,
+                None,
             ),
             # Temporal specific with academic year range, single year, or promulgation date
             (
@@ -495,8 +495,16 @@ class TestOutOfDistributionGeneralization:
 
         # 3.1b: Strict mode (respect_retrieval_eligible=True) excludes all unreviewed manifest curricula
         strict_ret = InMemoryRetriever.from_corpus(respect_retrieval_eligible=True)
-        assert not any(did.startswith("uet-curriculum-") for did in strict_ret.doc_lines)
+        assert not any(did.startswith(("uet-curriculum-", "uet-tuan-")) for did in strict_ret.doc_lines)
         assert "uet-ctdt-cong-nghe-thong-tin-tkb" in strict_ret.doc_lines
+        # Strict mode must abstain on total-credit query for TKB-only majors instead of returning a 3 TC course
+        strict_adapter = RAGEvalAdapter(strict_ret)
+        strict_httt = strict_adapter.run_benchmark(
+            [{"id": "strict_httt", "question": "Ngành Hệ thống thông tin khóa QH-2022 gồm bao nhiêu tín chỉ?"}],
+            mode="chrono_rag",
+        )[0]
+        assert strict_httt["cited_doc_ids"] == []
+        assert "không tìm thấy thông tin" in strict_httt["predicted_answer"].lower()
 
         # 3.2a: AI QH-2022–2024 surfaces both original (124 TC) and updated (123 TC) with unconfirmed date note
         out_ai22 = answer("Ngành Trí tuệ nhân tạo khóa QH-2022 gồm bao nhiêu tín chỉ?", mode="chrono_rag")
@@ -671,8 +679,8 @@ class TestOutOfDistributionGeneralization:
         [
             "Ngành Y khoa có những môn học nào?",
             "Học phí ngành Y khoa là bao nhiêu?",
-            "Điểm chuẩn UET năm 2024 là bao nhiêu?",
-            "Sinh viên bị cảnh báo học vụ khi nào?",
+            "Điểm chuẩn ngành Y đa khoa Đại học Y Hà Nội năm 2024 là bao nhiêu?",
+            "Ký túc xá Mễ Trì thu tiền điện nước bao nhiêu một số?",
             "Thời tiết Hà Nội hôm nay thế nào?",
             "Giá vàng SJC hôm nay bao nhiêu?",
         ],
@@ -681,6 +689,215 @@ class TestOutOfDistributionGeneralization:
         out = answer(ood_query, mode="chrono_rag")
         assert out["cited_doc_ids"] == []
         assert "Không tìm thấy thông tin phù hợp" in out["predicted_answer"]
+
+    def test_restored_admissions_and_training_rules_markdown_queries(self) -> None:
+        out_adm = answer("Điểm chuẩn UET năm 2024 là bao nhiêu?", mode="chrono_rag")
+        assert out_adm["as_of_year"] == 2024
+        assert "thong_bao_diem_trung_tuyen_2024" in out_adm["cited_doc_ids"]
+
+        for q_cut, exp_doc, exp_yr, exp_facts in [
+            (
+                "Điểm chuẩn thi ngành Hệ thống thông tin năm 2025?",
+                "diem_trung_tuyen_2025",
+                2025,
+                ["Hệ thống thông tin", "CN14", "26.38"],
+            ),
+            (
+                "Điểm chuẩn ngành Hệ thống thông tin năm 2026 là bao nhiêu?",
+                "thong_bao_diem_trung_tuyen_2026",
+                2026,
+                ["Hệ thống thông tin", "CN14", "25,85"],
+            ),
+            (
+                "Điểm chuẩn ngành Hệ thống thông tin năm 2024?",
+                "thong_bao_diem_trung_tuyen_2024",
+                2024,
+                ["Hệ thống thông tin", "CN14", "26,87"],
+            ),
+            (
+                "Điểm trúng tuyển ngành Hệ thống thông tin năm 2023?",
+                "thong_bao_diem_trung_tuyen_theo_thpt_2023",
+                2023,
+                ["Hệ thống thông tin", "CN14", "26.95"],
+            ),
+            (
+                "Điểm chuẩn ngành Hệ thống thông tin năm 2022 theo THPT là bao nhiêu?",
+                "diem_trung_tuyen_2022",
+                2022,
+                ["Hệ thống thông tin", "CN14", "25"],
+            ),
+        ]:
+            res_c = answer(q_cut, mode="chrono_rag")
+            assert res_c["as_of_year"] == exp_yr
+            assert exp_doc in res_c["cited_doc_ids"]
+            assert key_fact_score(res_c["predicted_answer"], exp_facts) == 1.0
+
+        out_rule = answer("Sinh viên bị cảnh báo học vụ khi nào?", mode="chrono_rag")
+        assert any("quy_che_dao_tao" in d.lower() for d in out_rule["cited_doc_ids"])
+
+    @pytest.mark.parametrize(
+        ("cur_query", "expected_facts", "should_abstain"),
+        [
+            (
+                "Ngành Hệ thống thông tin khóa QH-2022 gồm bao nhiêu tín chỉ?",
+                ["Hệ thống thông tin", "136 tín chỉ", "chưa duyệt độc lập"],
+                False,
+            ),
+            (
+                "Ngành Hệ thống thông tin khóa QH-2025 gồm bao nhiêu tín chỉ?",
+                [],
+                True,
+            ),
+            (
+                "Ngành Công nghệ thông tin khóa QH-2022 gồm bao nhiêu tín chỉ?",
+                ["Công nghệ thông tin", "136 tín chỉ"],
+                False,
+            ),
+            (
+                "Ngành Công nghệ thông tin khóa QH-2025 gồm bao nhiêu tín chỉ?",
+                ["Công nghệ thông tin", "135 tín chỉ"],
+                False,
+            ),
+            (
+                "Ngành Công nghệ thông tin gồm bao nhiêu tín chỉ?",
+                ["Công nghệ thông tin", "135 tín chỉ"],
+                False,
+            ),
+            (
+                "Ngành Công nghệ thông tin chất lượng cao gồm bao nhiêu tín chỉ?",
+                [],
+                True,
+            ),
+            (
+                "Ngành CNTT CLC gồm bao nhiêu tín chỉ?",
+                [],
+                True,
+            ),
+            (
+                "Ngành CNTT Nhật Bản gồm bao nhiêu tín chỉ?",
+                [],
+                True,
+            ),
+            (
+                "Ngành Khoa học máy tính khóa QH-2022 gồm bao nhiêu tín chỉ?",
+                ["Khoa học máy tính", "136 tín chỉ"],
+                False,
+            ),
+            (
+                "Ngành Kỹ thuật máy tính khóa QH-2022 gồm bao nhiêu tín chỉ?",
+                ["Kỹ thuật máy tính", "150 tín chỉ"],
+                False,
+            ),
+            (
+                "Ngành Kỹ thuật Robot khóa QH-2025 gồm bao nhiêu tín chỉ?",
+                ["Kỹ thuật Robot", "150 tín chỉ"],
+                False,
+            ),
+            (
+                "Ngành Kỹ thuật điện tử viễn thông khóa QH-2025 gồm bao nhiêu tín chỉ?",
+                ["135 tín chỉ"],
+                False,
+            ),
+            (
+                "Ngành Mạng máy tính và truyền thông dữ liệu khóa QH-2023 gồm bao nhiêu tín chỉ?",
+                ["150 tín chỉ"],
+                False,
+            ),
+        ],
+    )
+    def test_tuan_curricula_total_credits_and_grounding_guard(
+        self,
+        cur_query: str,
+        expected_facts: list[str],
+        should_abstain: bool,
+    ) -> None:
+        from src.rag.grounding import _verify_answer_grounding
+
+        # Grounding guard must reject a single 3 TC elective line as an answer to a program total-credit query
+        assert not _verify_answer_grounding(
+            "Ngành Hệ thống thông tin khóa QH-2022 gồm bao nhiêu tín chỉ?",
+            "Học phần Các hệ thống thương mại điện tử (môn tự chọn) (INT3506E, 3 TC)",
+            35.0,
+            {"hệ": 2.0, "thống": 2.0, "thông": 2.0, "tin": 2.0},
+        )
+        out = answer(cur_query, mode="chrono_rag")
+        if should_abstain:
+            assert out["cited_doc_ids"] == []
+            assert "không tìm thấy thông tin" in out["predicted_answer"].lower()
+        else:
+            assert key_fact_score(out["predicted_answer"], expected_facts) == 1.0
+            assert "3 TC" not in out["predicted_answer"]
+
+    def test_retriever_loads_all_markdown_strictly_from_markdown_dir(
+        self,
+        rag_adapter: RAGEvalAdapter,
+    ) -> None:
+        meta_map = rag_adapter.retriever.doc_meta
+        file_backed = [m for m in meta_map.values() if "source_path" in m]
+        # 79 policy/calendar/research/admissions/training_rules docs + 31 official curricula + 48 non-excluded tuan wrappers = 158
+        assert len(file_backed) == 158
+        for m in file_backed:
+            sp = m["source_path"]
+            assert sp.startswith("data/raw/uet/markdown/"), f"Unexpected source_path outside markdown/: {sp}"
+            assert "curricula/tuan_2022_2026/original/" not in sp
+            assert (REPO_ROOT / sp).is_file()
+        # None of the 5 owner-excluded wrappers may be loaded
+        for excluded_id in (
+            "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-338b06c6",
+            "uet-tuan-chuan-dau-ra-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-64d98214",
+            "uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-9bc2f86b",
+            "uet-tuan-gioi-thieu-chung-ve-chuong-trinh-dao-tao-cntt-nhat-ban-2022-tro-di-297149ea",
+            "uet-tuan-noi-dung-chuong-trinh-dao-tao-cntt-clc-2022-tro-di-60a2276b",
+        ):
+            assert excluded_id not in meta_map
+
+    def test_audit_fixes_clean_clone_citations_rrf_and_curriculum_overview(
+        self,
+        tmp_path: Path,
+    ) -> None:
+        from src.rag.eval_adapter import InMemoryRetriever
+        from src.rag.hybrid import reciprocal_rank_fusion
+
+        # 1. Clean-clone test: works when gitignored documents.jsonl is absent
+        (tmp_path / "data/raw/uet/markdown/2026").mkdir(parents=True)
+        (tmp_path / "data/raw/uet/markdown/2026/Quy_dinh_muc_thu_hoc_phi_2026.md").write_text(
+            "# Điều 1. Phạm vi\nHọc phí năm học 2026-2027 là 974.000 đồng/tín chỉ.",
+            encoding="utf-8",
+        )
+        clean_ret = InMemoryRetriever.from_corpus(tmp_path)
+        assert len(clean_ret.chunks) >= 1
+
+        # 2. Hybrid RRF preserves multiple distinct chunks (articles) of the same doc_id
+        bm25_multi = [
+            {"chunk_id": "doc1:a1", "document": "Điều 1...", "score": 25.0, "metadata": {"doc_id": "doc1"}},
+            {"chunk_id": "doc1:a5", "document": "Điều 5...", "score": 22.0, "metadata": {"doc_id": "doc1"}},
+        ]
+        fused_multi = reciprocal_rank_fusion(bm25_multi, [], top_k=4)
+        assert len(fused_multi) == 2
+
+        # 3. Article citation (dieu_so) is populated in pipeline output
+        out_art = answer("Theo Điều 7 quy chế học bổng KKHT năm 2026, sinh viên cần tích lũy mấy tín chỉ?")
+        assert out_art["sources"] and out_art["sources"][0]["dieu_so"] == "Điều 7"
+
+        # 3b. Abolished-rule query with as_of_year=None resolves dynamically via supersession graph (no hardcoded year)
+        out_abolished = answer(
+            "Quy định phân chia sinh viên nước ngoài đóng 996.000 đ/tín chỉ (trừ Lào và Campuchia) đã bị bãi bỏ bằng nguyên tắc nào?"
+        )
+        assert out_abolished["as_of_year"] == 2025
+        assert "QĐ 2080 và QĐ 2377" in out_abolished["predicted_answer"]
+
+        # 4. General curriculum overview queries are consistent, include code + credits, and have no (CLC) leak
+        for q_ov, exp_code, exp_tc in [
+            ("Chương trình đào tạo ngành Hệ thống thông tin ?", "7480104", "136 tín chỉ"),
+            ("Chương trình đào tạo ngành Công nghệ thông tin ?", "7480201", "135 tín chỉ"),
+        ]:
+            res_ov = answer(q_ov, mode="chrono_rag")
+            assert res_ov["as_of_year"] == 2025
+            assert exp_code in res_ov["predicted_answer"]
+            assert exp_tc in res_ov["predicted_answer"]
+            assert "(CLC)" not in res_ov["predicted_answer"]
+            assert "(CNTT, AI)" not in res_ov["predicted_answer"]
+            assert "đạt được các năng lực sau:" not in res_ov["predicted_answer"]
 
 
 # ==============================================================================

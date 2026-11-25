@@ -13,13 +13,26 @@ from .config import load_config, resolve
 def build_index(cfg: dict | None = None, reset: bool = True, batch: int = 32) -> int:
     cfg = cfg or load_config()
     path = resolve(cfg["chunks_file"])
+    docs_file = resolve(cfg.get("documents_file", "data/versioning/documents.jsonl"))
+    if not docs_file.exists():
+        try:
+            from src.versioning.core import build as build_versioning
+            build_versioning(resolve("."))
+        except Exception:
+            pass
     if not path.exists():
-        raise SystemExit(f"Chưa có {path}. Chạy: python -m src.versioning.cli export-chunks "
-                         "--include-unreviewed --max-chars 1500")
+        fallback_ready = resolve("data/versioning/rag_chunks.jsonl")
+        if fallback_ready.exists():
+            path = fallback_ready
+        else:
+            raise SystemExit(
+                f"Chưa có {path}. Chạy: python -m src.versioning.cli build && "
+                "python -m src.versioning.cli export-chunks --max-chars 1500"
+            )
     chunks = load_chunks(
         path,
         reviewed_file=resolve(cfg["reviewed_documents_file"]),
-        documents_file=resolve(cfg.get("documents_file", "data/versioning/documents.jsonl")),
+        documents_file=docs_file if docs_file.exists() else None,
         min_articles=cfg.get("min_articles", 3) if cfg.get("chunk_by_article", True) else 10**9,
         max_article_chars=cfg.get("max_article_chars", 2000),
     )

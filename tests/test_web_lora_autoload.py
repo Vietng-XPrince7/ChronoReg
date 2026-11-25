@@ -1,3 +1,8 @@
+import pytest
+
+pytest.importorskip("fastapi")
+pytest.importorskip("httpx")
+
 from fastapi.testclient import TestClient
 from src.lora.web_runtime import WebLoRARuntime
 from src.lora import verified_v3

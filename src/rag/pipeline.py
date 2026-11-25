@@ -53,11 +53,12 @@ def answer(
 
     adapter = _get_adapter()
     item = {"id": "RUNTIME_QUERY", "question": question.strip()}
-    use_cfg = cfg if cfg is not None else (load_config() if mode == "chrono_rag_llm" else None)
+    use_cfg = cfg if cfg is not None else load_config()
+    top_k = int((use_cfg or {}).get("top_k", 4) or 4)
     preds = adapter.run_benchmark(
         [item],
         mode=mode,
-        top_k=4,
+        top_k=top_k,
         as_of_year=as_of_year,
         backend=backend,
         embed_fn=embed_fn,
@@ -82,11 +83,12 @@ def answer(
         d_meta = adapter.retriever.doc_meta.get(did, {})
         enriched_sources.append({
             "doc_id": did,
-            "dieu_so": "",
+            "dieu_so": src.get("dieu_so") or "",
             "academic_year": src.get("academic_year") or d_meta.get("academic_year", ay_label),
             "year_status": "verified" if d_meta.get("retrieval_eligible", True) else "unverified",
             "review_status": "verified_against_source" if d_meta.get("retrieval_eligible", True) else "needs_human_review",
             "topic": d_meta.get("topic") or inferred_topic,
+            "source_path": d_meta.get("source_path", "data/raw/uet/markdown/Thoi_khoa_bieu_hoc_ki_I_2022_2023.md"),
         })
 
     if not inferred_topic and enriched_sources:
@@ -134,7 +136,8 @@ def main(argv: list[str] | None = None) -> int:
     print("Debug  :", out["debug"])
     print("Sources:")
     for s in out["sources"]:
-        print(f"  - {s['doc_id']} ({s['academic_year']}) [{s['topic']}]")
+        dieu_tag = f", {s['dieu_so']}" if s.get("dieu_so") else ""
+        print(f"  - {s['doc_id']} ({s['academic_year']}{dieu_tag}) [{s['topic']}]")
     print("\nAnswer :")
     print(out["answer"])
     return 0

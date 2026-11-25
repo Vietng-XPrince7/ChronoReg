@@ -19,14 +19,20 @@ def _verify_answer_grounding(
     idf_map: dict[str, float],
 ) -> bool:
     """Return False if the retrieved snippet does not genuinely answer the question (triggers Abstention)."""
-    is_small_index = len(idf_map) < 100
-    min_bm25 = 0.5 if is_small_index else 12.0
-    strong_bm25 = 1.5 if is_small_index else 45.0
-    if not snippet or bm25_score < min_bm25:
+    if not snippet:
         return False
+    is_small_index = len(idf_map) < 100
 
     cleaned_q, _ = _extract_excluded_phrases(_normalize_query_typos(question))
     q_clean = cleaned_q.lower()
+    q_uni = _tokenize(q_clean, include_bigrams=False, expand_synonyms=False)
+    q_idf_sum = sum(idf_map.get(t, 2.5) for t in set(q_uni)) if q_uni else 6.0
+
+    # Adaptive IDF-scaled thresholds instead of fragile fixed constants when corpus grows
+    min_bm25 = 0.5 if is_small_index else max(6.5, min(12.0, q_idf_sum * 0.45))
+    strong_bm25 = 1.5 if is_small_index else max(30.0, min(55.0, q_idf_sum * 1.9))
+    if bm25_score < min_bm25:
+        return False
     s_clean = re.sub(
         r"(?:đại học quốc gia hà nội|trường đại học công nghệ|cộng h[oò]a xã hội chủ nghĩa việt nam|độc lập\s*-\s*tự do\s*-\s*hạnh phúc|hà nội,\s*ngày[^;.\n]*)",
         " ",
@@ -44,8 +50,25 @@ def _verify_answer_grounding(
         if dcode not in s_clean:
             return False
 
+    # 1b. Program total-credit queries must never be answered with a single course line (e.g. 3 TC elective)
+    asks_program_total_credits = (
+        bool(re.search(r"(?:bao\s+nhiêu|mấy|tổng\s+(?:cộng|số))[^?]{0,20}tín\s+chỉ", q_clean))
+        and any(k in q_clean for k in ("ngành ", "chương trình đào tạo", "ctđt"))
+        and not any(
+            k in q_clean
+            for k in ("môn ", "học phần", "học bổng", "kkht", "học phí", "mỗi học kỳ", "học kỳ cuối", "cảnh báo", "tự chọn")
+        )
+    )
+    if asks_program_total_credits:
+        has_program_total = (
+            "[tổng hợp chương trình đào tạo]" in s_clean
+            or "tổng số tín chỉ" in s_clean
+            or bool(re.search(r"\b1\d{2}\s*(?:tín\s*chỉ|tc)\b", s_clean))
+        )
+        if not has_program_total:
+            return False
+
     # 2. Check substantive anchor tokens of the question
-    q_uni = _tokenize(q_clean, include_bigrams=False, expand_synonyms=False)
     s_uni_set = set(_tokenize(s_clean, include_bigrams=False, expand_synonyms=True))
 
     anchor_tokens = [
@@ -53,14 +76,23 @@ def _verify_answer_grounding(
         if t not in _GROUNDING_GENERIC_WORDS and not (t.isdigit() and len(t) == 4)
     ]
     if not anchor_tokens:
+        has_domain_cue = any(
+            k in q_clean
+            for k in (
+                "học phí", "học bổng", "kkht", "học kỳ", "quy chế", "quy định",
+                "quyết định", "tín chỉ", "khóa", "ngành", "nckh", "tuyển sinh", "điểm chuẩn",
+            )
+        ) or bool(re.search(r"\b(?:tiết|điều|tuần)\s+\d+\b", q_clean))
+        if not has_domain_cue:
+            return False
         return bm25_score >= (0.5 if is_small_index else 15.0)
 
-    oov_tokens = [t for t in anchor_tokens if t not in idf_map and len(t) >= 3]
+    oov_tokens = [t for t in anchor_tokens if t not in idf_map and len(t) >= 2 and not t.isdigit()]
     matched_anchors = [t for t in anchor_tokens if t in s_uni_set]
 
     if not matched_anchors:
         return bm25_score >= strong_bm25
-    if oov_tokens and bm25_score < strong_bm25 and len(matched_anchors) < max(2, len(anchor_tokens) * 0.55):
+    if not is_small_index and oov_tokens and (len(matched_anchors) / len(anchor_tokens)) < 0.70:
         return False
     if len(anchor_tokens) >= 2 and bm25_score < strong_bm25 and (len(matched_anchors) / len(anchor_tokens)) < 0.30:
         return False
@@ -94,6 +126,13 @@ def verify_llm_grounding(
     if llm_decs:
         ctx_low = context_text.lower()
         if any(d not in ctx_low for d in llm_decs):
+            return False
+
+    # Every explicit unit-bearing number (e.g. '15 tín chỉ', '50%') stated by the LLM must appear in context
+    unit_nums = set(re.findall(r"\b(\d{1,3})\s*(?:tín\s*chỉ|%|phần\s*trăm)\b", llm_answer.lower()))
+    if unit_nums:
+        ctx_nums = set(re.findall(r"\b\d{1,3}\b", context_text.lower()))
+        if not unit_nums.issubset(ctx_nums):
             return False
 
     return _verify_answer_grounding(question, llm_answer, bm25_score, idf_map)
