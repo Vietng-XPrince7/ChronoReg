@@ -44,8 +44,12 @@
     .top-navigation button{background:var(--white);border:2px solid var(--ink);border-radius:1px;box-shadow:3px 3px 0 var(--ink);padding:10px 14px;font-size:12px;line-height:1.1;font-weight:800;white-space:nowrap;transition:background .12s,transform .12s}
     .top-navigation button:hover{background:var(--blue-light);transform:translate(-1px,-1px)}
     .top-navigation button.is-active{background:var(--blue);color:white}
-    .header-meta{min-width:172px;text-align:right;letter-spacing:.2px;color:#76746e;font-size:11px}
+    .header-meta{min-width:172px;text-align:right;letter-spacing:.2px;color:#76746e;font-size:11px;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
     .header-meta strong{display:block;color:var(--ink);font-weight:800;font-size:12px;letter-spacing:.4px}
+    .engine-pill{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border:1px solid var(--ink);background:var(--white);font-size:10px;font-weight:800;color:var(--ink);white-space:nowrap}
+    .engine-pill-dot{width:8px;height:8px;border-radius:99px;background:#d97706;flex-shrink:0}
+    .engine-pill-dot.ready{background:#16a34a}
+    .engine-pill-dot.fallback{background:#d97706}
     .workspace-grid{flex:1;display:grid;grid-template-columns:228px minmax(480px,1fr) 286px;gap:27px;padding:25px 29px 28px;min-height:0;max-width:1880px;width:100%;margin:0 auto}
     .side,.right-sidebar{min-height:0}
     .outline-panel{background:var(--white);border:2px solid var(--ink);box-shadow:var(--shadow);border-radius:1px}
@@ -199,7 +203,13 @@
         <button type="button" onclick="openBenchmarkModal()">Bảng đánh giá</button>
         <button type="button" onclick="focusTopics()">Câu hỏi thường gặp</button>
       </nav>
-      <div class="header-meta"><strong>TRƯỜNG ĐẠI HỌC CÔNG NGHỆ</strong>Đại học Quốc gia Hà Nội</div>
+      <div class="header-meta">
+        <div><strong>TRƯỜNG ĐẠI HỌC CÔNG NGHỆ</strong>Đại học Quốc gia Hà Nội</div>
+        <div class="engine-pill" id="llmHealthPill" title="Trạng thái hạ tầng suy luận mô hình 3B">
+          <span class="engine-pill-dot fallback" id="llmHealthDot"></span>
+          <span id="llmHealthText">Engine: Cached / Extractive Mode</span>
+        </div>
+      </div>
     </header>
     <div class="workspace-grid">
       <aside class="side">
@@ -229,7 +239,7 @@
           </section>
           <section class="side-block">
             <div class="block-kicker">Phương thức xử lý</div>
-            <div class="side-footer"><span class="dot"></span><span>Tự động · LoRA · RAG</span></div>
+            <div class="side-footer" id="engineStatusBadge"><span class="dot"></span><span>Tự động · LoRA · RAG</span></div>
           </section>
         </div>
       </aside>
@@ -386,6 +396,13 @@
       if(engine==='safety_gate_red'||riskTier==='RED') return 'Cổng an toàn';
       return 'Chrono-RAG 3B';
     }
+    function inferenceSourceLabel(src) {
+      if (src === 'ollama_local') return 'Ollama 3B Local';
+      if (src === 'remote_gpu') return 'Remote GPU Tunnel';
+      if (src === 'peft_v3') return 'PEFT V3 GPU';
+      if (src === 'deterministic_router') return 'Router Trực tiếp';
+      return 'Cached / Extractive';
+    }
     function appendAssistantMessage(data) {
       const r=data.routing||{}; const m=data.metadata||{};
       const actualEngine=r.actual_engine_used||r.selected_engine||'chrono_rag';
@@ -400,6 +417,7 @@
           : ('Căn cứ: '+(m.doc_title||m.doc_id||'Văn bản quy định UET')+(m.effective_year?' ('+m.effective_year+')':'')+(m.sha256_short?' · SHA-256 '+m.sha256_short:''));
       const riskClass = riskTier==='RED'?'red':(riskTier==='YELLOW'?'yellow':'green');
       const signalHtml=signals.length?signals.map(s=>`<span class="chip">${escapeHtml(s)}</span>`).join(''):'';
+      const infBadge = m.inference_source ? `<span class="chip">${escapeHtml(inferenceSourceLabel(m.inference_source))}</span>` : '';
       const sourceInfo=sourceLabel?`<div class="metadata-row"><strong>Nguồn tham chiếu:</strong> ${escapeHtml(sourceLabel)}</div>`:'';
       const warning=m.superseded_warning?`<div class="warning">${escapeHtml(m.superseded_warning)}</div>`:'';
       const otherModelLabel=actualEngine==='continual_lora'?'Chrono-RAG 3B':'Continual LoRA 3B';
@@ -407,13 +425,14 @@
       // Like the original UI, the server may return <mark> tags in a formatted answer.
       // Only allow the existing highlight markup; all other HTML remains escaped.
       const answer=allowHighlightMarkup(data.answer||'');
+      const reasonText = (m.engine_note ? m.engine_note + ' — ' : '') + (r.routing_reason||'Không có thông tin định tuyến bổ sung.');
       div.innerHTML=`
         <div class="exchange-hdr"><span class="exchange-title">Nội dung trả lời</span><span class="meta-line">${latency>0?latency.toFixed(1)+' ms':'Chưa có thời gian'}</span></div>
         <div class="exchange-body answer">${answer}</div>
-        <div class="answer-meta"><div class="meta-list"><span class="chip mode">${escapeHtml(engineLabel(actualEngine,riskTier))}</span><span class="chip ${riskClass}">${escapeHtml(riskTier)}</span>${signalHtml}</div>
+        <div class="answer-meta"><div class="meta-list"><span class="chip mode">${escapeHtml(engineLabel(actualEngine,riskTier))}</span><span class="chip ${riskClass}">${escapeHtml(riskTier)}</span>${infBadge}${signalHtml}</div>
         <button type="button" class="compare-action compare-trigger">So sánh với ${escapeHtml(otherModelLabel)}</button></div>
         ${sourceInfo}${warning}
-        <details class="reason"><summary>Thông tin xử lý</summary><div>${escapeHtml(r.routing_reason||'Không có thông tin định tuyến bổ sung.')}</div></details>
+        <details class="reason"><summary>Thông tin xử lý</summary><div>${escapeHtml(reasonText)}</div></details>
         <div id="${compareId}" class="comparison-slot"></div>`;
       document.getElementById('chatList').appendChild(div);
       div.querySelector('.compare-trigger').addEventListener('click',function(){runComparison(data.question||'',compareId,this)});
@@ -437,10 +456,12 @@
     function renderComparisonCard(data,container) {
       const lora=data.continual_lora||{}; const chrono=data.chrono_rag||{};
       const source=escapeHtml(lora.metadata?.source_label||'Trọng số mô hình LoRA 3B');
+      const loraInf=lora.metadata?.inference_source?` · ${escapeHtml(inferenceSourceLabel(lora.metadata.inference_source))}`:'';
+      const chronoInf=chrono.metadata?.inference_source?` · ${escapeHtml(inferenceSourceLabel(chrono.metadata.inference_source))}`:'';
       const f1=lora.metadata?.token_f1_proxy;
       container.innerHTML=`<div class="comparison"><h4>Đối chiếu câu trả lời</h4><div class="comparison-grid">
-        <div class="comparison-column"><h5>Continual LoRA 3B</h5><p>${allowHighlightMarkup(lora.answer||'—')}</p><small>${source}${Number.isFinite(Number(f1))&&f1!==undefined&&f1!==null?' · Token F1: '+Number(f1).toFixed(3):''}</small></div>
-        <div class="comparison-column"><h5>Chrono-RAG 3B</h5><p>${allowHighlightMarkup(chrono.answer||'—')}</p><small>Trích xuất và đối chiếu văn bản theo năm</small></div>
+        <div class="comparison-column"><h5>Continual LoRA 3B</h5><p>${allowHighlightMarkup(lora.answer||'—')}</p><small>${source}${loraInf}${Number.isFinite(Number(f1))&&f1!==undefined&&f1!==null?' · Token F1: '+Number(f1).toFixed(3):''}</small></div>
+        <div class="comparison-column"><h5>Chrono-RAG 3B</h5><p>${allowHighlightMarkup(chrono.answer||'—')}</p><small>Trích xuất và đối chiếu văn bản theo năm${chronoInf}</small></div>
       </div></div>`;
     }
     function updateTelemetry(data) {
@@ -463,7 +484,38 @@
       return encoded.replace(/&lt;mark&gt;/g,'<mark>').replace(/&lt;\/mark&gt;/g,'</mark>');
     }
     function escapeJs(str){return String(str??'').replace(/'/g,"\\'").replace(/"/g,'\\"');}
+    async function checkEngineStatus() {
+      try {
+        const res = await fetch('/api/health');
+        if (!res.ok) return;
+        const st = await res.json();
+        const dot = document.getElementById('llmHealthDot');
+        const txt = document.getElementById('llmHealthText');
+        if (dot && txt) {
+          if (st.ready) {
+            dot.className = 'engine-pill-dot ready';
+            txt.textContent = 'Engine: Ollama 3B Local (Ready)';
+          } else if (st.remote_configured) {
+            dot.className = 'engine-pill-dot ready';
+            txt.textContent = 'Engine: Remote GPU Tunnel';
+          } else {
+            dot.className = 'engine-pill-dot fallback';
+            txt.textContent = 'Engine: Cached / Extractive Mode';
+          }
+        }
+        const badge = document.getElementById('engineStatusBadge');
+        if (!badge) return;
+        if (st.ready) {
+          badge.innerHTML = '<span class="dot"></span><span>Ollama 3B Local · RAG &amp; LoRA</span>';
+        } else if (st.peft_v3 && st.peft_v3.ready) {
+          badge.innerHTML = '<span class="dot"></span><span>RAG · LoRA V3 sẵn sàng</span>';
+        } else {
+          badge.innerHTML = '<span class="dot"></span><span>RAG sẵn sàng · Chế độ dự phòng</span>';
+        }
+      } catch (_) {}
+    }
     setEngineMode('auto');
+    checkEngineStatus();
   </script>
 </body>
 </html>

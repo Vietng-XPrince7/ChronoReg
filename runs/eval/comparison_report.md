@@ -8,6 +8,7 @@
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **naive_rag** | 90 | **49.9%** | 28.4% | 68.9% | 18.9% | 31.5ms |
 | **chrono_rag** | 90 | **100.0%** | 36.4% | 100.0% | 0.0% | 11.1ms |
+| **continual_lora** | 90 | **17.2%** | 34.9% | 50.0% | 1.1% | 0.0ms |
 
 ## 2. Đánh Giá Chi Tiết Theo Nhóm Câu Hỏi (Category Breakdown)
 
@@ -18,6 +19,7 @@ Kiểm tra khả năng trả lời đúng các chính sách mới nhất và cò
 | :--- | :---: | :---: | :---: | :---: |
 | naive_rag | 55.7% | 29.8% | 63.5% | 29.7% |
 | chrono_rag | 100.0% | 37.8% | 100.0% | 0.0% |
+| continual_lora | 19.2% | 38.0% | 50.0% | 0.0% |
 
 ### 2.2. Quy Định Đã Hết Hiệu Lực / Bị Thay Thế (`superseded_rule`)
 Đo lường hiện tượng trả lời bằng quy chế cũ (Outdated Hallucination - OHR) khi có thay đổi qua các năm.
@@ -26,6 +28,7 @@ Kiểm tra khả năng trả lời đúng các chính sách mới nhất và cò
 | :--- | :---: | :---: | :---: | :---: |
 | naive_rag | 48.1% | 28.9% | 68.5% | **11.1%** |
 | chrono_rag | 100.0% | 37.3% | 100.0% | **0.0%** |
+| continual_lora | 16.1% | 32.3% | 50.0% | **0.0%** |
 
 ### 2.3. Quy Định Gắn Với Mốc Thời Gian Cụ Thể (`temporal_specific`)
 Kiểm tra khả năng truy xuất chính xác theo niên khóa và năm học được chỉ định.
@@ -34,6 +37,7 @@ Kiểm tra khả năng truy xuất chính xác theo niên khóa và năm học �
 | :--- | :---: | :---: | :---: | :---: |
 | naive_rag | 43.3% | 26.0% | 76.9% | 11.5% |
 | chrono_rag | 100.0% | 33.4% | 100.0% | 0.0% |
+| continual_lora | 15.4% | 33.2% | 50.0% | 3.9% |
 
 ## 3. Kết Luận Thực Nghiệm & Đề Xuất
 - **Chrono RAG** thể hiện khả năng lọc phiên bản vượt trội, hạn chế tối đa OHR so với Naive RAG trên nhóm `superseded_rule`.

@@ -79,11 +79,13 @@ _RE_COHORT = re.compile(r"\b(K6[5-9]|K7[01]|QH-20\d{2})\b", re.IGNORECASE)
 
 _TEMPORAL_WORDS = [
     "năm nay", "hiện tại", "mới nhất", "hiện hành", "học kỳ", "niên khóa",
+    "học kỳ hè", "học kỳ phụ",
 ]
 _QUANTITATIVE_WORDS = [
     "bao nhiêu tiền", "mức thu", "học phí", "mức học bổng",
-    "mấy tín chỉ", "số tín chỉ", "điểm chuẩn", "tỷ lệ",
+    "mấy tín chỉ", "số tín chỉ", "tổng tín chỉ", "điểm chuẩn", "tỷ lệ",
     "số quyết định", "định mức", "bao nhiêu %",
+    "phòng nào", "mấy giờ", "tiết ", "môn học nào", "học phần nào",
 ]
 _COMPARISON_WORDS = [
     "khác gì", "thay đổi", "so với", "trước đây", "quy chế cũ",

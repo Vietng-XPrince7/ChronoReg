@@ -9,6 +9,7 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 from starlette.concurrency import run_in_threadpool
 from src.lora.web_runtime import web_lora
+from src.api.llm_backend import ChronoRegLLMBackend
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -33,6 +34,31 @@ app = FastAPI(title="StudentHub — ChronoReg API", lifespan=lifespan)
 @app.get("/api/lora/status")
 def lora_status():
     return web_lora.status()
+
+
+@app.get("/api/health")
+def health():
+    ollama_info = (
+        llm_backend.check_ollama_health(force=True)
+        if llm_backend is not None
+        else {
+            "ollama_reachable": False,
+            "base_model_ready": False,
+            "lora_model_ready": False,
+            "models": [],
+            "ready": False,
+            "all_models_ready": False,
+            "remote_configured": False,
+            "inference_source": "cached_fallback",
+            "engine_label": "Engine: Cached / Extractive Mode",
+            "error": "llm_backend not initialized",
+        }
+    )
+    return {
+        "status": "ok",
+        **ollama_info,
+        "peft_v3": web_lora.status(),
+    }
 
 # Mount static files for the UI
 if UI_DIR.exists():
@@ -60,6 +86,17 @@ try:
 except Exception as _e:
     import sys
     print(f"[studenthub_server] WARNING: RAG engine failed to load: {_e}", file=sys.stderr)
+
+llm_backend: Optional[ChronoRegLLMBackend] = None
+try:
+    llm_backend = ChronoRegLLMBackend(
+        repo_root=REPO_ROOT,
+        retriever=_retriever,
+        adapter=_adapter,
+    )
+except Exception as _e:
+    import sys
+    print(f"[studenthub_server] WARNING: LLM backend failed to initialize: {_e}", file=sys.stderr)
 
 # ---------------------------------------------------------------------------
 # Router — load once; fall back to stub if not ready
@@ -125,28 +162,47 @@ for _rel in _approved_relations:
         _superseded_doc_ids.add(_rel.get("to_doc_id", ""))
 
 # ---------------------------------------------------------------------------
-# Continual LoRA V3 — the shared runtime is preloaded by FastAPI lifespan.
+# Continual LoRA — loaded PEFT V3 if available, else 3-tier ChronoRegLLMBackend
 # ---------------------------------------------------------------------------
 def _run_web_lora(question: str) -> dict:
-    try:
-        result = web_lora.generate(question, as_of_year=2026)
-        return {
-            "predicted_answer": "[Kết quả LoRA thực nghiệm, chưa được xác nhận là quy chế chính thức]\n" + result["answer"],
-            "latency_ms": result["latency_ms"],
-            "source_label": "QLoRA V3 thực nghiệm (trọng số thật, không trích dẫn tài liệu)",
-            "engine_mode": result["engine_mode"],
-            "checkpoint_year": result["checkpoint_year"],
-            "cited_doc_ids": [],
-        }
-    except Exception as exc:
-        import logging
-        logging.getLogger(__name__).warning("LoRA generation unavailable: %s", exc)
-        return {
-            "predicted_answer": "LoRA V3 chưa sẵn sàng hoặc không sinh được câu trả lời. Kiểm tra trạng thái tại /api/lora/status và log server.",
-            "latency_ms": 0.0, "source_label": "LoRA không khả dụng — không có suy luận từ trọng số",
-            "engine_mode": "LORA_UNAVAILABLE", "checkpoint_year": None,
-            "cited_doc_ids": [],
-        }
+    if web_lora.status().get("ready"):
+        try:
+            result = web_lora.generate(question, as_of_year=2026)
+            return {
+                "predicted_answer": "[Kết quả LoRA thực nghiệm, chưa được xác nhận là quy chế chính thức]\n" + result["answer"],
+                "latency_ms": result["latency_ms"],
+                "source_label": "QLoRA V3 thực nghiệm (trọng số thật, không trích dẫn tài liệu)",
+                "engine_mode": result["engine_mode"],
+                "inference_source": "peft_v3",
+                "model_name": "qwen2.5-3b-peft-v3",
+                "checkpoint_year": result["checkpoint_year"],
+                "cited_doc_ids": [],
+            }
+        except Exception as exc:
+            import logging
+            logging.getLogger(__name__).warning("LoRA generation unavailable: %s", exc)
+            return {
+                "predicted_answer": "LoRA V3 chưa sẵn sàng hoặc không sinh được câu trả lời. Kiểm tra trạng thái tại /api/lora/status và log server.",
+                "latency_ms": 0.0,
+                "source_label": "LoRA không khả dụng — không có suy luận từ trọng số",
+                "engine_mode": "LORA_UNAVAILABLE",
+                "inference_source": "cached_fallback",
+                "checkpoint_year": None,
+                "cited_doc_ids": [],
+            }
+
+    if llm_backend is not None:
+        return llm_backend.generate(question, mode="continual_lora")
+
+    return {
+        "predicted_answer": "LoRA V3 chưa sẵn sàng hoặc không sinh được câu trả lời. Kiểm tra trạng thái tại /api/lora/status và log server.",
+        "latency_ms": 0.0,
+        "source_label": "LoRA không khả dụng — không có suy luận từ trọng số",
+        "engine_mode": "LORA_UNAVAILABLE",
+        "inference_source": "cached_fallback",
+        "checkpoint_year": None,
+        "cited_doc_ids": [],
+    }
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -161,9 +217,13 @@ def _highlight(text: str) -> str:
     return _HIGHLIGHT_RE.sub(r"<mark>\1</mark>", text)
 
 
-def _truncate(text: str, limit: int = 800) -> str:
+def _truncate(text: str, limit: int = 1800) -> str:
     if len(text) > limit:
-        return text[:limit] + "..."
+        cut = text[:limit]
+        last_nl = cut.rfind("\n")
+        if last_nl > limit // 2:
+            return cut[:last_nl] + "\n..."
+        return cut + "..."
     return text
 
 
@@ -178,15 +238,27 @@ def _build_metadata(
     # Continual LoRA relies on parametric weights, not retrieved documents
     if actual_engine == "continual_lora":
         p = pred or {}
+        em = p.get("engine_mode", "LORA_UNAVAILABLE")
+        inf_src = p.get("inference_source", "cached_fallback")
+        if em == "LIVE_PEFT_GENERATION":
+            src_type = "lora_parametric"
+        elif em in ("OLLAMA_LOCAL", "REMOTE_GPU"):
+            src_type = f"lora_{inf_src}"
+        elif em == "CACHED_FALLBACK":
+            src_type = "lora_cached_fallback"
+        else:
+            src_type = "lora_unavailable"
         return {
             "doc_id": None,
             "doc_title": None,
             "effective_year": p.get("checkpoint_year", 2026),
             "sha256_short": None,
             "superseded_warning": None,
-            "source_type": "lora_parametric" if p.get("engine_mode") == "LIVE_PEFT_GENERATION" else "lora_unavailable",
+            "source_type": src_type,
             "source_label": p.get("source_label", "LoRA không khả dụng"),
-            "engine_mode": p.get("engine_mode", "LORA_UNAVAILABLE"),
+            "engine_mode": em,
+            "inference_source": inf_src,
+            "model_name": p.get("model_name"),
             "quality_qualified": False,
             "benchmark_id": p.get("benchmark_id"),
             "token_f1_proxy": p.get("token_f1_proxy"),
@@ -225,6 +297,7 @@ def _build_metadata(
 
     source_label = f"Căn cứ pháp lý: {doc_title or doc_id or 'Quy định UET'} | Năm: {effective_year or 'N/A'} | SHA-256: {sha256_short or 'N/A'}"
 
+    p = pred or {}
     return {
         "doc_id": doc_id,
         "doc_title": doc_title,
@@ -233,13 +306,23 @@ def _build_metadata(
         "superseded_warning": superseded_warning,
         "source_type": "rag_retrieval",
         "source_label": source_label,
+        "inference_source": p.get("inference_source", "cached_fallback"),
+        "engine_mode": p.get("engine_mode", "CACHED_FALLBACK"),
+        "model_name": p.get("model_name"),
         "latency_ms": round(latency_ms, 2),
         "engine_note": engine_note,
     }
 
 
 def _run_rag_engine(question: str, mode: str) -> dict:
-    """Call RAG adapter; return preds[0] dict. Falls back gracefully on failure."""
+    """Call unified 3-tier ChronoRegLLMBackend for RAG; fallback gracefully on failure."""
+    if llm_backend is not None:
+        try:
+            return llm_backend.generate(question, mode=mode, top_k=3)
+        except Exception as _e:
+            import sys
+            print(f"[studenthub_server] LLM backend RAG error ({mode}): {_e}", file=sys.stderr)
+
     if _adapter is not None:
         try:
             t0 = time.monotonic()
@@ -249,12 +332,13 @@ def _run_rag_engine(question: str, mode: str) -> dict:
             latency = (time.monotonic() - t0) * 1000
             pred = preds[0] if preds else {}
             pred.setdefault("latency_ms", latency)
+            pred.setdefault("inference_source", "cached_fallback")
             return pred
         except Exception as _e:
             import sys
             print(f"[studenthub_server] RAG engine error ({mode}): {_e}", file=sys.stderr)
 
-    return {"latency_ms": 0.0, "cited_doc_ids": []}
+    return {"latency_ms": 0.0, "cited_doc_ids": [], "inference_source": "cached_fallback"}
 
 
 def _format_rag_answer(raw: str) -> str:
@@ -279,33 +363,30 @@ def _format_rag_answer(raw: str) -> str:
     source_line: str = ""
 
     for i, sec in enumerate(sections):
-        # Strip bracket-enclosed category headers at section level before pipe-split
-        sec_clean = re.sub(r"\[[^\]]*\]", "", sec).strip()
         # Identify the provenance / source section by characteristic keywords
         is_source = any(kw in sec.upper() for kw in [
             "QUY ĐỊNH ĐỊNH MỨC", "BAN HÀNH KÈM THEO", "QUYẾT ĐỊNH SỐ",
-            "HIỆU TRƯỞNG", "KẾ HOẠCH HỌC TẬP", "CỘNG HÒA XÃ HỘI",
-            "TRƯỜNG ĐẠI HỌC CÔNG NGHỆ",
+            "HIỆU TRƯỞNG", "CỘNG HÒA XÃ HỘI",
         ])
-        if is_source and i > 0:
+        if is_source and i > 0 and len(sec) < 350:
             # Keep one clean provenance line
-            # Extract the QD number and date if available
             qd_match = re.search(r"Quyết định số[:\s]*([^,\n(]+)", sec, re.IGNORECASE)
             date_match = re.search(r"ngày\s+(\d{1,2}[/\.]\d{1,2}[/\.]\d{4})", sec, re.IGNORECASE)
             if qd_match:
                 qd = qd_match.group(1).strip().rstrip(".")
                 date = f" ngày {date_match.group(1)}" if date_match else ""
                 source_line = f"📄 Căn cứ: {qd}{date}"
-            break
+            continue
         else:
+            # Strip multi-level bracketed table headers like [ĐẠI HỌC | A. ...] while preserving short tags like [Điều 5]
+            sec_clean = re.sub(r"\[[^\]]*\|[^\]]*\]", "", sec).strip()
             # Fact section: split on | to get individual data rows
             rows = [r.strip() for r in sec_clean.split("|") if r.strip()]
             for row in rows:
-                # Remove bracket-enclosed category headers like [ĐẠI HỌC | A. ...]
-                row = re.sub(r"\[[^\]]*\]", "", row).strip()
+                row = re.sub(r"\[[^\]]*\|[^\]]*\]", "", row).strip()
                 if not row:
                     continue
-                # Only skip pure uppercase letterhead banners, never drop substantive legal clauses (>160 chars)
+                # Only skip pure uppercase letterhead banners, never drop substantive legal clauses
                 if row.isupper() and len(row) > 40 and not re.search(r"\d", row):
                     continue
                 fact_lines.append(row)
@@ -334,9 +415,14 @@ def _answer_text_from_pred(pred: dict, question: str) -> str:
         text = "Không tìm thấy thông tin phù hợp với câu hỏi của bạn."
         return text
 
-    # For RAG responses: apply structured formatting to raw chunk output
-    if pred.get("mode") != "continual_lora" and pred.get("engine_mode") is None:
-        # This is a RAG prediction — apply the formatter
+    # For extractive RAG fallback: apply structured formatting to raw chunk output.
+    # Natural-language generations from Ollama / Remote GPU are kept as-is.
+    is_raw_rag_fallback = (
+        pred.get("mode") != "continual_lora"
+        and pred.get("inference_source") not in ("ollama_local", "remote_gpu")
+        and pred.get("engine_mode") not in ("LIVE_PEFT_GENERATION", "LORA_UNAVAILABLE", "OLLAMA_LOCAL", "REMOTE_GPU")
+    )
+    if is_raw_rag_fallback:
         formatted = _format_rag_answer(text)
         if formatted:
             text = formatted
@@ -476,6 +562,7 @@ def chat(req: ChatRequest):
                 "superseded_warning": None,
                 "source_type": "meta_greeting",
                 "source_label": "⚡ Phản hồi trực tiếp từ Hệ thống Định tuyến ChronoReg",
+                "inference_source": "deterministic_router",
                 "latency_ms": 1.2,
                 "engine_note": "Meta greeting intent",
             },
@@ -506,13 +593,28 @@ def chat(req: ChatRequest):
                 "superseded_warning": None,
                 "source_type": "safety_gate",
                 "source_label": "🛑 Cổng An toàn Pháp lý (Publication Hold / Cứu xét ngoại lệ)",
+                "inference_source": "deterministic_router",
                 "latency_ms": 0.0,
                 "engine_note": "Blocked by safety gate RED",
             },
         })
 
     elif selected_engine == "continual_lora":
-        pred = _run_web_lora(question)
+        # In auto mode, fall back seamlessly to Chrono-RAG if no live LoRA runtime (PEFT/Ollama/Remote) is active.
+        is_auto = not req.force_engine or req.force_engine == "auto"
+        peft_ready = web_lora.status().get("ready", False)
+        ollama_health = llm_backend.check_ollama_health() if llm_backend is not None else {}
+        lora_live_available = (
+            peft_ready
+            or bool(ollama_health.get("ollama_reachable") and ollama_health.get("lora_model_ready"))
+            or bool(llm_backend is not None and llm_backend.remote_url)
+        )
+        if is_auto and not lora_live_available:
+            actual_engine = "chrono_rag"
+            engine_note = "Chưa có mô hình LoRA live (Ollama/Remote/PEFT) — tự động chuyển sang Chrono-RAG 3B."
+            pred = _run_rag_engine(question, "chrono_rag")
+        else:
+            pred = _run_web_lora(question)
 
     elif selected_engine in ("chrono_rag", "naive_rag"):
         pred = _run_rag_engine(question, selected_engine)
