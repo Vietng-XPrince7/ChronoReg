@@ -3372,6 +3372,13 @@ class RAGEvalAdapter:
                         "cited_doc_ids": cited_doc_ids,
                         "unreviewed_sources": unreviewed_sources,
                         "llm_used": False,
+                        "sources": [
+                            {
+                                "doc_id": did,
+                                "academic_year": self.retriever.doc_meta.get(did, {}).get("academic_year", ""),
+                            }
+                            for did in cited_doc_ids
+                        ],
                         "latency_ms": round(latency_ms, 2),
                         "mode": mode,
                     })

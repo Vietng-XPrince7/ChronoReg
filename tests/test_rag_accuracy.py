@@ -679,8 +679,8 @@ class TestOutOfDistributionGeneralization:
         [
             "Ngành Y khoa có những môn học nào?",
             "Học phí ngành Y khoa là bao nhiêu?",
-            "Điểm chuẩn UET năm 2024 là bao nhiêu?",
-            "Sinh viên bị cảnh báo học vụ khi nào?",
+            "Điểm chuẩn ngành Y đa khoa Đại học Y Hà Nội năm 2024 là bao nhiêu?",
+            "Ký túc xá Mễ Trì thu tiền điện nước bao nhiêu một số?",
             "Thời tiết Hà Nội hôm nay thế nào?",
             "Giá vàng SJC hôm nay bao nhiêu?",
         ],
@@ -689,6 +689,14 @@ class TestOutOfDistributionGeneralization:
         out = answer(ood_query, mode="chrono_rag")
         assert out["cited_doc_ids"] == []
         assert "Không tìm thấy thông tin phù hợp" in out["predicted_answer"]
+
+    def test_restored_admissions_and_training_rules_markdown_queries(self) -> None:
+        out_adm = answer("Điểm chuẩn UET năm 2024 là bao nhiêu?", mode="chrono_rag")
+        assert out_adm["as_of_year"] == 2024
+        assert any("2024" in d for d in out_adm["cited_doc_ids"])
+
+        out_rule = answer("Sinh viên bị cảnh báo học vụ khi nào?", mode="chrono_rag")
+        assert any("quy_che_dao_tao" in d.lower() for d in out_rule["cited_doc_ids"])
 
     @pytest.mark.parametrize(
         ("cur_query", "expected_facts", "should_abstain"),
@@ -789,8 +797,8 @@ class TestOutOfDistributionGeneralization:
     ) -> None:
         meta_map = rag_adapter.retriever.doc_meta
         file_backed = [m for m in meta_map.values() if "source_path" in m]
-        # 31 policy/calendar/research docs + 31 official curricula + 48 non-excluded tuan wrappers = 110
-        assert len(file_backed) == 110
+        # 79 policy/calendar/research/admissions/training_rules docs + 31 official curricula + 48 non-excluded tuan wrappers = 158
+        assert len(file_backed) == 158
         for m in file_backed:
             sp = m["source_path"]
             assert sp.startswith("data/raw/uet/markdown/"), f"Unexpected source_path outside markdown/: {sp}"

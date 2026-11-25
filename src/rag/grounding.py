@@ -71,14 +71,23 @@ def _verify_answer_grounding(
         if t not in _GROUNDING_GENERIC_WORDS and not (t.isdigit() and len(t) == 4)
     ]
     if not anchor_tokens:
+        has_domain_cue = any(
+            k in q_clean
+            for k in (
+                "học phí", "học bổng", "kkht", "học kỳ", "quy chế", "quy định",
+                "quyết định", "tín chỉ", "khóa", "ngành", "nckh", "tuyển sinh", "điểm chuẩn",
+            )
+        ) or bool(re.search(r"\b(?:tiết|điều|tuần)\s+\d+\b", q_clean))
+        if not has_domain_cue:
+            return False
         return bm25_score >= (0.5 if is_small_index else 15.0)
 
-    oov_tokens = [t for t in anchor_tokens if t not in idf_map and len(t) >= 3]
+    oov_tokens = [t for t in anchor_tokens if t not in idf_map and len(t) >= 2]
     matched_anchors = [t for t in anchor_tokens if t in s_uni_set]
 
     if not matched_anchors:
         return bm25_score >= strong_bm25
-    if oov_tokens and bm25_score < strong_bm25 and len(matched_anchors) < max(2, len(anchor_tokens) * 0.55):
+    if not is_small_index and oov_tokens and (len(matched_anchors) / len(anchor_tokens)) < 0.70:
         return False
     if len(anchor_tokens) >= 2 and bm25_score < strong_bm25 and (len(matched_anchors) / len(anchor_tokens)) < 0.30:
         return False
