@@ -435,12 +435,26 @@ class ChronoRegLLMBackend:
         mode: str,
         rag_bundle: Optional[dict[str, Any]],
         as_of_year: Optional[int],
+        advisor_fallback_text: Optional[str] = None,
     ) -> dict[str, Any]:
         """Tier 3: Lookup runs/eval/*.jsonl cache or deterministic Retriever / LoRA bank."""
         nq = _normalize_q(question)
 
         if mode == "continual_lora":
             lora_eng = self._get_lora_engine()
+            if advisor_fallback_text:
+                extra_lora = ""
+                if lora_eng is not None:
+                    res = lora_eng.predict(question, as_of_year=as_of_year or 2026)
+                    if res.get("engine_mode") != "UNMATCHED_OFFLINE" and res.get("answer"):
+                        extra_lora = f"\n\nGợi ý quy trình từ LoRA 3B:\n{res['answer']}"
+                return {
+                    "answer": f"{advisor_fallback_text}{extra_lora}".strip(),
+                    "source_label": "Deterministic Roster Pre-Check + Trí nhớ LoRA 3B (Cached Fallback)",
+                    "checkpoint_year": 2026,
+                    "cited_doc_ids": [],
+                    "as_of_year": as_of_year or 2026,
+                }
             if lora_eng is not None:
                 res = lora_eng.predict(question, as_of_year=as_of_year or 2026)
                 return {
@@ -463,8 +477,20 @@ class ChronoRegLLMBackend:
                 "as_of_year": as_of_year or 2026,
             }
 
-        # RAG modes: check runs/eval/<mode>.jsonl first
+        # RAG modes: if advisor composite answer was prepared from deterministic Pre-Check + RAG, return it directly
         rag_mode = "naive_rag" if mode == "naive_rag" else "chrono_rag"
+        bundle = rag_bundle or self._retrieve_rag_bundle(question, rag_mode, as_of_year=as_of_year)
+        if advisor_fallback_text:
+            return {
+                "answer": advisor_fallback_text,
+                "cited_doc_ids": bundle.get("cited_doc_ids", []),
+                "as_of_year": bundle.get("as_of_year"),
+                "inferred_category": bundle.get("inferred_category"),
+                "sources": bundle.get("sources", []),
+                "source_label": "Deterministic Roster Pre-Check + Chrono-RAG Context",
+            }
+
+        # Check runs/eval/<mode>.jsonl cache first
         cached_rec = self._eval_cache.get(rag_mode, {}).get(nq)
         if cached_rec and cached_rec.get("predicted_answer"):
             return {
@@ -478,7 +504,6 @@ class ChronoRegLLMBackend:
             }
 
         # Otherwise use deterministic extraction from Retriever
-        bundle = rag_bundle or self._retrieve_rag_bundle(question, rag_mode, as_of_year=as_of_year)
         extractive = bundle.get("extractive_answer") or "Không tìm thấy thông tin phù hợp trong các văn bản quy chế hiện có."
         return {
             "answer": extractive,
@@ -499,22 +524,65 @@ class ChronoRegLLMBackend:
         mode: str = "chrono_rag",
         top_k: int = 3,
         as_of_year: Optional[int] = None,
+        roster_context: Optional[str] = None,
+        news_context: Optional[str] = None,
+        advisor_fallback_fn: Optional[Any] = None,
+        single_student_mode: bool = False,
+        advisor_name: Optional[str] = None,
     ) -> dict[str, Any]:
         """Execute inference across the 3-tier priority chain."""
         t0 = time.monotonic()
         norm_mode = mode if mode in ("continual_lora", "chrono_rag", "naive_rag") else "chrono_rag"
         target_model = self.lora_model if norm_mode == "continual_lora" else self.base_model
 
+        advisor_blocks: list[str] = []
+        if roster_context:
+            header_label = (
+                "[HỒ SƠ 1 SINH VIÊN ĐÃ KIỂM TRA XÁC ĐỊNH — CHỈ TRẢ LỜI VỀ ĐÚNG SINH VIÊN NÀY]"
+                if single_student_mode
+                else "[THỐNG KÊ BẢNG ĐIỂM LỚP ĐÃ TÍNH TOÁN XÁC ĐỊNH — KHÔNG TỰ TÍNH LẠI]"
+            )
+            advisor_blocks.append(f"{header_label}\n{roster_context}")
+        if news_context:
+            advisor_blocks.append(f"[THÔNG BÁO / TIN TỨC TRANG 1 UET MỚI NHẤT]\n{news_context}")
+        advisor_block_str = "\n\n".join(advisor_blocks).strip()
+        is_advisor_composite = bool(advisor_block_str)
+
         rag_bundle: Optional[dict[str, Any]] = None
+        advisor_fallback_text: Optional[str] = None
+        adv_display = advisor_name or "Cố vấn học tập"
+
         if norm_mode == "continual_lora":
-            # LoRA uses parametric memory directly: no document context passed,
+            # LoRA uses parametric memory directly: no RAG document context passed,
             # formatted with the exact training year prefix.
             academic_year = _resolve_academic_year_label(question, as_of_year=as_of_year)
-            prompt = f"Năm học được hỏi: {academic_year}.\n{question}"
+            if advisor_block_str:
+                prompt = (
+                    f"Năm học được hỏi: {academic_year}.\n"
+                    f"Hãy dùng nguyên vẹn dữ liệu đã tính sẵn dưới đây (không thay đổi số liệu hoặc nhắc tên sinh viên khác) "
+                    f"để tư vấn cho {adv_display}:\n\n{advisor_block_str}\n\n"
+                    f"Câu hỏi: {question}"
+                )
+                if callable(advisor_fallback_fn):
+                    advisor_fallback_text = advisor_fallback_fn("")
+                else:
+                    advisor_fallback_text = advisor_block_str
+            else:
+                prompt = f"Năm học được hỏi: {academic_year}.\n{question}"
         else:
-            rag_bundle = self._retrieve_rag_bundle(question, norm_mode, top_k=top_k, as_of_year=as_of_year)
+            rag_bundle = (
+                {"context_text": "", "cited_doc_ids": [], "as_of_year": None, "inferred_category": None, "sources": [], "extractive_answer": ""}
+                if single_student_mode
+                else self._retrieve_rag_bundle(question, norm_mode, top_k=top_k, as_of_year=as_of_year)
+            )
             context_text = rag_bundle.get("context_text", "")
-            if not context_text:
+            if is_advisor_composite and callable(advisor_fallback_fn):
+                advisor_fallback_text = advisor_fallback_fn(rag_bundle.get("extractive_answer", ""))
+            elif is_advisor_composite:
+                advisor_fallback_text = advisor_block_str
+
+            combined_context = "\n\n".join(p for p in (advisor_block_str, context_text) if p).strip()
+            if not combined_context:
                 # If no document context at all (out-of-domain / abstention), skip LLM to avoid hallucination
                 latency_ms = (time.monotonic() - t0) * 1000.0
                 extractive = rag_bundle.get("extractive_answer") or "Không tìm thấy thông tin phù hợp trong các văn bản quy chế hiện có."
@@ -533,8 +601,9 @@ class ChronoRegLLMBackend:
                     "sources": rag_bundle.get("sources", []),
                     "source_label": "Extractive Retriever (Không có tài liệu phù hợp để sinh LLM)",
                     "quality_qualified": False,
+                    "is_advisor_composite": False,
                 }
-            prompt = RAG_USER_PROMPT_TEMPLATE.format(context=context_text, question=question)
+            prompt = RAG_USER_PROMPT_TEMPLATE.format(context=combined_context, question=question)
 
         # Tier 1: Local Ollama
         health = self.check_ollama_health()
@@ -564,6 +633,7 @@ class ChronoRegLLMBackend:
                         else f"Ollama Local ({target_model}) + Chrono-RAG Context"
                     ),
                     "quality_qualified": False,
+                    "is_advisor_composite": is_advisor_composite,
                 }
             except Exception as exc:
                 log.warning("Tier 1 Ollama inference failed for %s: %s", target_model, exc)
@@ -590,12 +660,19 @@ class ChronoRegLLMBackend:
                     "sources": [] if norm_mode == "continual_lora" else rag_bundle.get("sources", []),  # type: ignore[union-attr]
                     "source_label": f"Remote GPU Tunnel ({target_model})",
                     "quality_qualified": False,
+                    "is_advisor_composite": is_advisor_composite,
                 }
             except Exception as exc:
                 log.warning("Tier 2 Remote GPU inference failed: %s", exc)
 
         # Tier 3: Deterministic / Cached Fallback
-        fb = self._cached_fallback(question, norm_mode, rag_bundle, as_of_year)
+        fb = self._cached_fallback(
+            question,
+            norm_mode,
+            rag_bundle,
+            as_of_year,
+            advisor_fallback_text=advisor_fallback_text,
+        )
         latency_ms = (time.monotonic() - t0) * 1000.0
         return {
             "question": question,
@@ -615,4 +692,5 @@ class ChronoRegLLMBackend:
             "sources": fb.get("sources", []),
             "source_label": fb.get("source_label", "Cached / Extractive Fallback"),
             "quality_qualified": False,
+            "is_advisor_composite": is_advisor_composite,
         }

@@ -82,10 +82,11 @@ _TEMPORAL_WORDS = [
     "học kỳ hè", "học kỳ phụ",
 ]
 _QUANTITATIVE_WORDS = [
-    "bao nhiêu tiền", "mức thu", "học phí", "mức học bổng",
+    "bao nhiêu tiền", "mức thu", "học phí", "mức học bổng", "học bổng kkht",
     "mấy tín chỉ", "số tín chỉ", "tổng tín chỉ", "điểm chuẩn", "tỷ lệ",
     "số quyết định", "định mức", "bao nhiêu %",
     "phòng nào", "mấy giờ", "tiết ", "môn học nào", "học phần nào",
+    "điểm rèn luyện", "học vượt", "24 tín chỉ", "bảng điểm",
 ]
 _COMPARISON_WORDS = [
     "khác gì", "thay đổi", "so với", "trước đây", "quy chế cũ",
@@ -373,3 +374,402 @@ class AdaptiveQueryRouter:
             lora_pros_cons=LORA_PROS_CONS,
             rag_pros_cons=RAG_PROS_CONS,
         )
+
+    def classify_query(
+        self,
+        question: str,
+        *,
+        roster: dict | None = None,
+        mssv: str | None = None,
+    ) -> tuple[str, dict]:
+        return classify_query(question, roster=roster, mssv=mssv)
+
+    def build_context(
+        self,
+        category: str,
+        entities: dict,
+        *,
+        roster: dict | None = None,
+        news_payload: dict | None = None,
+        regulation_rule: str = "",
+    ) -> dict:
+        return build_context(
+            category,
+            entities,
+            roster=roster,
+            news_payload=news_payload,
+            regulation_rule=regulation_rule,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Advisor Copilot 6-Category Classifier & Scoped Context Builder
+# ---------------------------------------------------------------------------
+
+ADVISOR_CATEGORIES = (
+    "STUDENT_STATUS",
+    "CLASS_STATS",
+    "COURSE_TREND",
+    "EVENT_NEWS",
+    "ELIGIBILITY_CHECK",
+    "REGULATION",
+)
+
+_RE_MSSV = re.compile(r"\b(2402\d{4}|2302\d{4})\b")
+_RE_COURSE_CODE = re.compile(r"\b([A-Z]{3}\d{4})\b", re.IGNORECASE)
+
+_COURSE_TREND_PHRASES = (
+    "kỳ tới môn nào khó",
+    "môn nào khó nhất kỳ tới",
+    "môn nào khó",
+    "dự đoán môn khó",
+    "xu hướng môn",
+    "xu hướng điểm",
+    "xu hướng trượt",
+    "dự báo xu hướng",
+    "môn nào dễ trượt kỳ tới",
+    "dễ bị rớt nhất",
+    "các kỳ trước môn nào khó",
+    "qua các khóa trước",
+    "qua các học kỳ gần đây",
+)
+
+_EVENT_NEWS_PHRASES = (
+    "sự kiện gì",
+    "sự kiện sắp tới",
+    "sắp tới có sự kiện",
+    "sự kiện và hội thảo",
+    "tin tức",
+    "thông báo mới",
+    "mới có thông báo",
+    "thông báo nào",
+    "thông báo gì",
+    "vừa đăng",
+    "cổng thông tin",
+    "vừa cào",
+    "trang chủ uet",
+    "tin mới",
+    "trang 1",
+    "hội thảo",
+)
+
+_CLASS_SCOPE_PHRASES = (
+    "lớp mình",
+    "lớp tôi",
+    "lớp k69",
+    "lớp k68",
+    "k69-cntt1",
+    "k68-cntt1",
+    "qh-2024",
+    "trong lớp",
+    "toàn lớp",
+    "cả lớp",
+    "của lớp",
+    "lớp có",
+    "bao nhiêu em",
+    "những em nào",
+    "em nào",
+    "mấy em",
+    "có mấy",
+    "sĩ số",
+    "bảng điểm lớp",
+    "soi bảng điểm",
+    "30 sinh viên",
+    "sinh viên nào",
+)
+
+_RULE_ELIGIBILITY_MARKERS = (
+    "khóa luận",
+    "kltn",
+    "tốt nghiệp",
+    "học vượt",
+    "24 tín chỉ",
+    "miễn học phần",
+    "chuyển ngành",
+    "ra trường",
+    "đủ điều kiện",
+    "cảnh báo học vụ",
+    "nguy cơ cảnh báo",
+    "đình chỉ",
+    "học bổng",
+    "kkht",
+    "bẫy đrl",
+    "đrl dưới",
+)
+
+_CLASS_PURE_STATS_MARKERS = (
+    "trượt môn nào nhiều",
+    "môn nào bị trượt nhiều",
+    "tỷ lệ trượt",
+    "gpa trung bình",
+    "điểm trung bình toàn lớp",
+    "phân bố học lực",
+    "thống kê lớp",
+    "thống kê gpa",
+    "thống kê số lượng",
+    "sĩ số lớp",
+    "tổng quan",
+    "tóm tắt tình hình",
+)
+
+
+def _extract_entities(
+    question: str,
+    *,
+    roster: dict | None = None,
+    explicit_mssv: str | None = None,
+) -> dict:
+    from src.demo.class_roster import load_class_roster
+
+    active_roster = roster if roster is not None else load_class_roster()
+    students = active_roster.get("students", [])
+    courses = active_roster.get("courses", [])
+
+    q_norm = _normalise(question or "")
+    matched_mssv: str | None = None
+    matched_name: str | None = None
+
+    # 1. Explicit MSSV from UI click or API parameter
+    if explicit_mssv and explicit_mssv.strip():
+        target = explicit_mssv.strip()
+        for st in students:
+            if st.get("student_id") == target or st.get("mssv") == target:
+                matched_mssv = target
+                matched_name = st.get("full_name") or st.get("ho_ten")
+                break
+        if matched_mssv is None:
+            matched_mssv = target
+
+    # 2. MSSV pattern inside question text
+    if matched_mssv is None:
+        m_id = _RE_MSSV.search(question or "")
+        if m_id:
+            matched_mssv = m_id.group(1)
+            for st in students:
+                if st.get("student_id") == matched_mssv or st.get("mssv") == matched_mssv:
+                    matched_name = st.get("full_name") or st.get("ho_ten")
+                    break
+
+    # 3. Student full name or unique alias match against active roster
+    if matched_mssv is None:
+        best_len = 0
+        # Precompute unique 2-word given name suffixes
+        suffix_counts: dict[str, int] = {}
+        for st in students:
+            name_low = _normalise(st.get("full_name") or st.get("ho_ten") or "")
+            parts = name_low.split()
+            if len(parts) >= 3:
+                suf = " ".join(parts[-2:])
+                suffix_counts[suf] = suffix_counts.get(suf, 0) + 1
+
+        for st in students:
+            full = st.get("full_name") or st.get("ho_ten") or ""
+            full_low = _normalise(full)
+            if full_low and re.search(rf"(?<!\w){re.escape(full_low)}(?!\w)", q_norm):
+                if len(full_low) > best_len:
+                    best_len = len(full_low)
+                    matched_mssv = st.get("student_id") or st.get("mssv")
+                    matched_name = full
+                continue
+
+            parts = full_low.split()
+            if len(parts) >= 3:
+                suf = " ".join(parts[-2:])
+                if suffix_counts.get(suf, 0) == 1 and re.search(rf"(?<!\w){re.escape(suf)}(?!\w)", q_norm):
+                    if len(suf) > best_len:
+                        best_len = len(suf)
+                        matched_mssv = st.get("student_id") or st.get("mssv")
+                        matched_name = full
+                # Also match "Sơn Tùng" prefix if unique (e.g. "Sơn Tùng MTP")
+                pref = " ".join(parts[:2])
+                if len(pref) >= 6 and pref not in ("nguyễn văn", "trần văn", "phạm thị") and re.search(rf"(?<!\w){re.escape(pref)}(?!\w)", q_norm):
+                    if len(pref) > best_len:
+                        best_len = len(pref)
+                        matched_mssv = st.get("student_id") or st.get("mssv")
+                        matched_name = full
+
+    # 4. Course code / course name extraction
+    matched_ma_mon: str | None = None
+    matched_ten_mon: str | None = None
+    m_code = _RE_COURSE_CODE.search(question or "")
+    if m_code:
+        cand_code = m_code.group(1).upper()
+        for c in courses:
+            if c.get("ma_mon", "").upper() == cand_code:
+                matched_ma_mon = c["ma_mon"]
+                matched_ten_mon = c["ten_mon"]
+                break
+        if matched_ma_mon is None:
+            matched_ma_mon = cand_code
+
+    if matched_ma_mon is None:
+        best_c_len = 0
+        for c in courses:
+            cname = _normalise(c.get("ten_mon", ""))
+            if len(cname) >= 5 and re.search(rf"(?<!\w){re.escape(cname)}(?!\w)", q_norm):
+                if len(cname) > best_c_len:
+                    best_c_len = len(cname)
+                    matched_ma_mon = c["ma_mon"]
+                    matched_ten_mon = c["ten_mon"]
+
+    # Optional rule topic hint for ELIGIBILITY_CHECK
+    rule_topic: str | None = None
+    for marker in _RULE_ELIGIBILITY_MARKERS:
+        if marker in q_norm:
+            rule_topic = marker
+            break
+
+    return {
+        "mssv": matched_mssv,
+        "ho_ten": matched_name,
+        "ma_mon": matched_ma_mon,
+        "ten_mon": matched_ten_mon,
+        "rule_topic": rule_topic,
+    }
+
+
+def classify_query(
+    question: str,
+    *,
+    roster: dict | None = None,
+    mssv: str | None = None,
+) -> tuple[str, dict]:
+    """Classify an advisor question into one of 6 categories and extract scoped entities."""
+    entities = _extract_entities(question, roster=roster, explicit_mssv=mssv)
+    q_norm = _normalise(question or "")
+
+    # 1. STUDENT_STATUS: tied to a specific student by MSSV or name
+    if entities.get("mssv"):
+        return "STUDENT_STATUS", entities
+
+    # 2. COURSE_TREND: forecasting / multi-term course difficulty trend
+    if (
+        _contains_any(q_norm, list(_COURSE_TREND_PHRASES))
+        or (("kỳ tới" in q_norm or "học kỳ tới" in q_norm) and "môn" in q_norm and "khó" in q_norm)
+        or (
+            ("xu hướng" in q_norm or "dự đoán" in q_norm or "dự báo" in q_norm)
+            and (entities.get("ma_mon") is not None or any(k in q_norm for k in ("môn", "qua môn", "trượt", "rớt", "điểm", "khó")))
+        )
+    ):
+        return "COURSE_TREND", entities
+
+    # 3. EVENT_NEWS: latest campus events / UET page-1 notices
+    has_class_scope = _contains_any(q_norm, list(_CLASS_SCOPE_PHRASES)) or (
+        bool(re.search(r"\blớp\b", q_norm)) and "lớp học phần" not in q_norm
+    )
+    if _contains_any(q_norm, list(_EVENT_NEWS_PHRASES)):
+        return "EVENT_NEWS", entities
+
+    # 4 & 5. Class-scoped queries: distinguish CLASS_STATS vs ELIGIBILITY_CHECK
+    if has_class_scope:
+        if _contains_any(q_norm, list(_CLASS_PURE_STATS_MARKERS)):
+            return "CLASS_STATS", entities
+        if _contains_any(q_norm, list(_RULE_ELIGIBILITY_MARKERS)):
+            return "ELIGIBILITY_CHECK", entities
+        return "CLASS_STATS", entities
+
+    # 6. Default: REGULATION (policy, tuition, procedures, exceptions)
+    return "REGULATION", entities
+
+
+def build_context(
+    category: str,
+    entities: dict,
+    *,
+    roster: dict | None = None,
+    news_payload: dict | None = None,
+    regulation_rule: str = "",
+) -> dict:
+    """Build strictly scoped JSON context for the classified category without leaking full roster."""
+    from src.api.advisor_service import (
+        format_news_facts_text,
+        format_single_student_text,
+        precheck_class_summary,
+        precheck_single_student,
+    )
+    from src.demo.class_roster import load_class_roster
+    from src.scraper.uet_latest import UETLatestNewsScraper
+
+    active_roster = roster if roster is not None else load_class_roster()
+
+    if category == "STUDENT_STATUS":
+        mssv = (entities or {}).get("mssv") or ""
+        student_data = precheck_single_student(mssv, roster=active_roster)
+        return {
+            "category": "STUDENT_STATUS",
+            "entities": entities,
+            "use_rag": False,
+            "use_lora": False,
+            "data": student_data,
+            "context_text": format_single_student_text(student_data),
+        }
+
+    if category == "CLASS_STATS":
+        summary = precheck_class_summary(active_roster)
+        return {
+            "category": "CLASS_STATS",
+            "entities": entities,
+            "use_rag": False,
+            "use_lora": False,
+            "data": {k: v for k, v in summary.items() if k != "summary_text"},
+            "context_text": summary["summary_text"],
+        }
+
+    if category == "COURSE_TREND":
+        # Current database covers only a single cohort (K69) without multi-year historical grade trends per course.
+        data = {
+            "sufficient_historical_data": False,
+            "historical_cohorts_available": 1,
+            "requested_course": (entities or {}).get("ma_mon"),
+            "message": (
+                "Chưa đủ dữ liệu bảng điểm lịch sử qua nhiều khóa/nhiều kỳ để dự đoán xu hướng độ khó môn học cho kỳ tới. "
+                "Hệ thống không tự suy diễn môn khó khi thiếu dữ liệu thống kê lịch sử."
+            ),
+        }
+        return {
+            "category": "COURSE_TREND",
+            "entities": entities,
+            "use_rag": False,
+            "use_lora": False,
+            "data": data,
+            "context_text": data["message"],
+        }
+
+    if category == "EVENT_NEWS":
+        news = news_payload if news_payload is not None else UETLatestNewsScraper().get_latest_or_cached(limit=10)
+        return {
+            "category": "EVENT_NEWS",
+            "entities": entities,
+            "use_rag": True,
+            "use_lora": False,
+            "data": {
+                "fetched_at": news.get("fetched_at"),
+                "source": news.get("source"),
+                "articles": news.get("articles", []),
+            },
+            "context_text": format_news_facts_text(news, roster=None),
+        }
+
+    if category == "ELIGIBILITY_CHECK":
+        summary = precheck_class_summary(active_roster)
+        return {
+            "category": "ELIGIBILITY_CHECK",
+            "entities": entities,
+            "use_rag": True,
+            "use_lora": False,
+            "data": {
+                "step1_regulation_rule": regulation_rule,
+                "step2_class_summary": {k: v for k, v in summary.items() if k != "summary_text"},
+            },
+            "context_text": summary["summary_text"],
+        }
+
+    # REGULATION (no roster attached)
+    return {
+        "category": "REGULATION",
+        "entities": entities,
+        "use_rag": True,
+        "use_lora": True,
+        "data": {},
+        "context_text": "",
+    }
