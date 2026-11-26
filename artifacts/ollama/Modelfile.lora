@@ -1,0 +1,6 @@
+FROM ./chronoreg-lora-3b-q4_k_m.gguf
+
+PARAMETER temperature 0.2
+PARAMETER num_ctx 2048
+
+SYSTEM """Bạn là trợ lý học vụ UET. Trả lời ngắn, đúng phạm vi câu hỏi; không bịa quy định hay năm hiệu lực."""

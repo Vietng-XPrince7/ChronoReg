@@ -46,16 +46,40 @@ class TestChatEndpoint:
         assert d["metadata"]["source_type"] == "meta_greeting"
 
     def test_chat_lora_metadata_has_no_rag_doc(self, client):
-        r = client.post("/api/chat", json={"question": "Quy trình bảo lưu kết quả học tập tại UET như thế nào?"})
+        r = client.post(
+            "/api/chat",
+            json={
+                "question": "Quy trình bảo lưu kết quả học tập tại UET như thế nào?",
+                "force_engine": "continual_lora",
+            },
+        )
         assert r.status_code == 200
         d = r.json()
         assert d["routing"]["actual_engine_used"] == "continual_lora"
         assert d["metadata"]["doc_id"] is None
         assert d["metadata"]["sha256_short"] is None
-        expected = ("lora_parametric" if d["metadata"]["engine_mode"] == "LIVE_PEFT_GENERATION"
-                    else "lora_unavailable")
+        em = d["metadata"]["engine_mode"]
+        expected = {
+            "LIVE_PEFT_GENERATION": "lora_parametric",
+            "OLLAMA_LOCAL": "lora_ollama_local",
+            "REMOTE_GPU": "lora_remote_gpu",
+            "CACHED_FALLBACK": "lora_cached_fallback",
+        }.get(em, "lora_unavailable")
         assert d["metadata"]["source_type"] == expected
+        assert "inference_source" in d["metadata"]
         assert d["metadata"]["quality_qualified"] is False
+
+    def test_chat_auto_falls_back_to_rag_when_lora_unavailable(self, client):
+        from src.api.studenthub_server import web_lora
+        if web_lora.status().get("ready"):
+            pytest.skip("LoRA V3 is ready on this machine")
+        r = client.post("/api/chat", json={"question": "Quy trình bảo lưu kết quả học tập tại UET như thế nào?"})
+        assert r.status_code == 200
+        d = r.json()
+        assert d["routing"]["selected_engine"] == "continual_lora"
+        assert d["routing"]["actual_engine_used"] in ("chrono_rag", "continual_lora")
+        assert d["metadata"].get("engine_note")
+        assert len(d["answer"]) > 30
 
     def test_chat_force_engine_chrono_rag(self, client):
         r = client.post("/api/chat", json={"question": "Học phí?", "force_engine": "chrono_rag"})

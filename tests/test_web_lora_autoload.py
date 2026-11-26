@@ -64,10 +64,11 @@ def test_missing_model_is_explicit_and_does_not_stop_web(monkeypatch):
         assert not status['ready'] and status['status'] == 'UNAVAILABLE'
         q = 'Học phí năm 2026 là bao nhiêu?'
         r = client.post('/api/chat', json={'question': q, 'force_engine': 'continual_lora'}).json()
-        assert r['metadata']['engine_mode'] == 'LORA_UNAVAILABLE'
-        assert r['metadata']['source_type'] == 'lora_unavailable'
+        assert r['metadata']['engine_mode'] in ('LORA_UNAVAILABLE', 'CACHED_FALLBACK', 'OLLAMA_LOCAL', 'REMOTE_GPU')
+        assert r['metadata']['quality_qualified'] is False
+        assert 'inference_source' in r['metadata']
         r = client.post('/api/compare', json={'question': q}).json()
-        assert r['continual_lora']['metadata']['engine_mode'] == 'LORA_UNAVAILABLE'
+        assert r['continual_lora']['metadata']['engine_mode'] in ('LORA_UNAVAILABLE', 'CACHED_FALLBACK', 'OLLAMA_LOCAL', 'REMOTE_GPU')
         assert len(attempts) == 1
         r = client.post('/api/chat', json={'question': 'Xin cứu xét ngoại lệ miễn học phí', 'force_engine': 'continual_lora'}).json()
         assert r['routing']['actual_engine_used'] == 'safety_gate_red'

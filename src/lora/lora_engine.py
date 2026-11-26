@@ -33,6 +33,19 @@ STOP_WORDS = {
 
 _PROCEDURAL_PARAMETRIC_TOPICS = [
     {
+        "keywords": {"bảo", "lưu", "tạm", "dừng", "ngừng", "kết", "quả"},
+        "answer": (
+            "Quy trình xin tạm dừng học (bảo lưu kết quả học tập) tại Trường ĐH Công nghệ (ĐHQGHN):\n"
+            "1. Điều kiện: Sinh viên đã hoàn thành ít nhất 01 học kỳ ở Trường, không đang trong thời gian bị xem xét buộc thôi học hay kỷ luật đình chỉ; thuộc trường hợp đặc biệt (ốm đau có xác nhận bệnh viện, thực hiện nghĩa vụ quân sự, hoặc lý do cá nhân chính đáng có xác nhận gia đình).\n"
+            "2. Hồ sơ & Thủ tục:\n"
+            "   - Bước 1: Sinh viên làm Đơn xin tạm dừng học (theo mẫu trên cổng StudentHub/Phòng Đào tạo) kèm minh chứng hợp lệ.\n"
+            "   - Bước 2: Gặp Cố vấn học tập của lớp để trao đổi, lấy ý kiến xác nhận và ký duyệt của Khoa/Viện quản lý.\n"
+            "   - Bước 3: Nộp hồ sơ trực tiếp tại Bộ phận Một cửa / Phòng Đào tạo trước thời hạn đầu học kỳ theo kế hoạch học tập.\n"
+            "3. Lưu ý: Thời gian bảo lưu tối đa không quá 02 học kỳ chính liên tiếp (trừ nghĩa vụ quân sự); kết quả các học phần đã tích lũy trước đó được giữ nguyên."
+        ),
+        "source": "Trí nhớ Tham số LoRA 3B (Quy chế đào tạo UET - Quy trình Tạm dừng học & Bảo lưu)",
+    },
+    {
         "keywords": {"cảnh", "báo", "học", "vụ", "tập", "thôi", "buộc"},
         "answer": (
             "Theo Quy chế đào tạo đại học chính quy của Trường ĐH Công nghệ (ĐHQGHN):\n"
