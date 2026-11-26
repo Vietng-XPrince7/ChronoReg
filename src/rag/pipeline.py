@@ -2,13 +2,16 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
+import os
 import re
 import sys
 from typing import Any
 
 from .config import load_config
 from .eval_adapter import RAGEvalAdapter, detect_topic
+from .generate import has_llm_credentials, load_dotenv_if_present
 
 if hasattr(sys.stdout, "reconfigure"):
     try:
@@ -43,6 +46,8 @@ def answer(
     clean_display: bool = False,
     embed_fn: Any = None,
     llm_fn: Any = None,
+    provider: str | None = None,
+    llm_model: str | None = None,
 ) -> dict[str, Any]:
     if not isinstance(question, str) or not question.strip():
         raise ValueError("Question must be a non-empty string.")
@@ -53,7 +58,15 @@ def answer(
 
     adapter = _get_adapter()
     item = {"id": "RUNTIME_QUERY", "question": question.strip()}
-    use_cfg = cfg if cfg is not None else load_config()
+    base_cfg = cfg if cfg is not None else load_config()
+    use_cfg = copy.deepcopy(base_cfg) if base_cfg else {}
+    if provider or llm_model:
+        llm_sec = dict(use_cfg.get("llm") or {})
+        if provider:
+            llm_sec["provider"] = provider
+        if llm_model:
+            llm_sec["model"] = llm_model
+        use_cfg["llm"] = llm_sec
     top_k = int((use_cfg or {}).get("top_k", 4) or 4)
     preds = adapter.run_benchmark(
         [item],
@@ -115,6 +128,7 @@ def answer(
             "academic_year": ay_label,
             "llm_used": bool(res.get("llm_used", False)),
             "reason": f"category={inferred_cat}, topic={inferred_topic or 'all'}, start_year={pred_year}",
+            **({"llm_error": res["llm_error"]} if res.get("llm_error") else {}),
         },
     }
 
@@ -123,12 +137,67 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="ChronoReg RAG Question Answering CLI")
     ap.add_argument("question", help="Câu hỏi quy chế cần tra cứu")
     ap.add_argument("--year", type=int, default=None, help="Năm bắt đầu của năm học (vd: 2024 cho 2024-2025)")
-    ap.add_argument("--mode", choices=["chrono_rag", "chrono_rag_llm", "naive_rag"], default="chrono_rag")
+    ap.add_argument(
+        "--mode",
+        choices=["auto", "chrono_rag", "chrono_rag_llm", "naive_rag"],
+        default="auto",
+        help="Chế độ chạy ('auto' tự bật LLM khi có GEMINI_API_KEY trong .env / môi trường)",
+    )
+    ap.add_argument("--llm", action="store_true", help="Bắt buộc bật chế độ sinh câu trả lời bằng LLM (chrono_rag_llm)")
+    ap.add_argument("--no-llm", action="store_true", help="Tắt LLM, chỉ dùng trích xuất nguyên văn (chrono_rag)")
+    ap.add_argument("--provider", choices=["gemini", "local", "anthropic", "none"], default=None, help="Ghi đè llm.provider")
+    ap.add_argument("--model", default=None, help="Ghi đè tên model LLM (vd: gemini-2.5-flash, gemini-2.5-pro)")
     ap.add_argument("--backend", choices=["bm25", "hybrid"], default="bm25")
     ap.add_argument("--json", action="store_true", help="Xuất kết quả dạng JSON")
     args = ap.parse_args(argv)
 
-    out = answer(args.question, args.year, mode=args.mode, backend=args.backend, clean_display=True)
+    load_dotenv_if_present()
+    cfg = copy.deepcopy(load_config() or {})
+    if args.provider or args.model:
+        llm_sec = dict(cfg.get("llm") or {})
+        if args.provider:
+            llm_sec["provider"] = args.provider
+        if args.model:
+            llm_sec["model"] = args.model
+        cfg["llm"] = llm_sec
+
+    llm_ready = has_llm_credentials(cfg)
+    auto_llm_enabled = os.environ.get("RAG_AUTO_LLM", "1").strip() != "0"
+
+    llm_requested_explicitly = bool(args.llm or args.mode == "chrono_rag_llm" or args.model or args.provider)
+    raw_env_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    has_placeholder_env = bool(raw_env_key and not llm_ready)
+
+    if args.no_llm:
+        run_mode = "chrono_rag"
+    elif args.llm or (llm_requested_explicitly and llm_ready):
+        run_mode = "chrono_rag_llm"
+    elif args.mode == "auto":
+        run_mode = "chrono_rag_llm" if (llm_ready and auto_llm_enabled) else "chrono_rag"
+    else:
+        run_mode = args.mode
+
+    out = answer(
+        args.question,
+        args.year,
+        mode=run_mode,
+        cfg=cfg,
+        backend=args.backend,
+        clean_display=True,
+    )
+    if (llm_requested_explicitly or has_placeholder_env) and not llm_ready and not out["llm_used"]:
+        prov_name = (cfg.get("llm") or {}).get("provider", "gemini")
+        if has_placeholder_env:
+            out["debug"]["llm_warning"] = (
+                f"GEMINI_API_KEY trong file .env đang là chuỗi mẫu ({raw_env_key!r}), chưa phải khóa thật (AIza...) "
+                "-> hãy thay bằng API key thật từ https://aistudio.google.com/apikey."
+            )
+        else:
+            out["debug"]["llm_warning"] = (
+                f"Chưa tìm thấy khóa API hợp lệ cho provider '{prov_name}' (hãy đặt GEMINI_API_KEY=AIza... trong file .env) "
+                "-> đã tự động fallback về câu trả lời trích xuất."
+            )
+
     if args.json:
         print(json.dumps(out, ensure_ascii=False, indent=2))
         return 0

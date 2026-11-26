@@ -233,9 +233,27 @@ def _build_metadata(
         "superseded_warning": superseded_warning,
         "source_type": "rag_retrieval",
         "source_label": source_label,
+        "llm_used": bool((pred or {}).get("llm_used", False)),
         "latency_ms": round(latency_ms, 2),
         "engine_note": engine_note,
     }
+
+
+def _resolve_rag_mode_for_web(requested_mode: str) -> str:
+    """Upgrade chrono_rag -> chrono_rag_llm automatically when Gemini/LLM credentials are configured."""
+    if requested_mode != "chrono_rag":
+        return requested_mode
+    try:
+        import os
+        from src.rag.config import load_config
+        from src.rag.generate import has_llm_credentials
+        if os.environ.get("RAG_AUTO_LLM", "1").strip() == "0":
+            return "chrono_rag"
+        if has_llm_credentials(load_config()):
+            return "chrono_rag_llm"
+    except Exception:
+        pass
+    return "chrono_rag"
 
 
 def _run_rag_engine(question: str, mode: str) -> dict:
@@ -243,8 +261,9 @@ def _run_rag_engine(question: str, mode: str) -> dict:
     if _adapter is not None:
         try:
             t0 = time.monotonic()
+            effective_mode = _resolve_rag_mode_for_web(mode)
             preds = _adapter.run_benchmark(
-                [{"id": "q", "question": question}], mode=mode, top_k=3
+                [{"id": "q", "question": question}], mode=effective_mode, top_k=3
             )
             latency = (time.monotonic() - t0) * 1000
             pred = preds[0] if preds else {}
@@ -334,9 +353,13 @@ def _answer_text_from_pred(pred: dict, question: str) -> str:
         text = "Không tìm thấy thông tin phù hợp với câu hỏi của bạn."
         return text
 
-    # For RAG responses: apply structured formatting to raw chunk output
-    if pred.get("mode") != "continual_lora" and pred.get("engine_mode") is None:
-        # This is a RAG prediction — apply the formatter
+    # For extractive RAG responses: apply structured formatting to raw chunk output.
+    # Skip pipe/semicolon splitting when an LLM (e.g. Gemini) already generated natural prose.
+    if (
+        pred.get("mode") != "continual_lora"
+        and pred.get("engine_mode") is None
+        and not pred.get("llm_used")
+    ):
         formatted = _format_rag_answer(text)
         if formatted:
             text = formatted
@@ -514,7 +537,9 @@ def chat(req: ChatRequest):
     elif selected_engine == "continual_lora":
         pred = _run_web_lora(question)
 
-    elif selected_engine in ("chrono_rag", "naive_rag"):
+    elif selected_engine in ("chrono_rag", "chrono_rag_llm", "naive_rag"):
+        if selected_engine == "chrono_rag_llm":
+            actual_engine = "chrono_rag"
         pred = _run_rag_engine(question, selected_engine)
 
     else:

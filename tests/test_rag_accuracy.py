@@ -695,6 +695,12 @@ class TestOutOfDistributionGeneralization:
         assert out_adm["as_of_year"] == 2024
         assert "thong_bao_diem_trung_tuyen_2024" in out_adm["cited_doc_ids"]
 
+        # General cutoff query without a specific major returns complete 20-major summary
+        out_all_26 = answer("Điểm chuẩn đại học năm 2026?", mode="chrono_rag")
+        assert out_all_26["as_of_year"] == 2026
+        assert "thong_bao_diem_trung_tuyen_2026" in out_all_26["cited_doc_ids"]
+        assert key_fact_score(out_all_26["predicted_answer"], ["20 ngành", "CN1", "CN12", "CN14", "CN20", "CN21"]) == 1.0
+
         for q_cut, exp_doc, exp_yr, exp_facts in [
             (
                 "Điểm chuẩn thi ngành Hệ thống thông tin năm 2025?",
@@ -898,6 +904,76 @@ class TestOutOfDistributionGeneralization:
             assert "(CLC)" not in res_ov["predicted_answer"]
             assert "(CNTT, AI)" not in res_ov["predicted_answer"]
             assert "đạt được các năng lực sau:" not in res_ov["predicted_answer"]
+
+        # 5. Major-specific tuition queries resolve exact ĐMKTKT / CTĐT chuẩn tier without leaking HKVT/XDGT
+        res_httt = answer("Học phí ngành Hệ thống thông tin?", mode="chrono_rag")
+        assert res_httt["as_of_year"] == 2026
+        assert key_fact_score(res_httt["predicted_answer"], ["Hệ thống thông tin", "CN14", "44.000.000", "4.400.000", "1.188.000"]) == 1.0
+        assert "Hàng không vũ trụ" not in res_httt["predicted_answer"]
+        assert "Xây dựng Giao thông" not in res_httt["predicted_answer"]
+        assert "thong_tin_tuyen_sinh_2026" in res_httt["cited_doc_ids"]
+
+        res_ai_fee = answer("Học phí ngành Trí tuệ nhân tạo?", mode="chrono_rag")
+        assert res_ai_fee["as_of_year"] == 2026
+        assert key_fact_score(res_ai_fee["predicted_answer"], ["Trí tuệ nhân tạo", "CN12", "38.000.000", "3.600.000", "974.000"]) == 1.0
+
+        res_httt_25 = answer("Học phí ngành Hệ thống thông tin năm 2025?", mode="chrono_rag")
+        assert res_httt_25["as_of_year"] == 2025
+        assert key_fact_score(res_httt_25["predicted_answer"], ["Hệ thống thông tin", "40.000.000", "4.000.000", "1.079.000"]) == 1.0
+
+        res_httt_qh22 = answer("Học phí ngành Hệ thống thông tin khóa QH-2022?", mode="chrono_rag")
+        assert res_httt_qh22["as_of_year"] == 2026
+        assert key_fact_score(res_httt_qh22["predicted_answer"], ["3.200.000", "860.000"]) == 1.0
+        assert "Hàng không vũ trụ" not in res_httt_qh22["predicted_answer"]
+
+        # 6. End-to-end Gemini API integration in chrono_rag_llm (grounded prose accepted, hallucinated figure rejected)
+        import io
+        import urllib.request
+
+        class _MockGeminiHTTP:
+            def __init__(self, reply_text: str) -> None:
+                self._payload = json.dumps({
+                    "candidates": [{"content": {"parts": [{"text": reply_text}]}}]
+                }).encode("utf-8")
+
+            def __enter__(self) -> "_MockGeminiHTTP":
+                return self
+
+            def __exit__(self, *args: Any) -> bool:
+                return False
+
+            def read(self) -> bytes:
+                return self._payload
+
+        orig_urlopen = urllib.request.urlopen
+        try:
+            urllib.request.urlopen = lambda req, timeout=30.0: _MockGeminiHTTP(  # type: ignore[assignment]
+                "Theo Quyết định 2377/QĐ-ĐHCN và Thông tin tuyển sinh 2026, ngành Hệ thống thông tin (mã CN14) "
+                "thuộc nhóm ĐMKTKT với mức học phí năm học 2026-2027 là 44.000.000 đồng/năm học "
+                "(tương đương 4.400.000 đồng/tháng hoặc 1.188.000 đồng/tín chỉ)."
+            )
+            res_gem_ok = answer(
+                "Học phí ngành Hệ thống thông tin?",
+                mode="chrono_rag_llm",
+                cfg={"top_k": 4, "llm": {"provider": "gemini", "model": "gemini-2.5-flash", "api_key": "fake-key"}},
+            )
+            assert res_gem_ok["llm_used"] is True
+            assert "44.000.000 đồng/năm học" in res_gem_ok["answer"]
+
+            # Hallucinated currency figure (99.000.000) is rejected by verify_llm_grounding -> safe extractive fallback
+            urllib.request.urlopen = lambda req, timeout=30.0: _MockGeminiHTTP(  # type: ignore[assignment]
+                "Ngành Hệ thống thông tin có mức học phí là 99.000.000 đồng/năm học."
+            )
+            res_gem_bad = answer(
+                "Học phí ngành Hệ thống thông tin?",
+                mode="chrono_rag_llm",
+                cfg={"top_k": 4, "llm": {"provider": "gemini", "model": "gemini-2.5-flash", "api_key": "fake-key"}},
+            )
+            assert res_gem_bad["llm_used"] is False
+            assert "44.000.000" in res_gem_bad["answer"]
+            assert "99.000.000" not in res_gem_bad["answer"]
+        finally:
+            urllib.request.urlopen = orig_urlopen
 
 
 # ==============================================================================
