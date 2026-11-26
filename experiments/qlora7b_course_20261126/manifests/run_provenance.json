@@ -1,0 +1,64 @@
+{
+  "bundle_manifest_sha256": "39d5e16f266ea05a1cdc0de96d96880af6e0ea1920b1e2202d415066209c6191",
+  "canonical_release": false,
+  "counts": {
+    "train": 1774,
+    "validation": 197
+  },
+  "gpu": {
+    "cuda": "13.0",
+    "device_count": 1,
+    "gpu": "Tesla T4",
+    "max_tokens": 276,
+    "packages": {
+      "accelerate": "1.6.0",
+      "bitsandbytes": "0.49.0",
+      "peft": "0.15.2",
+      "safetensors": "0.8.0",
+      "transformers": "4.51.3"
+    },
+    "torch": "2.11.0+cu130",
+    "vram_gib": 14.56
+  },
+  "mode": "COURSE_SNAPSHOT_ONLY_NOT_CANONICAL_RELEASE",
+  "normalized_evidence_only": 51,
+  "source_commit": "f4c228bd06662d012b397a370cdd3b2293c54744",
+  "stage_basis": {
+    "2024_decision_cited_in_snapshot": 1,
+    "2026_01_public_pdf_path_proxy": 2,
+    "QD3626_2022_issuance": 10,
+    "annual_document_label_proxy_not_publication_proof": 378,
+    "cohort_year_proxy_not_publication_proof": 1302,
+    "legacy_rule_snapshot_baseline": 11,
+    "recorded_issue_or_publication_year_not_availability_proof": 267
+  },
+  "status": "SNAPSHOT_CPU_PREFLIGHT_PASS",
+  "training_config": {
+    "batch_size": 1,
+    "dtype": "float32",
+    "epochs": 2,
+    "gradient_accumulation_steps": 8,
+    "learning_rate": 0.0001,
+    "lora_alpha": 16,
+    "lora_dropout": 0.05,
+    "lora_r": 8,
+    "max_new_tokens": 160,
+    "max_seq_length": 512,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "official_training_authorized": false,
+    "optimizer": "adamw_torch",
+    "quantization": "nf4_double_quant",
+    "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "seed": 42,
+    "single_gpu": true,
+    "strategy": "sequential_no_replay",
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj"
+    ],
+    "year_convention": "academic_year_start_snapshot_proxy"
+  },
+  "unique_sources": 80
+}
