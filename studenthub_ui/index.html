@@ -6,47 +6,69 @@
   <title>ChronoReg | Trợ lý Cố vấn Học tập UET</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
-      --navy-950: #081020;
-      --navy-900: #0B1528;
-      --navy-800: #13223D;
-      --slate-50: #F8FAFC;
-      --slate-100: #F1F5F9;
-      --slate-200: #E2E8F0;
-      --slate-300: #CBD5E1;
-      --slate-400: #94A3B8;
-      --slate-500: #64748B;
-      --slate-600: #475569;
-      --slate-700: #334155;
-      --slate-900: #0F172A;
-      --uet-blue: #1D4ED8;
-      --uet-blue-hover: #1E40AF;
-      --uet-blue-soft: #EFF6FF;
-      --indigo-600: #4F46E5;
-      --indigo-soft: #EEF2FF;
-      --emerald-600: #059669;
-      --emerald-soft: #ECFDF5;
-      --amber-600: #D97706;
-      --amber-soft: #FFFBEB;
-      --rose-600: #E11D48;
-      --rose-soft: #FFF1F2;
-      --font-sans: "Plus Jakarta Sans", "Segoe UI", "Noto Sans", system-ui, -apple-system, sans-serif;
-      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
-      --radius-md: 10px;
-      --radius-lg: 14px;
-      --radius-xl: 18px;
-      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-      --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.07);
+      /* Archival Ledger Paper & Forest-Black Ink Palette */
+      --paper: #EDEEEA;
+      --paper-subtle: #E5E7E1;
+      --surface: #F7F8F5;
+      --surface-pure: #FFFFFF;
+      --ink: #15201C;
+      --ink-secondary: #3C4742;
+      --ink-muted: #535E59;
+      --border: #D2D6CE;
+      --border-strong: #B8BEB4;
+
+      /* Spine (Left Sidebar Dark Ink) */
+      --spine-bg: #15201C;
+      --spine-elevated: #1D2B26;
+      --spine-border: rgba(237, 238, 234, 0.14);
+      --spine-text: #F2F4F0;
+      --spine-muted: #B6C0BB;
+
+      /* Single Academic Brass Accent */
+      --accent: #8A6A2F;
+      --accent-ink: #6D5221;
+      --accent-brass-light: #D1B172;
+      --accent-soft: #F3EEE2;
+      --accent-border: #D4C3A1;
+
+      /* Muted Status Tones (WCAG AA compliant on surface/paper) */
+      --status-ok: #3B6B52;
+      --status-ok-bg: #EDF3EF;
+      --status-ok-border: #BACDC1;
+
+      --status-warn: #9C6B2E;
+      --status-warn-ink: #7E541F;
+      --status-warn-bg: #F6F0E6;
+      --status-warn-border: #D9C6A3;
+
+      --status-danger: #8C3A32;
+      --status-danger-bg: #F6ECEA;
+      --status-danger-border: #D6B2AD;
+
+      --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+      --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+
+      --radius-xs: 2px;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+
+      /* Chat Wallpaper Configuration (Only inside #viewChat) */
+      --chat-wallpaper-url: url('/static/assets/chat-wallpaper.jpg');
+      --chat-wallpaper-tint-color: var(--paper);
+      --chat-wallpaper-tint-opacity: 0.80;
     }
+
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; }
     body {
       font-family: var(--font-sans);
-      background: var(--slate-50);
-      color: var(--slate-900);
+      background: var(--paper);
+      color: var(--ink);
       font-size: 14px;
       line-height: 1.5;
       overflow: hidden;
@@ -54,11 +76,19 @@
     }
     button, input { font: inherit; }
     button { cursor: pointer; border: 0; background: none; color: inherit; }
-    button:disabled { opacity: 0.65; cursor: wait; }
+    button:disabled { opacity: 0.6; cursor: wait; }
     a { color: inherit; text-decoration: none; }
-    .mono { font-family: var(--font-mono); }
+    button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .mono {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .serif { font-family: var(--font-serif); }
 
-    /* Shell Layout (w-64 + flex-1 + w-80) */
+    /* Shell Layout */
     .workspace-shell {
       display: flex;
       height: 100vh;
@@ -66,344 +96,435 @@
       overflow: hidden;
     }
 
-    /* Left Sidebar (w-64 = 256px, Dark Navy) */
+    /* Left Sidebar (Book Spine #15201C) */
     .sidebar {
       width: 256px;
       min-width: 256px;
-      background: linear-gradient(180deg, var(--navy-900) 0%, #0F1D36 100%);
-      color: #F8FAFC;
+      background: var(--spine-bg);
+      color: var(--spine-text);
       display: flex;
       flex-direction: column;
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      border-right: 1px solid #0E1613;
       z-index: 20;
     }
     .brand-header {
-      padding: 18px 16px 14px;
+      padding: 16px 16px 14px;
       display: flex;
       align-items: center;
       gap: 11px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid var(--spine-border);
     }
     .brand-logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: #FFFFFF;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-pure);
       padding: 3px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--accent);
     }
     .brand-logo img { width: 100%; height: 100%; object-fit: contain; }
-    .brand-title { font-weight: 800; font-size: 15px; letter-spacing: -0.02em; line-height: 1.2; }
-    .brand-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      margin-top: 3px;
-      font-size: 10px;
+    .brand-title {
+      font-family: var(--font-serif);
       font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 99px;
-      background: rgba(59, 130, 246, 0.2);
-      color: #93C5FD;
-      border: 1px solid rgba(59, 130, 246, 0.3);
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      color: var(--spine-text);
+    }
+    .brand-badge {
+      display: inline-block;
+      margin-top: 2px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--accent-brass-light);
     }
 
-    /* Advisor Glassmorphism Card */
+    /* Advisor Identity Block (Flat hairline ledger entry inside spine) */
     .advisor-card {
-      margin: 14px 14px 10px;
-      padding: 14px;
-      border-radius: var(--radius-lg);
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.11);
-      backdrop-filter: blur(8px);
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--spine-border);
+      background: var(--spine-elevated);
     }
     .advisor-top { display: flex; align-items: center; gap: 10px; }
     .advisor-avatar {
-      width: 38px;
-      height: 38px;
-      border-radius: 99px;
-      background: linear-gradient(135deg, #2563EB, #4F46E5);
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--spine-bg);
+      border: 1px solid var(--accent);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
+      font-family: var(--font-serif);
+      font-weight: 700;
       font-size: 13px;
-      color: #FFF;
-      position: relative;
+      color: var(--accent-brass-light);
       flex-shrink: 0;
-      box-shadow: 0 0 0 2px rgba(255,255,255,0.16);
     }
-    .advisor-avatar::after {
-      content: "";
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      width: 10px;
-      height: 10px;
-      border-radius: 99px;
-      background: #22C55E;
-      border: 2px solid var(--navy-900);
+    .advisor-name {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 13.5px;
+      color: var(--spine-text);
+      line-height: 1.3;
     }
-    .advisor-name { font-weight: 700; font-size: 13px; color: #FFFFFF; }
-    .advisor-role { font-size: 11px; color: var(--slate-400); }
+    .advisor-role { font-size: 11.5px; color: var(--spine-muted); margin-top: 1px; }
     .advisor-meta {
       margin-top: 11px;
       padding-top: 10px;
-      border-top: 1px solid rgba(255, 255, 255, 0.09);
+      border-top: 1px solid var(--spine-border);
       display: grid;
       gap: 6px;
-      font-size: 11px;
+      font-size: 11.5px;
     }
-    .advisor-meta-row { display: flex; justify-content: space-between; gap: 6px; color: var(--slate-300); }
-    .advisor-meta-row strong { color: #FFF; font-weight: 600; text-align: right; }
+    .advisor-meta-row { display: flex; justify-content: space-between; gap: 6px; color: var(--spine-muted); }
+    .advisor-meta-row strong { color: var(--spine-text); font-weight: 600; text-align: right; }
 
     /* Navigation Menu */
     .nav-section-label {
-      padding: 12px 16px 6px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--slate-400);
+      padding: 14px 16px 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--spine-muted);
     }
     .nav-menu {
       padding: 0 10px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
       flex: 1;
     }
     .nav-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 10px 12px;
-      border-radius: var(--radius-md);
+      padding: 9px 10px;
+      border-radius: var(--radius-xs);
+      border-left: 3px solid transparent;
       font-size: 13px;
-      font-weight: 600;
-      color: #CBD5E1;
+      font-weight: 500;
+      color: var(--spine-muted);
       text-align: left;
-      transition: all 0.15s ease;
+      transition: background 0.14s ease, color 0.14s ease;
     }
-    .nav-item svg, .nav-item i { width: 16px; height: 16px; flex-shrink: 0; }
-    .nav-item:hover { background: rgba(255, 255, 255, 0.07); color: #FFFFFF; }
+    .nav-item svg, .nav-item i { width: 15px; height: 15px; flex-shrink: 0; }
+    .nav-item:hover { background: rgba(255, 255, 255, 0.05); color: var(--spine-text); }
     .nav-item.active {
-      background: linear-gradient(90deg, rgba(37, 99, 235, 0.28), rgba(79, 70, 229, 0.18));
-      color: #FFFFFF;
-      border: 1px solid rgba(96, 165, 250, 0.35);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      background: var(--spine-elevated);
+      color: var(--spine-text);
+      font-weight: 600;
+      border-left-color: var(--accent-brass-light);
     }
     .nav-badge {
       margin-left: auto;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 99px;
-      background: rgba(255,255,255,0.12);
-      color: #E2E8F0;
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 1px 6px;
+      border-radius: var(--radius-xs);
+      border: 1px solid var(--spine-border);
+      color: var(--spine-muted);
     }
 
     .sidebar-footer {
-      padding: 12px 14px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 11px 16px;
+      border-top: 1px solid var(--spine-border);
       font-size: 11px;
-      color: var(--slate-400);
+      color: var(--spine-muted);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
     }
-    .status-dot { width: 8px; height: 8px; border-radius: 99px; background: #22C55E; flex-shrink: 0; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-brass-light); flex-shrink: 0; }
 
-    /* Center Workspace (flex-1) */
+    /* Center Workspace */
     .main-area {
       flex: 1;
       min-width: 0;
       display: flex;
       flex-direction: column;
-      background: var(--slate-50);
+      background: var(--paper);
     }
     .topbar {
-      height: 62px;
-      min-height: 62px;
-      background: #FFFFFF;
-      border-bottom: 1px solid var(--slate-200);
-      padding: 0 20px;
+      min-height: 52px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 8px;
     }
-    .topbar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .topbar-title { font-weight: 700; font-size: 15px; color: var(--slate-900); white-space: nowrap; }
+    .topbar-left { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1 1 auto; overflow: hidden; }
+    .topbar-title {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .topbar-class-chip {
       font-size: 11px;
-      font-weight: 600;
-      padding: 3px 9px;
-      border-radius: 99px;
-      background: var(--uet-blue-soft);
-      color: var(--uet-blue);
-      border: 1px solid #BFDBFE;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: var(--radius-xs);
+      background: var(--accent-soft);
+      color: var(--accent-ink);
+      border: 1px solid var(--accent-border);
       white-space: nowrap;
+      flex-shrink: 0;
     }
-    .topbar-controls { display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; }
+    .topbar-controls { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; flex-shrink: 0; }
+    .topbar-controls .btn-outline { padding: 5px 9px; font-size: 11.5px; }
+    .topbar-controls .health-pill { padding: 4px 8px; font-size: 11px; }
 
-    /* Segmented Pill Control */
+    /* Segmented Control */
     .segmented-pill {
       display: inline-flex;
-      background: var(--slate-100);
-      padding: 3px;
-      border-radius: 10px;
-      border: 1px solid var(--slate-200);
+      background: var(--paper);
+      padding: 2px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
     }
     .segmented-pill button {
-      padding: 5px 11px;
-      border-radius: 7px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--slate-600);
-      transition: all 0.15s ease;
+      padding: 3px 7px;
+      border-radius: var(--radius-xs);
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      transition: background 0.12s ease, color 0.12s ease;
       white-space: nowrap;
     }
-    .segmented-pill button:hover { color: var(--slate-900); }
+    .segmented-pill button:hover { color: var(--ink); }
     .segmented-pill button.active {
-      background: #FFFFFF;
-      color: var(--slate-900);
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+      background: var(--ink);
+      color: var(--surface);
+      font-weight: 600;
     }
 
+    /* Crisp Official Buttons (No SaaS Gradients) */
     .btn-outline {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       padding: 6px 11px;
-      border-radius: 8px;
-      border: 1px solid var(--slate-200);
-      background: #FFFFFF;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--surface-pure);
       font-size: 12px;
-      font-weight: 600;
-      color: var(--slate-700);
-      transition: all 0.15s ease;
+      font-weight: 500;
+      color: var(--ink);
+      transition: border-color 0.14s ease, background 0.14s ease, color 0.14s ease;
       white-space: nowrap;
     }
-    .btn-outline:hover { background: var(--slate-100); border-color: var(--slate-300); }
+    .btn-outline:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent-ink);
+    }
     .btn-primary {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 7px 14px;
-      border-radius: 9px;
-      background: linear-gradient(135deg, #2563EB, #4F46E5);
-      color: #FFFFFF;
+      padding: 6px 13px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--surface);
       font-size: 12px;
-      font-weight: 700;
-      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      font-weight: 600;
+      transition: background 0.14s ease, border-color 0.14s ease;
       white-space: nowrap;
     }
-    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(37, 99, 235, 0.32); }
+    .btn-primary:hover {
+      background: #23332D;
+      border-color: #23332D;
+    }
 
-    /* Engine Health Status Pill */
+    /* Engine Health Indicator */
     .health-pill {
       display: inline-flex;
       align-items: center;
       gap: 7px;
       padding: 5px 10px;
-      border-radius: 99px;
-      border: 1px solid var(--slate-200);
-      background: #FFFFFF;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--slate-700);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-pure);
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--ink-secondary);
       white-space: nowrap;
     }
-    .health-dot { width: 8px; height: 8px; border-radius: 99px; background: var(--amber-600); flex-shrink: 0; }
-    .health-dot.ready { background: #16A34A; box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.18); }
-    .health-dot.fallback { background: var(--amber-600); box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15); }
+    .health-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--status-warn); flex-shrink: 0; }
+    .health-dot.ready { background: var(--status-ok); }
+    .health-dot.fallback { background: var(--status-warn); }
 
     /* Views Switcher */
     .view-pane { display: none; flex: 1; min-height: 0; flex-direction: column; }
     .view-pane.active { display: flex; }
 
+    /* Chat Stage & Wallpaper (2-layer composited backdrop + solid bubbles) */
+    .chat-stage {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: var(--paper);
+    }
+    .chat-wallpaper-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: var(--chat-wallpaper-url);
+      background-size: cover;
+      background-position: center 18%;
+      background-repeat: no-repeat;
+      filter: blur(1px) saturate(0.85);
+      transform: scale(1.02) translateZ(0);
+      transition: opacity 0.2s ease;
+    }
+    .chat-wallpaper-layer::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(138, 106, 47, 0.08);
+    }
+    .chat-wallpaper-layer::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--chat-wallpaper-tint-color);
+      opacity: var(--chat-wallpaper-tint-opacity);
+    }
+    .chat-stage.wallpaper-off .chat-wallpaper-layer {
+      opacity: 0;
+    }
+
     /* Chat Flow */
     .chat-scroll {
+      position: relative;
+      z-index: 2;
       flex: 1;
+      height: 100%;
       overflow-y: auto;
-      padding: 20px 24px 16px;
+      -webkit-overflow-scrolling: touch;
+      padding: 12px 24px 16px;
+    }
+    .chat-toolbar {
+      max-width: 820px;
+      margin: 0 auto 8px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .wallpaper-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-pure);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      transition: border-color 0.14s ease, color 0.14s ease, background 0.14s ease;
+    }
+    .wallpaper-toggle[aria-pressed="true"] {
+      border-color: var(--accent-border);
+      color: var(--accent-ink);
+    }
+    .wallpaper-toggle:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent-ink);
     }
     .chat-container {
       max-width: 820px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .welcome-card {
-      background: #FFFFFF;
-      border: 1px solid var(--slate-200);
-      border-radius: var(--radius-xl);
-      padding: 22px 24px;
-      box-shadow: var(--shadow-sm);
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
     }
     .welcome-kicker {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--uet-blue);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-ink);
     }
-    .welcome-card h1 { margin: 8px 0 6px; font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
-    .welcome-card p { margin: 0; color: var(--slate-600); font-size: 13px; line-height: 1.6; }
+    .welcome-card h1 {
+      font-family: var(--font-serif);
+      margin: 6px 0 6px;
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+    .welcome-card p { margin: 0; color: var(--ink-secondary); font-size: 13px; line-height: 1.6; }
     .welcome-grid {
       margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      gap: 0;
     }
     .welcome-mini {
-      padding: 11px 12px;
-      border-radius: var(--radius-md);
-      background: var(--slate-50);
-      border: 1px solid var(--slate-200);
+      padding: 0 14px 0 0;
       font-size: 12px;
     }
-    .welcome-mini strong { display: block; color: var(--slate-900); margin-bottom: 3px; font-size: 12px; }
-    .welcome-mini span { color: var(--slate-500); font-size: 11px; }
+    .welcome-mini + .welcome-mini {
+      padding-left: 14px;
+      border-left: 1px solid var(--border);
+    }
+    .welcome-mini strong { display: block; color: var(--ink); margin-bottom: 3px; font-size: 12.5px; font-weight: 600; }
+    .welcome-mini span { color: var(--ink-muted); font-size: 11.5px; line-height: 1.45; display: block; }
 
-    /* User Bubble */
+    /* User Query Block */
     .msg-user-wrap { display: flex; justify-content: flex-end; }
     .msg-user {
       max-width: 78%;
-      background: linear-gradient(135deg, #2563EB 0%, #4F46E5 100%);
-      color: #FFFFFF;
-      padding: 12px 16px;
-      border-radius: 16px 16px 4px 16px;
+      background: var(--ink);
+      color: var(--surface);
+      padding: 11px 15px;
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--accent);
       font-size: 13.5px;
       font-weight: 500;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.22);
       white-space: pre-wrap;
     }
 
-    /* AI 3-Tier Card */
+    /* AI 3-Tier Sheet */
     .msg-ai {
-      background: #FFFFFF;
-      border: 1px solid var(--slate-200);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-md);
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
       overflow: hidden;
     }
     .ai-tier1 {
-      padding: 10px 16px;
-      background: var(--slate-50);
-      border-bottom: 1px solid var(--slate-200);
+      padding: 9px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -414,46 +535,47 @@
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 3px 9px;
-      border-radius: 99px;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: var(--radius-xs);
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 600;
       white-space: nowrap;
     }
-    .badge.rag { background: var(--emerald-soft); color: var(--emerald-600); border: 1px solid #A7F3D0; }
-    .badge.lora { background: var(--indigo-soft); color: var(--indigo-600); border: 1px solid #C7D2FE; }
-    .badge.red { background: var(--rose-soft); color: var(--rose-600); border: 1px solid #FECDD3; }
-    .badge.yellow { background: var(--amber-soft); color: var(--amber-600); border: 1px solid #FDE68A; }
-    .badge.green { background: var(--emerald-soft); color: var(--emerald-600); border: 1px solid #A7F3D0; }
-    .badge.signal { background: #FFFFFF; color: var(--slate-600); border: 1px solid var(--slate-200); font-weight: 600; }
-    .badge.source { background: var(--uet-blue-soft); color: var(--uet-blue); border: 1px solid #BFDBFE; }
-    .ai-latency { font-size: 11px; color: var(--slate-500); font-weight: 600; }
+    .badge.rag { background: var(--status-ok-bg); color: var(--status-ok); border: 1px solid var(--status-ok-border); }
+    .badge.lora { background: var(--accent-soft); color: var(--accent-ink); border: 1px solid var(--accent-border); }
+    .badge.red { background: var(--status-danger-bg); color: var(--status-danger); border: 1px solid var(--status-danger-border); }
+    .badge.yellow { background: var(--status-warn-bg); color: var(--status-warn-ink); border: 1px solid var(--status-warn-border); }
+    .badge.green { background: var(--status-ok-bg); color: var(--status-ok); border: 1px solid var(--status-ok-border); }
+    .badge.signal { background: var(--surface-pure); color: var(--ink-secondary); border: 1px solid var(--border); font-weight: 500; }
+    .badge.source { background: var(--accent-soft); color: var(--accent-ink); border: 1px solid var(--accent-border); }
+    .ai-latency { font-size: 11px; color: var(--ink-muted); font-weight: 500; }
 
     .ai-tier2 {
       padding: 16px 18px;
       font-size: 13.5px;
       line-height: 1.68;
-      color: var(--slate-800);
+      color: var(--ink);
       white-space: pre-line;
       overflow-wrap: anywhere;
     }
     .ai-tier2 mark {
-      background: #FEF3C7;
-      color: #92400E;
-      padding: 1px 6px;
-      border-radius: 6px;
-      font-weight: 700;
-      border: 1px solid #FDE68A;
+      background: var(--accent-soft);
+      color: var(--accent-ink);
+      padding: 1px 5px;
+      border-radius: var(--radius-xs);
+      font-weight: 600;
+      border: 1px solid var(--accent-border);
     }
 
     .ai-warning {
       margin: 0 18px 12px;
       padding: 9px 12px;
-      border-radius: var(--radius-md);
-      background: var(--amber-soft);
-      border: 1px solid #FDE68A;
-      color: #92400E;
+      border-radius: var(--radius-xs);
+      background: var(--status-warn-bg);
+      border: 1px solid var(--status-warn-border);
+      border-left: 3px solid var(--status-warn);
+      color: var(--status-warn-ink);
       font-size: 12px;
       display: flex;
       align-items: center;
@@ -461,9 +583,9 @@
     }
 
     .ai-tier3 {
-      padding: 10px 16px;
-      background: #FAFBFC;
-      border-top: 1px solid var(--slate-200);
+      padding: 9px 16px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -476,230 +598,369 @@
       gap: 8px;
       flex-wrap: wrap;
       font-size: 11.5px;
-      color: var(--slate-600);
+      color: var(--ink-secondary);
       min-width: 0;
     }
     .btn-compare {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 11px;
-      border-radius: 8px;
-      border: 1px solid var(--slate-300);
-      background: #FFFFFF;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--surface-pure);
       font-size: 11.5px;
-      font-weight: 700;
-      color: var(--slate-700);
-      transition: all 0.14s ease;
+      font-weight: 600;
+      color: var(--ink);
+      transition: border-color 0.14s ease, color 0.14s ease, background 0.14s ease;
     }
-    .btn-compare:hover { background: var(--uet-blue-soft); border-color: #93C5FD; color: var(--uet-blue); }
+    .btn-compare:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-ink); }
 
     .xray-details {
       padding: 0 16px 10px;
-      background: #FAFBFC;
+      background: var(--surface);
       font-size: 12px;
-      color: var(--slate-600);
+      color: var(--ink-secondary);
     }
-    .xray-details summary { cursor: pointer; font-weight: 600; color: var(--slate-700); padding: 4px 0; }
+    .xray-details summary { cursor: pointer; font-weight: 600; color: var(--ink); padding: 4px 0; }
     .xray-details div {
       margin-top: 6px;
       padding: 9px 12px;
-      background: #FFFFFF;
-      border: 1px solid var(--slate-200);
-      border-radius: 8px;
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
       line-height: 1.55;
     }
 
-    /* Comparison Diff Card */
-    .cmp-box { padding: 0 16px 16px; background: #FAFBFC; }
+    /* Comparison Diff Grid */
+    .cmp-box { padding: 0 16px 16px; background: var(--surface); }
     .cmp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .cmp-col {
-      background: #FFFFFF;
-      border: 1px solid var(--slate-200);
-      border-radius: var(--radius-md);
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
       padding: 12px 14px;
     }
-    .cmp-col h5 { margin: 0 0 8px; font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
-    .cmp-col p { margin: 0 0 8px; font-size: 12.5px; line-height: 1.58; white-space: pre-line; color: var(--slate-700); overflow-wrap: anywhere; }
-    .cmp-col p mark { background: #FEF3C7; color: #92400E; padding: 1px 5px; border-radius: 5px; font-weight: 700; }
-    .cmp-col small { font-size: 11px; color: var(--slate-500); display: block; }
+    .cmp-col h5 { margin: 0 0 8px; font-size: 12.5px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+    .cmp-col p { margin: 0 0 8px; font-size: 12.5px; line-height: 1.58; white-space: pre-line; color: var(--ink-secondary); overflow-wrap: anywhere; }
+    .cmp-col p mark { background: var(--accent-soft); color: var(--accent-ink); padding: 1px 4px; border-radius: var(--radius-xs); font-weight: 600; }
+    .cmp-col small { font-size: 11px; color: var(--ink-muted); display: block; }
 
-    /* Floating Input Dock */
-    .input-dock-wrap { padding: 10px 24px 16px; background: linear-gradient(180deg, rgba(248,250,252,0) 0%, var(--slate-50) 35%); }
+    /* Input Dock */
+    .input-dock-wrap { padding: 10px 24px 16px; background: var(--paper); border-top: 1px solid var(--border); }
     .input-dock {
       max-width: 820px;
       margin: 0 auto;
-      background: #FFFFFF;
-      border: 1px solid var(--slate-300);
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-      padding: 8px 10px 8px 16px;
+      background: var(--surface-pure);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 7px 9px 7px 14px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .input-dock:focus-within { border-color: var(--uet-blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14), 0 8px 24px rgba(15, 23, 42, 0.08); }
-    .input-dock input { flex: 1; border: 0; outline: 0; font-size: 13.5px; background: transparent; color: var(--slate-900); }
-    .dock-hint { max-width: 820px; margin: 6px auto 0; display: flex; justify-content: space-between; font-size: 11px; color: var(--slate-400); padding: 0 4px; }
+    .input-dock:focus-within { border-color: var(--accent); }
+    .input-dock input { flex: 1; border: 0; outline: 0; font-size: 13.5px; background: transparent; color: var(--ink); }
+    .input-dock input::placeholder { color: var(--ink-muted); }
+    .dock-hint { max-width: 820px; margin: 6px auto 0; display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-muted); padding: 0 2px; }
 
     /* Typing Skeleton */
     .skeleton-card {
-      background: #FFFFFF;
-      border: 1px solid var(--slate-200);
-      border-radius: var(--radius-xl);
-      padding: 16px 18px;
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       font-size: 13px;
-      color: var(--slate-600);
-      font-weight: 600;
+      color: var(--ink-secondary);
+      font-weight: 500;
     }
-    .pulse-dot { width: 10px; height: 10px; border-radius: 99px; background: var(--uet-blue); animation: pulse 1s infinite alternate; }
-    @keyframes pulse { from { opacity: 0.35; transform: scale(0.9); } to { opacity: 1; transform: scale(1.15); } }
+    .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 1s infinite alternate; }
+    @keyframes pulse { from { opacity: 0.35; } to { opacity: 1; } }
 
     /* Roster & News Views */
     .panel-scroll { flex: 1; overflow-y: auto; padding: 20px 24px; }
-    .panel-inner { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+    .panel-inner { max-width: 1060px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
     .panel-banner {
-      background: #FFFFFF;
-      border: 1px solid var(--slate-200);
-      border-radius: var(--radius-xl);
-      padding: 18px 20px;
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--ink);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
       flex-wrap: wrap;
-      box-shadow: var(--shadow-sm);
     }
-    .panel-banner h2 { margin: 0 0 4px; font-size: 18px; font-weight: 800; }
-    .panel-banner p { margin: 0; font-size: 12.5px; color: var(--slate-500); }
-    .panel-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .panel-banner h2 {
+      font-family: var(--font-serif);
+      margin: 0 0 3px;
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .panel-banner p { margin: 0; font-size: 12.5px; color: var(--ink-muted); }
+    .panel-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    /* Horizontal Ledger Summary Strip (Replaces 4 discrete KPI cards) */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
     .kpi-card {
-      background: #FFFFFF;
-      border: 1px solid var(--slate-200);
-      border-radius: var(--radius-lg);
-      padding: 14px 16px;
-      box-shadow: var(--shadow-sm);
+      padding: 13px 16px;
+      border-right: 1px solid var(--border);
     }
-    .kpi-label { font-size: 11px; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.04em; }
-    .kpi-val { font-size: 24px; font-weight: 800; margin-top: 4px; color: var(--slate-900); }
-    .kpi-sub { font-size: 11px; color: var(--slate-500); margin-top: 2px; }
+    .kpi-card:last-child { border-right: 0; }
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-muted);
+    }
+    .kpi-val {
+      font-family: var(--font-serif);
+      font-variant-numeric: tabular-nums;
+      font-size: 26px;
+      font-weight: 600;
+      line-height: 1.15;
+      margin-top: 3px;
+      color: var(--ink);
+    }
+    .kpi-sub { font-size: 11px; color: var(--ink-muted); margin-top: 3px; }
 
+    /* Roster Ledger Table */
     .table-card {
-      background: #FFFFFF;
-      border: 1px solid var(--slate-200);
-      border-radius: var(--radius-xl);
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
       overflow: hidden;
-      box-shadow: var(--shadow-sm);
     }
     .roster-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
     .roster-table th {
-      background: var(--slate-50);
+      background: var(--surface);
       text-align: left;
-      padding: 11px 12px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--slate-500);
-      border-bottom: 1px solid var(--slate-200);
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      border-bottom: 1px solid var(--border-strong);
+      white-space: nowrap;
     }
-    .roster-table td { padding: 11px 12px; border-bottom: 1px solid var(--slate-100); vertical-align: middle; }
-    .roster-table tr:hover td { background: #F8FAFC; }
-    .status-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .roster-table th.num, .roster-table td.num { text-align: right; }
+    .roster-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .roster-table tbody tr {
+      border-left: 3px solid var(--border-strong);
+      transition: background 0.12s ease;
+    }
+    .roster-table tbody tr:hover td { background: var(--surface); }
+    .roster-table tbody tr.row-ok { border-left-color: var(--status-ok); }
+    .roster-table tbody tr.row-warn { border-left-color: var(--status-warn); }
+    .roster-table tbody tr.row-danger { border-left-color: var(--status-danger); }
+    .roster-table tbody tr.row-overload { border-left-color: var(--accent); }
+    .roster-table tbody tr.row-neutral { border-left-color: var(--border-strong); }
 
-    .news-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .student-name-cell {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 13.5px;
+      color: var(--ink);
+    }
+
+    .status-tags { display: flex; flex-direction: column; gap: 2px; min-width: 155px; }
+    .status-inline { font-size: 12px; font-weight: 500; line-height: 1.35; white-space: nowrap; }
+    .status-inline.ok { color: var(--status-ok); font-weight: 600; }
+    .status-inline.warn { color: var(--status-warn-ink); font-weight: 600; }
+    .status-inline.danger { color: var(--status-danger); font-weight: 600; }
+    .status-inline.brass { color: var(--accent-ink); font-weight: 600; }
+    .status-inline.neutral { color: var(--ink-muted); }
+
+    .ledger-subpanel {
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+    }
+    .ledger-subpanel-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ledger-subpanel-hdr h3 {
+      font-family: var(--font-serif);
+      margin: 0;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .failed-course-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .failed-course-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .failed-count-tag {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--status-danger);
+      white-space: nowrap;
+    }
+
+    .news-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .news-card {
-      background: #FFFFFF;
-      border: 1px solid var(--slate-200);
-      border-radius: var(--radius-lg);
-      padding: 16px;
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 15px 16px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      box-shadow: var(--shadow-sm);
-      transition: border-color 0.15s ease;
+      gap: 7px;
+      transition: border-color 0.14s ease;
     }
-    .news-card:hover { border-color: #93C5FD; }
-    .news-meta { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--slate-500); }
-    .news-title { font-weight: 700; font-size: 14px; color: var(--slate-900); line-height: 1.4; }
-    .news-title:hover { color: var(--uet-blue); }
-    .news-summary { font-size: 12.5px; color: var(--slate-600); line-height: 1.55; margin: 0; flex: 1; }
+    .news-card:hover { border-color: var(--accent); }
+    .news-meta { display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: var(--ink-muted); }
+    .news-cat { color: var(--accent-ink); font-weight: 600; }
+    .news-title {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--ink);
+      line-height: 1.38;
+    }
+    .news-title:hover { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 2px; }
+    .news-summary { font-size: 12.5px; color: var(--ink-secondary); line-height: 1.55; margin: 0; flex: 1; }
 
-    /* Right Inspector (w-80 = 320px) */
+    /* Right Inspector (Continuous Unified Hairline Ledger — NO nested cards) */
     .right-panel {
       width: 320px;
       min-width: 320px;
-      background: #FFFFFF;
-      border-left: 1px solid var(--slate-200);
-      padding: 16px;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 16px;
     }
-    .side-box {
-      border: 1px solid var(--slate-200);
-      border-radius: var(--radius-lg);
-      padding: 14px;
-      background: #FFFFFF;
+    .side-section {
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--border);
     }
+    .side-section:last-child { border-bottom: 0; }
     .side-box-hdr {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
       margin-bottom: 10px;
     }
-    .side-box-hdr h3 { margin: 0; font-size: 13px; font-weight: 800; color: var(--slate-900); display: flex; align-items: center; gap: 6px; }
-    .mini-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .mini-stat {
-      padding: 8px 10px;
-      border-radius: 9px;
-      background: var(--slate-50);
-      border: 1px solid var(--slate-200);
+    .side-box-hdr h3 {
+      font-family: var(--font-serif);
+      margin: 0;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
     }
-    .mini-stat span { display: block; font-size: 10.5px; color: var(--slate-500); font-weight: 600; }
-    .mini-stat strong { font-size: 15px; font-weight: 800; color: var(--slate-900); }
-    .mini-stat.ok strong { color: var(--emerald-600); }
-    .mini-stat.warn strong { color: var(--amber-600); }
-    .mini-stat.danger strong { color: var(--rose-600); }
-    .mini-stat.info strong { color: var(--uet-blue); }
+    .side-action-link {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--accent-ink);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .side-action-link:hover { text-decoration: underline; text-underline-offset: 2px; }
 
-    .scenario-list { display: flex; flex-direction: column; gap: 8px; }
+    .mini-stat-list { display: grid; gap: 0; }
+    .mini-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .mini-stat-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .mini-stat-row span { color: var(--ink-secondary); font-weight: 500; }
+    .mini-stat-row strong {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .mini-stat-row.ok strong { color: var(--status-ok); }
+    .mini-stat-row.warn strong { color: var(--status-warn-ink); }
+    .mini-stat-row.danger strong { color: var(--status-danger); }
+    .mini-stat-row.info strong { color: var(--accent-ink); }
+
+    .scenario-list {
+      margin: 0 -16px -15px;
+      display: flex;
+      flex-direction: column;
+    }
     .scenario-btn {
       width: 100%;
       text-align: left;
-      padding: 10px 11px;
-      border-radius: 10px;
-      border: 1px solid var(--slate-200);
-      background: var(--slate-50);
-      transition: all 0.14s ease;
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      background: transparent;
+      transition: background 0.14s ease, border-left-color 0.14s ease;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
     }
-    .scenario-btn:hover { background: var(--uet-blue-soft); border-color: #93C5FD; transform: translateY(-1px); }
-    .scenario-tag { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
-    .scenario-tag.rag { color: var(--emerald-600); }
-    .scenario-tag.lora { color: var(--indigo-600); }
-    .scenario-tag.news { color: var(--uet-blue); }
-    .scenario-tag.red { color: var(--rose-600); }
-    .scenario-q { font-size: 12px; font-weight: 600; color: var(--slate-800); line-height: 1.4; }
+    .scenario-btn:hover {
+      background: var(--accent-soft);
+      border-left-color: var(--accent);
+    }
+    .scenario-tag { font-size: 11px; font-weight: 600; }
+    .scenario-tag.rag { color: var(--status-ok); }
+    .scenario-tag.lora { color: var(--accent-ink); }
+    .scenario-tag.news { color: var(--ink-secondary); }
+    .scenario-tag.red { color: var(--status-danger); }
+    .scenario-q { font-size: 12px; font-weight: 500; color: var(--ink); line-height: 1.42; }
 
-    .telemetry-list { display: grid; gap: 7px; font-size: 12px; }
-    .tel-row { display: flex; justify-content: space-between; padding-bottom: 6px; border-bottom: 1px solid var(--slate-100); }
-    .tel-row span { color: var(--slate-500); }
-    .tel-row strong { color: var(--slate-800); text-align: right; }
+    .telemetry-list { display: grid; gap: 0; font-size: 12px; }
+    .tel-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+    }
+    .tel-row:last-child { border-bottom: 0; }
+    .tel-row span { color: var(--ink-muted); }
+    .tel-row strong { color: var(--ink); text-align: right; font-weight: 600; }
 
     /* Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(11, 21, 40, 0.55);
-      backdrop-filter: blur(3px);
+      background: rgba(21, 32, 28, 0.55);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -709,24 +970,68 @@
     .modal-overlay.hidden { display: none; }
     .modal-card {
       width: min(820px, 95vw);
-      background: #FFFFFF;
-      border-radius: var(--radius-xl);
-      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
-      border: 1px solid var(--slate-200);
+      background: var(--surface-pure);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 12px 32px rgba(21, 32, 28, 0.18);
+      border: 1px solid var(--border-strong);
       overflow: hidden;
     }
-    .modal-head { padding: 16px 20px; border-bottom: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; }
-    .modal-head h2 { margin: 0; font-size: 17px; font-weight: 800; }
+    .modal-head { padding: 15px 20px; border-bottom: 1px solid var(--border); background: var(--surface); display: flex; justify-content: space-between; align-items: center; }
+    .modal-head h2 { font-family: var(--font-serif); margin: 0; font-size: 17px; font-weight: 600; color: var(--ink); }
     .modal-body { padding: 18px 20px; overflow-x: auto; }
     .bench-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-    .bench-table th { background: var(--slate-50); text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--slate-200); font-size: 11.5px; }
-    .bench-table td { padding: 10px 12px; border-bottom: 1px solid var(--slate-100); }
-    .modal-foot { padding: 12px 20px; border-top: 1px solid var(--slate-200); display: flex; justify-content: flex-end; background: var(--slate-50); }
+    .bench-table th { background: var(--surface); text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border-strong); font-size: 12px; color: var(--ink-secondary); }
+    .bench-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); }
+    .modal-foot { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; background: var(--surface); }
 
+    @media (max-width: 1360px) {
+      .topbar { flex-wrap: wrap; }
+    }
     @media (max-width: 1180px) {
       .right-panel { display: none; }
       .news-grid { grid-template-columns: 1fr; }
       .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .kpi-card:nth-child(2n) { border-right: 0; }
+      .kpi-card:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+      .welcome-grid { grid-template-columns: 1fr; gap: 10px; }
+      .welcome-mini + .welcome-mini { padding-left: 0; border-left: 0; padding-top: 10px; border-top: 1px solid var(--border); }
+    }
+    @media (max-width: 780px) {
+      .workspace-shell { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        min-width: 0;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 10px;
+        border-right: 0;
+        border-bottom: 1px solid #0E1613;
+      }
+      .brand-header { padding: 4px 6px; border-bottom: 0; }
+      .advisor-card, .nav-section-label, .sidebar-footer { display: none; }
+      .nav-menu {
+        flex-direction: row;
+        flex: 0 1 auto;
+        gap: 4px;
+        padding: 0;
+        overflow-x: auto;
+      }
+      .nav-item {
+        padding: 6px 8px;
+        border-left: 0;
+        border-bottom: 2px solid transparent;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      .nav-item.active { border-left-color: transparent; border-bottom-color: var(--accent-brass-light); }
+      .nav-badge { display: none; }
+      .topbar-controls { flex-wrap: wrap; gap: 5px; }
+      .chat-scroll { padding: 10px 12px 14px; }
+      .input-dock-wrap { padding: 8px 12px 12px; }
+      .dock-hint { flex-direction: column; gap: 2px; }
+      .msg-user { max-width: 90%; }
+      .cmp-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -747,30 +1052,30 @@
           <div class="advisor-avatar" id="advAvatar">QT</div>
           <div>
             <div class="advisor-name" id="advName">Ths. Phạm Thị Quỳnh Trang</div>
-            <div class="advisor-role" id="advUnit">Cố vấn · Khoa CNTT</div>
+            <div class="advisor-role" id="advUnit">Cố vấn, Khoa CNTT</div>
           </div>
         </div>
         <div class="advisor-meta">
           <div class="advisor-meta-row"><span>Lớp hành chính</span><strong class="mono" id="advClass">QH-2024-I/CQ-C-CLC1</strong></div>
-          <div class="advisor-meta-row"><span>Khóa / Ngành</span><strong id="advMajor">K69 · CNTT</strong></div>
+          <div class="advisor-meta-row"><span>Khóa / Ngành</span><strong id="advMajor">K69, CNTT</strong></div>
           <div class="advisor-meta-row"><span>Sĩ số quản lý</span><strong id="advCount">30 sinh viên</strong></div>
         </div>
       </div>
 
-      <div class="nav-section-label">Không gian Cố vấn</div>
+      <div class="nav-section-label">Không gian cố vấn</div>
       <nav class="nav-menu">
         <button type="button" class="nav-item active" id="navChat" onclick="switchView('chat')">
           <i data-lucide="message-square"></i>
-          <span>Trợ lý Cố vấn AI</span>
+          <span>Trợ lý cố vấn AI</span>
         </button>
         <button type="button" class="nav-item" id="navRoster" onclick="switchView('roster')">
           <i data-lucide="users"></i>
-          <span>Bảng điểm Lớp K69-CNTT1</span>
+          <span>Bảng điểm lớp K69-CNTT1</span>
           <span class="nav-badge" id="navRosterCount">30</span>
         </button>
         <button type="button" class="nav-item" id="navNews" onclick="switchView('news')">
           <i data-lucide="newspaper"></i>
-          <span>Tin tức Trang 1 UET</span>
+          <span>Tin tức trang 1 UET</span>
           <span class="nav-badge" id="navNewsCount">8</span>
         </button>
       </nav>
@@ -778,9 +1083,9 @@
       <div class="sidebar-footer">
         <div style="display:flex;align-items:center;gap:7px;">
           <span class="status-dot"></span>
-          <span id="sidebarStatusText">RAG · LoRA · Pre-Check</span>
+          <span id="sidebarStatusText">RAG | LoRA | Pre-Check</span>
         </div>
-        <span class="mono" style="font-size:10px;">v2.0</span>
+        <span class="mono" style="font-size:10.5px;">v2.0</span>
       </div>
     </aside>
 
@@ -788,8 +1093,8 @@
     <main class="main-area">
       <header class="topbar">
         <div class="topbar-left">
-          <span class="topbar-title" id="topbarTitle">Trợ lý Cố vấn Học tập AI</span>
-          <span class="topbar-class-chip mono" id="topbarClassChip">K69-CNTT1 · 30 SV</span>
+          <span class="topbar-title" id="topbarTitle">Trợ lý Cố vấn AI</span>
+          <span class="topbar-class-chip mono" id="topbarClassChip">K69-CNTT1 | 30 SV</span>
         </div>
         <div class="topbar-controls">
           <div class="segmented-pill" role="group" aria-label="Chọn mô hình">
@@ -803,15 +1108,23 @@
           </button>
           <div class="health-pill" id="llmHealthPill" title="Trạng thái hạ tầng suy luận mô hình 3B">
             <span class="health-dot fallback" id="llmHealthDot"></span>
-            <span id="llmHealthText">Engine: Cached / Extractive Mode</span>
+            <span id="llmHealthText">Cached / Extractive Mode</span>
           </div>
         </div>
       </header>
 
       <!-- VIEW 1: CHAT -->
       <section class="view-pane active" id="viewChat">
-        <div class="chat-scroll" id="chatScrollContainer">
-          <div class="chat-container" id="chatList">
+        <div class="chat-stage" id="chatStage">
+          <div class="chat-wallpaper-layer" aria-hidden="true"></div>
+          <div class="chat-scroll" id="chatScrollContainer">
+            <div class="chat-toolbar">
+              <button type="button" class="wallpaper-toggle" id="btnToggleWallpaper" aria-pressed="true" onclick="toggleChatWallpaper()">
+                <i data-lucide="image" style="width:12px;height:12px;"></i>
+                <span id="wallpaperToggleLabel">Ảnh nền: Bật</span>
+              </button>
+            </div>
+            <div class="chat-container" id="chatList">
             <div class="welcome-card">
               <div class="welcome-kicker">
                 <i data-lucide="shield-check" style="width:14px;height:14px;"></i>
@@ -835,6 +1148,7 @@
               </div>
             </div>
           </div>
+          </div>
         </div>
 
         <div class="input-dock-wrap">
@@ -848,8 +1162,8 @@
             </button>
           </div>
           <div class="dock-hint">
-            <span>Nhấn Enter để gửi · Bấm các kịch bản mẫu bên phải để kiểm thử nhanh</span>
-            <span class="mono">ChronoReg · UET Advisor</span>
+            <span>Nhấn Enter để gửi, hoặc chọn một tình huống mẫu ở cột phải</span>
+            <span class="mono">ChronoReg | UET Advisor</span>
           </div>
         </div>
       </section>
@@ -860,12 +1174,12 @@
           <div class="panel-inner">
             <div class="panel-banner">
               <div>
-                <h2 id="rosterTitle">Bảng điểm Lớp QH-2024-I/CQ-C-CLC1 (K69-CNTT1)</h2>
-                <p id="rosterSubtitle">Cùng khóa QH-2024 · Ngành Công nghệ Thông tin · Cập nhật lần cuối: —</p>
+                <h2 id="rosterTitle">Bảng điểm lớp QH-2024-I/CQ-C-CLC1 (K69-CNTT1)</h2>
+                <p id="rosterSubtitle">Cùng khóa QH-2024, Ngành Công nghệ Thông tin — Cập nhật lần cuối: —</p>
               </div>
               <div class="panel-actions">
                 <button type="button" class="btn-outline" onclick="askAiAboutClass('Soi bảng điểm lớp mình kỳ này, liệt kê những em đủ điều kiện xét học bổng KKHT và chỉ rõ em nào bị trượt vì điểm rèn luyện?')">
-                  <i data-lucide="sparkles" style="width:14px;height:14px;"></i>
+                  <i data-lucide="file-search" style="width:14px;height:14px;"></i>
                   <span>Nhờ AI soi bảng điểm lớp</span>
                 </button>
                 <button type="button" class="btn-primary" id="btnRegenerateRoster" onclick="regenerateRoster()">
@@ -883,17 +1197,17 @@
               </div>
               <div class="kpi-card">
                 <div class="kpi-label">Đủ chuẩn KKHT</div>
-                <div class="kpi-val" style="color:var(--emerald-600);" id="kpiScholarship">2</div>
+                <div class="kpi-val" style="color:var(--status-ok);" id="kpiScholarship">2</div>
                 <div class="kpi-sub">GPA &ge; 3.2, ĐRL &ge; 80, &ge; 15 TC</div>
               </div>
               <div class="kpi-card">
                 <div class="kpi-label">Bẫy ĐRL thấp</div>
-                <div class="kpi-val" style="color:var(--amber-600);" id="kpiTrapped">2</div>
+                <div class="kpi-val" style="color:var(--status-warn-ink);" id="kpiTrapped">2</div>
                 <div class="kpi-sub">GPA &ge; 3.2 nhưng ĐRL &lt; 70</div>
               </div>
               <div class="kpi-card">
                 <div class="kpi-label">Cảnh báo học vụ</div>
-                <div class="kpi-val" style="color:var(--rose-600);" id="kpiWarning">2</div>
+                <div class="kpi-val" style="color:var(--status-danger);" id="kpiWarning">2</div>
                 <div class="kpi-sub">GPA &lt; 1.0 hoặc nợ &gt; 24 TC</div>
               </div>
             </div>
@@ -904,23 +1218,23 @@
                   <tr>
                     <th>MSSV</th>
                     <th>Họ và tên</th>
-                    <th>GPA Tích lũy</th>
-                    <th>ĐRL (2025.1)</th>
-                    <th>TC (Tích lũy / Nợ)</th>
-                    <th>Phân tích Học vụ Tự động</th>
+                    <th class="num">GPA tích lũy</th>
+                    <th class="num">ĐRL</th>
+                    <th class="num">Tích lũy / Nợ</th>
+                    <th>Phân tích học vụ</th>
                     <th>Thao tác</th>
                   </tr>
                 </thead>
                 <tbody id="rosterTableBody">
-                  <tr><td colspan="7" style="text-align:center;color:var(--slate-500);padding:20px;">Đang tải dữ liệu bảng điểm...</td></tr>
+                  <tr><td colspan="7" style="text-align:center;color:var(--ink-muted);padding:20px;">Đang tải dữ liệu bảng điểm...</td></tr>
                 </tbody>
               </table>
             </div>
-            <div class="side-box" style="margin-top:4px;">
-              <div class="side-box-hdr">
-                <h3><i data-lucide="trending-down" style="width:15px;height:15px;color:var(--rose-600);"></i>Top Môn học có tỷ lệ trượt cao nhất (Chỉ mục JSONL 780 bản ghi)</h3>
+            <div class="ledger-subpanel">
+              <div class="ledger-subpanel-hdr">
+                <h3><i data-lucide="trending-down" style="width:15px;height:15px;color:var(--status-danger);"></i>Môn học có tỷ lệ trượt cao nhất (chỉ mục JSONL 780 bản ghi)</h3>
               </div>
-              <div id="topFailedBox" style="display:grid;gap:8px;font-size:12.5px;color:var(--slate-700);">Đang tổng hợp...</div>
+              <div id="topFailedBox" style="font-size:12.5px;color:var(--ink-secondary);">Đang tổng hợp...</div>
             </div>
           </div>
         </div>
@@ -932,12 +1246,12 @@
           <div class="panel-inner">
             <div class="panel-banner">
               <div>
-                <h2>Tin tức &amp; Thông báo Mới nhất Trang 1 UET</h2>
-                <p id="newsSubtitle">Cào trang 1 từ mục Tin sinh viên &amp; Đào tạo (tự động fallback local cache khi mất mạng)</p>
+                <h2>Tin tức và thông báo mới nhất trang 1 UET</h2>
+                <p id="newsSubtitle">Cào trang 1 từ mục Tin sinh viên và Đào tạo (tự động dùng cache cục bộ khi mất mạng)</p>
               </div>
               <div class="panel-actions">
                 <button type="button" class="btn-outline" onclick="askAiAboutClass('Dựa trên thông báo mới nhất vừa cào trên trang chủ UET, có tin tức hay học bổng nào phù hợp để tôi nhắc các em trong lớp nộp hồ sơ không?')">
-                  <i data-lucide="sparkles" style="width:14px;height:14px;"></i>
+                  <i data-lucide="file-search" style="width:14px;height:14px;"></i>
                   <span>Nhờ AI đối chiếu tin với lớp</span>
                 </button>
                 <button type="button" class="btn-primary" id="btnScrapeLatest" onclick="scrapeLatestNews()">
@@ -955,40 +1269,34 @@
       </section>
     </main>
 
-    <!-- RIGHT INSPECTOR (w-80 = 320px) -->
+    <!-- RIGHT INSPECTOR (Unified Hairline Ledger) -->
     <aside class="right-panel">
-      <!-- Block 1: Quick Roster Summary -->
-      <section class="side-box">
+      <section class="side-section">
         <div class="side-box-hdr">
-          <h3><i data-lucide="bar-chart-2" style="width:15px;height:15px;color:var(--uet-blue);"></i><span id="rightSummaryTitle">Tóm tắt Nhanh Lớp K69-CNTT1</span></h3>
-          <button type="button" style="font-size:11px;font-weight:700;color:var(--uet-blue);" onclick="switchView('roster')">Xem bảng &rarr;</button>
+          <h3><i data-lucide="book-open" style="width:14px;height:14px;color:var(--accent-ink);"></i><span id="rightSummaryTitle">Tóm tắt lớp K69-CNTT1</span></h3>
+          <button type="button" class="side-action-link" onclick="switchView('roster')">Xem bảng điểm</button>
         </div>
-        <div class="mini-stat-grid">
-          <div class="mini-stat"><span>Sĩ số lớp</span><strong id="rightTotal">30 SV</strong></div>
-          <div class="mini-stat ok"><span>Đủ chuẩn KKHT</span><strong id="rightScholarship">2 em</strong></div>
-          <div class="mini-stat warn"><span>Trượt vì ĐRL</span><strong id="rightTrapped">2 em</strong></div>
-          <div class="mini-stat danger"><span>Cảnh báo học vụ</span><strong id="rightWarning">2 em</strong></div>
-        </div>
-        <div class="mini-stat info" style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;">
-          <span>Đủ chuẩn học vượt 24 TC</span>
-          <strong id="rightOverload">6 em</strong>
+        <div class="mini-stat-list">
+          <div class="mini-stat-row"><span>Sĩ số lớp</span><strong id="rightTotal">30 SV</strong></div>
+          <div class="mini-stat-row ok"><span>Đủ chuẩn KKHT</span><strong id="rightScholarship">2 em</strong></div>
+          <div class="mini-stat-row warn"><span>Trượt vì ĐRL</span><strong id="rightTrapped">2 em</strong></div>
+          <div class="mini-stat-row danger"><span>Cảnh báo học vụ</span><strong id="rightWarning">2 em</strong></div>
+          <div class="mini-stat-row info"><span>Đủ chuẩn học vượt 24 TC</span><strong id="rightOverload">6 em</strong></div>
         </div>
       </section>
 
-      <!-- Block 2: 6 Advisor Sample Questions -->
-      <section class="side-box">
+      <section class="side-section">
         <div class="side-box-hdr">
-          <h3><i data-lucide="list-checks" style="width:15px;height:15px;color:var(--uet-blue);"></i>6 Tình huống Cố vấn Mẫu</h3>
+          <h3><i data-lucide="list-checks" style="width:14px;height:14px;color:var(--accent-ink);"></i>6 tình huống cố vấn mẫu</h3>
         </div>
         <div class="scenario-list" id="sampleQuestionsList">
-          <div style="font-size:12px;color:var(--slate-500);">Đang tải kịch bản mẫu...</div>
+          <div style="font-size:12px;color:var(--ink-muted);padding:6px 16px;">Đang tải kịch bản mẫu...</div>
         </div>
       </section>
 
-      <!-- Block 3: Live Decision Telemetry -->
-      <section class="side-box">
+      <section class="side-section">
         <div class="side-box-hdr">
-          <h3><i data-lucide="activity" style="width:15px;height:15px;color:var(--uet-blue);"></i>Telemetry Định tuyến</h3>
+          <h3><i data-lucide="activity" style="width:14px;height:14px;color:var(--accent-ink);"></i>Telemetry định tuyến</h3>
         </div>
         <div class="telemetry-list">
           <div class="tel-row"><span>Engine thực thi</span><strong id="telEngine">—</strong></div>
@@ -996,7 +1304,7 @@
           <div class="tel-row"><span>Nguồn suy luận</span><strong id="telSource">—</strong></div>
           <div class="tel-row"><span>Độ trễ</span><strong class="mono" id="telLatency">—</strong></div>
         </div>
-        <p id="telReason" style="margin:8px 0 0;font-size:11.5px;color:var(--slate-500);line-height:1.5;">
+        <p id="telReason" style="margin:8px 0 0;font-size:11.5px;color:var(--ink-muted);line-height:1.5;">
           Gửi một câu hỏi để xem phân tích định tuyến chi tiết.
         </p>
       </section>
@@ -1021,14 +1329,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td><strong>Key-Fact Acc</strong> (Độ chính xác số liệu)</td><td>49.9%</td><td><strong style="color:var(--emerald-600);">100.0%</strong></td><td>17.2%</td></tr>
-            <tr><td><strong>Temporal Acc</strong> (Đúng văn bản &amp; năm học)</td><td>68.9%</td><td><strong style="color:var(--emerald-600);">100.0%</strong></td><td>50.0%</td></tr>
-            <tr><td><strong>Token F1</strong></td><td>28.4%</td><td><strong>36.4%</strong></td><td>34.9%</td></tr>
-            <tr><td><strong>OHR</strong> (Ảo giác quy chế lỗi thời, càng thấp càng tốt)</td><td>18.9%</td><td><strong style="color:var(--emerald-600);">0.0%</strong></td><td>1.1%</td></tr>
+            <tr><td><strong>Key-Fact Acc</strong> (Độ chính xác số liệu)</td><td class="mono">49.9%</td><td><strong class="mono" style="color:var(--status-ok);">100.0%</strong></td><td class="mono">17.2%</td></tr>
+            <tr><td><strong>Temporal Acc</strong> (Đúng văn bản và năm học)</td><td class="mono">68.9%</td><td><strong class="mono" style="color:var(--status-ok);">100.0%</strong></td><td class="mono">50.0%</td></tr>
+            <tr><td><strong>Token F1</strong></td><td class="mono">28.4%</td><td><strong class="mono">36.4%</strong></td><td class="mono">34.9%</td></tr>
+            <tr><td><strong>OHR</strong> (Ảo giác quy chế lỗi thời, càng thấp càng tốt)</td><td class="mono">18.9%</td><td><strong class="mono" style="color:var(--status-ok);">0.0%</strong></td><td class="mono">1.1%</td></tr>
             <tr><td><strong>Kiểm chứng toàn vẹn</strong></td><td>Không lọc năm</td><td>SHA-256 Registry Lock</td><td>Trí nhớ tham số QLoRA</td></tr>
           </tbody>
         </table>
-        <p style="margin:12px 0 0;font-size:11.5px;color:var(--slate-500);">Nguồn số liệu thực nghiệm: <span class="mono">runs/eval/summary_metrics.json</span> &amp; <span class="mono">runs/eval/comparison_report.md</span>.</p>
+        <p style="margin:12px 0 0;font-size:11.5px;color:var(--ink-muted);">Nguồn số liệu thực nghiệm: <span class="mono">runs/eval/summary_metrics.json</span> và <span class="mono">runs/eval/comparison_report.md</span>.</p>
       </div>
       <div class="modal-foot">
         <button type="button" class="btn-primary" onclick="closeBenchmarkModal()">Đóng bảng</button>
@@ -1062,9 +1370,9 @@
 
     function switchView(viewName) {
       const views = {
-        chat: ['viewChat', 'navChat', 'Trợ lý Cố vấn Học tập AI'],
-        roster: ['viewRoster', 'navRoster', 'Bảng điểm Lớp K69-CNTT1 (30 Sinh viên)'],
-        news: ['viewNews', 'navNews', 'Tin tức Mới nhất Trang 1 UET'],
+        chat: ['viewChat', 'navChat', 'Trợ lý Cố vấn AI'],
+        roster: ['viewRoster', 'navRoster', 'Bảng điểm lớp K69-CNTT1'],
+        news: ['viewNews', 'navNews', 'Tin tức trang 1 UET'],
       };
       for (const [k, [vid, nid, title]] of Object.entries(views)) {
         document.getElementById(vid).classList.toggle('active', k === viewName);
@@ -1131,7 +1439,7 @@
     function appendErrorMessage(msg) {
       const div = document.createElement('div');
       div.className = 'msg-ai';
-      div.innerHTML = `<div class="ai-tier2" style="color:var(--rose-600);font-weight:700;">${escapeHtml(msg)}</div>`;
+      div.innerHTML = `<div class="ai-tier2" style="color:var(--status-danger);font-weight:600;">${escapeHtml(msg)}</div>`;
       document.getElementById('chatList').appendChild(div);
       scrollToBottom();
     }
@@ -1159,8 +1467,8 @@
         provenanceHtml = `<span>${escapeHtml(m.source_label || '')}</span>`;
       } else {
         const docText = m.doc_id ? `<span class="mono">${escapeHtml(m.doc_id)}</span>` : 'Văn bản UET';
-        const yrText = m.effective_year ? ` · Năm: <strong>${escapeHtml(m.effective_year)}</strong>` : '';
-        const shaText = m.sha256_short ? ` · SHA-256: <span class="mono">${escapeHtml(m.sha256_short)}</span>` : '';
+        const yrText = m.effective_year ? `, Năm: <strong>${escapeHtml(m.effective_year)}</strong>` : '';
+        const shaText = m.sha256_short ? `, SHA-256: <span class="mono">${escapeHtml(m.sha256_short)}</span>` : '';
         provenanceHtml = `<span><strong>Căn cứ:</strong> ${docText}${yrText}${shaText}</span>`;
       }
 
@@ -1206,7 +1514,7 @@
       btn.disabled = true;
       btn.textContent = 'Đang đối chiếu...';
       const box = document.getElementById(targetId);
-      box.innerHTML = '<div style="font-size:12px;color:var(--slate-500);padding:8px 0;">Đang gọi đồng thời Chrono-RAG 3B và Continual LoRA 3B...</div>';
+      box.innerHTML = '<div style="font-size:12px;color:var(--ink-muted);padding:8px 0;">Đang gọi đồng thời Chrono-RAG 3B và Continual LoRA 3B...</div>';
       try {
         const res = await fetch('/api/compare', {
           method: 'POST',
@@ -1217,17 +1525,17 @@
         const data = await res.json();
         const lora = data.continual_lora || {};
         const chrono = data.chrono_rag || {};
-        const loraInf = lora.metadata?.inference_source ? ` · ${escapeHtml(inferenceSourceLabel(lora.metadata.inference_source))}` : '';
-        const chronoInf = chrono.metadata?.inference_source ? ` · ${escapeHtml(inferenceSourceLabel(chrono.metadata.inference_source))}` : '';
+        const loraInf = lora.metadata?.inference_source ? ` — ${escapeHtml(inferenceSourceLabel(lora.metadata.inference_source))}` : '';
+        const chronoInf = chrono.metadata?.inference_source ? ` — ${escapeHtml(inferenceSourceLabel(chrono.metadata.inference_source))}` : '';
         box.innerHTML = `
           <div class="cmp-grid">
             <div class="cmp-col">
-              <h5 style="color:var(--indigo-600);">Continual LoRA 3B</h5>
+              <h5 style="color:var(--accent-ink);">Continual LoRA 3B</h5>
               <p>${allowHighlightMarkup(lora.answer || '—')}</p>
               <small>${escapeHtml(lora.metadata?.source_label || 'Trí nhớ tham số LoRA 3B')}${loraInf}</small>
             </div>
             <div class="cmp-col">
-              <h5 style="color:var(--emerald-600);">Chrono-RAG 3B</h5>
+              <h5 style="color:var(--status-ok);">Chrono-RAG 3B</h5>
               <p>${allowHighlightMarkup(chrono.answer || '—')}</p>
               <small>${escapeHtml(chrono.metadata?.doc_id || 'Versioning Registry')}${chronoInf}</small>
             </div>
@@ -1235,7 +1543,7 @@
         `;
         btn.style.display = 'none';
       } catch (err) {
-        box.innerHTML = `<div style="font-size:12px;color:var(--rose-600);">Lỗi đối chiếu: ${escapeHtml(err.message)}</div>`;
+        box.innerHTML = `<div style="font-size:12px;color:var(--status-danger);">Lỗi đối chiếu: ${escapeHtml(err.message)}</div>`;
         btn.disabled = false;
         btn.textContent = 'Thử lại ⇄';
       }
@@ -1316,11 +1624,11 @@
       const advClass = document.getElementById('advClass');
       if (advClass) advClass.textContent = classId;
       const advMajor = document.getElementById('advMajor');
-      if (advMajor) advMajor.textContent = `${cohortShort} · ${majorShort}`;
+      if (advMajor) advMajor.textContent = `${cohortShort}, ${majorShort}`;
       const advCount = document.getElementById('advCount');
       if (advCount) advCount.textContent = `${total} sinh viên`;
       const topbarChip = document.getElementById('topbarClassChip');
-      if (topbarChip) topbarChip.textContent = `${classShort} · ${total} SV`;
+      if (topbarChip) topbarChip.textContent = `${classShort} | ${total} SV`;
       const welcomeGreeting = document.getElementById('welcomeGreeting');
       if (welcomeGreeting) welcomeGreeting.textContent = `Xin chào ${advisor}!`;
       const welcomeSub = document.getElementById('welcomeSub');
@@ -1328,11 +1636,11 @@
         welcomeSub.innerHTML = `Trợ lý AI kết nối trực tiếp với <strong>CSDL JSONL ${total} sinh viên × 26 môn lớp ${escapeHtml(classId)}</strong>, <strong>kho quy chế UET khóa SHA-256</strong> và <strong>tin tức trang 1 cổng thông tin UET</strong>.`;
       }
       const rosterTitle = document.getElementById('rosterTitle');
-      if (rosterTitle) rosterTitle.textContent = `Bảng điểm Lớp ${classId} (${classShort})`;
+      if (rosterTitle) rosterTitle.textContent = `Bảng điểm lớp ${classId} (${classShort})`;
       const kpiSub = document.getElementById('kpiSub');
       if (kpiSub) kpiSub.textContent = `Đồng nhất khóa/ngành ${cohortShort} (26 môn)`;
       const rightSummaryTitle = document.getElementById('rightSummaryTitle');
-      if (rightSummaryTitle) rightSummaryTitle.textContent = `Tóm tắt Nhanh Lớp ${classShort}`;
+      if (rightSummaryTitle) rightSummaryTitle.textContent = `Tóm tắt lớp ${classShort}`;
 
       document.getElementById('kpiTotal').textContent = total;
       document.getElementById('kpiScholarship').textContent = sch;
@@ -1346,31 +1654,40 @@
       document.getElementById('rightOverload').textContent = ov + ' em';
       document.getElementById('navRosterCount').textContent = total;
       document.getElementById('rosterSubtitle').textContent =
-        `Lớp ${classId} · Ngành ${major} · Cố vấn: ${advisor} · Cập nhật: ${roster.generated_at || '—'}`;
+        `Lớp ${classId}, Ngành ${major}, Cố vấn: ${advisor} — Cập nhật: ${roster.generated_at || '—'}`;
 
       const tbody = document.getElementById('rosterTableBody');
       tbody.innerHTML = (roster.students || []).map(st => {
         const ev = st.assessment || {};
-        const tags = [];
-        if (ev.scholarship_priority) tags.push(`<span class="badge rag">KKHT ${escapeHtml(ev.scholarship_tier || '')}</span>`);
-        if (ev.scholarship_trap_low_drl) tags.push(`<span class="badge yellow">Trượt KKHT (ĐRL &lt; 70)</span>`);
-        if (st.requested_overload_credits && ev.overload_eligible) tags.push(`<span class="badge source">Xin học vượt 24 TC</span>`);
-        else if (ev.overload_eligible && !ev.scholarship_priority) tags.push(`<span class="badge signal">Đủ ĐK học vượt</span>`);
-        if (ev.warning_risk) tags.push(`<span class="badge red">Cảnh báo học vụ</span>`);
-        if (!tags.length) tags.push(`<span class="badge signal">Trung bình an toàn</span>`);
+        const notes = [];
+        let rowTone = 'row-neutral';
+        if (ev.warning_risk) rowTone = 'row-danger';
+        else if (ev.scholarship_trap_low_drl) rowTone = 'row-warn';
+        else if (ev.scholarship_priority) rowTone = 'row-ok';
+        else if (st.requested_overload_credits && ev.overload_eligible) rowTone = 'row-overload';
+
+        if (ev.scholarship_priority) notes.push(`<span class="status-inline ok">KKHT ${escapeHtml(ev.scholarship_tier || '')}</span>`);
+        if (ev.scholarship_trap_low_drl) notes.push(`<span class="status-inline warn">Trượt KKHT (ĐRL &lt; 70)</span>`);
+        if (st.requested_overload_credits && ev.overload_eligible) notes.push(`<span class="status-inline brass">Xin học vượt 24 TC</span>`);
+        else if (ev.overload_eligible && !ev.scholarship_priority) notes.push(`<span class="status-inline ok">Đủ ĐK học vượt</span>`);
+        if (ev.warning_risk) notes.push(`<span class="status-inline danger">Cảnh báo học vụ</span>`);
+        if (!notes.length) notes.push(`<span class="status-inline neutral">Trung bình an toàn</span>`);
 
         const gpaVal = Number(st.gpa_semester ?? st.gpa ?? 0);
         const acc = st.accumulated_credits ?? st.tin_chi_tich_luy ?? 0;
         const owed = st.owed_credits ?? st.tin_chi_no ?? 0;
+        const gpaColor = gpaVal < 1.8 ? 'var(--status-danger)' : (gpaVal >= 3.2 ? 'var(--status-ok)' : 'inherit');
+        const drlColor = st.drl < 70 ? 'var(--status-warn-ink)' : 'inherit';
+        const owedColor = owed > 0 ? 'var(--status-danger)' : 'inherit';
         return `
-          <tr>
-            <td class="mono" style="font-weight:700;">${escapeHtml(st.student_id)}</td>
-            <td><strong>${escapeHtml(st.full_name)}</strong></td>
-            <td class="mono" style="font-weight:700;color:${gpaVal < 1.8 ? 'var(--rose-600)' : (gpaVal >= 3.2 ? 'var(--emerald-600)' : 'inherit')};">${gpaVal.toFixed(2)}</td>
-            <td class="mono" style="font-weight:700;color:${st.drl < 70 ? 'var(--amber-600)' : 'inherit'};">${escapeHtml(st.drl)}</td>
-            <td class="mono">${acc} / <span style="color:${owed > 0 ? 'var(--rose-600)' : 'inherit'};font-weight:700;">${owed}</span></td>
-            <td><div class="status-tags">${tags.join('')}</div></td>
-            <td><button type="button" class="btn-outline" style="padding:4px 8px;font-size:11px;" onclick="askAiAboutClass('Kiểm tra tình trạng học tập và điều kiện xét học bổng, học vượt của sinh viên ${escapeHtml(st.full_name)} (${escapeHtml(st.student_id)})?', '${escapeHtml(st.student_id)}')">Hỏi AI</button></td>
+          <tr class="${rowTone}">
+            <td class="mono" style="font-weight:600;">${escapeHtml(st.student_id)}</td>
+            <td class="student-name-cell">${escapeHtml(st.full_name)}</td>
+            <td class="mono num" style="font-weight:600;color:${gpaColor};">${gpaVal.toFixed(2)}</td>
+            <td class="mono num" style="font-weight:600;color:${drlColor};">${escapeHtml(st.drl)}</td>
+            <td class="mono num">${acc} / <span style="color:${owedColor};font-weight:600;">${owed}</span></td>
+            <td><div class="status-tags">${notes.join('')}</div></td>
+            <td><button type="button" class="btn-outline" style="padding:4px 9px;font-size:11.5px;" onclick="askAiAboutClass('Kiểm tra tình trạng học tập và điều kiện xét học bổng, học vượt của sinh viên ${escapeHtml(st.full_name)} (${escapeHtml(st.student_id)})?', '${escapeHtml(st.student_id)}')">Hỏi AI</button></td>
           </tr>
         `;
       }).join('');
@@ -1380,9 +1697,9 @@
         const failed = roster.top_failed_courses || [];
         failedBox.innerHTML = failed.length
           ? failed.map(c => `
-              <div style="display:flex;justify-content:space-between;gap:10px;padding:7px 10px;background:var(--slate-50);border-radius:8px;border:1px solid var(--slate-200);">
-                <div><strong class="mono">${escapeHtml(c.ma_mon)}</strong> — ${escapeHtml(c.ten_mon)} (${c.so_tin_chi} TC)<div style="font-size:11px;color:var(--slate-500);">${escapeHtml((c.ds_truot || []).join(', ') || 'Không có')}</div></div>
-                <span class="badge red" style="align-self:center;">${c.so_luot_truot} lượt (${c.ty_le_truot}%)</span>
+              <div class="failed-course-row">
+                <div><strong class="mono">${escapeHtml(c.ma_mon)}</strong> — ${escapeHtml(c.ten_mon)} (${c.so_tin_chi} TC)<div style="font-size:11.5px;color:var(--ink-muted);margin-top:2px;">${escapeHtml((c.ds_truot || []).join(', ') || 'Không có')}</div></div>
+                <span class="failed-count-tag">${c.so_luot_truot} lượt (${c.ty_le_truot}%)</span>
               </div>
             `).join('')
           : '<div>Không có môn trượt trong dữ liệu hiện tại.</div>';
@@ -1417,7 +1734,7 @@
       document.getElementById('navNewsCount').textContent = arts.length;
       const srcLabel = payload.source === 'live_scrape' ? 'Cào trực tiếp (Live Trang 1 UET)' : 'Dữ liệu Cache Offline';
       document.getElementById('newsSubtitle').textContent =
-        `Nguồn: ${srcLabel} · Thời điểm: ${payload.fetched_at || '—'} · Tổng ${arts.length} bài viết`;
+        `Nguồn: ${srcLabel}, Thời điểm: ${payload.fetched_at || '—'}, Tổng ${arts.length} bài viết`;
       const grid = document.getElementById('newsGrid');
       if (!arts.length) {
         grid.innerHTML = '<div class="news-card"><p class="news-summary">Chưa có tin tức nào.</p></div>';
@@ -1426,7 +1743,7 @@
       grid.innerHTML = arts.map(a => `
         <article class="news-card">
           <div class="news-meta">
-            <span class="badge source">${escapeHtml(a.category || 'UET')}</span>
+            <span class="news-cat">${escapeHtml(a.category || 'UET')}</span>
             <span class="mono">${escapeHtml(a.date || '')}</span>
           </div>
           <a class="news-title" href="${escapeHtml(a.url || '#')}" target="_blank" rel="noopener noreferrer">${escapeHtml(a.title || '')}</a>
@@ -1494,19 +1811,43 @@
         const sideTxt = document.getElementById('sidebarStatusText');
         if (st.ready) {
           dot.className = 'health-dot ready';
-          txt.textContent = 'Engine: Ollama 3B Local (Ready)';
-          if (sideTxt) sideTxt.textContent = 'Ollama 3B · Pre-Check';
+          txt.textContent = 'Ollama 3B Local';
+          if (sideTxt) sideTxt.textContent = 'Ollama 3B | Pre-Check';
         } else if (st.remote_configured) {
           dot.className = 'health-dot ready';
-          txt.textContent = 'Engine: Remote GPU Tunnel';
-          if (sideTxt) sideTxt.textContent = 'Remote GPU · Pre-Check';
+          txt.textContent = 'Remote GPU Tunnel';
+          if (sideTxt) sideTxt.textContent = 'Remote GPU | Pre-Check';
         } else {
           dot.className = 'health-dot fallback';
-          txt.textContent = 'Engine: Cached / Extractive Mode';
-          if (sideTxt) sideTxt.textContent = 'RAG · LoRA · Pre-Check';
+          txt.textContent = 'Cached / Extractive';
+          if (sideTxt) sideTxt.textContent = 'RAG | LoRA | Pre-Check';
         }
       } catch (_) {}
     }
+
+    function applyChatWallpaperState(enabled) {
+      const stage = document.getElementById('chatStage');
+      const btn = document.getElementById('btnToggleWallpaper');
+      const lbl = document.getElementById('wallpaperToggleLabel');
+      if (stage) stage.classList.toggle('wallpaper-off', !enabled);
+      if (btn) btn.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+      if (lbl) lbl.textContent = enabled ? 'Ảnh nền: Bật' : 'Ảnh nền: Tắt';
+    }
+
+    function toggleChatWallpaper() {
+      const stage = document.getElementById('chatStage');
+      const nextEnabled = stage ? stage.classList.contains('wallpaper-off') : true;
+      applyChatWallpaperState(nextEnabled);
+      try { localStorage.setItem('chronoreg_chat_wallpaper', nextEnabled ? 'on' : 'off'); } catch (_) {}
+    }
+
+    (function initChatWallpaper() {
+      let enabled = true;
+      try {
+        if (localStorage.getItem('chronoreg_chat_wallpaper') === 'off') enabled = false;
+      } catch (_) {}
+      applyChatWallpaperState(enabled);
+    })();
 
     setEngineMode('auto');
     checkEngineStatus();
