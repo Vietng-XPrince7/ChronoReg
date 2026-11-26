@@ -3,350 +3,1580 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ChronoReg | Hỏi đáp học vụ UET</title>
+  <title>ChronoReg | Trợ lý Cố vấn Học tập UET</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
-      --ink:#242b32;
-      --ink-soft:#444d54;
-      --paper:#faf9f5;
-      --white:#ffffff;
-      --background:#f6f5f1;
-      --blue:#0867a3;
-      --blue-hover:#095788;
-      --blue-light:#e3f0f9;
-      --blue-faint:#f2f8fc;
-      --line:#d9d9d4;
-      --red:#bd4e48;
-      --amber:#96692c;
-      --green:#377e5d;
-      --shadow:4px 4px 0 #26323c;
-      --font: "Segoe UI", "Noto Sans", Tahoma, Arial, sans-serif;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0}
-    body{background:var(--background);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.45;overflow:hidden}
-    button,input{font:inherit}
-    button{cursor:pointer;color:inherit}
-    button:disabled{cursor:wait;opacity:.72}
-    a{color:inherit;text-decoration:none}
-    button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #427ba2;outline-offset:3px}
-    ::-webkit-scrollbar{width:8px}
-    ::-webkit-scrollbar-track{background:transparent}
-    ::-webkit-scrollbar-thumb{background:#b4b0a7;border:2px solid var(--background);border-radius:6px}
-    .app{display:flex;flex-direction:column;height:100vh;min-width:1110px}
-    .masthead{height:78px;min-height:78px;display:flex;align-items:center;justify-content:space-between;gap:18px;background:var(--paper);border-bottom:2px solid var(--ink);padding:0 27px;position:relative;z-index:10}
-    .brand{display:flex;gap:12px;align-items:center;min-width:292px}
-    .brand-block{height:52px;width:52px;display:flex;align-items:center;justify-content:center;border:1px solid #d9e6f0;border-radius:50%;background:white;flex-shrink:0;overflow:hidden}
-    .brand-block img{width:100%;height:100%;object-fit:contain;display:block}
-    .brand-word{font-size:23px;font-weight:900;letter-spacing:-.9px;line-height:1}
-    .brand-sub{font-size:10px;margin-top:5px;text-transform:uppercase;letter-spacing:.85px;font-weight:800;color:#536576}
-    .top-navigation{display:flex;align-items:center;gap:9px;justify-content:center;flex:1}
-    .top-navigation button{background:var(--white);border:2px solid var(--ink);border-radius:1px;box-shadow:3px 3px 0 var(--ink);padding:10px 14px;font-size:12px;line-height:1.1;font-weight:800;white-space:nowrap;transition:background .12s,transform .12s}
-    .top-navigation button:hover{background:var(--blue-light);transform:translate(-1px,-1px)}
-    .top-navigation button.is-active{background:var(--blue);color:white}
-    .header-meta{min-width:172px;text-align:right;letter-spacing:.2px;color:#76746e;font-size:11px}
-    .header-meta strong{display:block;color:var(--ink);font-weight:800;font-size:12px;letter-spacing:.4px}
-    .workspace-grid{flex:1;display:grid;grid-template-columns:228px minmax(480px,1fr) 286px;gap:27px;padding:25px 29px 28px;min-height:0;max-width:1880px;width:100%;margin:0 auto}
-    .side,.right-sidebar{min-height:0}
-    .outline-panel{background:var(--white);border:2px solid var(--ink);box-shadow:var(--shadow);border-radius:1px}
-    .side-block{padding:17px 16px 16px}
-    .side-block+.side-block{border-top:2px solid var(--ink)}
-    .block-kicker{font-size:10px;font-weight:900;letter-spacing:1.35px;text-transform:uppercase;color:#73736d;margin:0 0 8px}
-    .block-title{font-size:18px;line-height:1.1;font-weight:900;letter-spacing:-.5px;margin:0 0 8px}
-    .side-link{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 9px;border:1px solid transparent;border-bottom:1px solid var(--line);font-weight:700;font-size:12px}
-    .side-link:hover{background:var(--blue-faint)}
-    .side-link.current{background:var(--blue-light);border:2px solid var(--ink);border-left:5px solid var(--blue);padding-left:6px;margin:7px 0;box-shadow:2px 2px 0 var(--ink)}
-    .side-index{font:700 10px/1.2 var(--font);color:#77736d}
-    .side-link.current .side-index{color:var(--ink)}
-    .data-row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding:7px 0;font-size:11px}
-    .data-row:last-child{border-bottom:0}
-    .data-row .field-label{color:#77726b}
-    .data-row .field-value{font-weight:800;text-align:right;max-width:110px}
-    .bottom-note{margin-top:10px;color:#73716a;font-size:11px;line-height:1.5}
-    .profile-empty{font-size:11px;line-height:1.6;color:#736f67;margin:15px 0 12px}
-    .profile-fields{border-top:1px solid var(--line);padding-top:10px}
-    .profile-fields summary{cursor:pointer;font-weight:700;font-size:11px;color:#4d7190;line-height:1.5}
-    .profile-fields[open] summary{margin-bottom:12px}
-    .side-footer{margin-top:14px;display:flex;align-items:center;gap:8px;letter-spacing:.4px;text-transform:uppercase;font-size:10px;font-weight:800}
-    .dot{display:inline-block;width:7px;height:7px;border-radius:99px;background:var(--green);flex-shrink:0}
-    .center{min-width:0;min-height:0;display:flex;flex-direction:column}
-    .eyebrow{display:flex;align-items:center;gap:11px;font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#5a666c}
-    .eyebrow:before{content:"";height:3px;width:24px;background:var(--blue);display:block}
-    .page-intro{padding:3px 0 18px}
-    .page-intro h1{font-size:33px;line-height:1.07;margin:8px 0 5px;letter-spacing:-1.25px;font-weight:900}
-    .page-intro p{font-size:13px;color:#77746c;margin:0}
-    .document-panel{display:flex;flex-direction:column;min-height:0;flex:1}
-    .document-header{min-height:63px;display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:2px solid var(--ink);padding:12px 15px;background:var(--white)}
-    .doc-heading{font-weight:900;font-size:14px;letter-spacing:-.1px}
-    .doc-sub{color:#76736c;font-size:10px;letter-spacing:.4px;margin-top:2px}
-    .mode-controls{display:flex;gap:5px;flex-wrap:nowrap}
-    .mode-controls button{border:2px solid var(--ink);border-radius:0;padding:8px 10px;background:var(--white);font-size:11px;font-weight:800;white-space:nowrap;box-shadow:none}
-    .mode-controls button:hover{background:var(--blue-light)}
-    .mode-controls button.selected{background:var(--blue);color:#fff;box-shadow:2px 2px 0 var(--ink)}
-    #chatScrollContainer{flex:1;min-height:0;overflow-y:auto;background:#f9f7f2;scroll-behavior:smooth}
-    #chatList{padding:25px 27px 24px;display:flex;flex-direction:column;gap:20px}
-    .welcome{border:1px solid var(--line);background:var(--white);padding:25px 27px;position:relative;max-width:100%}
-    .welcome:before{content:"";position:absolute;width:4px;background:var(--blue);left:-1px;top:-1px;bottom:-1px}
-    .welcome .section-no{font-size:10px;font-weight:900;letter-spacing:1.5px;color:#276c9b}
-    .welcome h2{font-weight:900;font-size:20px;letter-spacing:-.4px;line-height:1.26;margin:11px 0 10px}
-    .welcome p{font-size:13px;color:#5c5a53;line-height:1.65;max-width:660px;margin:0}
-    .topic-index{display:flex;flex-wrap:wrap;gap:0;margin-top:22px;padding-top:14px;border-top:1px solid var(--line)}
-    .topic-index span{font-size:11px;font-weight:750;color:#4f5658;padding:4px 14px 4px 0;margin-right:14px;border-right:1px solid #d6d1c7}
-    .topic-index span:last-child{border:0}
-    .exchange{border:1px solid var(--ink);background:var(--white);display:flex;flex-direction:column}
-    .exchange-hdr{padding:10px 14px;background:#f0ece4;border-bottom:1px solid var(--ink);display:flex;gap:10px;justify-content:space-between;align-items:center}
-    .exchange-title{font-size:10px;font-weight:900;letter-spacing:1.3px;text-transform:uppercase;color:#67645d}
-    .exchange-body{padding:15px 18px;font-size:13px;line-height:1.65}
-    .exchange-body.answer{white-space:pre-line;overflow-wrap:anywhere}
-    .exchange-hdr .meta-line{font-size:10px;color:#6d6c65}
-    .answer-card{box-shadow:2px 2px 0 rgba(32,34,31,.11)}
-    .answer-card .exchange-hdr{background:var(--blue-light)}
-    .answer-meta{border-top:1px solid var(--line);padding:12px 15px 13px;display:flex;flex-wrap:wrap;gap:9px;align-items:center;justify-content:space-between}
-    .meta-list{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-    .chip{border:1px solid var(--ink);background:var(--white);padding:4px 7px;font-size:10px;font-weight:800}
-    .chip.mode{background:var(--blue-light)}
-    .chip.red{background:#f5dfdd;color:#85352c}
-    .chip.yellow{background:#fff0d6;color:#795820}
-    .chip.green{background:#e8f3ea;color:#345f46}
-    .metadata-row{margin:0 15px 13px;font-size:11px;color:#77746d;line-height:1.5;overflow-wrap:anywhere}
-    .metadata-row strong{color:#3d4340}
-    details.reason{margin:0 15px 13px;background:#f7f5ef;border-left:3px solid #8eafc7;padding:7px 10px;font-size:11px;line-height:1.5}
-    details.reason summary{cursor:pointer;font-weight:800}
-    details.reason div{margin-top:7px;color:#60615d}
-    .warning{margin:0 15px 12px;background:#fff0d6;border:1px solid #c9a06f;color:#77592a;padding:10px;font-size:11px}
-    .compare-action{border:2px solid var(--ink);padding:8px 10px;font-size:10px;font-weight:900;background:var(--white);box-shadow:2px 2px 0 var(--ink)}
-    .compare-action:hover{background:var(--blue-light)}
-    .comparison-slot{padding:0 15px 15px}
-    .comparison{background:#f3f0e9;border:1px solid var(--ink);padding:12px}
-    .comparison h4{font-size:12px;margin:0 0 12px}
-    .comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-    .comparison-column{background:var(--white);border:1px solid var(--ink);padding:12px;min-width:0}
-    .comparison-column h5{font-size:11px;margin:0 0 6px}
-    .comparison-column p{font-size:12px;color:#4e4b46;line-height:1.5;white-space:pre-line;margin:0 0 10px;overflow-wrap:anywhere}
-    .comparison-column small{font-size:10px;color:#7f7c73}
-    .loading-line{padding:16px;border:1px solid var(--line);background:var(--white);font-size:12px;font-weight:700;color:#716c64}
-    .loading-line::after{content:"";display:inline-block;width:6px;height:6px;margin-left:10px;background:var(--blue);animation:flash 1s infinite alternate}
-    @keyframes flash{to{opacity:.2}}
-    .prompt-area{border-top:2px solid var(--ink);background:var(--white);padding:15px 16px 14px}
-    .prompt-label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1.15px;margin-bottom:9px}
-    .prompt-line{display:flex;gap:9px}
-    .prompt-line input{min-width:0;flex:1;padding:12px 13px;background:#f9f7f3;border:2px solid var(--ink);border-radius:0;outline:0;font-size:12px}
-    .prompt-line input:focus{background:var(--white);box-shadow:0 0 0 3px #c0ddf2}
-    .primary{background:var(--blue);color:white;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:11px 17px;font-size:12px;font-weight:900;border-radius:0;white-space:nowrap}
-    .primary:hover{background:var(--blue-hover)}
-    .prompt-foot{margin-top:9px;display:flex;gap:10px;justify-content:space-between;font-size:10px;color:#837d73}
-    .right-sidebar{display:flex;flex-direction:column;gap:17px;overflow-y:auto;padding:0 7px 8px 0}
-    .right-sidebar .outline-panel{overflow:hidden;flex-shrink:0}
-    .right-heading{padding:15px 15px 12px;border-bottom:2px solid var(--ink);display:flex;align-items:center;justify-content:space-between}
-    .right-heading h2{font-size:17px;margin:0;font-weight:900;letter-spacing:-.45px}
-    .aside-link{font-size:10px;font-weight:800;text-decoration:underline;cursor:pointer;background:none;border:0;padding:0}
-    .scenario-section{padding:13px 15px 12px}
-    .scenario-section+.scenario-section{border-top:1px solid var(--line)}
-    .scenario-caption{color:#2e658d;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:900;margin:0 0 8px}
-    .question-button{width:100%;display:flex;justify-content:space-between;gap:10px;background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;text-align:left;padding:10px 0;font-size:12px;line-height:1.45;margin-top:0}
-    .question-button:hover{background:var(--blue-faint);border-color:var(--blue-hover);padding-left:5px;padding-right:5px}
-    .question-button .arrow{font-weight:900;color:var(--blue);flex:0 0 auto}
-    .status-panel{padding:0 15px 15px}
-    .status-panel .status-row{font-size:11px;display:flex;align-items:start;justify-content:space-between;gap:7px;padding:10px 0;border-bottom:1px solid var(--line)}
-    .status-panel .status-row label{color:#77716b;flex:0 0 40%}
-    .status-panel .status-row strong{flex:1;text-align:right;font-size:11px;overflow-wrap:anywhere}
-    .reason-inline{font-size:11px;line-height:1.6;color:#68645d;padding-top:11px}
-    .right-notice{background:#f2f1eb;padding:12px 14px;font-size:11px;line-height:1.55;color:#65625d;border-top:1px solid var(--line)}
-    .right-notice strong{color:var(--ink)}
-    .overlay{position:fixed;inset:0;background:rgba(30,33,33,.55);display:flex;align-items:center;justify-content:center;padding:26px;z-index:40}
-    .overlay.hidden{display:none}
-    .modal{width:min(810px,96vw);max-height:88vh;overflow:auto;background:var(--paper);border:2px solid var(--ink);box-shadow:7px 7px 0 var(--ink)}
-    .modal-head{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:17px 20px;border-bottom:2px solid var(--ink);background:var(--white)}
-    .modal-head h2{font-size:21px;letter-spacing:-.5px;margin:0}
-    .modal-head p{font-size:11px;color:#74706a;margin:5px 0 0}
-    .modal-close{border:2px solid var(--ink);font-size:19px;font-weight:900;background:var(--white);padding:0;width:35px;height:35px;box-shadow:2px 2px 0 var(--ink)}
-    .modal-body{padding:19px 20px;overflow:auto}
-    .benchmark-table{border-collapse:collapse;width:100%;font-size:12px;background:var(--white);border:1px solid var(--ink)}
-    .benchmark-table th{background:var(--blue-light);text-align:left;font-size:11px;border-bottom:2px solid var(--ink);padding:12px 10px}
-    .benchmark-table td{border-bottom:1px solid var(--line);padding:12px 10px;vertical-align:top}
-    .benchmark-table td:not(:first-child){font-family:var(--font);font-size:11px}
-    .benchmark-note{background:var(--blue-light);margin-top:13px;padding:12px 14px;font-size:11px;line-height:1.6;color:#3c586c;border:1px solid #b9d4e7}
-    .modal-foot{padding:13px 20px;display:flex;justify-content:flex-end;border-top:1px solid var(--ink)}
-    @media (max-width:1390px){.workspace-grid{grid-template-columns:206px minmax(480px,1fr) 260px;gap:18px;padding:22px 20px 22px}.masthead{padding:0 19px}.top-navigation button{padding:10px}.right-sidebar{gap:12px}}
-    @media (max-width:1120px){.app{min-width:1050px}.workspace-grid{grid-template-columns:192px minmax(480px,1fr) 230px;gap:15px;padding:18px 14px 18px}}
+      /* Archival Ledger Paper & Forest-Black Ink Palette */
+      --paper: #EDEEEA;
+      --paper-subtle: #E5E7E1;
+      --surface: #F7F8F5;
+      --surface-pure: #FFFFFF;
+      --ink: #15201C;
+      --ink-secondary: #3C4742;
+      --ink-muted: #535E59;
+      --border: #D2D6CE;
+      --border-strong: #B8BEB4;
 
-    /* UET visual identity: use light backgrounds and white type on solid blue */
-    .brand-block{box-shadow:none}
-    .top-navigation button.is-active:hover,.mode-controls button.selected:hover,.primary:hover{color:#fff}
-    .top-navigation button.is-active:focus-visible,.mode-controls button.selected:focus-visible,.primary:focus-visible{outline-color:#0a4d7c}
-    .right-heading{background:var(--white)}
-    .document-header{background:#fdfdfc}
-    .question-card .exchange-hdr{background:#f1f3f3}
-    .chip.mode{background:var(--blue-light);color:#225c84}
-    .profile-fields summary{color:#205f8c}
-    .aside-link:hover{color:var(--blue-hover)}
-    .welcome{background:var(--white)}
-    .prompt-line input:focus{box-shadow:0 0 0 3px #aecfe5}
-    button{transition:background .12s ease,color .12s ease,transform .12s ease}
-    .modal-close:hover{background:var(--blue-light)}
+      /* Spine (Left Sidebar Dark Ink) */
+      --spine-bg: #15201C;
+      --spine-elevated: #1D2B26;
+      --spine-border: rgba(237, 238, 234, 0.14);
+      --spine-text: #F2F4F0;
+      --spine-muted: #B6C0BB;
+
+      /* Single Academic Brass Accent */
+      --accent: #8A6A2F;
+      --accent-ink: #6D5221;
+      --accent-brass-light: #D1B172;
+      --accent-soft: #F3EEE2;
+      --accent-border: #D4C3A1;
+
+      /* Muted Status Tones (WCAG AA compliant on surface/paper) */
+      --status-ok: #3B6B52;
+      --status-ok-bg: #EDF3EF;
+      --status-ok-border: #BACDC1;
+
+      --status-warn: #9C6B2E;
+      --status-warn-ink: #7E541F;
+      --status-warn-bg: #F6F0E6;
+      --status-warn-border: #D9C6A3;
+
+      --status-danger: #8C3A32;
+      --status-danger-bg: #F6ECEA;
+      --status-danger-border: #D6B2AD;
+
+      --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+      --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+
+      --radius-xs: 2px;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+
+      /* Chat Wallpaper Configuration (Only inside #viewChat) */
+      --chat-wallpaper-url: url('/static/assets/chat-wallpaper.jpg');
+      --chat-wallpaper-tint-color: var(--paper);
+      --chat-wallpaper-tint-opacity: 0.80;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.5;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; border: 0; background: none; color: inherit; }
+    button:disabled { opacity: 0.6; cursor: wait; }
+    a { color: inherit; text-decoration: none; }
+    button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .mono {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .serif { font-family: var(--font-serif); }
+
+    /* Shell Layout */
+    .workspace-shell {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    /* Left Sidebar (Book Spine #15201C) */
+    .sidebar {
+      width: 256px;
+      min-width: 256px;
+      background: var(--spine-bg);
+      color: var(--spine-text);
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #0E1613;
+      z-index: 20;
+    }
+    .brand-header {
+      padding: 16px 16px 14px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      border-bottom: 1px solid var(--spine-border);
+    }
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-pure);
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid var(--accent);
+    }
+    .brand-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .brand-title {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      color: var(--spine-text);
+    }
+    .brand-badge {
+      display: inline-block;
+      margin-top: 2px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--accent-brass-light);
+    }
+
+    /* Advisor Identity Block (Flat hairline ledger entry inside spine) */
+    .advisor-card {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--spine-border);
+      background: var(--spine-elevated);
+    }
+    .advisor-top { display: flex; align-items: center; gap: 10px; }
+    .advisor-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--spine-bg);
+      border: 1px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--accent-brass-light);
+      flex-shrink: 0;
+    }
+    .advisor-name {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 13.5px;
+      color: var(--spine-text);
+      line-height: 1.3;
+    }
+    .advisor-role { font-size: 11.5px; color: var(--spine-muted); margin-top: 1px; }
+    .advisor-meta {
+      margin-top: 11px;
+      padding-top: 10px;
+      border-top: 1px solid var(--spine-border);
+      display: grid;
+      gap: 6px;
+      font-size: 11.5px;
+    }
+    .advisor-meta-row { display: flex; justify-content: space-between; gap: 6px; color: var(--spine-muted); }
+    .advisor-meta-row strong { color: var(--spine-text); font-weight: 600; text-align: right; }
+
+    /* Navigation Menu */
+    .nav-section-label {
+      padding: 14px 16px 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--spine-muted);
+    }
+    .nav-menu {
+      padding: 0 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: var(--radius-xs);
+      border-left: 3px solid transparent;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--spine-muted);
+      text-align: left;
+      transition: background 0.14s ease, color 0.14s ease;
+    }
+    .nav-item svg, .nav-item i { width: 15px; height: 15px; flex-shrink: 0; }
+    .nav-item:hover { background: rgba(255, 255, 255, 0.05); color: var(--spine-text); }
+    .nav-item.active {
+      background: var(--spine-elevated);
+      color: var(--spine-text);
+      font-weight: 600;
+      border-left-color: var(--accent-brass-light);
+    }
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 1px 6px;
+      border-radius: var(--radius-xs);
+      border: 1px solid var(--spine-border);
+      color: var(--spine-muted);
+    }
+
+    .sidebar-footer {
+      padding: 11px 16px;
+      border-top: 1px solid var(--spine-border);
+      font-size: 11px;
+      color: var(--spine-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-brass-light); flex-shrink: 0; }
+
+    /* Center Workspace */
+    .main-area {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--paper);
+    }
+    .topbar {
+      min-height: 52px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1 1 auto; overflow: hidden; }
+    .topbar-title {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .topbar-class-chip {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: var(--radius-xs);
+      background: var(--accent-soft);
+      color: var(--accent-ink);
+      border: 1px solid var(--accent-border);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .topbar-controls { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; flex-shrink: 0; }
+    .topbar-controls .btn-outline { padding: 5px 9px; font-size: 11.5px; }
+    .topbar-controls .health-pill { padding: 4px 8px; font-size: 11px; }
+
+    /* Segmented Control */
+    .segmented-pill {
+      display: inline-flex;
+      background: var(--paper);
+      padding: 2px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+    }
+    .segmented-pill button {
+      padding: 3px 7px;
+      border-radius: var(--radius-xs);
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      transition: background 0.12s ease, color 0.12s ease;
+      white-space: nowrap;
+    }
+    .segmented-pill button:hover { color: var(--ink); }
+    .segmented-pill button.active {
+      background: var(--ink);
+      color: var(--surface);
+      font-weight: 600;
+    }
+
+    /* Crisp Official Buttons (No SaaS Gradients) */
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 11px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--surface-pure);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink);
+      transition: border-color 0.14s ease, background 0.14s ease, color 0.14s ease;
+      white-space: nowrap;
+    }
+    .btn-outline:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent-ink);
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 13px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--surface);
+      font-size: 12px;
+      font-weight: 600;
+      transition: background 0.14s ease, border-color 0.14s ease;
+      white-space: nowrap;
+    }
+    .btn-primary:hover {
+      background: #23332D;
+      border-color: #23332D;
+    }
+
+    /* Engine Health Indicator */
+    .health-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-pure);
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      white-space: nowrap;
+    }
+    .health-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--status-warn); flex-shrink: 0; }
+    .health-dot.ready { background: var(--status-ok); }
+    .health-dot.fallback { background: var(--status-warn); }
+
+    /* Views Switcher */
+    .view-pane { display: none; flex: 1; min-height: 0; flex-direction: column; }
+    .view-pane.active { display: flex; }
+
+    /* Chat Stage & Wallpaper (2-layer composited backdrop + solid bubbles) */
+    .chat-stage {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: var(--paper);
+    }
+    .chat-wallpaper-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: var(--chat-wallpaper-url);
+      background-size: cover;
+      background-position: center 18%;
+      background-repeat: no-repeat;
+      filter: blur(1px) saturate(0.85);
+      transform: scale(1.02) translateZ(0);
+      transition: opacity 0.2s ease;
+    }
+    .chat-wallpaper-layer::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(138, 106, 47, 0.08);
+    }
+    .chat-wallpaper-layer::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--chat-wallpaper-tint-color);
+      opacity: var(--chat-wallpaper-tint-opacity);
+    }
+    .chat-stage.wallpaper-off .chat-wallpaper-layer {
+      opacity: 0;
+    }
+
+    /* Chat Flow */
+    .chat-scroll {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      height: 100%;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 12px 24px 16px;
+    }
+    .chat-toolbar {
+      max-width: 820px;
+      margin: 0 auto 8px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .wallpaper-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-pure);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      transition: border-color 0.14s ease, color 0.14s ease, background 0.14s ease;
+    }
+    .wallpaper-toggle[aria-pressed="true"] {
+      border-color: var(--accent-border);
+      color: var(--accent-ink);
+    }
+    .wallpaper-toggle:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent-ink);
+    }
+    .chat-container {
+      max-width: 820px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .welcome-card {
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+    }
+    .welcome-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-ink);
+    }
+    .welcome-card h1 {
+      font-family: var(--font-serif);
+      margin: 6px 0 6px;
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+    .welcome-card p { margin: 0; color: var(--ink-secondary); font-size: 13px; line-height: 1.6; }
+    .welcome-grid {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+    .welcome-mini {
+      padding: 0 14px 0 0;
+      font-size: 12px;
+    }
+    .welcome-mini + .welcome-mini {
+      padding-left: 14px;
+      border-left: 1px solid var(--border);
+    }
+    .welcome-mini strong { display: block; color: var(--ink); margin-bottom: 3px; font-size: 12.5px; font-weight: 600; }
+    .welcome-mini span { color: var(--ink-muted); font-size: 11.5px; line-height: 1.45; display: block; }
+
+    /* User Query Block */
+    .msg-user-wrap { display: flex; justify-content: flex-end; }
+    .msg-user {
+      max-width: 78%;
+      background: var(--ink);
+      color: var(--surface);
+      padding: 11px 15px;
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--accent);
+      font-size: 13.5px;
+      font-weight: 500;
+      white-space: pre-wrap;
+    }
+
+    /* AI 3-Tier Sheet */
+    .msg-ai {
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .ai-tier1 {
+      padding: 9px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .ai-badges { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: var(--radius-xs);
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge.rag { background: var(--status-ok-bg); color: var(--status-ok); border: 1px solid var(--status-ok-border); }
+    .badge.lora { background: var(--accent-soft); color: var(--accent-ink); border: 1px solid var(--accent-border); }
+    .badge.red { background: var(--status-danger-bg); color: var(--status-danger); border: 1px solid var(--status-danger-border); }
+    .badge.yellow { background: var(--status-warn-bg); color: var(--status-warn-ink); border: 1px solid var(--status-warn-border); }
+    .badge.green { background: var(--status-ok-bg); color: var(--status-ok); border: 1px solid var(--status-ok-border); }
+    .badge.signal { background: var(--surface-pure); color: var(--ink-secondary); border: 1px solid var(--border); font-weight: 500; }
+    .badge.source { background: var(--accent-soft); color: var(--accent-ink); border: 1px solid var(--accent-border); }
+    .ai-latency { font-size: 11px; color: var(--ink-muted); font-weight: 500; }
+
+    .ai-tier2 {
+      padding: 16px 18px;
+      font-size: 13.5px;
+      line-height: 1.68;
+      color: var(--ink);
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+    .ai-tier2 mark {
+      background: var(--accent-soft);
+      color: var(--accent-ink);
+      padding: 1px 5px;
+      border-radius: var(--radius-xs);
+      font-weight: 600;
+      border: 1px solid var(--accent-border);
+    }
+
+    .ai-warning {
+      margin: 0 18px 12px;
+      padding: 9px 12px;
+      border-radius: var(--radius-xs);
+      background: var(--status-warn-bg);
+      border: 1px solid var(--status-warn-border);
+      border-left: 3px solid var(--status-warn);
+      color: var(--status-warn-ink);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ai-tier3 {
+      padding: 9px 16px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .ai-provenance {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 11.5px;
+      color: var(--ink-secondary);
+      min-width: 0;
+    }
+    .btn-compare {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--surface-pure);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--ink);
+      transition: border-color 0.14s ease, color 0.14s ease, background 0.14s ease;
+    }
+    .btn-compare:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-ink); }
+
+    .xray-details {
+      padding: 0 16px 10px;
+      background: var(--surface);
+      font-size: 12px;
+      color: var(--ink-secondary);
+    }
+    .xray-details summary { cursor: pointer; font-weight: 600; color: var(--ink); padding: 4px 0; }
+    .xray-details div {
+      margin-top: 6px;
+      padding: 9px 12px;
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      line-height: 1.55;
+    }
+
+    /* Comparison Diff Grid */
+    .cmp-box { padding: 0 16px 16px; background: var(--surface); }
+    .cmp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .cmp-col {
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+    }
+    .cmp-col h5 { margin: 0 0 8px; font-size: 12.5px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+    .cmp-col p { margin: 0 0 8px; font-size: 12.5px; line-height: 1.58; white-space: pre-line; color: var(--ink-secondary); overflow-wrap: anywhere; }
+    .cmp-col p mark { background: var(--accent-soft); color: var(--accent-ink); padding: 1px 4px; border-radius: var(--radius-xs); font-weight: 600; }
+    .cmp-col small { font-size: 11px; color: var(--ink-muted); display: block; }
+
+    /* Input Dock */
+    .input-dock-wrap { padding: 10px 24px 16px; background: var(--paper); border-top: 1px solid var(--border); }
+    .input-dock {
+      max-width: 820px;
+      margin: 0 auto;
+      background: var(--surface-pure);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 7px 9px 7px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .input-dock:focus-within { border-color: var(--accent); }
+    .input-dock input { flex: 1; border: 0; outline: 0; font-size: 13.5px; background: transparent; color: var(--ink); }
+    .input-dock input::placeholder { color: var(--ink-muted); }
+    .dock-hint { max-width: 820px; margin: 6px auto 0; display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-muted); padding: 0 2px; }
+
+    /* Typing Skeleton */
+    .skeleton-card {
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--ink-secondary);
+      font-weight: 500;
+    }
+    .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 1s infinite alternate; }
+    @keyframes pulse { from { opacity: 0.35; } to { opacity: 1; } }
+
+    /* Roster & News Views */
+    .panel-scroll { flex: 1; overflow-y: auto; padding: 20px 24px; }
+    .panel-inner { max-width: 1060px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+    .panel-banner {
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--ink);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .panel-banner h2 {
+      font-family: var(--font-serif);
+      margin: 0 0 3px;
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .panel-banner p { margin: 0; font-size: 12.5px; color: var(--ink-muted); }
+    .panel-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    /* Horizontal Ledger Summary Strip (Replaces 4 discrete KPI cards) */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    .kpi-card {
+      padding: 13px 16px;
+      border-right: 1px solid var(--border);
+    }
+    .kpi-card:last-child { border-right: 0; }
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-muted);
+    }
+    .kpi-val {
+      font-family: var(--font-serif);
+      font-variant-numeric: tabular-nums;
+      font-size: 26px;
+      font-weight: 600;
+      line-height: 1.15;
+      margin-top: 3px;
+      color: var(--ink);
+    }
+    .kpi-sub { font-size: 11px; color: var(--ink-muted); margin-top: 3px; }
+
+    /* Roster Ledger Table */
+    .table-card {
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .roster-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .roster-table th {
+      background: var(--surface);
+      text-align: left;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      border-bottom: 1px solid var(--border-strong);
+      white-space: nowrap;
+    }
+    .roster-table th.num, .roster-table td.num { text-align: right; }
+    .roster-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .roster-table tbody tr {
+      border-left: 3px solid var(--border-strong);
+      transition: background 0.12s ease;
+    }
+    .roster-table tbody tr:hover td { background: var(--surface); }
+    .roster-table tbody tr.row-ok { border-left-color: var(--status-ok); }
+    .roster-table tbody tr.row-warn { border-left-color: var(--status-warn); }
+    .roster-table tbody tr.row-danger { border-left-color: var(--status-danger); }
+    .roster-table tbody tr.row-overload { border-left-color: var(--accent); }
+    .roster-table tbody tr.row-neutral { border-left-color: var(--border-strong); }
+
+    .student-name-cell {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 13.5px;
+      color: var(--ink);
+    }
+
+    .status-tags { display: flex; flex-direction: column; gap: 2px; min-width: 155px; }
+    .status-inline { font-size: 12px; font-weight: 500; line-height: 1.35; white-space: nowrap; }
+    .status-inline.ok { color: var(--status-ok); font-weight: 600; }
+    .status-inline.warn { color: var(--status-warn-ink); font-weight: 600; }
+    .status-inline.danger { color: var(--status-danger); font-weight: 600; }
+    .status-inline.brass { color: var(--accent-ink); font-weight: 600; }
+    .status-inline.neutral { color: var(--ink-muted); }
+
+    .ledger-subpanel {
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+    }
+    .ledger-subpanel-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ledger-subpanel-hdr h3 {
+      font-family: var(--font-serif);
+      margin: 0;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .failed-course-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .failed-course-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .failed-count-tag {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--status-danger);
+      white-space: nowrap;
+    }
+
+    .news-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .news-card {
+      background: var(--surface-pure);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 15px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      transition: border-color 0.14s ease;
+    }
+    .news-card:hover { border-color: var(--accent); }
+    .news-meta { display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: var(--ink-muted); }
+    .news-cat { color: var(--accent-ink); font-weight: 600; }
+    .news-title {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--ink);
+      line-height: 1.38;
+    }
+    .news-title:hover { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 2px; }
+    .news-summary { font-size: 12.5px; color: var(--ink-secondary); line-height: 1.55; margin: 0; flex: 1; }
+
+    /* Right Inspector (Continuous Unified Hairline Ledger — NO nested cards) */
+    .right-panel {
+      width: 320px;
+      min-width: 320px;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .side-section {
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .side-section:last-child { border-bottom: 0; }
+    .side-box-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .side-box-hdr h3 {
+      font-family: var(--font-serif);
+      margin: 0;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .side-action-link {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--accent-ink);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .side-action-link:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+    .mini-stat-list { display: grid; gap: 0; }
+    .mini-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .mini-stat-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .mini-stat-row span { color: var(--ink-secondary); font-weight: 500; }
+    .mini-stat-row strong {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .mini-stat-row.ok strong { color: var(--status-ok); }
+    .mini-stat-row.warn strong { color: var(--status-warn-ink); }
+    .mini-stat-row.danger strong { color: var(--status-danger); }
+    .mini-stat-row.info strong { color: var(--accent-ink); }
+
+    .scenario-list {
+      margin: 0 -16px -15px;
+      display: flex;
+      flex-direction: column;
+    }
+    .scenario-btn {
+      width: 100%;
+      text-align: left;
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      background: transparent;
+      transition: background 0.14s ease, border-left-color 0.14s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .scenario-btn:hover {
+      background: var(--accent-soft);
+      border-left-color: var(--accent);
+    }
+    .scenario-tag { font-size: 11px; font-weight: 600; }
+    .scenario-tag.rag { color: var(--status-ok); }
+    .scenario-tag.lora { color: var(--accent-ink); }
+    .scenario-tag.news { color: var(--ink-secondary); }
+    .scenario-tag.red { color: var(--status-danger); }
+    .scenario-q { font-size: 12px; font-weight: 500; color: var(--ink); line-height: 1.42; }
+
+    .telemetry-list { display: grid; gap: 0; font-size: 12px; }
+    .tel-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+    }
+    .tel-row:last-child { border-bottom: 0; }
+    .tel-row span { color: var(--ink-muted); }
+    .tel-row strong { color: var(--ink); text-align: right; font-weight: 600; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(21, 32, 28, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 50;
+    }
+    .modal-overlay.hidden { display: none; }
+    .modal-card {
+      width: min(820px, 95vw);
+      background: var(--surface-pure);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 12px 32px rgba(21, 32, 28, 0.18);
+      border: 1px solid var(--border-strong);
+      overflow: hidden;
+    }
+    .modal-head { padding: 15px 20px; border-bottom: 1px solid var(--border); background: var(--surface); display: flex; justify-content: space-between; align-items: center; }
+    .modal-head h2 { font-family: var(--font-serif); margin: 0; font-size: 17px; font-weight: 600; color: var(--ink); }
+    .modal-body { padding: 18px 20px; overflow-x: auto; }
+    .bench-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .bench-table th { background: var(--surface); text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border-strong); font-size: 12px; color: var(--ink-secondary); }
+    .bench-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); }
+    .modal-foot { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; background: var(--surface); }
+
+    @media (max-width: 1360px) {
+      .topbar { flex-wrap: wrap; }
+    }
+    @media (max-width: 1180px) {
+      .right-panel { display: none; }
+      .news-grid { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .kpi-card:nth-child(2n) { border-right: 0; }
+      .kpi-card:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+      .welcome-grid { grid-template-columns: 1fr; gap: 10px; }
+      .welcome-mini + .welcome-mini { padding-left: 0; border-left: 0; padding-top: 10px; border-top: 1px solid var(--border); }
+    }
+    @media (max-width: 780px) {
+      .workspace-shell { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        min-width: 0;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 10px;
+        border-right: 0;
+        border-bottom: 1px solid #0E1613;
+      }
+      .brand-header { padding: 4px 6px; border-bottom: 0; }
+      .advisor-card, .nav-section-label, .sidebar-footer { display: none; }
+      .nav-menu {
+        flex-direction: row;
+        flex: 0 1 auto;
+        gap: 4px;
+        padding: 0;
+        overflow-x: auto;
+      }
+      .nav-item {
+        padding: 6px 8px;
+        border-left: 0;
+        border-bottom: 2px solid transparent;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      .nav-item.active { border-left-color: transparent; border-bottom-color: var(--accent-brass-light); }
+      .nav-badge { display: none; }
+      .topbar-controls { flex-wrap: wrap; gap: 5px; }
+      .chat-scroll { padding: 10px 12px 14px; }
+      .input-dock-wrap { padding: 8px 12px 12px; }
+      .dock-hint { flex-direction: column; gap: 2px; }
+      .msg-user { max-width: 90%; }
+      .cmp-grid { grid-template-columns: 1fr; }
+    }
   </style>
-  <link rel="icon" type="image/png" href="/static/assets/uet-logo.png">
 </head>
 <body>
-  <div class="app">
-    <header class="masthead">
-      <div class="brand" aria-label="ChronoReg UET">
-        <div class="brand-block" aria-hidden="true"><img src="/static/assets/uet-logo.png" alt="" width="52" height="52"></div>
-        <div><div class="brand-word">ChronoReg</div><div class="brand-sub">Hỏi đáp học vụ · UET</div></div>
+  <div class="workspace-shell">
+    <!-- LEFT SIDEBAR (w-64 Dark Navy) -->
+    <aside class="sidebar">
+      <div class="brand-header">
+        <div class="brand-logo"><img src="/static/assets/uet-logo.png" alt="UET Logo"></div>
+        <div>
+          <div class="brand-title">ChronoReg</div>
+          <div class="brand-badge">Advisor Copilot v2</div>
+        </div>
       </div>
-      <nav class="top-navigation" aria-label="Điều hướng tra cứu">
-        <button class="is-active" type="button" onclick="focusSearch()">Hỏi đáp</button>
-        <button type="button" onclick="openBenchmarkModal()">Bảng đánh giá</button>
-        <button type="button" onclick="focusTopics()">Câu hỏi thường gặp</button>
-      </nav>
-      <div class="header-meta"><strong>TRƯỜNG ĐẠI HỌC CÔNG NGHỆ</strong>Đại học Quốc gia Hà Nội</div>
-    </header>
-    <div class="workspace-grid">
-      <aside class="side">
-        <div class="outline-panel">
-          <section class="side-block">
-            <div class="block-kicker">Dịch vụ sinh viên</div>
-            <h2 class="block-title">Danh mục</h2>
-            <nav aria-label="Phân hệ sinh viên">
-              <a href="#" class="side-link"><span>Tổng quan học tập</span><span class="side-index">01</span></a>
-              <a href="#" class="side-link"><span>Thời khóa biểu</span><span class="side-index">02</span></a>
-              <a href="#" class="side-link"><span>Học phí &amp; Học bổng</span><span class="side-index">03</span></a>
-              <a href="#" class="side-link current" aria-current="page"><span>Hỏi đáp học vụ</span><span class="side-index">04</span></a>
-            </nav>
-          </section>
-          <section class="side-block profile-block">
-            <div class="block-kicker">Tài khoản</div>
-            <h2 class="block-title">Thông tin sinh viên</h2>
-            <p class="profile-empty">Hồ sơ sinh viên chưa được liên kết với hệ thống.</p>
-            <details class="profile-fields"><summary>Xem các trường thông tin</summary>
-              <div class="data-row"><span class="field-label">Tên sinh viên</span><span class="field-value">Chưa kết nối</span></div>
-              <div class="data-row"><span class="field-label">MSSV</span><span class="field-value">Chưa kết nối</span></div>
-              <div class="data-row"><span class="field-label">Khóa</span><span class="field-value">Chưa kết nối</span></div>
-              <div class="data-row"><span class="field-label">Ngành</span><span class="field-value">Chưa kết nối</span></div>
-              <div class="data-row"><span class="field-label">GPA tích lũy</span><span class="field-value">Chưa kết nối</span></div>
-              <div class="data-row"><span class="field-label">Tiến độ tín chỉ</span><span class="field-value">Chưa kết nối</span></div>
-            </details>
-          </section>
-          <section class="side-block">
-            <div class="block-kicker">Phương thức xử lý</div>
-            <div class="side-footer"><span class="dot"></span><span>Tự động · LoRA · RAG</span></div>
-          </section>
-        </div>
-      </aside>
-      <main class="center">
-        <div class="page-intro">
-          <div class="eyebrow">UET · HỖ TRỢ SINH VIÊN</div>
-          <h1>Hỏi đáp học vụ</h1>
-          <p>Quy chế đào tạo, thủ tục, học phí và học bổng dành cho sinh viên UET.</p>
-        </div>
-        <section class="outline-panel document-panel" aria-label="Phiên tra cứu học vụ">
-          <div class="document-header">
-            <div><div class="doc-heading">Nội dung trao đổi</div><div class="doc-sub">Câu hỏi và phản hồi trong phiên hiện tại</div></div>
-            <div class="mode-controls" role="group" aria-label="Chế độ mô hình">
-              <button id="btnModeAuto" class="selected" type="button" onclick="setEngineMode('auto')">Tự động</button>
-              <button id="btnModeLora" type="button" onclick="setEngineMode('continual_lora')">LoRA 3B</button>
-              <button id="btnModeRag" type="button" onclick="setEngineMode('chrono_rag')">Chrono-RAG</button>
-            </div>
-          </div>
-          <div id="chatScrollContainer">
-            <div id="chatList">
-              <section class="welcome">
-                <div class="section-no">BẮT ĐẦU</div>
-                <h2>Đặt câu hỏi về học vụ</h2>
-                <p>Nhập nội dung cần hỏi vào ô bên dưới hoặc chọn câu hỏi thường gặp theo từng nhóm ở bên phải.</p>
 
-              </section>
+      <div class="advisor-card">
+        <div class="advisor-top">
+          <div class="advisor-avatar" id="advAvatar">QT</div>
+          <div>
+            <div class="advisor-name" id="advName">Ths. Phạm Thị Quỳnh Trang</div>
+            <div class="advisor-role" id="advUnit">Cố vấn, Khoa CNTT</div>
+          </div>
+        </div>
+        <div class="advisor-meta">
+          <div class="advisor-meta-row"><span>Lớp hành chính</span><strong class="mono" id="advClass">QH-2024-I/CQ-C-CLC1</strong></div>
+          <div class="advisor-meta-row"><span>Khóa / Ngành</span><strong id="advMajor">K69, CNTT</strong></div>
+          <div class="advisor-meta-row"><span>Sĩ số quản lý</span><strong id="advCount">30 sinh viên</strong></div>
+        </div>
+      </div>
+
+      <div class="nav-section-label">Không gian cố vấn</div>
+      <nav class="nav-menu">
+        <button type="button" class="nav-item active" id="navChat" onclick="switchView('chat')">
+          <i data-lucide="message-square"></i>
+          <span>Trợ lý cố vấn AI</span>
+        </button>
+        <button type="button" class="nav-item" id="navRoster" onclick="switchView('roster')">
+          <i data-lucide="users"></i>
+          <span>Bảng điểm lớp K69-CNTT1</span>
+          <span class="nav-badge" id="navRosterCount">30</span>
+        </button>
+        <button type="button" class="nav-item" id="navNews" onclick="switchView('news')">
+          <i data-lucide="newspaper"></i>
+          <span>Tin tức trang 1 UET</span>
+          <span class="nav-badge" id="navNewsCount">8</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <span class="status-dot"></span>
+          <span id="sidebarStatusText">RAG | LoRA | Pre-Check</span>
+        </div>
+        <span class="mono" style="font-size:10.5px;">v2.0</span>
+      </div>
+    </aside>
+
+    <!-- CENTER WORKSPACE -->
+    <main class="main-area">
+      <header class="topbar">
+        <div class="topbar-left">
+          <span class="topbar-title" id="topbarTitle">Trợ lý Cố vấn AI</span>
+          <span class="topbar-class-chip mono" id="topbarClassChip">K69-CNTT1 | 30 SV</span>
+        </div>
+        <div class="topbar-controls">
+          <div class="segmented-pill" role="group" aria-label="Chọn mô hình">
+            <button type="button" id="btnModeAuto" class="active" onclick="setEngineMode('auto')">Auto Router</button>
+            <button type="button" id="btnModeLora" onclick="setEngineMode('continual_lora')">LoRA 3B</button>
+            <button type="button" id="btnModeRag" onclick="setEngineMode('chrono_rag')">Chrono-RAG 3B</button>
+          </div>
+          <button type="button" class="btn-outline" onclick="openBenchmarkModal()">
+            <i data-lucide="bar-chart-3" style="width:14px;height:14px;"></i>
+            <span>Benchmark (90 câu)</span>
+          </button>
+          <div class="health-pill" id="llmHealthPill" title="Trạng thái hạ tầng suy luận mô hình 3B">
+            <span class="health-dot fallback" id="llmHealthDot"></span>
+            <span id="llmHealthText">Cached / Extractive Mode</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- VIEW 1: CHAT -->
+      <section class="view-pane active" id="viewChat">
+        <div class="chat-stage" id="chatStage">
+          <div class="chat-wallpaper-layer" aria-hidden="true"></div>
+          <div class="chat-scroll" id="chatScrollContainer">
+            <div class="chat-toolbar">
+              <button type="button" class="wallpaper-toggle" id="btnToggleWallpaper" aria-pressed="true" onclick="toggleChatWallpaper()">
+                <i data-lucide="image" style="width:12px;height:12px;"></i>
+                <span id="wallpaperToggleLabel">Ảnh nền: Bật</span>
+              </button>
+            </div>
+            <div class="chat-container" id="chatList">
+            <div class="welcome-card">
+              <div class="welcome-kicker">
+                <i data-lucide="shield-check" style="width:14px;height:14px;"></i>
+                <span>UET Academic Advisor Copilot</span>
+              </div>
+              <h1 id="welcomeGreeting">Xin chào Ths. Phạm Thị Quỳnh Trang!</h1>
+              <p id="welcomeSub">Trợ lý AI kết nối trực tiếp với <strong>CSDL JSONL 30 sinh viên × 26 môn lớp QH-2024-I/CQ-C-CLC1</strong>, <strong>kho quy chế UET khóa SHA-256</strong> và <strong>tin tức trang 1 cổng thông tin UET</strong>.</p>
+              <div class="welcome-grid">
+                <div class="welcome-mini">
+                  <strong>Deterministic Pre-Check</strong>
+                  <span>Tính toán chính xác GPA, CPA, ĐRL, học vượt &amp; cảnh báo học vụ trước khi sinh câu trả lời.</span>
+                </div>
+                <div class="welcome-mini">
+                  <strong>Chrono-RAG vs LoRA 3B</strong>
+                  <span>Khóa năm học 2021–2026 qua SHA-256 Registry hoặc tư vấn quy trình từ LoRA 3B.</span>
+                </div>
+                <div class="welcome-mini">
+                  <strong>Cổng An toàn 3 Tầng</strong>
+                  <span>Cảnh báo giao thoa quy chế cũ-mới (YELLOW) và chặn xin ngoại lệ (RED).</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="prompt-area">
-            <div class="prompt-label">Câu hỏi của bạn</div>
-            <div class="prompt-line">
-              <input id="promptInput" autocomplete="off" type="text" placeholder="Nhập nội dung cần hỏi về học vụ, học phí, học bổng..." onkeydown="if(event.key==='Enter') handleSend()">
-              <button class="primary" id="btnSend" type="button" onclick="handleSend()">Gửi câu hỏi</button>
+          </div>
+        </div>
+
+        <div class="input-dock-wrap">
+          <div class="input-dock">
+            <input id="promptInput" type="text" autocomplete="off"
+              placeholder="Hỏi về bảng điểm lớp K69-CNTT1, xét học bổng KKHT, cảnh báo học vụ, tin tức UET..."
+              onkeydown="if(event.key==='Enter') handleSend()">
+            <button type="button" class="btn-primary" id="btnSend" onclick="handleSend()">
+              <i data-lucide="send" style="width:14px;height:14px;"></i>
+              <span>Gửi</span>
+            </button>
+          </div>
+          <div class="dock-hint">
+            <span>Nhấn Enter để gửi, hoặc chọn một tình huống mẫu ở cột phải</span>
+            <span class="mono">ChronoReg | UET Advisor</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: CLASS ROSTER -->
+      <section class="view-pane" id="viewRoster">
+        <div class="panel-scroll">
+          <div class="panel-inner">
+            <div class="panel-banner">
+              <div>
+                <h2 id="rosterTitle">Bảng điểm lớp QH-2024-I/CQ-C-CLC1 (K69-CNTT1)</h2>
+                <p id="rosterSubtitle">Cùng khóa QH-2024, Ngành Công nghệ Thông tin — Cập nhật lần cuối: —</p>
+              </div>
+              <div class="panel-actions">
+                <button type="button" class="btn-outline" onclick="askAiAboutClass('Soi bảng điểm lớp mình kỳ này, liệt kê những em đủ điều kiện xét học bổng KKHT và chỉ rõ em nào bị trượt vì điểm rèn luyện?')">
+                  <i data-lucide="file-search" style="width:14px;height:14px;"></i>
+                  <span>Nhờ AI soi bảng điểm lớp</span>
+                </button>
+                <button type="button" class="btn-primary" id="btnRegenerateRoster" onclick="regenerateRoster()">
+                  <i data-lucide="dices" style="width:14px;height:14px;"></i>
+                  <span>Tạo lại điểm ngẫu nhiên</span>
+                </button>
+              </div>
             </div>
-            <div class="prompt-foot"><span>Nhấn Enter để gửi câu hỏi</span><span>ChronoReg · UET</span></div>
+
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-label">Sĩ số lớp</div>
+                <div class="kpi-val" id="kpiTotal">30</div>
+                <div class="kpi-sub" id="kpiSub">Đồng nhất khóa/ngành K69 (26 môn)</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Đủ chuẩn KKHT</div>
+                <div class="kpi-val" style="color:var(--status-ok);" id="kpiScholarship">2</div>
+                <div class="kpi-sub">GPA &ge; 3.2, ĐRL &ge; 80, &ge; 15 TC</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Bẫy ĐRL thấp</div>
+                <div class="kpi-val" style="color:var(--status-warn-ink);" id="kpiTrapped">2</div>
+                <div class="kpi-sub">GPA &ge; 3.2 nhưng ĐRL &lt; 70</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Cảnh báo học vụ</div>
+                <div class="kpi-val" style="color:var(--status-danger);" id="kpiWarning">2</div>
+                <div class="kpi-sub">GPA &lt; 1.0 hoặc nợ &gt; 24 TC</div>
+              </div>
+            </div>
+
+            <div class="table-card">
+              <table class="roster-table">
+                <thead>
+                  <tr>
+                    <th>MSSV</th>
+                    <th>Họ và tên</th>
+                    <th class="num">GPA tích lũy</th>
+                    <th class="num">ĐRL</th>
+                    <th class="num">Tích lũy / Nợ</th>
+                    <th>Phân tích học vụ</th>
+                    <th>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="rosterTableBody">
+                  <tr><td colspan="7" style="text-align:center;color:var(--ink-muted);padding:20px;">Đang tải dữ liệu bảng điểm...</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="ledger-subpanel">
+              <div class="ledger-subpanel-hdr">
+                <h3><i data-lucide="trending-down" style="width:15px;height:15px;color:var(--status-danger);"></i>Môn học có tỷ lệ trượt cao nhất (chỉ mục JSONL 780 bản ghi)</h3>
+              </div>
+              <div id="topFailedBox" style="font-size:12.5px;color:var(--ink-secondary);">Đang tổng hợp...</div>
+            </div>
           </div>
-        </section>
-      </main>
-      <aside class="right-sidebar" aria-label="Câu hỏi thường gặp và chi tiết phản hồi">
-        <section class="outline-panel" id="sampleQuestions">
-          <div class="right-heading"><h2>Câu hỏi thường gặp</h2><button class="aside-link" type="button" onclick="focusSearch()">Tự đặt câu hỏi</button></div>
-          <div class="scenario-section">
-            <p class="scenario-caption">Học tập và thủ tục</p>
-            <button class="question-button" onclick="runScenario('Quy trình bảo lưu kết quả học tập tại UET như thế nào?')"><span>Quy trình bảo lưu kết quả học tập tại UET?</span><span class="arrow">↗</span></button>
-            <button class="question-button" onclick="runScenario('Sinh viên bị cảnh báo học vụ cần làm gì để cải thiện?')"><span>Cách xử lý khi bị cảnh báo kết quả học tập?</span><span class="arrow">↗</span></button>
+        </div>
+      </section>
+
+      <!-- VIEW 3: UET LATEST NEWS -->
+      <section class="view-pane" id="viewNews">
+        <div class="panel-scroll">
+          <div class="panel-inner">
+            <div class="panel-banner">
+              <div>
+                <h2>Tin tức và thông báo mới nhất trang 1 UET</h2>
+                <p id="newsSubtitle">Cào trang 1 từ mục Tin sinh viên và Đào tạo (tự động dùng cache cục bộ khi mất mạng)</p>
+              </div>
+              <div class="panel-actions">
+                <button type="button" class="btn-outline" onclick="askAiAboutClass('Dựa trên thông báo mới nhất vừa cào trên trang chủ UET, có tin tức hay học bổng nào phù hợp để tôi nhắc các em trong lớp nộp hồ sơ không?')">
+                  <i data-lucide="file-search" style="width:14px;height:14px;"></i>
+                  <span>Nhờ AI đối chiếu tin với lớp</span>
+                </button>
+                <button type="button" class="btn-primary" id="btnScrapeLatest" onclick="scrapeLatestNews()">
+                  <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i>
+                  <span>Cào dữ liệu mới nhất từ UET</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="news-grid" id="newsGrid">
+              <div class="news-card"><p class="news-summary">Đang tải danh sách thông báo...</p></div>
+            </div>
           </div>
-          <div class="scenario-section">
-            <p class="scenario-caption">Học phí và học bổng</p>
-            <button class="question-button" onclick="runScenario('Học phí tín chỉ chương trình chuẩn năm học 2026-2027 là bao nhiêu?')"><span>Định mức học phí tín chỉ chuẩn 2026–2027?</span><span class="arrow">↗</span></button>
-            <button class="question-button" onclick="runScenario('Điều kiện GPA để nhận học bổng KKHT mới nhất hiện hành là gì?')"><span>Điều kiện GPA xét học bổng KKHT hiện hành?</span><span class="arrow">↗</span></button>
-          </div>
-          <div class="scenario-section">
-            <p class="scenario-caption">Trường hợp khác</p>
-            <button class="question-button" onclick="runScenario('Quy định học phí năm 2023 khác gì so với năm 2026?')"><span>So sánh học phí năm 2023 và năm 2026</span><span class="arrow">↗</span></button>
-            <button class="question-button" onclick="runScenario('Xin cứu xét ngoại lệ miễn học phí do hoàn cảnh khó khăn đặc biệt')"><span>Xin xét ngoại lệ miễn học phí</span><span class="arrow">↗</span></button>
-          </div>
-          <div class="right-notice">Chọn một câu hỏi ở trên để bắt đầu, hoặc nhập câu hỏi khác trong khung trao đổi.</div>
-        </section>
-        <section class="outline-panel">
-          <div class="right-heading"><h2>Chi tiết phản hồi</h2></div>
-          <div class="status-panel" id="telemetryBox">
-            <div class="status-row"><label>Chế độ</label><strong id="telemetryStatus">Chưa gửi câu hỏi</strong></div>
-            <div class="status-row"><label>Yếu tố thời gian</label><strong id="telMetricTemporal">—</strong></div>
-            <div class="status-row"><label>Yếu tố số liệu</label><strong id="telMetricNumeric">—</strong></div>
-            <div class="status-row"><label>Độ trễ</label><strong id="telMetricSpeed">—</strong></div>
-            <div class="status-row"><label>Phân loại tín hiệu</label><strong id="telMetricSynthesis">—</strong></div>
-            <p class="reason-inline" id="telReasonText">Thông tin định tuyến được hiển thị sau khi có phản hồi.</p>
-          </div>
-        </section>
-      </aside>
+        </div>
+      </section>
+    </main>
+
+    <!-- RIGHT INSPECTOR (Unified Hairline Ledger) -->
+    <aside class="right-panel">
+      <section class="side-section">
+        <div class="side-box-hdr">
+          <h3><i data-lucide="book-open" style="width:14px;height:14px;color:var(--accent-ink);"></i><span id="rightSummaryTitle">Tóm tắt lớp K69-CNTT1</span></h3>
+          <button type="button" class="side-action-link" onclick="switchView('roster')">Xem bảng điểm</button>
+        </div>
+        <div class="mini-stat-list">
+          <div class="mini-stat-row"><span>Sĩ số lớp</span><strong id="rightTotal">30 SV</strong></div>
+          <div class="mini-stat-row ok"><span>Đủ chuẩn KKHT</span><strong id="rightScholarship">2 em</strong></div>
+          <div class="mini-stat-row warn"><span>Trượt vì ĐRL</span><strong id="rightTrapped">2 em</strong></div>
+          <div class="mini-stat-row danger"><span>Cảnh báo học vụ</span><strong id="rightWarning">2 em</strong></div>
+          <div class="mini-stat-row info"><span>Đủ chuẩn học vượt 24 TC</span><strong id="rightOverload">6 em</strong></div>
+        </div>
+      </section>
+
+      <section class="side-section">
+        <div class="side-box-hdr">
+          <h3><i data-lucide="list-checks" style="width:14px;height:14px;color:var(--accent-ink);"></i>6 tình huống cố vấn mẫu</h3>
+        </div>
+        <div class="scenario-list" id="sampleQuestionsList">
+          <div style="font-size:12px;color:var(--ink-muted);padding:6px 16px;">Đang tải kịch bản mẫu...</div>
+        </div>
+      </section>
+
+      <section class="side-section">
+        <div class="side-box-hdr">
+          <h3><i data-lucide="activity" style="width:14px;height:14px;color:var(--accent-ink);"></i>Telemetry định tuyến</h3>
+        </div>
+        <div class="telemetry-list">
+          <div class="tel-row"><span>Engine thực thi</span><strong id="telEngine">—</strong></div>
+          <div class="tel-row"><span>Mức rủi ro</span><strong id="telRisk">—</strong></div>
+          <div class="tel-row"><span>Nguồn suy luận</span><strong id="telSource">—</strong></div>
+          <div class="tel-row"><span>Độ trễ</span><strong class="mono" id="telLatency">—</strong></div>
+        </div>
+        <p id="telReason" style="margin:8px 0 0;font-size:11.5px;color:var(--ink-muted);line-height:1.5;">
+          Gửi một câu hỏi để xem phân tích định tuyến chi tiết.
+        </p>
+      </section>
+    </aside>
+  </div>
+
+  <!-- BENCHMARK MODAL -->
+  <div id="benchmarkModal" class="modal-overlay hidden" role="dialog" aria-modal="true" onclick="if(event.target===this) closeBenchmarkModal()">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2>So sánh Benchmark Hệ thống (90 Câu hỏi Chuẩn hóa UET)</h2>
+        <button type="button" class="btn-outline" onclick="closeBenchmarkModal()">Đóng</button>
+      </div>
+      <div class="modal-body">
+        <table class="bench-table">
+          <thead>
+            <tr>
+              <th>Chỉ số đánh giá</th>
+              <th>Naive RAG</th>
+              <th>Chrono-RAG 3B</th>
+              <th>Continual LoRA 3B (2026)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Key-Fact Acc</strong> (Độ chính xác số liệu)</td><td class="mono">49.9%</td><td><strong class="mono" style="color:var(--status-ok);">100.0%</strong></td><td class="mono">17.2%</td></tr>
+            <tr><td><strong>Temporal Acc</strong> (Đúng văn bản và năm học)</td><td class="mono">68.9%</td><td><strong class="mono" style="color:var(--status-ok);">100.0%</strong></td><td class="mono">50.0%</td></tr>
+            <tr><td><strong>Token F1</strong></td><td class="mono">28.4%</td><td><strong class="mono">36.4%</strong></td><td class="mono">34.9%</td></tr>
+            <tr><td><strong>OHR</strong> (Ảo giác quy chế lỗi thời, càng thấp càng tốt)</td><td class="mono">18.9%</td><td><strong class="mono" style="color:var(--status-ok);">0.0%</strong></td><td class="mono">1.1%</td></tr>
+            <tr><td><strong>Kiểm chứng toàn vẹn</strong></td><td>Không lọc năm</td><td>SHA-256 Registry Lock</td><td>Trí nhớ tham số QLoRA</td></tr>
+          </tbody>
+        </table>
+        <p style="margin:12px 0 0;font-size:11.5px;color:var(--ink-muted);">Nguồn số liệu thực nghiệm: <span class="mono">runs/eval/summary_metrics.json</span> và <span class="mono">runs/eval/comparison_report.md</span>.</p>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn-primary" onclick="closeBenchmarkModal()">Đóng bảng</button>
+      </div>
     </div>
   </div>
-  <div id="benchmarkModal" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="benchmarkTitle" onclick="if(event.target===this) closeBenchmarkModal()">
-    <section class="modal">
-      <header class="modal-head"><div><div class="block-kicker">THÔNG TIN ĐÁNH GIÁ</div><h2 id="benchmarkTitle">Bảng đánh giá</h2><p>Đối chiếu các kết quả đã được lưu trong hệ thống.</p></div><button class="modal-close" type="button" aria-label="Đóng" onclick="closeBenchmarkModal()">×</button></header>
-      <div class="modal-body">
-        <table class="benchmark-table"><thead><tr><th>Chỉ số</th><th>Naive RAG</th><th>Chrono-RAG</th><th>Continual LoRA 3B</th></tr></thead><tbody>
-          <tr><td>Key Fact Score (Chính xác số liệu)</td><td>49.85%</td><td>100.0%</td><td>N/A *</td></tr>
-          <tr><td>Temporal Doc Accuracy (Đúng văn bản)</td><td>66.67%</td><td>100.0%</td><td>N/A *</td></tr>
-          <tr><td>Temporal Year Accuracy (Đúng mốc năm)</td><td>71.11%</td><td>100.0%</td><td>N/A *</td></tr>
-          <tr><td>Độ trễ trung bình (Latency)</td><td>31.47 ms</td><td>7.44 ms</td><td>16.40 ms (Param)</td></tr>
-          <tr><td>SHA Lock</td><td>Không hỗ trợ</td><td>SHA-256 Lock</td><td>Parametric LoRA</td></tr>
-        </tbody></table>
-        <p class="benchmark-note">* Bảng trên giữ các con số đang hiển thị ở giao diện cũ nhằm bảo toàn nội dung trong lượt sửa phong cách. Đây không phải chứng nhận độ chính xác mới; cần đối chiếu với bộ benchmark chính thức trước khi công bố.</p>
-      </div><div class="modal-foot"><button type="button" class="primary" onclick="closeBenchmarkModal()">Đóng bảng</button></div>
-    </section>
-  </div>
+
   <script>
     'use strict';
     let currentEngineMode = 'auto';
-    let currentMessageIndex = 0;
+
+    function refreshIcons() {
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        try { window.lucide.createIcons(); } catch (_) {}
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function allowHighlightMarkup(str) {
+      const encoded = escapeHtml(str);
+      return encoded.replace(/&lt;mark&gt;/g, '<mark>').replace(/&lt;\/mark&gt;/g, '</mark>');
+    }
+
+    function switchView(viewName) {
+      const views = {
+        chat: ['viewChat', 'navChat', 'Trợ lý Cố vấn AI'],
+        roster: ['viewRoster', 'navRoster', 'Bảng điểm lớp K69-CNTT1'],
+        news: ['viewNews', 'navNews', 'Tin tức trang 1 UET'],
+      };
+      for (const [k, [vid, nid, title]] of Object.entries(views)) {
+        document.getElementById(vid).classList.toggle('active', k === viewName);
+        document.getElementById(nid).classList.toggle('active', k === viewName);
+        if (k === viewName) document.getElementById('topbarTitle').textContent = title;
+      }
+      refreshIcons();
+    }
 
     function setEngineMode(mode) {
       currentEngineMode = mode;
-      for (const [name, id] of [['auto','btnModeAuto'],['continual_lora','btnModeLora'],['chrono_rag','btnModeRag']]) {
-        const button = document.getElementById(id);
-        button.classList.toggle('selected', mode === name);
-        button.setAttribute('aria-pressed', String(mode === name));
+      for (const [name, id] of [['auto', 'btnModeAuto'], ['continual_lora', 'btnModeLora'], ['chrono_rag', 'btnModeRag']]) {
+        document.getElementById(id).classList.toggle('active', mode === name);
       }
     }
-    function focusSearch() { document.getElementById('promptInput').focus(); }
-    function focusTopics() { document.getElementById('sampleQuestions').scrollIntoView({behavior:'smooth',block:'nearest'}); }
-    function openBenchmarkModal() { document.getElementById('benchmarkModal').classList.remove('hidden'); document.querySelector('.modal-close').focus(); }
+
+    function openBenchmarkModal() { document.getElementById('benchmarkModal').classList.remove('hidden'); }
     function closeBenchmarkModal() { document.getElementById('benchmarkModal').classList.add('hidden'); }
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBenchmarkModal(); });
-    function runScenario(question) { document.getElementById('promptInput').value=question; handleSend(); }
 
-    async function handleSend() {
+    function engineLabel(engine, riskTier) {
+      if (engine === 'continual_lora') return 'Continual LoRA 3B';
+      if (engine === 'meta_greeting') return 'Hệ thống Định tuyến';
+      if (engine === 'safety_gate_red' || riskTier === 'RED') return 'Safety Gate RED';
+      return 'Chrono-RAG 3B';
+    }
+
+    function inferenceSourceLabel(src) {
+      if (src === 'ollama_local') return 'Ollama 3B Local';
+      if (src === 'remote_gpu') return 'Remote GPU Tunnel';
+      if (src === 'peft_v3') return 'PEFT V3 GPU';
+      if (src === 'deterministic_router') return 'Router Trực tiếp';
+      return 'Cached / Extractive';
+    }
+
+    function scrollToBottom() {
+      const c = document.getElementById('chatScrollContainer');
+      c.scrollTop = c.scrollHeight;
+    }
+
+    function appendUserMessage(text) {
+      document.querySelector('.welcome-card')?.remove();
+      const div = document.createElement('div');
+      div.className = 'msg-user-wrap';
+      div.innerHTML = `<div class="msg-user">${escapeHtml(text)}</div>`;
+      document.getElementById('chatList').appendChild(div);
+      scrollToBottom();
+    }
+
+    function appendTypingSkeleton() {
+      removeTypingSkeleton();
+      const div = document.createElement('div');
+      div.id = 'typingSkeleton';
+      div.className = 'skeleton-card';
+      div.innerHTML = '<span class="pulse-dot"></span><span>Đang chạy Pre-Check bảng điểm &amp; truy xuất mô hình...</span>';
+      document.getElementById('chatList').appendChild(div);
+      scrollToBottom();
+    }
+
+    function removeTypingSkeleton() {
+      document.getElementById('typingSkeleton')?.remove();
+    }
+
+    function appendErrorMessage(msg) {
+      const div = document.createElement('div');
+      div.className = 'msg-ai';
+      div.innerHTML = `<div class="ai-tier2" style="color:var(--status-danger);font-weight:600;">${escapeHtml(msg)}</div>`;
+      document.getElementById('chatList').appendChild(div);
+      scrollToBottom();
+    }
+
+    function appendAssistantMessage(data) {
+      const r = data.routing || {};
+      const m = data.metadata || {};
+      const actualEngine = r.actual_engine_used || r.selected_engine || 'chrono_rag';
+      const riskTier = r.risk_tier || 'GREEN';
+      const signals = Array.isArray(r.detected_signals) ? r.detected_signals : [];
+      const latency = Number(m.latency_ms || 0);
+      const compareId = 'cmp_' + Math.random().toString(36).slice(2, 9);
+
+      const engineCls = (actualEngine === 'safety_gate_red' || riskTier === 'RED')
+        ? 'red'
+        : (actualEngine === 'continual_lora' ? 'lora' : 'rag');
+      const riskCls = riskTier === 'RED' ? 'red' : (riskTier === 'YELLOW' ? 'yellow' : 'green');
+      const signalHtml = signals.map(s => `<span class="badge signal">#${escapeHtml(s)}</span>`).join('');
+      const infChip = m.inference_source ? `<span class="badge source">${escapeHtml(inferenceSourceLabel(m.inference_source))}</span>` : '';
+
+      let provenanceHtml = '';
+      if (actualEngine === 'continual_lora') {
+        provenanceHtml = `<span><strong>Nguồn:</strong> ${escapeHtml(m.source_label || 'Trí nhớ Tham số LoRA 3B')}</span>`;
+      } else if (actualEngine === 'meta_greeting' || actualEngine === 'safety_gate_red') {
+        provenanceHtml = `<span>${escapeHtml(m.source_label || '')}</span>`;
+      } else {
+        const docText = m.doc_id ? `<span class="mono">${escapeHtml(m.doc_id)}</span>` : 'Văn bản UET';
+        const yrText = m.effective_year ? `, Năm: <strong>${escapeHtml(m.effective_year)}</strong>` : '';
+        const shaText = m.sha256_short ? `, SHA-256: <span class="mono">${escapeHtml(m.sha256_short)}</span>` : '';
+        provenanceHtml = `<span><strong>Căn cứ:</strong> ${docText}${yrText}${shaText}</span>`;
+      }
+
+      const warningHtml = m.superseded_warning
+        ? `<div class="ai-warning"><i data-lucide="alert-triangle" style="width:15px;height:15px;"></i><span>${escapeHtml(m.superseded_warning)}</span></div>`
+        : '';
+      const otherLabel = actualEngine === 'continual_lora' ? 'Chrono-RAG 3B' : 'Continual LoRA 3B';
+      const reasonText = (m.engine_note ? m.engine_note + ' — ' : '') + (r.routing_reason || '');
+
+      const card = document.createElement('article');
+      card.className = 'msg-ai';
+      card.innerHTML = `
+        <div class="ai-tier1">
+          <div class="ai-badges">
+            <span class="badge ${engineCls}">${escapeHtml(engineLabel(actualEngine, riskTier))}</span>
+            <span class="badge ${riskCls}">${escapeHtml(riskTier)}</span>
+            ${infChip}
+            ${signalHtml}
+          </div>
+          <span class="ai-latency mono">${latency > 0 ? latency.toFixed(1) + ' ms' : '0.0 ms'}</span>
+        </div>
+        <div class="ai-tier2">${allowHighlightMarkup(data.answer || '')}</div>
+        ${warningHtml}
+        <div class="ai-tier3">
+          <div class="ai-provenance">${provenanceHtml}</div>
+          <button type="button" class="btn-compare compare-trigger">⇄ Đối chiếu với ${escapeHtml(otherLabel)}</button>
+        </div>
+        <details class="xray-details">
+          <summary>Routing X-Ray: Vì sao chọn ${escapeHtml(engineLabel(actualEngine, riskTier))}?</summary>
+          <div>${escapeHtml(reasonText)}</div>
+        </details>
+        <div id="${compareId}" class="cmp-box"></div>
+      `;
+      document.getElementById('chatList').appendChild(card);
+      card.querySelector('.compare-trigger').addEventListener('click', function () {
+        runComparison(data.question || '', compareId, this);
+      });
+      refreshIcons();
+      scrollToBottom();
+    }
+
+    async function runComparison(question, targetId, btn) {
+      btn.disabled = true;
+      btn.textContent = 'Đang đối chiếu...';
+      const box = document.getElementById(targetId);
+      box.innerHTML = '<div style="font-size:12px;color:var(--ink-muted);padding:8px 0;">Đang gọi đồng thời Chrono-RAG 3B và Continual LoRA 3B...</div>';
+      try {
+        const res = await fetch('/api/compare', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question }),
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const lora = data.continual_lora || {};
+        const chrono = data.chrono_rag || {};
+        const loraInf = lora.metadata?.inference_source ? ` — ${escapeHtml(inferenceSourceLabel(lora.metadata.inference_source))}` : '';
+        const chronoInf = chrono.metadata?.inference_source ? ` — ${escapeHtml(inferenceSourceLabel(chrono.metadata.inference_source))}` : '';
+        box.innerHTML = `
+          <div class="cmp-grid">
+            <div class="cmp-col">
+              <h5 style="color:var(--accent-ink);">Continual LoRA 3B</h5>
+              <p>${allowHighlightMarkup(lora.answer || '—')}</p>
+              <small>${escapeHtml(lora.metadata?.source_label || 'Trí nhớ tham số LoRA 3B')}${loraInf}</small>
+            </div>
+            <div class="cmp-col">
+              <h5 style="color:var(--status-ok);">Chrono-RAG 3B</h5>
+              <p>${allowHighlightMarkup(chrono.answer || '—')}</p>
+              <small>${escapeHtml(chrono.metadata?.doc_id || 'Versioning Registry')}${chronoInf}</small>
+            </div>
+          </div>
+        `;
+        btn.style.display = 'none';
+      } catch (err) {
+        box.innerHTML = `<div style="font-size:12px;color:var(--status-danger);">Lỗi đối chiếu: ${escapeHtml(err.message)}</div>`;
+        btn.disabled = false;
+        btn.textContent = 'Thử lại ⇄';
+      }
+    }
+
+    function updateTelemetry(data) {
+      const r = data.routing || {};
+      const m = data.metadata || {};
+      const engine = r.actual_engine_used || r.selected_engine || 'chrono_rag';
+      const risk = r.risk_tier || 'GREEN';
+      document.getElementById('telEngine').textContent = engineLabel(engine, risk);
+      document.getElementById('telRisk').textContent = risk;
+      document.getElementById('telSource').textContent = inferenceSourceLabel(m.inference_source || 'cached_fallback');
+      document.getElementById('telLatency').textContent = Number(m.latency_ms) > 0 ? Number(m.latency_ms).toFixed(1) + ' ms' : '0.0 ms';
+      document.getElementById('telReason').textContent = (m.engine_note ? m.engine_note + ' — ' : '') + (r.routing_reason || '');
+    }
+
+    async function handleSend(overrideMssv = null) {
       const input = document.getElementById('promptInput');
       const question = input.value.trim();
       if (!question) return;
       input.value = '';
+      switchView('chat');
       appendUserMessage(question);
       appendTypingSkeleton();
       try {
-        // Preserve original StudentHub API and request contract.
-        const res = await fetch('/api/chat', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:question,force_engine:currentEngineMode})});
+        const payload = { question, force_engine: currentEngineMode };
+        if (overrideMssv) payload.mssv = overrideMssv;
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         removeTypingSkeleton();
@@ -357,113 +1587,274 @@
         appendErrorMessage('Lỗi kết nối server: ' + err.message);
       }
     }
-    function appendUserMessage(text) {
-      // Replace the initial help text with conversation content once a question is sent.
-      document.querySelector('.welcome')?.remove();
-      const div = document.createElement('section');
-      div.className = 'exchange question-card';
-      div.innerHTML = `<div class="exchange-hdr"><span class="exchange-title">Câu hỏi đã gửi</span><span class="meta-line">${String(++currentMessageIndex).padStart(2,'0')} / QUERY</span></div><div class="exchange-body">${escapeHtml(text)}</div>`;
-      document.getElementById('chatList').appendChild(div);
-      scrollToBottom();
+
+    function askAiAboutClass(question, mssv = null) {
+      document.getElementById('promptInput').value = question;
+      handleSend(mssv);
     }
-    function appendTypingSkeleton() {
-      removeTypingSkeleton();
-      const div = document.createElement('div');
-      div.id = 'typingSkeleton'; div.className = 'loading-line';
-      div.textContent = 'Đang tìm nội dung trả lời';
-      document.getElementById('chatList').appendChild(div);
-      scrollToBottom();
+
+    function extractAdvisorInitials(name) {
+      const cleaned = String(name || '').replace(/^(Ths\.|TS\.|PGS\.TS\.|GS\.TS\.|Cô|Thầy)\s*/i, '').trim();
+      const parts = cleaned.split(/\s+/).filter(Boolean);
+      if (parts.length >= 2) return (parts[parts.length - 2][0] + parts[parts.length - 1][0]).toUpperCase();
+      return (cleaned.slice(0, 2) || 'CV').toUpperCase();
     }
-    function removeTypingSkeleton() { document.getElementById('typingSkeleton')?.remove(); }
-    function appendErrorMessage(msg) {
-      const div=document.createElement('section');div.className='exchange';
-      div.innerHTML=`<div class="exchange-hdr"><span class="exchange-title">Thông báo</span></div><div class="exchange-body" style="color:var(--red)">${escapeHtml(msg)}</div>`;
-      document.getElementById('chatList').appendChild(div); scrollToBottom();
-    }
-    function engineLabel(engine,riskTier) {
-      if(engine==='continual_lora') return 'Continual LoRA 3B';
-      if(engine==='meta_greeting') return 'Tổng quan hệ thống';
-      if(engine==='safety_gate_red'||riskTier==='RED') return 'Cổng an toàn';
-      return 'Chrono-RAG 3B';
-    }
-    function appendAssistantMessage(data) {
-      const r=data.routing||{}; const m=data.metadata||{};
-      const actualEngine=r.actual_engine_used||r.selected_engine||'chrono_rag';
-      const riskTier=r.risk_tier||'GREEN';
-      const signals=Array.isArray(r.detected_signals)?r.detected_signals:[];
-      const latency=Number(m.latency_ms||0);
-      const compareId='cmp_'+Math.random().toString(36).slice(2,9);
-      const sourceLabel=actualEngine==='continual_lora'
-        ? (m.source_label||'Phản hồi sinh từ trọng số LoRA; không có trích dẫn tài liệu trực tiếp')
-        : (actualEngine==='meta_greeting'||actualEngine==='safety_gate_red')
-          ? (m.source_label||'')
-          : ('Căn cứ: '+(m.doc_title||m.doc_id||'Văn bản quy định UET')+(m.effective_year?' ('+m.effective_year+')':'')+(m.sha256_short?' · SHA-256 '+m.sha256_short:''));
-      const riskClass = riskTier==='RED'?'red':(riskTier==='YELLOW'?'yellow':'green');
-      const signalHtml=signals.length?signals.map(s=>`<span class="chip">${escapeHtml(s)}</span>`).join(''):'';
-      const sourceInfo=sourceLabel?`<div class="metadata-row"><strong>Nguồn tham chiếu:</strong> ${escapeHtml(sourceLabel)}</div>`:'';
-      const warning=m.superseded_warning?`<div class="warning">${escapeHtml(m.superseded_warning)}</div>`:'';
-      const otherModelLabel=actualEngine==='continual_lora'?'Chrono-RAG 3B':'Continual LoRA 3B';
-      const div=document.createElement('section');div.className='exchange answer-card';
-      // Like the original UI, the server may return <mark> tags in a formatted answer.
-      // Only allow the existing highlight markup; all other HTML remains escaped.
-      const answer=allowHighlightMarkup(data.answer||'');
-      div.innerHTML=`
-        <div class="exchange-hdr"><span class="exchange-title">Nội dung trả lời</span><span class="meta-line">${latency>0?latency.toFixed(1)+' ms':'Chưa có thời gian'}</span></div>
-        <div class="exchange-body answer">${answer}</div>
-        <div class="answer-meta"><div class="meta-list"><span class="chip mode">${escapeHtml(engineLabel(actualEngine,riskTier))}</span><span class="chip ${riskClass}">${escapeHtml(riskTier)}</span>${signalHtml}</div>
-        <button type="button" class="compare-action compare-trigger">So sánh với ${escapeHtml(otherModelLabel)}</button></div>
-        ${sourceInfo}${warning}
-        <details class="reason"><summary>Thông tin xử lý</summary><div>${escapeHtml(r.routing_reason||'Không có thông tin định tuyến bổ sung.')}</div></details>
-        <div id="${compareId}" class="comparison-slot"></div>`;
-      document.getElementById('chatList').appendChild(div);
-      div.querySelector('.compare-trigger').addEventListener('click',function(){runComparison(data.question||'',compareId,this)});
-      scrollToBottom();
-    }
-    async function runComparison(question,targetDivId,btn) {
-      btn.disabled=true; btn.textContent='Đang đối chiếu...';
-      const container=document.getElementById(targetDivId);
-      container.innerHTML='<div class="loading-line">Đang lấy kết quả từ hai phương pháp</div>';
-      try {
-        // Preserve original comparison endpoint and request contract.
-        const res=await fetch('/api/compare',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:question})});
-        if(!res.ok)throw new Error('HTTP '+res.status);
-        renderComparisonCard(await res.json(),container);
-        btn.style.display='none';
-      } catch(err) {
-        container.innerHTML=`<div class="warning">Lỗi đối chiếu: ${escapeHtml(err.message)}</div>`;
-        btn.disabled=false;btn.textContent='Thử lại ↗';
+
+    function renderRoster(roster) {
+      const a = roster.analysis || {};
+      const total = a.total_students || (roster.students || []).length || 30;
+      const sch = a.scholarship_priority_count ?? 0;
+      const trap = a.scholarship_trapped_count ?? 0;
+      const warn = a.warning_risk_count ?? 0;
+      const ov = a.overload_eligible_count ?? 0;
+
+      const advisor = roster.advisor || 'Cố vấn học tập';
+      const classId = roster.class_id || 'QH-2024-I/CQ-C-CLC1';
+      const classShort = roster.class_short || 'K69-CNTT1';
+      const cohort = roster.cohort || 'QH-2024 (K69)';
+      const cohortMatch = cohort.match(/K\d+/i);
+      const cohortShort = cohortMatch ? cohortMatch[0].toUpperCase() : cohort;
+      const major = roster.major || 'Công nghệ Thông tin';
+      const majorShort = major === 'Công nghệ Thông tin' ? 'CNTT' : major;
+
+      const advAvatar = document.getElementById('advAvatar');
+      if (advAvatar) advAvatar.textContent = extractAdvisorInitials(advisor);
+      const advName = document.getElementById('advName');
+      if (advName) advName.textContent = advisor;
+      const advClass = document.getElementById('advClass');
+      if (advClass) advClass.textContent = classId;
+      const advMajor = document.getElementById('advMajor');
+      if (advMajor) advMajor.textContent = `${cohortShort}, ${majorShort}`;
+      const advCount = document.getElementById('advCount');
+      if (advCount) advCount.textContent = `${total} sinh viên`;
+      const topbarChip = document.getElementById('topbarClassChip');
+      if (topbarChip) topbarChip.textContent = `${classShort} | ${total} SV`;
+      const welcomeGreeting = document.getElementById('welcomeGreeting');
+      if (welcomeGreeting) welcomeGreeting.textContent = `Xin chào ${advisor}!`;
+      const welcomeSub = document.getElementById('welcomeSub');
+      if (welcomeSub) {
+        welcomeSub.innerHTML = `Trợ lý AI kết nối trực tiếp với <strong>CSDL JSONL ${total} sinh viên × 26 môn lớp ${escapeHtml(classId)}</strong>, <strong>kho quy chế UET khóa SHA-256</strong> và <strong>tin tức trang 1 cổng thông tin UET</strong>.`;
+      }
+      const rosterTitle = document.getElementById('rosterTitle');
+      if (rosterTitle) rosterTitle.textContent = `Bảng điểm lớp ${classId} (${classShort})`;
+      const kpiSub = document.getElementById('kpiSub');
+      if (kpiSub) kpiSub.textContent = `Đồng nhất khóa/ngành ${cohortShort} (26 môn)`;
+      const rightSummaryTitle = document.getElementById('rightSummaryTitle');
+      if (rightSummaryTitle) rightSummaryTitle.textContent = `Tóm tắt lớp ${classShort}`;
+
+      document.getElementById('kpiTotal').textContent = total;
+      document.getElementById('kpiScholarship').textContent = sch;
+      document.getElementById('kpiTrapped').textContent = trap;
+      document.getElementById('kpiWarning').textContent = warn;
+
+      document.getElementById('rightTotal').textContent = total + ' SV';
+      document.getElementById('rightScholarship').textContent = sch + ' em';
+      document.getElementById('rightTrapped').textContent = trap + ' em';
+      document.getElementById('rightWarning').textContent = warn + ' em';
+      document.getElementById('rightOverload').textContent = ov + ' em';
+      document.getElementById('navRosterCount').textContent = total;
+      document.getElementById('rosterSubtitle').textContent =
+        `Lớp ${classId}, Ngành ${major}, Cố vấn: ${advisor} — Cập nhật: ${roster.generated_at || '—'}`;
+
+      const tbody = document.getElementById('rosterTableBody');
+      tbody.innerHTML = (roster.students || []).map(st => {
+        const ev = st.assessment || {};
+        const notes = [];
+        let rowTone = 'row-neutral';
+        if (ev.warning_risk) rowTone = 'row-danger';
+        else if (ev.scholarship_trap_low_drl) rowTone = 'row-warn';
+        else if (ev.scholarship_priority) rowTone = 'row-ok';
+        else if (st.requested_overload_credits && ev.overload_eligible) rowTone = 'row-overload';
+
+        if (ev.scholarship_priority) notes.push(`<span class="status-inline ok">KKHT ${escapeHtml(ev.scholarship_tier || '')}</span>`);
+        if (ev.scholarship_trap_low_drl) notes.push(`<span class="status-inline warn">Trượt KKHT (ĐRL &lt; 70)</span>`);
+        if (st.requested_overload_credits && ev.overload_eligible) notes.push(`<span class="status-inline brass">Xin học vượt 24 TC</span>`);
+        else if (ev.overload_eligible && !ev.scholarship_priority) notes.push(`<span class="status-inline ok">Đủ ĐK học vượt</span>`);
+        if (ev.warning_risk) notes.push(`<span class="status-inline danger">Cảnh báo học vụ</span>`);
+        if (!notes.length) notes.push(`<span class="status-inline neutral">Trung bình an toàn</span>`);
+
+        const gpaVal = Number(st.gpa_semester ?? st.gpa ?? 0);
+        const acc = st.accumulated_credits ?? st.tin_chi_tich_luy ?? 0;
+        const owed = st.owed_credits ?? st.tin_chi_no ?? 0;
+        const gpaColor = gpaVal < 1.8 ? 'var(--status-danger)' : (gpaVal >= 3.2 ? 'var(--status-ok)' : 'inherit');
+        const drlColor = st.drl < 70 ? 'var(--status-warn-ink)' : 'inherit';
+        const owedColor = owed > 0 ? 'var(--status-danger)' : 'inherit';
+        return `
+          <tr class="${rowTone}">
+            <td class="mono" style="font-weight:600;">${escapeHtml(st.student_id)}</td>
+            <td class="student-name-cell">${escapeHtml(st.full_name)}</td>
+            <td class="mono num" style="font-weight:600;color:${gpaColor};">${gpaVal.toFixed(2)}</td>
+            <td class="mono num" style="font-weight:600;color:${drlColor};">${escapeHtml(st.drl)}</td>
+            <td class="mono num">${acc} / <span style="color:${owedColor};font-weight:600;">${owed}</span></td>
+            <td><div class="status-tags">${notes.join('')}</div></td>
+            <td><button type="button" class="btn-outline" style="padding:4px 9px;font-size:11.5px;" onclick="askAiAboutClass('Kiểm tra tình trạng học tập và điều kiện xét học bổng, học vượt của sinh viên ${escapeHtml(st.full_name)} (${escapeHtml(st.student_id)})?', '${escapeHtml(st.student_id)}')">Hỏi AI</button></td>
+          </tr>
+        `;
+      }).join('');
+
+      const failedBox = document.getElementById('topFailedBox');
+      if (failedBox) {
+        const failed = roster.top_failed_courses || [];
+        failedBox.innerHTML = failed.length
+          ? failed.map(c => `
+              <div class="failed-course-row">
+                <div><strong class="mono">${escapeHtml(c.ma_mon)}</strong> — ${escapeHtml(c.ten_mon)} (${c.so_tin_chi} TC)<div style="font-size:11.5px;color:var(--ink-muted);margin-top:2px;">${escapeHtml((c.ds_truot || []).join(', ') || 'Không có')}</div></div>
+                <span class="failed-count-tag">${c.so_luot_truot} lượt (${c.ty_le_truot}%)</span>
+              </div>
+            `).join('')
+          : '<div>Không có môn trượt trong dữ liệu hiện tại.</div>';
       }
     }
-    function renderComparisonCard(data,container) {
-      const lora=data.continual_lora||{}; const chrono=data.chrono_rag||{};
-      const source=escapeHtml(lora.metadata?.source_label||'Trọng số mô hình LoRA 3B');
-      const f1=lora.metadata?.token_f1_proxy;
-      container.innerHTML=`<div class="comparison"><h4>Đối chiếu câu trả lời</h4><div class="comparison-grid">
-        <div class="comparison-column"><h5>Continual LoRA 3B</h5><p>${allowHighlightMarkup(lora.answer||'—')}</p><small>${source}${Number.isFinite(Number(f1))&&f1!==undefined&&f1!==null?' · Token F1: '+Number(f1).toFixed(3):''}</small></div>
-        <div class="comparison-column"><h5>Chrono-RAG 3B</h5><p>${allowHighlightMarkup(chrono.answer||'—')}</p><small>Trích xuất và đối chiếu văn bản theo năm</small></div>
-      </div></div>`;
+
+    async function loadRoster() {
+      try {
+        const res = await fetch('/api/class-roster');
+        if (!res.ok) return;
+        renderRoster(await res.json());
+      } catch (_) {}
     }
-    function updateTelemetry(data) {
-      const r=data.routing||{};const m=data.metadata||{};
-      const engine=r.actual_engine_used||r.selected_engine||'chrono_rag';
-      const risk=r.risk_tier||'GREEN';
-      const signals=Array.isArray(r.detected_signals)?r.detected_signals:[];
-      const signalText=signals.map(s=>String(s).toLowerCase()).join(' ');
-      document.getElementById('telemetryStatus').textContent=engineLabel(engine,risk)+' / '+risk;
-      document.getElementById('telReasonText').textContent=r.routing_reason||'Định tuyến đã hoàn tất.';
-      document.getElementById('telMetricSpeed').textContent=Number(m.latency_ms)>0?Number(m.latency_ms).toFixed(1)+' ms':'Chưa đo';
-      document.getElementById('telMetricTemporal').textContent=/year|temporal|date|năm|mốc/.test(signalText)?'Có tín hiệu':'Chưa xác định';
-      document.getElementById('telMetricNumeric').textContent=/numeric|money|fee|học phí|số liệu|tiền/.test(signalText)?'Có tín hiệu':'Chưa xác định';
-      document.getElementById('telMetricSynthesis').textContent=signals.length?signals.length+' tín hiệu':'Không có dữ liệu';
+
+    async function regenerateRoster() {
+      const btn = document.getElementById('btnRegenerateRoster');
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/class-roster/regenerate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({}),
+        });
+        if (res.ok) renderRoster(await res.json());
+      } finally {
+        btn.disabled = false;
+      }
     }
-    function scrollToBottom(){const c=document.getElementById('chatScrollContainer');c.scrollTop=c.scrollHeight;}
-    function escapeHtml(str){return String(str??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-    function allowHighlightMarkup(str){
-      const encoded=escapeHtml(str);
-      return encoded.replace(/&lt;mark&gt;/g,'<mark>').replace(/&lt;\/mark&gt;/g,'</mark>');
+
+    function renderNews(payload) {
+      const arts = payload.articles || [];
+      document.getElementById('navNewsCount').textContent = arts.length;
+      const srcLabel = payload.source === 'live_scrape' ? 'Cào trực tiếp (Live Trang 1 UET)' : 'Dữ liệu Cache Offline';
+      document.getElementById('newsSubtitle').textContent =
+        `Nguồn: ${srcLabel}, Thời điểm: ${payload.fetched_at || '—'}, Tổng ${arts.length} bài viết`;
+      const grid = document.getElementById('newsGrid');
+      if (!arts.length) {
+        grid.innerHTML = '<div class="news-card"><p class="news-summary">Chưa có tin tức nào.</p></div>';
+        return;
+      }
+      grid.innerHTML = arts.map(a => `
+        <article class="news-card">
+          <div class="news-meta">
+            <span class="news-cat">${escapeHtml(a.category || 'UET')}</span>
+            <span class="mono">${escapeHtml(a.date || '')}</span>
+          </div>
+          <a class="news-title" href="${escapeHtml(a.url || '#')}" target="_blank" rel="noopener noreferrer">${escapeHtml(a.title || '')}</a>
+          <p class="news-summary">${escapeHtml(a.summary || '')}</p>
+        </article>
+      `).join('');
     }
-    function escapeJs(str){return String(str??'').replace(/'/g,"\\'").replace(/"/g,'\\"');}
+
+    async function loadNews() {
+      try {
+        const res = await fetch('/api/latest-news');
+        if (res.ok) renderNews(await res.json());
+      } catch (_) {}
+    }
+
+    async function scrapeLatestNews() {
+      const btn = document.getElementById('btnScrapeLatest');
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/scrape-latest', { method: 'POST' });
+        if (res.ok) renderNews(await res.json());
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function loadSampleQuestions() {
+      const box = document.getElementById('sampleQuestionsList');
+      try {
+        const res = await fetch('/api/sample-questions');
+        if (!res.ok) return;
+        const items = await res.json();
+        const tagMap = {
+          rag_strength: ['Chrono-RAG 3B + Pre-Check', 'rag'],
+          lora_strength: ['Continual LoRA 3B', 'lora'],
+          latest_news: ['Latest UET Scraper', 'news'],
+          red_gate: ['Risk Gate YELLOW / RED', 'red'],
+          yellow_overlap: ['Risk Gate YELLOW', 'red'],
+        };
+        box.innerHTML = items.map((item, idx) => {
+          const [lbl, cls] = tagMap[item.category] || ['Kịch bản mẫu', 'rag'];
+          return `
+            <button type="button" class="scenario-btn" data-idx="${idx}">
+              <span class="scenario-tag ${cls}">${escapeHtml(lbl)}</span>
+              <span class="scenario-q">${escapeHtml(item.question)}</span>
+            </button>
+          `;
+        }).join('');
+        box.querySelectorAll('.scenario-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const q = items[Number(btn.dataset.idx)].question;
+            askAiAboutClass(q);
+          });
+        });
+      } catch (_) {}
+    }
+
+    async function checkEngineStatus() {
+      try {
+        const res = await fetch('/api/health');
+        if (!res.ok) return;
+        const st = await res.json();
+        const dot = document.getElementById('llmHealthDot');
+        const txt = document.getElementById('llmHealthText');
+        const sideTxt = document.getElementById('sidebarStatusText');
+        if (st.ready) {
+          dot.className = 'health-dot ready';
+          txt.textContent = 'Ollama 3B Local';
+          if (sideTxt) sideTxt.textContent = 'Ollama 3B | Pre-Check';
+        } else if (st.remote_configured) {
+          dot.className = 'health-dot ready';
+          txt.textContent = 'Remote GPU Tunnel';
+          if (sideTxt) sideTxt.textContent = 'Remote GPU | Pre-Check';
+        } else {
+          dot.className = 'health-dot fallback';
+          txt.textContent = 'Cached / Extractive';
+          if (sideTxt) sideTxt.textContent = 'RAG | LoRA | Pre-Check';
+        }
+      } catch (_) {}
+    }
+
+    function applyChatWallpaperState(enabled) {
+      const stage = document.getElementById('chatStage');
+      const btn = document.getElementById('btnToggleWallpaper');
+      const lbl = document.getElementById('wallpaperToggleLabel');
+      if (stage) stage.classList.toggle('wallpaper-off', !enabled);
+      if (btn) btn.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+      if (lbl) lbl.textContent = enabled ? 'Ảnh nền: Bật' : 'Ảnh nền: Tắt';
+    }
+
+    function toggleChatWallpaper() {
+      const stage = document.getElementById('chatStage');
+      const nextEnabled = stage ? stage.classList.contains('wallpaper-off') : true;
+      applyChatWallpaperState(nextEnabled);
+      try { localStorage.setItem('chronoreg_chat_wallpaper', nextEnabled ? 'on' : 'off'); } catch (_) {}
+    }
+
+    (function initChatWallpaper() {
+      let enabled = true;
+      try {
+        if (localStorage.getItem('chronoreg_chat_wallpaper') === 'off') enabled = false;
+      } catch (_) {}
+      applyChatWallpaperState(enabled);
+    })();
+
     setEngineMode('auto');
+    checkEngineStatus();
+    loadRoster();
+    loadNews();
+    loadSampleQuestions();
+    refreshIcons();
   </script>
 </body>
 </html>

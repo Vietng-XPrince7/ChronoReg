@@ -1,0 +1,36 @@
+{
+  "files": {
+    "README.md": "97b78591e33b63123b36f93c7e8f10b182c37dbf6c648acb35d8e80850121036",
+    "adapter_config.json": "8fa7450e36864fc26ce07a0ff0e5fbb4ea23a3664b128b635dce3fe849d927b4",
+    "adapter_model.safetensors": "4707f62f85e440494a26c3ea1450e5f42f1d3805dca1f143cdd962a0522bf174",
+    "added_tokens.json": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+    "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+    "special_tokens_map.json": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+    "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+    "tokenizer_config.json": "57fea41fa99fce34f91450643e48b3bfbb078c32c6831a3c06834f122c200510",
+    "training_log.json": "bd9a459a88196e0da153bbca38de17d3d86159360b3e608a2e69c6ab64f7c796",
+    "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+  },
+  "logged_grad_norm_max": 4.657688140869141,
+  "logged_grad_norm_min": 0.1744307428598404,
+  "max_adapter_delta": 0.005360716488212347,
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "optimizer_steps": 138,
+  "peak_allocated_gib": 7.719,
+  "peak_reserved_gib": 9.064,
+  "previous_adapter_sha256": null,
+  "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "signature": "39d5e16f266ea05a1cdc0de96d96880af6e0ea1920b1e2202d415066209c6191",
+  "status": "TRAINED_COURSE_SNAPSHOT_NOT_RELEASED",
+  "train_loss": 0.33302871147980506,
+  "train_rows": 553,
+  "validation": {
+    "2022": {
+      "aggregation": "answer_token_weighted",
+      "answer_tokens": 1761,
+      "loss": 0.39096425802191465,
+      "rows": 65
+    }
+  },
+  "year": 2022
+}

@@ -1,0 +1,108 @@
+{
+  "status": "COURSE_SNAPSHOT_DATASET_PREPARED_NOT_CANONICAL_RELEASE",
+  "base_commit": "f4c228bd06662d012b397a370cdd3b2293c54744",
+  "official_training_authorized": false,
+  "candidate_representatives": 2088,
+  "accepted": 1971,
+  "held": 117,
+  "train": 1774,
+  "validation": 197,
+  "by_stage": {
+    "2022": {
+      "train": 553,
+      "validation": 65,
+      "train_topics": {
+        "curriculum_course": 341,
+        "curriculum_course_credits": 23,
+        "postgraduate_admissions": 6,
+        "training_rules": 58,
+        "curriculum_overview": 7,
+        "curriculum_total": 5,
+        "tuition": 32,
+        "research": 6,
+        "admissions": 64,
+        "scholarship": 7,
+        "academic_calendar": 3,
+        "curriculum_total_credits": 1
+      }
+    },
+    "2023": {
+      "train": 145,
+      "validation": 19,
+      "train_topics": {
+        "admissions": 68,
+        "postgraduate_admissions": 20,
+        "academic_calendar": 3,
+        "scholarship": 51,
+        "tuition": 3
+      }
+    },
+    "2024": {
+      "train": 97,
+      "validation": 12,
+      "train_topics": {
+        "postgraduate_admissions": 15,
+        "admissions": 26,
+        "curriculum_course_credits": 6,
+        "tuition_needs_detail": 2,
+        "scholarship": 8,
+        "tuition": 35,
+        "curriculum_total_credits": 1,
+        "curriculum_overview": 1,
+        "academic_calendar": 3
+      }
+    },
+    "2025": {
+      "train": 694,
+      "validation": 72,
+      "train_topics": {
+        "curriculum_course": 547,
+        "research": 6,
+        "tuition": 18,
+        "admissions": 32,
+        "curriculum_overview": 11,
+        "curriculum_total": 11,
+        "scholarship": 63,
+        "curriculum_total_credits": 1,
+        "academic_calendar": 3,
+        "postgraduate_admissions": 2
+      }
+    },
+    "2026": {
+      "train": 285,
+      "validation": 29,
+      "train_topics": {
+        "curriculum_course": 214,
+        "admissions": 20,
+        "scholarship": 5,
+        "curriculum_overview": 4,
+        "postgraduate_admissions": 5,
+        "research": 2,
+        "tuition": 28,
+        "curriculum_total": 4,
+        "academic_calendar": 3
+      }
+    }
+  },
+  "held_reasons": {
+    "legacy_merged_header_scope_unclear": 56,
+    "duplicate_fact_representative": 44,
+    "separate_QD248_applicability_review": 6,
+    "benchmark_question_similarity": 4,
+    "publication_year_unresolved": 6,
+    "curriculum_edition_or_provenance_unclear": 1
+  },
+  "stage_basis": {
+    "annual_document_label_proxy_not_publication_proof": 378,
+    "recorded_issue_or_publication_year_not_availability_proof": 267,
+    "cohort_year_proxy_not_publication_proof": 1302,
+    "legacy_rule_snapshot_baseline": 11,
+    "2026_01_public_pdf_path_proxy": 2,
+    "QD3626_2022_issuance": 10,
+    "2024_decision_cited_in_snapshot": 1
+  },
+  "source_paths": 80,
+  "benchmark_variants_compared": 102,
+  "shared_source_rows": 281,
+  "benchmark_amount_overlap_rows": 150
+}

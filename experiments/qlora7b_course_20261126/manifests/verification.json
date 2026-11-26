@@ -1,0 +1,14 @@
+{
+  "checkpoint_files_verified": 50,
+  "checkpoint_archive_sha256": "edec09880160bb0aa3a235b0f1413d4338d65cc554054ce5b80272133314ef2f",
+  "evaluation_archive_sha256": "d30bfeca0d848cf7289d45183fb7f124617fc23b1297df7bd48d1778e2430ea7",
+  "bundle_manifest_sha256": "39d5e16f266ea05a1cdc0de96d96880af6e0ea1920b1e2202d415066209c6191",
+  "validation_predictions": 610,
+  "final_validation": {
+    "n": 197,
+    "exact_match": 0.5177664974619289,
+    "token_f1": 0.8297201264465215
+  },
+  "gguf_hash_basis": "user-reported Kaggle manifest and matching local PowerShell output; binary files not accessible here",
+  "canonical_release": false
+}

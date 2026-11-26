@@ -53,9 +53,9 @@ _PLACEHOLDER_KEYS = {
 }
 
 
-def _is_usable_api_key(val: str) -> bool:
+def _is_usable_api_key(val: str, *, min_len: int = 12) -> bool:
     s = val.strip()
-    if not s or len(s) < 12:
+    if not s or len(s) < min_len:
         return False
     if s.lower() in _PLACEHOLDER_KEYS:
         return False
@@ -67,7 +67,7 @@ def resolve_gemini_api_key(llm: dict | None = None) -> str:
     """Resolve Gemini API key from explicit config or environment/.env, ignoring template placeholders."""
     load_dotenv_if_present()
     cfg_llm = llm or {}
-    if cfg_llm.get("api_key") and _is_usable_api_key(str(cfg_llm["api_key"])):
+    if cfg_llm.get("api_key") and _is_usable_api_key(str(cfg_llm["api_key"]), min_len=4):
         return str(cfg_llm["api_key"]).strip()
     env_name = str(cfg_llm.get("api_key_env") or "GEMINI_API_KEY").strip()
     for candidate in (env_name, "GEMINI_API_KEY", "GOOGLE_API_KEY"):

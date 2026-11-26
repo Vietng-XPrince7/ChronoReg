@@ -1,0 +1,11 @@
+{
+  "purpose": "Kaggle archive filename compatibility only; source bytes unchanged",
+  "original_to_packaged_source_file": {
+    "data/raw/uet/markdown/2022/Chương_trình_đào_tạo_sau_đại_học_2022.md": "data/raw/uet/markdown/2022/Chuong_trinh_dao_tao_sau_dai_hoc_2022.md",
+    "data/raw/uet/markdown/2023/Chương_trình_đào_tạo_sau_đại_học_2023.md": "data/raw/uet/markdown/2023/Chuong_trinh_dao_tao_sau_dai_hoc_2023.md",
+    "data/raw/uet/markdown/2024/Chương_trình_đào_tạo_sau_đại_học_2024.md": "data/raw/uet/markdown/2024/Chuong_trinh_dao_tao_sau_dai_hoc_2024.md",
+    "data/raw/uet/markdown/2025/Chương_trình_đào_tạo_sau_đại_học_2025.md": "data/raw/uet/markdown/2025/Chuong_trinh_dao_tao_sau_dai_hoc_2025.md",
+    "data/raw/uet/markdown/2026/Tuyển_sinh_sau_đại_học_2026.md": "data/raw/uet/markdown/2026/Tuyen_sinh_sau_dai_hoc_2026.md",
+    "data/raw/uet/markdown/Quy_che_dao_tao_dai_hoc_bo_gd_&_dt_2021.md": "data/raw/uet/markdown/Quy_che_dao_tao_dai_hoc_bo_gd_and_dt_2021.md"
+  }
+}

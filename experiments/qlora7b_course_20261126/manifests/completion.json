@@ -1,0 +1,14 @@
+{
+  "bundle_manifest_sha256": "39d5e16f266ea05a1cdc0de96d96880af6e0ea1920b1e2202d415066209c6191",
+  "canonical_release": false,
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "status": "ALL_FIVE_STAGES_COMPLETE",
+  "years": [
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ]
+}
