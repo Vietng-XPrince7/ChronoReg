@@ -427,6 +427,10 @@ def _build_metadata(
         "superseded_warning": superseded_warning,
         "source_type": "rag_retrieval",
         "source_label": source_label,
+        "llm_used": bool(
+            p.get("llm_used", False)
+            or p.get("inference_source") in ("ollama_local", "remote_gpu", "gemini_api")
+        ),
         "inference_source": p.get("inference_source", "cached_fallback"),
         "engine_mode": p.get("engine_mode", "CACHED_FALLBACK"),
         "model_name": p.get("model_name"),
@@ -437,12 +441,31 @@ def _build_metadata(
     }
 
 
+def _resolve_rag_mode_for_web(requested_mode: str) -> str:
+    """Upgrade chrono_rag -> chrono_rag_llm automatically when Gemini/LLM credentials are configured."""
+    if requested_mode != "chrono_rag":
+        return requested_mode
+    try:
+        import os
+        if "PYTEST_CURRENT_TEST" in os.environ:
+            return "chrono_rag"
+        if os.environ.get("RAG_AUTO_LLM", "1").strip() == "0":
+            return "chrono_rag"
+        from src.rag.config import load_config
+        from src.rag.generate import has_llm_credentials
+        if has_llm_credentials(load_config()):
+            return "chrono_rag_llm"
+    except Exception:
+        pass
+    return "chrono_rag"
+
+
 def _run_rag_engine(
     question: str,
     mode: str,
     advisor_bundle: Optional[dict] = None,
 ) -> dict:
-    """Call unified 3-tier ChronoRegLLMBackend for RAG; fallback gracefully on failure."""
+    """Call unified 3-tier ChronoRegLLMBackend (plus Gemini RAG LLM when configured); fallback gracefully."""
     ab = advisor_bundle or {}
     if ab.get("course_trend_text"):
         return {
@@ -469,7 +492,7 @@ def _run_rag_engine(
             student_id=ab.get("student_id"),
         )
 
-    if llm_backend is not None:
+    if mode != "chrono_rag_llm" and llm_backend is not None:
         try:
             res = llm_backend.generate(
                 question,
@@ -483,22 +506,50 @@ def _run_rag_engine(
             )
             res["advisor_category"] = ab.get("category")
             res["advisor_entities"] = ab.get("entities")
+            # When Ollama & Remote GPU are both offline on a pure regulation query,
+            # upgrade via Gemini API if configured in .env / environment.
+            if (
+                res.get("inference_source") == "cached_fallback"
+                and not (roster_ctx or news_ctx)
+                and getattr(llm_backend, "_http_client", None) is None
+                and _adapter is not None
+                and _resolve_rag_mode_for_web(mode) == "chrono_rag_llm"
+            ):
+                t0 = time.monotonic()
+                preds = _adapter.run_benchmark(
+                    [{"id": "q", "question": question}], mode="chrono_rag_llm", top_k=3
+                )
+                pred = preds[0] if preds else {}
+                if pred.get("llm_used"):
+                    pred.setdefault("latency_ms", (time.monotonic() - t0) * 1000)
+                    pred["inference_source"] = "gemini_api"
+                    pred["engine_mode"] = "GEMINI_API"
+                    pred["advisor_category"] = ab.get("category")
+                    pred["advisor_entities"] = ab.get("entities")
+                    return pred
             return res
         except Exception as _e:
             import sys
             print(f"[studenthub_server] LLM backend RAG error ({mode}): {_e}", file=sys.stderr)
-
     if _adapter is not None:
         try:
             t0 = time.monotonic()
+            effective_mode = _resolve_rag_mode_for_web(mode)
             preds = _adapter.run_benchmark(
-                [{"id": "q", "question": question}], mode=mode, top_k=3
+                [{"id": "q", "question": question}], mode=effective_mode, top_k=3
             )
             latency = (time.monotonic() - t0) * 1000
             pred = preds[0] if preds else {}
             pred.setdefault("latency_ms", latency)
-            pred.setdefault("inference_source", "cached_fallback")
-            if fallback_fn is not None:
+            if pred.get("llm_used"):
+                pred.setdefault("inference_source", "gemini_api")
+                pred.setdefault("engine_mode", "GEMINI_API")
+            else:
+                pred.setdefault("inference_source", "cached_fallback")
+                pred.setdefault("engine_mode", "CACHED_FALLBACK")
+            pred["advisor_category"] = ab.get("category")
+            pred["advisor_entities"] = ab.get("entities")
+            if fallback_fn is not None and not pred.get("llm_used"):
                 pred["predicted_answer"] = fallback_fn(pred.get("predicted_answer", ""))
                 pred["is_advisor_composite"] = True
             return pred
@@ -584,12 +635,19 @@ def _answer_text_from_pred(pred: dict, question: str) -> str:
         return text
 
     # For extractive RAG fallback: apply structured formatting to raw chunk output.
-    # Natural-language generations from Ollama / Remote GPU and structured advisor replies are kept as-is.
+    # Natural-language generations from Ollama / Remote GPU / Gemini and structured advisor replies are kept as-is.
     is_raw_rag_fallback = (
         not pred.get("is_advisor_composite")
+        and not pred.get("llm_used")
         and pred.get("mode") != "continual_lora"
-        and pred.get("inference_source") not in ("ollama_local", "remote_gpu")
-        and pred.get("engine_mode") not in ("LIVE_PEFT_GENERATION", "LORA_UNAVAILABLE", "OLLAMA_LOCAL", "REMOTE_GPU")
+        and pred.get("inference_source") not in ("ollama_local", "remote_gpu", "gemini_api")
+        and pred.get("engine_mode") not in (
+            "LIVE_PEFT_GENERATION",
+            "LORA_UNAVAILABLE",
+            "OLLAMA_LOCAL",
+            "REMOTE_GPU",
+            "GEMINI_API",
+        )
     )
     if is_raw_rag_fallback:
         formatted = _format_rag_answer(text)
@@ -844,7 +902,9 @@ def chat(req: ChatRequest):
         else:
             pred = _run_web_lora(question, advisor_bundle=advisor_bundle)
 
-    elif selected_engine in ("chrono_rag", "naive_rag"):
+    elif selected_engine in ("chrono_rag", "chrono_rag_llm", "naive_rag"):
+        if selected_engine == "chrono_rag_llm":
+            actual_engine = "chrono_rag"
         pred = _run_rag_engine(question, selected_engine, advisor_bundle=advisor_bundle)
 
     else:

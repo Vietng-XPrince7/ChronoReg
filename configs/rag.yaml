@@ -32,13 +32,15 @@ curricula:
   warn_unreviewed: true               # append a concise disclaimer when answering from unreviewed curricula
 
 # How the answer is written from the retrieved passages (RAG needs no training):
+#   gemini    Google Gemini API via GEMINI_API_KEY in .env or environment (recommended: gemini-2.5-flash)
 #   none      print the retrieved passages only (for checking retrieval)
-#   local     model on this machine via transformers, no API key.
-#             Qwen/Qwen2.5-1.5B-Instruct runs on CPU (slow, about 1 min per answer); 3B needs more RAM
-#   anthropic API (pip install anthropic; set ANTHROPIC_API_KEY); change model to the one the team picks
+#   local     model on this machine via transformers, no API key (e.g. Qwen/Qwen2.5-1.5B-Instruct)
+#   anthropic Anthropic API (pip install anthropic; set ANTHROPIC_API_KEY)
 llm:
-  provider: local
-  model: Qwen/Qwen2.5-1.5B-Instruct
-  max_new_tokens: 400
+  provider: gemini
+  model: gemini-2.5-flash
+  api_key_env: GEMINI_API_KEY
+  temperature: 0.1
+  max_new_tokens: 600
   max_hits: 4               # passages given to the model
   max_context_chars: 2000   # matches max_article_chars so full articles are not truncated

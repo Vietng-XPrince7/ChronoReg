@@ -843,6 +843,7 @@ def _extract_cutoff_score_summaries(raw_text: str, doc_id: str) -> list[str]:
     s_raw = unicodedata.normalize("NFC", raw_text.lstrip("\ufeff").replace("\r\n", "\n"))
     out: list[str] = []
     seen_codes: set[str] = set()
+    compact_items: list[tuple[int, str, str, str]] = []
 
     def _clean_major(name: str) -> str:
         n = re.sub(r"<sup[^>]*>.*?</sup>", "", name, flags=re.IGNORECASE)
@@ -899,6 +900,7 @@ def _extract_cutoff_score_summaries(raw_text: str, doc_id: str) -> list[str]:
                             if c_code not in seen_codes:
                                 seen_codes.add(c_code)
                                 sub_txt = f" (tiêu chí phụ: {c_sub})" if c_sub else ""
+                                compact_items.append((int(c_code[2:]), c_code, c_maj, c_sc))
                                 out.append(
                                     f"[Điểm chuẩn / Điểm trúng tuyển năm {adm_yr}] Ngành {c_maj} (mã xét tuyển {c_code}): "
                                     f"Điểm chuẩn / điểm trúng tuyển đại học chính quy năm {adm_yr} là {c_sc} điểm{sub_txt} (thang điểm 30)."
@@ -915,6 +917,7 @@ def _extract_cutoff_score_summaries(raw_text: str, doc_id: str) -> list[str]:
                     c_sc = clean_cells[cn_idx + 2]
                     if c_code not in seen_codes:
                         seen_codes.add(c_code)
+                        compact_items.append((int(c_code[2:]), c_code, c_maj, c_sc))
                         out.append(
                             f"[Điểm chuẩn / Điểm trúng tuyển năm {adm_yr}] Ngành {c_maj} (mã xét tuyển {c_code}): "
                             f"Điểm chuẩn / điểm trúng tuyển đại học chính quy năm {adm_yr} là {c_sc} điểm (thang điểm 30)."
@@ -927,12 +930,149 @@ def _extract_cutoff_score_summaries(raw_text: str, doc_id: str) -> list[str]:
             c_code, raw_maj, c_sc = m_ws.group(1), m_ws.group(2), m_ws.group(3)
             if c_code not in seen_codes:
                 seen_codes.add(c_code)
+                c_maj_ws = _clean_major(raw_maj)
+                compact_items.append((int(c_code[2:]), c_code, c_maj_ws, c_sc))
                 out.append(
-                    f"[Điểm chuẩn / Điểm trúng tuyển năm {adm_yr}] Ngành {_clean_major(raw_maj)} (mã xét tuyển {c_code}): "
+                    f"[Điểm chuẩn / Điểm trúng tuyển năm {adm_yr}] Ngành {c_maj_ws} (mã xét tuyển {c_code}): "
                     f"Điểm chuẩn / điểm trúng tuyển THPT năm {adm_yr} là {c_sc} điểm (thang điểm 30)."
                 )
 
+    if len(compact_items) >= 5:
+        compact_items.sort(key=lambda x: x[0])
+        entries_str = "; ".join(f"{code} {maj}: {sc}" for _, code, maj, sc in compact_items)
+        out.insert(
+            0,
+            f"[Tổng hợp toàn bộ điểm chuẩn năm {adm_yr}] Điểm chuẩn / điểm trúng tuyển đại học chính quy năm {adm_yr} "
+            f"({len(compact_items)} ngành, thang điểm 30): {entries_str}.",
+        )
+
     return out
+
+
+def _clean_ocr_major_title(raw: str) -> tuple[str, list[str]]:
+    """Clean OCR-joined Vietnamese major names and extract optional <br>(...) subtitle aliases."""
+    parts = [p.strip() for p in re.split(r"<br\s*/?>", raw, flags=re.IGNORECASE) if p.strip()]
+    cleaned_parts: list[str] = []
+    for p in parts:
+        s = re.sub(r"<[^>]+>", "", p)
+        s = _strip_html_and_ocr_noise(s)
+        s = re.sub(r"Chương\s*trình\b", "", s, flags=re.IGNORECASE)
+        for pat, rep in (
+            (r"Kỹthuật", "Kỹ thuật"),
+            (r"kỹthuật", "kỹ thuật"),
+            (r"Côngnghệ", "Công nghệ"),
+            (r"côngnghệ", "công nghệ"),
+            (r"côngnghiệp", "công nghiệp"),
+            (r"nghệvật", "nghệ vật"),
+            (r"nghệkỹ", "nghệ kỹ"),
+            (r"nghiệpvà", "nghiệp và"),
+            (r"hàngkhông", "hàng không"),
+            (r"khôngvũ", "không vũ"),
+        ):
+            s = re.sub(pat, rep, s)
+        s = re.sub(r"\s+", " ", s).strip(" ()*-_")
+        if s:
+            cleaned_parts.append(s)
+    if not cleaned_parts:
+        return "", []
+    primary = cleaned_parts[0]
+    aliases = [a for a in cleaned_parts[1:] if a.lower() != primary.lower()]
+    display = f"{primary} ({aliases[0]})" if aliases else primary
+    all_names = [primary, *aliases]
+    return display, all_names
+
+
+def _parse_admissions_major_tuition_section(raw_text: str, doc_id: str) -> list[dict[str, Any]]:
+    """Parse per-major annual tuition tables (including PDF vertically-merged cells) from admissions docs."""
+    did_norm = doc_id.lower().replace("_", "-")
+    if not any(k in did_norm for k in ("thong-tin-tuyen-sinh", "de-an-ts")):
+        return []
+    if "sau-dai-hoc" in did_norm or "sau-đại-học" in did_norm:
+        return []
+
+    s_raw = unicodedata.normalize("NFC", raw_text.lstrip("\ufeff").replace("\r\n", "\n"))
+    lines = s_raw.splitlines()
+    in_sec = False
+    collected: list[dict[str, Any]] = []
+    blocks: list[list[dict[str, Any]]] = []
+    block_fees: list[str] = []
+    prev_cn_num = 0
+
+    for raw_line in lines:
+        line = raw_line.strip()
+        ll = line.lower()
+        if not in_sec:
+            if re.search(r"(?:9|10)\.2\.\s*học\s*phí", ll) or (
+                "10. học phí dự kiến với sinh viên chính quy" in ll
+            ):
+                in_sec = True
+            continue
+
+        if re.search(r"^[*_#\s]*(?:ghi\s*chú|1[01]\.\s+thông\s+tin|11\.\s+thời\s+gian)", ll):
+            break
+        if not line or _TABLE_SEP_RE.match(line):
+            continue
+
+        cn_code = ""
+        raw_maj = ""
+        fee_val = ""
+
+        if line.startswith("|") and line.endswith("|"):
+            cells = [c.strip() for c in line[1:-1].split("|")]
+            if len(cells) >= 4:
+                c1 = _strip_html_and_ocr_noise(cells[1]).strip()
+                if re.fullmatch(r"CN\d{1,2}", c1):
+                    cn_code = c1
+                    raw_maj = cells[2]
+                    m_f = re.search(r"(\d{2}[.,]\d{3}[.,]\d{3})", _strip_html_and_ocr_noise(cells[3]))
+                    if m_f:
+                        fee_val = m_f.group(1).replace(",", ".")
+        else:
+            m_ws = re.match(r"^\d{1,2}\s+(CN\d{1,2})\s+(.+?)(?:\s+(\d{2}[.,]\d{3}[.,]\d{3}))?$", line)
+            if m_ws:
+                cn_code = m_ws.group(1)
+                raw_maj = m_ws.group(2)
+                if m_ws.group(3):
+                    fee_val = m_ws.group(3).replace(",", ".")
+            else:
+                m_only_fee = re.fullmatch(r"(\d{2}[.,]\d{3}[.,]\d{3})", line)
+                if m_only_fee and blocks:
+                    block_fees[-1] = m_only_fee.group(1).replace(",", ".")
+                continue
+
+        if not cn_code:
+            continue
+        cn_num = int(cn_code[2:])
+        display_name, aliases = _clean_ocr_major_title(raw_maj)
+        if not display_name:
+            continue
+
+        # A drop in CN number (CN17 -> CN10) marks the exact boundary between vertically-merged fee groups
+        if not blocks or cn_num < prev_cn_num:
+            blocks.append([])
+            block_fees.append("")
+        prev_cn_num = cn_num
+
+        row_obj = {
+            "cn": cn_code,
+            "cn_num": cn_num,
+            "display_name": display_name,
+            "aliases": aliases,
+            "block_idx": len(blocks) - 1,
+        }
+        blocks[-1].append(row_obj)
+        if fee_val:
+            block_fees[-1] = fee_val
+
+    if not blocks or not all(block_fees):
+        return []
+
+    for b_idx, b_rows in enumerate(blocks):
+        b_fee = block_fees[b_idx]
+        for r in b_rows:
+            r["annual_fee"] = b_fee
+            collected.append(r)
+    return collected
 
 
 def _synthesize_document_summaries(raw_text: str, sem_lines: list[str], doc_id: str, topic: str) -> list[str]:
@@ -1694,8 +1834,65 @@ def extract_relevant_snippet(
 
     asks_remaining_majors = any(k in ql for k in ("các ngành còn lại", "các ngành khác", "ngành kỹ thuật"))
     asks_cnnn = "nông nghiệp" in ql or "cnnn" in ql
-    asks_xdgt = "xây dựng giao thông" in ql or "xdgt" in ql
+    asks_hkvt = any(k in ql for k in ("hàng không", "cnhkvt", "hkvt", "không gian"))
+    asks_xdgt = any(k in ql for k in ("xây dựng giao thông", "kỹ thuật xây dựng", "xdgt", "cnktxd"))
     asks_cntt_ai = any(k in ql for k in ("cntt", "công nghệ thông tin", "ai", "trí tuệ nhân tạo"))
+    asks_other_uet_major = (
+        not asks_cnnn
+        and not asks_hkvt
+        and not asks_xdgt
+        and any(
+            k in ql
+            for k in (
+                "hệ thống thông tin", "httt", "công nghệ thông tin", "cntt",
+                "khoa học máy tính", "khmt", "kỹ thuật máy tính", "ktmt",
+                "kỹ thuật robot", "ktrb", "robot", "trí tuệ nhân tạo", "ttnt",
+                "điện tử", "viễn thông", "đtvt", "mạng máy tính", "truyền thông dữ liệu",
+                "cơ điện tử", "cơ kỹ thuật", "cơ học kỹ thuật", "vật lý kỹ thuật", "vlkt",
+                "kỹ thuật năng lượng", "ktnl", "điều khiển", "tự động hóa",
+                "thiết kế công nghiệp", "đồ họa", "vật liệu", "vi điện tử",
+                "khoa học dữ liệu", "khoa học và kỹ thuật dữ liệu", "sinh học",
+            )
+        )
+    )
+    if (
+        not asks_dmktkt
+        and q_cohorts
+        and "chuẩn" not in ql
+        and "chất lượng cao" not in ql
+        and "clc" not in ql
+        and not asks_cnnn
+    ):
+        dmktkt_2023_only = any(
+            k in ql
+            for k in (
+                "hệ thống thông tin", "httt", "khoa học máy tính", "khmt",
+                "mạng máy tính", "truyền thông dữ liệu", "điện tử", "viễn thông", "cơ điện tử",
+            )
+        )
+        dmktkt_2024_plus = dmktkt_2023_only or (
+            any(
+                k in ql
+                for k in (
+                    "công nghệ thông tin", "cntt", "kỹ thuật máy tính", "ktmt",
+                    "kỹ thuật robot", "ktrb", "robot", "vật lý kỹ thuật", "vlkt",
+                    "cơ kỹ thuật", "cơ học kỹ thuật", "kỹ thuật năng lượng", "ktnl",
+                    "hàng không", "không gian", "xây dựng",
+                )
+            )
+            and not any(
+                k in ql
+                for k in (
+                    "ai", "trí tuệ nhân tạo", "ttnt", "điều khiển", "tự động hóa",
+                    "thiết kế công nghiệp", "đồ họa", "vật liệu", "khoa học dữ liệu", "sinh học",
+                )
+            )
+        )
+        if ("2023" in q_cohorts and dmktkt_2023_only) or (
+            any(c in q_cohorts for c in ("2024", "2025", "2026")) and dmktkt_2024_plus
+            and not ("2024" in q_cohorts and any("2024-2025" in l.lower() and "học phí khóa qh-2024 cntt" in l.lower() for l in lines[:5]))
+        ):
+            asks_dmktkt = True
 
     asks_decision = any(k in ql for k in (
         "quyết định nào", "quyết định số nào", "quyết định số mấy",
@@ -1741,10 +1938,54 @@ def extract_relevant_snippet(
     ql_cutoff_flat = re.sub(r"\bkhmt\b", "khoa học máy tính", ql_cutoff_flat)
     ql_cutoff_flat = re.sub(r"\bktmt\b", "kỹ thuật máy tính", ql_cutoff_flat)
     ql_cutoff_flat = re.sub(r"\bktrb\b", "kỹ thuật robot", ql_cutoff_flat)
-    ql_cutoff_flat = re.sub(r"\bktvt\b", "kỹ thuật điện tử viễn thông", ql_cutoff_flat)
-    ql_cutoff_flat = re.sub(r"\bmmtttdl\b", "mạng máy tính và truyền thông dữ liệu", ql_cutoff_flat)
-    ql_cutoff_flat = re.sub(r"\bai\b", "trí tuệ nhân tạo", ql_cutoff_flat)
+    ql_cutoff_flat = re.sub(r"\b(?:ktvt|đtvt)\b", "kỹ thuật điện tử viễn thông", ql_cutoff_flat)
+    ql_cutoff_flat = re.sub(r"\b(?:mmtttdl|mmt&ttdl)\b", "mạng máy tính và truyền thông dữ liệu", ql_cutoff_flat)
+    ql_cutoff_flat = re.sub(r"\b(?:ai|ttnt)\b", "trí tuệ nhân tạo", ql_cutoff_flat)
+    ql_cutoff_flat = re.sub(r"\bcnnn\b", "công nghệ nông nghiệp", ql_cutoff_flat)
+    ql_cutoff_flat = re.sub(r"\b(?:cnhkvt|hkvt)\b", "hàng không vũ trụ", ql_cutoff_flat)
+    ql_cutoff_flat = re.sub(r"\b(?:cnktxd|xdgt)\b", "kỹ thuật xây dựng", ql_cutoff_flat)
+    ql_cutoff_flat = re.sub(r"\bcđt\b", "kỹ thuật cơ điện tử", ql_cutoff_flat)
+    ql_cutoff_flat = re.sub(r"\bckt\b", "cơ kỹ thuật", ql_cutoff_flat)
+    ql_cutoff_flat = re.sub(r"\bvlkt\b", "vật lý kỹ thuật", ql_cutoff_flat)
+    ql_cutoff_flat = re.sub(r"\bktnl\b", "kỹ thuật năng lượng", ql_cutoff_flat)
     ql_cutoff_flat = re.sub(r"[\s\-–—]+", " ", ql_cutoff_flat)
+
+    can_use_major_tuition_summary = (
+        any(k in ql for k in ("học phí", "mức thu", "định mức", "đóng bao nhiêu", "nộp bao nhiêu"))
+        and not q_cohorts
+        and not asks_retake
+        and not asks_dual_degree
+        and not asks_other_unit
+        and not asks_foreign
+        and not asks_clc_tt23
+        and not asks_postgrad
+        and not asks_extended
+        and "chất lượng cao" not in ql
+        and "clc" not in ql
+        and "so sánh" not in ql
+        and "nhật bản" not in ql
+        and ("ngành" in ql or bool(re.search(r"\bcn\d{1,2}\b", ql)) or asks_other_uet_major or asks_cnnn or asks_hkvt or asks_xdgt)
+    )
+    matched_major_tuition_indices: set[int] = set()
+    if can_use_major_tuition_summary:
+        for idx_m, l_m in enumerate(lines):
+            if not l_m.startswith("[Tổng hợp học phí ngành "):
+                continue
+            m_hdr = re.match(r"^\[Tổng hợp học phí ngành\s+(.+?)\s+\(mã\s+(CN\d{1,2})\)", l_m)
+            if not m_hdr:
+                continue
+            raw_disp, cn_c = m_hdr.group(1).lower(), m_hdr.group(2).lower()
+            cand_names = [re.sub(r"\s*\([^)]*\)", "", raw_disp).strip()]
+            for sub_m in re.findall(r"\(([^)]+)\)", raw_disp):
+                cand_names.append(sub_m.strip())
+            if re.search(rf"\b{re.escape(cn_c)}\b", ql):
+                matched_major_tuition_indices.add(idx_m)
+            else:
+                for cn_name in cand_names:
+                    cn_flat = re.sub(r"[\s\-–—]+", " ", cn_name).strip()
+                    if cn_flat and cn_flat in ql_cutoff_flat:
+                        matched_major_tuition_indices.add(idx_m)
+                        break
     m_spec_course = re.search(
         r"\b(?:môn(?:\s+học)?|học\s+phần)\s+(?!học\b|nào\b|gì\b|này\b|đó\b|tự\s+chọn\b)"
         r"([a-zđáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵ0-9\s-]{2,55})",
@@ -1774,6 +2015,20 @@ def extract_relevant_snippet(
             if not (asks_decision or asks_effective or asks_replaced_doc):
                 continue
         if line.startswith("[Điểm chuẩn / Điểm trúng tuyển") and not asks_cutoff_score:
+            continue
+        if line.startswith("[Tổng hợp toàn bộ điểm chuẩn"):
+            has_specific_cutoff_major = (
+                "ngành " in ql
+                or bool(re.search(r"\bcn\d{1,2}\b", ql))
+                or asks_other_uet_major
+                or asks_cnnn
+                or asks_hkvt
+                or asks_xdgt
+                or any(k in ql for k in ("sat", "act", "ielts", "hsa", "đgnl"))
+            )
+            if not asks_cutoff_score or has_specific_cutoff_major:
+                continue
+        if line.startswith("[Tổng hợp học phí ngành ") and idx not in matched_major_tuition_indices:
             continue
         if line.startswith("[Tổng hợp"):
             if "xét tốt nghiệp" in l_lower and "xét tốt nghiệp" not in ql:
@@ -1928,6 +2183,10 @@ def extract_relevant_snippet(
             and any(l.startswith("[Tổng quan Chương trình đào tạo]") for l in lines)
         ):
             bonus -= 18.0
+        if idx in matched_major_tuition_indices:
+            bonus += 115.0
+        if line.startswith("[Tổng hợp toàn bộ điểm chuẩn") and asks_cutoff_score:
+            bonus += 120.0
         if line.startswith("[Điểm chuẩn / Điểm trúng tuyển") and asks_cutoff_score:
             bonus += 50.0
             m_cmaj = re.search(r"\]\s*Ngành\s+([^(]+)\(mã(?:\s+xét\s+tuyển)?\s+(CN\d{1,2})\)", line)
@@ -2001,7 +2260,7 @@ def extract_relevant_snippet(
             if "còn lại" in l_lower or "ngành khác" in l_lower:
                 bonus += 28.0
                 matched_bi.add("__remaining_majors_row__")
-        elif asks_remaining_majors and not asks_cnnn and not asks_xdgt:
+        elif asks_remaining_majors and not asks_cnnn and not asks_xdgt and not asks_hkvt:
             if "còn lại" in l_lower or "ngành khác" in l_lower:
                 bonus += 22.0
             elif "nông nghiệp" in l_lower or "cnnn" in l_lower or "hàng không" in l_lower or "xây dựng giao thông" in l_lower:
@@ -2011,12 +2270,27 @@ def extract_relevant_snippet(
                 bonus += 32.0
             elif "ngành cntt" in body_lower or "nhóm 1" in body_lower or "nhóm 2" in body_lower or "hàng không" in body_lower:
                 bonus -= 22.0
+        elif asks_hkvt:
+            if "hàng không" in l_lower or "cnhkvt" in l_lower or "không gian" in l_lower:
+                bonus += 30.0
+            elif "nông nghiệp" in body_lower or "cnnn" in body_lower or "còn lại" in body_lower:
+                bonus -= 20.0
         elif asks_xdgt:
-            if "xây dựng giao thông" in l_lower or "xdgt" in l_lower:
+            if "xây dựng giao thông" in l_lower or "kỹ thuật xây dựng" in l_lower or "xdgt" in l_lower or "cnktxd" in l_lower:
                 bonus += 28.0
-        elif asks_cntt_ai and not asks_cnnn:
-            if "cntt" in l_lower or "công nghệ thông tin" in l_lower or "trí tuệ nhân tạo" in l_lower:
-                bonus += 24.0
+            elif "nông nghiệp" in body_lower or "cnnn" in body_lower or "còn lại" in body_lower:
+                bonus -= 20.0
+        else:
+            if any(k in body_lower for k in ("ngành công nghệ nông nghiệp", "ngành cnnn", "nhóm 3")):
+                bonus -= 28.0
+            if any(k in body_lower for k in ("hàng không vũ trụ", "xây dựng giao thông", "cnhkvt", "cnktxd", "nhóm 2")):
+                bonus -= 28.0
+            if asks_cntt_ai:
+                if "cntt" in l_lower or "công nghệ thông tin" in l_lower or "trí tuệ nhân tạo" in l_lower:
+                    bonus += 24.0
+            if asks_other_uet_major and "2022" in q_cohorts and "chất lượng cao" not in ql and "clc" not in ql:
+                if "còn lại" in body_lower or "ngành khác" in body_lower or "nhóm 1" in body_lower:
+                    bonus += 24.0
 
         if target_dieu:
             if re.search(rf"\[?{re.escape(target_dieu)}\b", l_lower):
@@ -2214,6 +2488,18 @@ def extract_relevant_snippet(
         ):
             break
         if (
+            selected_indices
+            and lines[selected_indices[0]].startswith("[Tổng hợp toàn bộ điểm chuẩn")
+            and not line.startswith("[Tổng hợp toàn bộ điểm chuẩn")
+        ):
+            break
+        if (
+            selected_indices
+            and lines[selected_indices[0]].startswith("[Tổng hợp học phí ngành ")
+            and not line.startswith("[Tổng hợp học phí ngành ")
+        ):
+            break
+        if (
             asks_cutoff_score
             and selected_indices
             and lines[selected_indices[0]].startswith("[Điểm chuẩn / Điểm trúng tuyển")
@@ -2233,7 +2519,8 @@ def extract_relevant_snippet(
             break
 
     ordered = [lines[i] for i in selected_indices]
-    return _truncate_at_boundary(_deduplicate_bracket_prefixes(ordered), max_len)
+    eff_max_len = max(max_len, 1000) if (ordered and ordered[0].startswith("[Tổng hợp toàn bộ điểm chuẩn")) else max_len
+    return _truncate_at_boundary(_deduplicate_bracket_prefixes(ordered), eff_max_len)
 
 
 class InMemoryRetriever:
@@ -2758,6 +3045,178 @@ class InMemoryRetriever:
                         "topic_hint": topic,
                     },
                 })
+
+        # Cross-link per-major annual tuition tables from official admissions docs into undergraduate tuition regulations
+        adm_tuition_by_yr: dict[int, tuple[str, list[dict[str, Any]]]] = {}
+        for did, m in doc_meta.items():
+            if m.get("topic") == "admissions" and m.get("start_year") in (2024, 2025, 2026):
+                src_rel = m.get("source_path", "").removeprefix("data/raw/uet/markdown/")
+                src_p = md_root / src_rel
+                if not src_p.is_file():
+                    continue
+                parsed_m = _parse_admissions_major_tuition_section(
+                    src_p.read_text(encoding="utf-8", errors="ignore"),
+                    did,
+                )
+                if parsed_m:
+                    yr_k = int(m["start_year"])
+                    # Prefer thong_tin_tuyen_sinh over de_an_ts when both exist
+                    if yr_k not in adm_tuition_by_yr or "thong-tin-tuyen-sinh" in did.lower().replace("_", "-"):
+                        adm_tuition_by_yr[yr_k] = (did, parsed_m)
+
+        for yr_k, (adm_did, maj_entries) in adm_tuition_by_yr.items():
+            t_doc = next(
+                (
+                    did for did, m in doc_meta.items()
+                    if m.get("topic") == "tuition"
+                    and m.get("start_year") == yr_k
+                    and not m.get("is_postgrad")
+                    and not m.get("is_clc_tt23")
+                    and not m.get("is_provisional")
+                ),
+                None,
+            )
+            if not t_doc:
+                continue
+            t_lines = doc_lines.get(t_doc, [])
+            ay_lbl = f"{yr_k}-{yr_k + 1}"
+            qd_full = next(
+                (k.upper() for k, v in decision_to_docs.items() if t_doc in v and "/qđ-" in k),
+                "",
+            )
+            qd_sfx = f" theo QĐ {qd_full}" if qd_full else ""
+
+            dmktkt_mo = dmktkt_tc = std_mo = std_tc = ""
+            qh22_cnnn_mo = qh22_cnnn_tc = qh22_hkvt_mo = qh22_hkvt_tc = qh22_rem_mo = qh22_rem_tc = ""
+            for tl in t_lines:
+                tll = tl.lower()
+                if "[sau đại học" in tll or "đơn vị đào tạo khác" in tll and "theo tháng" not in tll:
+                    continue
+                m_mo = re.search(r"\b(\d{1,3}(?:\.\d{3})+)\s*đồng/tháng", tl)
+                m_tc = re.search(r"\b(\d{1,3}(?:\.\d{3})+)\s*đồng/tín\s*chỉ", tl)
+                if ("kinh tế kỹ thuật" in tll or "đmktkt" in tll) and (m_mo or m_tc):
+                    if m_mo:
+                        dmktkt_mo = m_mo.group(1)
+                    if m_tc:
+                        dmktkt_tc = m_tc.group(1)
+                elif "2023" in tll and "chuẩn" in tll and "kinh tế kỹ thuật" not in tll:
+                    if m_mo:
+                        std_mo = m_mo.group(1)
+                    if m_tc:
+                        std_tc = m_tc.group(1)
+                elif "2022" in tll and ("nông nghiệp" in tll or "nhóm 3" in tll):
+                    if m_mo:
+                        qh22_cnnn_mo = m_mo.group(1)
+                    if m_tc:
+                        qh22_cnnn_tc = m_tc.group(1)
+                elif "2022" in tll and ("hàng không" in tll or "nhóm 2" in tll):
+                    if m_mo:
+                        qh22_hkvt_mo = m_mo.group(1)
+                    if m_tc:
+                        qh22_hkvt_tc = m_tc.group(1)
+                elif "2022" in tll and ("còn lại" in tll or "nhóm 1" in tll):
+                    if m_mo:
+                        qh22_rem_mo = m_mo.group(1)
+                    if m_tc:
+                        qh22_rem_tc = m_tc.group(1)
+
+            synth_maj_lines: list[str] = []
+            for me in maj_entries:
+                cn_c = me["cn"]
+                dname = me["display_name"]
+                ann_fee = me["annual_fee"]
+                b_idx = me["block_idx"]
+
+                if cn_c == "CN10":
+                    q22_m, q22_t = qh22_cnnn_mo, qh22_cnnn_tc
+                elif cn_c in ("CN5", "CN7"):
+                    q22_m, q22_t = qh22_hkvt_mo, qh22_hkvt_tc
+                else:
+                    q22_m, q22_t = qh22_rem_mo, qh22_rem_tc
+                q22_note = (
+                    f" Đối với khóa cũ QH-2022 hệ chuẩn: {q22_m} đồng/tháng ({q22_t} đồng/tín chỉ)."
+                    if q22_m and q22_t
+                    else (f" Đối với khóa cũ QH-2022 hệ chuẩn: {q22_t} đồng/tín chỉ." if q22_t else "")
+                )
+
+                if b_idx == 0:
+                    detail_parts = []
+                    if dmktkt_mo:
+                        detail_parts.append(f"{dmktkt_mo} đồng/tháng")
+                    if dmktkt_tc:
+                        lbl_tc = "học lại/cải thiện " if not dmktkt_mo else ""
+                        detail_parts.append(f"{lbl_tc}{dmktkt_tc} đồng/tín chỉ")
+                    det_str = f" ({'; '.join(detail_parts)}{qd_sfx})" if detail_parts else qd_sfx
+                    synth_maj_lines.append(
+                        f"[Tổng hợp học phí ngành {dname} (mã {cn_c}) năm học {ay_lbl}] "
+                        f"Ngành {dname} (mã tuyển sinh {cn_c}) thuộc nhóm CTĐT theo định mức kinh tế kỹ thuật (ĐMKTKT): "
+                        f"mức học phí năm học {ay_lbl} là {ann_fee} đồng/năm học{det_str}.{q22_note}"
+                    )
+                else:
+                    ann_int = int(ann_fee.replace(".", ""))
+                    std_int = int(std_mo.replace(".", "")) * 10 if std_mo else 0
+                    if std_mo and ann_int == std_int:
+                        det_str = f" ({std_mo} đồng/tháng; {std_tc} đồng/tín chỉ{qd_sfx})" if std_tc else f" ({std_mo} đồng/tháng{qd_sfx})"
+                        synth_maj_lines.append(
+                            f"[Tổng hợp học phí ngành {dname} (mã {cn_c}) năm học {ay_lbl}] "
+                            f"Ngành {dname} (mã tuyển sinh {cn_c}) thuộc nhóm CTĐT chuẩn: "
+                            f"mức học phí năm học {ay_lbl} là {ann_fee} đồng/năm học{det_str}.{q22_note}"
+                        )
+                    elif std_mo:
+                        tc_s = f" ({std_tc} đồng/tín chỉ)" if std_tc else ""
+                        synth_maj_lines.append(
+                            f"[Tổng hợp học phí ngành {dname} (mã {cn_c}) năm học {ay_lbl}] "
+                            f"Ngành {dname} (mã tuyển sinh {cn_c}): mức học phí khóa tuyển sinh mới năm {yr_k} là {ann_fee} đồng/năm học "
+                            f"(theo Thông tin tuyển sinh {yr_k}); đối với CTĐT chuẩn các khóa từ QH-2023 trở về sau{qd_sfx} là "
+                            f"{std_mo} đồng/tháng{tc_s}.{q22_note}"
+                        )
+                    else:
+                        tc_s = f" (học lại/cải thiện: {std_tc} đồng/tín chỉ)" if std_tc else ""
+                        synth_maj_lines.append(
+                            f"[Tổng hợp học phí ngành {dname} (mã {cn_c}) năm học {ay_lbl}] "
+                            f"Ngành {dname} (mã tuyển sinh {cn_c}) thuộc nhóm CTĐT chuẩn: "
+                            f"mức học phí năm học {ay_lbl} là {ann_fee} đồng/năm học{tc_s}.{q22_note}"
+                        )
+
+            if synth_maj_lines:
+                doc_lines[t_doc].extend(synth_maj_lines)
+                doc_meta[t_doc]["major_tuition_adm_doc"] = adm_did
+                t_m = doc_meta[t_doc]
+                for b_start in range(0, len(synth_maj_lines), 10):
+                    b_body = "\n".join(synth_maj_lines[b_start : b_start + 10])
+                    chunks.append({
+                        "chunk_id": f"{t_doc}:maj_{b_start}",
+                        "doc_id": t_doc,
+                        "text": f"{t_m['title']} ({t_m['academic_year']}) | {b_body}",
+                        "document": b_body,
+                        "academic_year": t_m["academic_year"],
+                        "start_year": t_m["start_year"],
+                        "topic": "tuition",
+                        "title": t_m["title"],
+                        "program_name_vi": "",
+                        "is_active": t_m["is_active"],
+                        "is_postgrad": False,
+                        "is_extended": False,
+                        "is_sub_inst": False,
+                        "is_clc_tt23": False,
+                        "is_timetable": False,
+                        "is_provisional": False,
+                        "effective_from": t_m.get("effective_from"),
+                        "effective_until_exclusive": t_m.get("effective_until_exclusive"),
+                        "issued_date": t_m.get("issued_date"),
+                        "retrieval_eligible": True,
+                        "has_total_credits": False,
+                        "section_type": "",
+                        "cohort_min": 0,
+                        "cohort_max": 0,
+                        "is_tuan_pack": False,
+                        "metadata": {
+                            "doc_id": t_doc,
+                            "academic_year": t_m["academic_year"],
+                            "start_year": t_m["start_year"],
+                            "topic_hint": "tuition",
+                        },
+                    })
 
         # Cross-link total program credits into split 'overview' docs of the same major (e.g. tuan_2022_2026)
         credits_by_prog: dict[str, list[tuple[int, str, str]]] = {}
@@ -3629,6 +4088,7 @@ class RAGEvalAdapter:
         """Run generate.py over retrieved passages with post-generation grounding; fallback to extractive."""
         if not hits:
             return extractive_answer, False
+        from .config import load_config
         from .generate import generate as default_generate
         from .versioning import VersionPlan
 
@@ -3637,7 +4097,22 @@ class RAGEvalAdapter:
         plan = VersionPlan(mode=plan_mode, start_year=resolved_year, reason=f"adapter_cat={cat}", years=years_tup)
 
         llm_hits: list[dict[str, Any]] = []
+        primary_meta = dict(hits[0].get("metadata", {}))
+        primary_did = primary_meta.get("doc_id", "")
+        primary_dmeta = self.retriever.doc_meta.get(primary_did, {})
+        primary_meta.setdefault("academic_year", primary_dmeta.get("academic_year", ""))
+        primary_meta["year_status"] = "verified" if primary_dmeta.get("retrieval_eligible", True) else "unverified"
+        if extractive_answer:
+            llm_hits.append({
+                "id": f"{primary_did}:verified_summary",
+                "document": extractive_answer,
+                "metadata": primary_meta,
+            })
+
         for h in hits[:4]:
+            doc_txt = str(h.get("document", "")).strip()
+            if not doc_txt:
+                continue
             meta = dict(h.get("metadata", {}))
             did = meta.get("doc_id", "")
             d_meta = self.retriever.doc_meta.get(did, {})
@@ -3645,21 +4120,24 @@ class RAGEvalAdapter:
             meta["year_status"] = "verified" if d_meta.get("retrieval_eligible", True) else "unverified"
             llm_hits.append({
                 "id": h.get("id", did),
-                "document": h.get("document", ""),
+                "document": doc_txt,
                 "metadata": meta,
             })
 
-        use_cfg = cfg or {"llm": {"provider": "local", "model": "Qwen/Qwen2.5-1.5B-Instruct", "max_new_tokens": 400}}
+        self._last_llm_error = ""
+        use_cfg = cfg if cfg is not None else load_config()
         gen_callable = llm_fn or default_generate
         try:
             llm_ans = gen_callable(question, llm_hits, plan, use_cfg)
-        except Exception:
+        except Exception as exc:
+            self._last_llm_error = str(exc)[:240]
             return extractive_answer, False
 
         context_blob = extractive_answer + "\n" + "\n".join(h["document"] for h in llm_hits)
         top_score = float(hits[0].get("score", 0.0))
         if verify_llm_grounding(question, llm_ans, context_blob, top_score, self.retriever.idf):
             return llm_ans.strip(), True
+        self._last_llm_error = "Câu trả lời LLM không vượt qua cổng đối chiếu số liệu (verify_llm_grounding) -> giữ bản trích xuất."
         return extractive_answer, False
 
     def run_benchmark(
@@ -3713,6 +4191,19 @@ class RAGEvalAdapter:
                 )
                 if course_res is not None:
                     pred_text, cited_doc_ids, pred_as_of_year = course_res
+                    course_llm_used = False
+                    if mode == "chrono_rag_llm" and cited_doc_ids:
+                        c_did = cited_doc_ids[0]
+                        c_ay = self.retriever.doc_meta.get(c_did, {}).get("academic_year", "")
+                        synth_hits = [{
+                            "id": f"{c_did}:course",
+                            "document": pred_text,
+                            "score": 35.0,
+                            "metadata": {"doc_id": c_did, "academic_year": c_ay, "start_year": pred_as_of_year or 0},
+                        }]
+                        pred_text, course_llm_used = self._generate_llm_summary(
+                            question, synth_hits, pred_text, cat, pred_as_of_year, cfg=cfg, llm_fn=llm_fn
+                        )
                     pred_text, unreviewed_sources = self._append_governance_notices(question, pred_text, cited_doc_ids)
                     latency_ms = (time.perf_counter() - start_t) * 1000.0
                     predictions.append({
@@ -3724,7 +4215,7 @@ class RAGEvalAdapter:
                         "inferred_category": inferred_cat,
                         "cited_doc_ids": cited_doc_ids,
                         "unreviewed_sources": unreviewed_sources,
-                        "llm_used": False,
+                        "llm_used": course_llm_used,
                         "sources": [
                             {
                                 "doc_id": did,
@@ -3909,6 +4400,19 @@ class RAGEvalAdapter:
                         cited_doc_ids = list(dict.fromkeys(
                             h["metadata"].get("doc_id") for h in hits if h["metadata"].get("doc_id")
                         ))
+                        if "[Tổng hợp học phí ngành " in pred_text and top_doc:
+                            adm_linked = self.retriever.doc_meta.get(top_doc, {}).get("major_tuition_adm_doc")
+                            if adm_linked and adm_linked not in cited_doc_ids:
+                                cited_doc_ids.append(adm_linked)
+                                hits.append({
+                                    "document": "",
+                                    "score": 0.0,
+                                    "metadata": {
+                                        "doc_id": adm_linked,
+                                        "academic_year": self.retriever.doc_meta.get(adm_linked, {}).get("academic_year", ""),
+                                        "dieu_so": "",
+                                    },
+                                })
                         if cat == "superseded_rule" and top_doc:
                             for linked in (
                                 self.retriever.supersedes_map.get(top_doc),
@@ -3945,6 +4449,7 @@ class RAGEvalAdapter:
                 "cited_doc_ids": cited_doc_ids,
                 "unreviewed_sources": unreviewed_sources if mode != "naive_rag" else [],
                 "llm_used": llm_used,
+                **({"llm_error": getattr(self, "_last_llm_error", "")} if mode == "chrono_rag_llm" and not llm_used and getattr(self, "_last_llm_error", "") else {}),
                 "sources": [
                     {
                         "doc_id": h["metadata"].get("doc_id"),
