@@ -1,0 +1,20 @@
+{
+  "base_model": "Qwen/Qwen2.5-7B-Instruct",
+  "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "adapter_sha256": "2a82aa7cd752ceafe9eaa8759ec8d44e7135e8c8ed136ce7ac0a7c5f950e8cfd",
+  "merge_method": "shardwise_fp32_delta_fp16_output",
+  "merged_weight_count": 112,
+  "llama_cpp_version": "b5400",
+  "quantization": "Q4_K_M",
+  "files": {
+    "qwen2.5-7b-instruct-q4_k_m.gguf": {
+      "size_bytes": 4683073376,
+      "sha256": "8a1772c4f8288479841efa7cd9075e540042d4998bc6cc2c31c1e4caf508a48a"
+    },
+    "chronoreg-lora-7b-q4_k_m.gguf": {
+      "size_bytes": 4683073344,
+      "sha256": "10455b64d22ee95ae6c79d2a61722820082b0a268fa078f826244a5bfcce0359"
+    }
+  },
+  "canonical_release": false
+}
