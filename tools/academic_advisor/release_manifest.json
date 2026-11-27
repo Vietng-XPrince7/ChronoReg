@@ -9,7 +9,7 @@
     "presentation.py": "f5a783b08ce981e39261bcd0cd7859a097fa1dc8bc8f8099957f70ea51e396f0",
     "quality.py": "cda5b3d45bdd17d14ff41b2131c7b3c84837a9b634af20055bea6038d238a62c",
     "regulation.py": "691efb9a6e1f382d692cdba0542bb51f17dac4402b5b47b5b3a02352b19a2d20",
-    "run_live.py": "df4f734e9f11730ed12a7ba375ebe2c5dafab33df9a18a6142d524028c89b781",
+    "run_live.py": "7c28ce5d9fc0b5e24c516616bed9167a59f2c22a45925321c568f73cfea5c59a",
     "runtime_v5.py": "573a8614a31c225c9dbb99ec0bd02114687cc8b6604d18ebb0be321b634f3c23",
     "scholarship.py": "6da80428ad07f77f0bf73d65ace514103c9dc49dccf5287658abd138c7bc200a",
     "scope.py": "fc49e94ff1256efee4ead383cb6f9df33a66f59b1fe0c7011369eee6ece68105",
@@ -39,7 +39,7 @@
     "tuition.py": "4095c734847623a29b3967321b0eb667d9375cc8ce5c919985e09e60c188b544",
     "whatif.py": "8f2346fad2a0d5edc5fbeda8eb078e06f9fef8508df8f45b5020850b98926b3d",
     "test_graduation.py": "cd7aa1ce7c17feadcfc4950d272a2f5d28e2386e36734f614e54c1021dc2e12a",
-    "TEAM_START.md": "e176ae6685c2ea809a6724738f205be55f82b17c8cf807189057e2f0726b680f",
+    "TEAM_START.md": "1d32ac828a2df29fdb0ac599ba841199b0b2d63f0acfb1370dcb690570c09537",
     "local_slm.py": "92f0aad73b4c238325c40fb75ac77e1e431dc49d30db87158ca6a6a3a159b57e",
     "portable_runtime.py": "facf667a2ecc056fcb51cbdbdbbdd8c6c79d9c8eb5efdd52d4c39fedb91ddd7b",
     "slm_advisor.py": "3af6ef1a199935064f8179000129a76d1306643cd064bc260af55642c7b4d601",
@@ -51,8 +51,16 @@
     "test_runtime_repair.py": "ff277e31b9797c8378c39248fcac1197978e98437e2fe82f5f1d3f1b60619d6c",
     "test_slm_quality.py": "dd19def39ad60f47e22a93ff5558fc75fab0c93a21bdde93eb3dd411c5709d6d",
     "test_structured_knowledge.py": "b01f010681bfe14db43acb55db83a95fe1192e5f9eb91dbe5b98eb4ede5e5a4c",
-    "test_runtime_cache.py": "9d7b7d905214ac71b423d20acc637650a2d676f5ee9b7ece18bf929baf253b1b"
+    "test_runtime_cache.py": "9d7b7d905214ac71b423d20acc637650a2d676f5ee9b7ece18bf929baf253b1b",
+    "workflow.py": "99f0d00085f44c6069c5cbe7ad77ca15d7addc11b5c86cd5ee8effdd3559c66d",
+    "test_workflow.py": "8d909bb06e1900c52dec9ef9e3079be22e6b3b66207d576e724e5b7ba5344eb5",
+    "smoke_workflow.py": "03e1f4afd9b2a1f21b7e08d264fdaede3ee6c934f06264dd9a576089560f6ebe",
+    "course_planning.py": "d7c63db800b76035d4bcd844481d6347dc2ad44be7cdc4d914ece920afcdd977",
+    "test_course_planning.py": "2d7722a328a0219aa17b831257dbe7443c425b86a007603aa45b3cc00ac99da4",
+    "advisor_report.py": "2667323a1202ad0d6e0287db6bd4af4d4d002851c244a95a9088a07cfd550cdf",
+    "test_advisor_report.py": "ec377e20dbf67256657d5d97efa088834b98abe996ce0d7f7075c06940528f70"
   },
   "portable_revision": "15.1-runtime-cache",
-  "product_profile": "local-slm"
+  "product_profile": "local-slm",
+  "workflow_revision": "1.2"
 }
