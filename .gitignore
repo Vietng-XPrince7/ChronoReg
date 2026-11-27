@@ -231,3 +231,4 @@ data/versioning/rag_chunks_draft.jsonl
 
 # Local verified LoRA checkpoints and multi-GB base model (never commit artifacts)
 .local_models/
+/.venv-chronoreg-advisor/
