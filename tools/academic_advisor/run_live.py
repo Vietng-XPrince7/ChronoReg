@@ -5,6 +5,7 @@ from pathlib import Path
 from runtime_v5 import install as install_v5
 from knowledge import Index, answer
 from advisor import plan
+from workflow import run_workflow
 from presentation import present
 from whatif import simulate
 from conversation import add_conversation
@@ -19,7 +20,7 @@ def install(s,root):
     def fallback(question,mode,advisor_bundle=None):
         ab=advisor_bundle or {}
         if AUTO.get() and mode=='chrono_rag':
-            advisory=plan(question,ab,root)
+            advisory=run_workflow(question,ab,root) or plan(question,ab,root)
             if advisory is not None:return advisory
         if AUTO.get() and mode=='chrono_rag' and ab.get('category') in (None,'REGULATION') and not any(ab.get(k) for k in ('roster_context','news_context','course_trend_text','single_student_mode')):
             pred=answer(index,s.llm_backend,question)
@@ -49,9 +50,9 @@ def install(s,root):
         p=pred or {}
         if p.get('engine_mode')=='ADVISOR_SIMULATION':
             return {'engine_mode':'ADVISOR_SIMULATION','inference_source':'deterministic_calculator','source_type':'hypothetical_calculation','source_label':'Tính toán từ giả định do người dùng nhập (không phải LoRA thuần)','model_name':None,'latency_ms':round(latency_ms,2),'engine_note':'Không dùng GPA học kỳ thay CPA; không xác nhận điều kiện học vụ.','quality_qualified':False,'simulation':p['simulation']}
-        if p.get('engine_mode')=='ADVISOR_PLAN':
+        if p.get('engine_mode') in ('ADVISOR_PLAN','ADVISOR_WORKFLOW'):
             sources=p.get('advisor_sources',[]);first=sources[0] if sources else {}
-            return {'doc_id':None,'doc_title':Path(first['source_path']).name if first else None,'effective_year':None,'sha256_short':first.get('sha256','')[:8] or None,'source_type':'advisor_plan','source_label':'Hồ sơ demo + quy tắc tư vấn (không phải LoRA thuần)','inference_source':'deterministic_advisor_plan','engine_mode':'ADVISOR_PLAN','model_name':None,'latency_ms':round(latency_ms,2),'engine_note':'Đề xuất từ hồ sơ đang chọn, không xác nhận điều kiện chính thức.','quality_qualified':False,'roadmap':p.get('roadmap',[]),'advisor_sources':sources,'advisor_category':p.get('advisor_category'),'advisor_entities':p.get('advisor_entities')}
+            return {'doc_id':None,'doc_title':Path(first['source_path']).name if first else None,'effective_year':None,'sha256_short':first.get('sha256','')[:8] or None,'source_type':'advisor_plan','source_label':'Hồ sơ demo + quy tắc tư vấn (không phải LoRA thuần)','inference_source':p.get('inference_source','deterministic_advisor_plan'),'engine_mode':p['engine_mode'],'workflow_tools':p.get('workflow_tools',[]),'advisor_report':p.get('advisor_report'),'model_name':None,'latency_ms':round(latency_ms,2),'engine_note':'Đề xuất từ hồ sơ đang chọn, không xác nhận điều kiện chính thức.','quality_qualified':False,'roadmap':p.get('roadmap',[]),'advisor_sources':sources,'advisor_category':p.get('advisor_category'),'advisor_entities':p.get('advisor_entities')}
         if 'knowledge_sources' in p:
             sources=p['knowledge_sources'];model=p.get('model_name')
             return {'doc_id':sources[0]['doc_id'] or None if sources else None,'doc_title':Path(sources[0]['path']).name if sources else None,'effective_year':None,'sha256_short':sources[0]['sha256'][:8] if sources else None,'source_type':'knowledge_access','source_label':'LoRA 7B + Knowledge Access' if model else 'Knowledge Access — trích nguồn','inference_source':p['inference_source'],'engine_mode':p['engine_mode'],'model_name':model,'latency_ms':round(latency_ms,2),'engine_note':'Không phải LoRA thuần; kiểm tra số liệu không chứng nhận sự đúng đắn hay hiệu lực.','quality_qualified':False,'knowledge_sources':sources,'advisor_category':p.get('advisor_category'),'advisor_entities':p.get('advisor_entities')}
@@ -74,7 +75,7 @@ def install(s,root):
         original_text=s._answer_text_from_pred
         def answer_text(pred,question):
             # Preserve complete source excerpts and roadmaps rather than truncating mid-condition.
-            if pred.get('presentation_mode') or pred.get('engine_mode') in ('ADVISOR_PLAN','LORA_KNOWLEDGE_ACCESS','KNOWLEDGE_EXCERPTS','ADVISOR_SIMULATION'):
+            if pred.get('presentation_mode') or pred.get('engine_mode') in ('ADVISOR_PLAN','ADVISOR_WORKFLOW','LORA_KNOWLEDGE_ACCESS','KNOWLEDGE_EXCERPTS','ADVISOR_SIMULATION'):
                 return pred.get('predicted_answer','')
             return original_text(pred,question)
         s._answer_text_from_pred=answer_text
@@ -108,7 +109,7 @@ def install(s,root):
     if ui.is_file():
         from fastapi.responses import HTMLResponse
         html=ui.read_text(encoding='utf-8').replace('LoRA 3B','LoRA 7B').replace('Chrono-RAG 3B','Chrono-RAG 7B').replace('Ollama 3B','Ollama 7B').replace('mô hình 3B','mô hình 7B')
-        html=html.replace('escapeHtml(engineLabel(actualEngine, riskTier))', "escapeHtml((m.presentation_mode === 'LORA_ADVISOR_NARRATIVE' || m.presentation_mode === 'LORA_ADVISOR_PRIORITY') ? 'LoRA 7B Advisor' : m.engine_mode === 'LORA_KNOWLEDGE_ACCESS' ? 'LoRA 7B + Knowledge Access' : m.engine_mode === 'ADVISOR_SIMULATION' ? 'Advisor — mô phỏng CPA' : m.engine_mode === 'ADVISOR_PLAN' ? 'Advisor — hồ sơ và lộ trình' : m.engine_mode === 'KNOWLEDGE_EXCERPTS' ? 'Knowledge Access (trích nguồn)' : engineLabel(actualEngine, riskTier))")
+        html=html.replace('escapeHtml(engineLabel(actualEngine, riskTier))', "escapeHtml((m.presentation_mode === 'LORA_ADVISOR_NARRATIVE' || m.presentation_mode === 'LORA_ADVISOR_PRIORITY') ? 'LoRA 7B Advisor' : m.engine_mode === 'LORA_KNOWLEDGE_ACCESS' ? 'LoRA 7B + Knowledge Access' : m.engine_mode === 'ADVISOR_SIMULATION' ? 'Advisor — mô phỏng CPA' : m.engine_mode === 'ADVISOR_WORKFLOW' ? 'Advisor — công cụ cố vấn' : m.engine_mode === 'ADVISOR_PLAN' ? 'Advisor — hồ sơ và lộ trình' : m.engine_mode === 'KNOWLEDGE_EXCERPTS' ? 'Knowledge Access (trích nguồn)' : engineLabel(actualEngine, riskTier))")
         html=html.replace("if (src === 'ollama_local')", "if (src === 'ollama_local_advisor') return 'LoRA 7B + bằng chứng';\n      if (src === 'ollama_local_knowledge') return 'Ollama LoRA 7B + nguồn';\n      if (src === 'deterministic_calculator') return 'Công cụ tính CPA';\n      if (src === 'deterministic_advisor_plan') return 'Phân tích hồ sơ';\n      if (src === 'knowledge_excerpts') return 'Trích nguồn';\n      if (src === 'ollama_local')")
         html=html.replace("      document.getElementById('chatList').appendChild(card);", """      if (Array.isArray(m.roadmap) && m.roadmap.length) {
         const roadmap = document.createElement('section');
@@ -122,6 +123,19 @@ def install(s,root):
           item.append(title, body); roadmap.appendChild(item);
         });
         card.querySelector('.ai-tier2').after(roadmap);
+      }
+      if (m.advisor_report && m.advisor_report.draft && typeof m.advisor_report.text === 'string') {
+        const reportPanel = document.createElement('section');
+        reportPanel.style.cssText = 'margin:12px 16px;padding:12px;border:1px solid #b8c4bf;border-radius:6px;display:grid;gap:8px';
+        const label = document.createElement('strong'); label.textContent = m.advisor_report.title;
+        const note = document.createElement('div'); note.textContent = m.advisor_report.scope === 'individual_private' ? 'Bản nháp chứa thông tin cá nhân. Chỉ lưu hoặc chia sẻ qua kênh được phép.' : 'Bản nháp tổng hợp, không gồm tên/mã sinh viên.';
+        const download = document.createElement('button'); download.type = 'button'; download.textContent = 'Lưu bản nháp (.txt)';
+        download.addEventListener('click', () => {
+          const url = URL.createObjectURL(new Blob([m.advisor_report.text], {type:'text/plain;charset=utf-8'}));
+          const link = document.createElement('a'); link.href = url; link.download = 'chronoreg-advisor-draft.txt'; link.click();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        });
+        reportPanel.append(label,note,download); card.querySelector('.ai-tier2').after(reportPanel);
       }
       if (m.advisor_evidence) {
         const proof = document.createElement('details');
