@@ -140,7 +140,7 @@ def grounded(raw,question,prior):
         if re.search(r'\b(?:khong lap|dung lap|khong tu hoc|khong can lap|hoc lai|hoc phi|hoc bong|soan|gui tin nhan|ca lop)\b',n):raise ValueError('mixed/negated study scope')
         ids=re.findall(r'(?<!\d)\d{8}(?!\d)',n);sid=one(ids,'student')
         previous=old.get('student') or (prior.get('student') if prior.get('kind')=='student_context' else None)
-        review=bool(old and re.search(r'\b(?:can cu|dau hieu|ket qua|danh gia|theo doi|giam do kho|quyet dinh tiep)\b',n) and re.search(r'\b(?:ke hoach|phuong an|dot thu|cuoi tuan|tuan sau)\b',n))
+        review=bool(old and re.search(r'\b(?:can cu|dau hieu|ket qua|danh gia|theo doi|giam do kho|quyet dinh tiep|dua vao dau|hieu qua|tien bo|tieu chi|do luong)\b',n) and re.search(r'\b(?:ke hoach|phuong an|dot thu|cuoi tuan|tuan sau)\b',n))
         mins=positive_ints(n,r'\b(\d{1,4})\s*phut\b','minutes')
         days=positive_ints(n,r'\b(\d{1,3})\s*ngay\b','days')
         if re.search(r'\b(?:mot tuan|bay ngay|7 ngay)\b',n):

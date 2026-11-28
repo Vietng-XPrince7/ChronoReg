@@ -136,6 +136,7 @@ def class_flow(q,n,old,roster,explicit,classified,root):
         if DRAFT.search(n) or (prior and old.get('draft') and not revision):
             state['draft']=True;tools.append('communication_draft');lines+=['\n**Thông báo mời tham gia (bản nháp)**','Các em thân mến, cô dự kiến tổ chức một buổi trao đổi về kết quả học tập, rà soát học phần còn nợ và kế hoạch đăng ký học. Các em hãy kiểm tra hồ sơ của mình và chuẩn bị câu hỏi trước buổi gặp. Nếu có khó khăn cá nhân, các em có thể trao đổi riêng với cô. Thời gian và địa điểm sẽ được thông báo sau.']
     else:
+        state['ranked_list']=True
         lines+=['\n**Ưu tiên trao đổi riêng**']
         if individual:
             from course_planning import load_candidate,candidate_label,candidate_source

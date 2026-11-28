@@ -72,7 +72,7 @@ def pending_retrieval(rel,body):
     return bool(m and re.search(r'(?im)^\s*retrieval_eligible\s*:\s*["\']?false["\']?\s*(?:#.*)?$',m[1]))
 
 class Index:
-    def __init__(self,root):
+    def __init__(self,root,include_pending=False):
         self.root=Path(root).resolve();root=self.root;self.chunks=[];self.errors=[];self.inventory=[];self.postings=defaultdict(dict);self.lengths=[]
         hold=list(records(root/'data/versioning/publication_holds.jsonl'));self.hold_sha={r.get('content_sha256') for r in hold};self.hold_ids={r.get('doc_id') for r in hold}
         self.review={r['doc_id']:r for r in records(root/'data/versioning/reviewed_documents.jsonl')}
@@ -92,11 +92,12 @@ class Index:
             canon=hashlib.sha256(body.replace('\r\n','\n').encode()).hexdigest();c=cat.get(rel,{})
             if pending_retrieval(rel,body) or c.get('retrieval_eligible') is False:pending_hashes.add(canon)
             candidates.append((rel,sha,body,canon,c))
+        self.reference_held_canonical={canon for rel,sha,body,canon,c in candidates if sha in self.hold_sha or canon in self.hold_sha or c.get('doc_id') in self.hold_ids} if include_pending else set()
         for rel,sha,body,canon,c in candidates:
-            held=sha in self.hold_sha or canon in self.hold_sha or c.get('doc_id') in self.hold_ids
+            held=sha in self.hold_sha or canon in self.hold_sha or c.get('doc_id') in self.hold_ids or (include_pending and canon in self.reference_held_canonical)
             status='held' if held else 'review_pending' if canon in pending_hashes else 'unreviewed';self.inventory.append({'path':rel,'status':status,'sha256':sha})
-            if status=='review_pending':continue
-            by_sha[sha]=(rel,sha);by_sha[canon]=(rel,sha)
+            if status=='review_pending' and not include_pending:continue
+            if status!='review_pending':by_sha[sha]=(rel,sha);by_sha[canon]=(rel,sha)
             if canon in seen or held:continue
             seen.add(canon)
             # Do not derive regulation validity from a year in a filename. It is only a search hint.
@@ -134,7 +135,7 @@ class Index:
         self.avg=sum(self.lengths)/max(1,len(self.lengths)) or 1
     def stats(self):
         return {'files':len(self.inventory),'chunks':len(self.chunks),'reviewed_chunks':sum(c.status=='reviewed' for c in self.chunks),'errors':self.errors,'metadata_only':sum(r['status']=='metadata_only' for r in self.inventory),'held':sum(r['status']=='held' for r in self.inventory),'review_pending':sum(r['status']=='review_pending' for r in self.inventory)}
-    def search(self,q,k=5):
+    def search(self,q,k=5,per_path_limit=2):
         ts=set(tokens(q));scores=defaultdict(float);n=len(self.chunks)
         # cohort is separate from question's academic year
         cohort=re.search(r'\bqh[- ]?(20\d{2})\b',norm(q));cy=int(cohort[1]) if cohort else None
@@ -176,7 +177,7 @@ class Index:
         out=[];used=Counter();seen=set()
         for score,i in sorted(ranked,reverse=True):
             c=self.chunks[i];key=norm(c.text)
-            if key in seen or used[c.path]>=2:continue
+            if key in seen or used[c.path]>=per_path_limit:continue
             seen.add(key);used[c.path]+=1;out.append(c)
             if len(out)>=k:break
         # Include one candidate per explicitly requested year, before returning remaining hits.

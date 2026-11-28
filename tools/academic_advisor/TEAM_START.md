@@ -20,6 +20,20 @@ First launch needs Internet, a working package manager, installation permission 
 
 The roster is sample data, not an official student information system. Research modes and source holds remain separate. The launcher's actual cross-platform fresh-machine installation must be verified before claiming universal compatibility.
 
+## Final release verification
+
+From the repository root, after the launcher has prepared the environment:
+
+Windows PowerShell:
+
+```powershell
+$env:CHRONOREG_TEST_REPO = (Get-Location).Path
+.\.venv-chronoreg-advisor\Scripts\python.exe -m unittest discover -s tools/academic_advisor -p 'test_*.py'
+.\.venv-chronoreg-advisor\Scripts\python.exe tools/academic_advisor/smoke_experience.py --demo-only --output "$HOME\Downloads\ChronoReg_Release_Live.json"
+```
+
+Run the second command while the full local server is running. Ubuntu: use the launcher-created `.venv-chronoreg-advisor/bin/python` and export `CHRONOREG_TEST_REPO="$PWD"`; choose a local output path. Smoke output contains technical checks rather than a scientific benchmark. Do not publish demo student data, logs, local caches, credentials or model weights.
+
 ## Historical deployment notes (superseded where startup differs)
 
 # ChronoReg Academic Advisor — portable SLM profile (13.0)

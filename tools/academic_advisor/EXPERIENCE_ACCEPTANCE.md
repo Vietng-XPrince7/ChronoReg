@@ -1,0 +1,5 @@
+# Advisor experience candidate 2.0.0
+
+Advisor-only response delivery tuning. No changes to research pipelines, sources, model output, or student records. Validated responses are still computed before delivery, not raw token streaming. The scheduled inter-chunk delay drops from 35 ms to 8 ms, limiting the maximum artificial delay to 0.352 seconds (excluding processing/network). The processing heartbeat interval drops to one second.
+
+Run `python tools/academic_advisor/smoke_experience.py --demo-only --output experience.json` against the full local profile with synthetic records only. Use `--show-demo` for manual wording inspection. The probe measures initial event, first answer text, completion, and delivery tail separately. It verifies that streamed text equals the completed response. JSON output contains timing, route labels, and coarse checks, not answers or context tokens. Minimal content checks are not independent correctness certification. Compare identical hardware and warmed/cold runs before any latency claim. Do not commit reports with real student information.
