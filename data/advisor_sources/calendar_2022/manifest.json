@@ -1,0 +1,23 @@
+{
+  "schema": "chronoreg-advisor-calendar-source-v1",
+  "research_dataset_modified": false,
+  "sources": [
+    {
+      "period": "2022-2023",
+      "doc_id": "uet-advisor-calendar-2022-2023",
+      "pdf": "Ke_hoach_hoc_tap_2022.pdf",
+      "markdown": "Ke_hoach_hoc_tap_2022.md",
+      "pdf_sha256": "7f67f6bc8bbcc9fa4e356dcff19c46bdcd2a2d62944eb6e3e46996b06b3bb4e9",
+      "markdown_sha256": "ef778bf90cd0b80e9636747f712d7fdd20abbd52bda48339ba4e9901581ac351",
+      "scope": {
+        "main_1": "Các nhóm khóa QH-2018 đến QH-2022 nêu trong bảng trang 1; học chuyên môn từng khóa có thể khác",
+        "main_2": "QH-2019, 2020, 2021, 2022 theo tiêu đề bảng trang 2",
+        "summer": "QH-2018 đến QH-2022"
+      },
+      "source_url": "https://uet.vnu.edu.vn/wp-content/uploads/2022/07/K%E1%BA%BF-ho%E1%BA%A1ch-h%E1%BB%8Dc-t%E1%BA%ADp-n%C4%83m-h%E1%BB%8Dc-2022_2023.pdf",
+      "qualification": "Chỉ đối chiếu khoảng thời gian ở tiêu đề PDF được cung cấp. Hai dòng tuần 5 và 11 trang 1 có ngày đảo ngược; bảng tuần chưa được duyệt. Không xác nhận thay đổi sau khi công bố.",
+      "review_scope": "semester_interval_only",
+      "original_uploaded_filename": "Kế-hoạch-học-tập-năm-học-2022_2023 (1).pdf"
+    }
+  ]
+}

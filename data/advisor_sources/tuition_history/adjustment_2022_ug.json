@@ -1,0 +1,21 @@
+{
+  "doc_id": "uet-advisor-fee-adjustment-2022-undergraduate",
+  "source_url": "https://uet.edu.vn/dieu-chinh-dinh-muc-hoc-phi-dao-tao-dai-hoc-nam-hoc-2022-2023/",
+  "source_type": "official_webpage_reviewed_facts",
+  "published": "2023-04-12",
+  "period": "2022-2023",
+  "scope": "ordinary undergraduate standard programme, domestic student; not TT23 or other special scope",
+  "basis": "Cites 344/QĐ-KHTC (16/05/2022); Art. 1 and 3",
+  "rates": {
+    "month": 1170000,
+    "academic_year_10_months": 11700000,
+    "credit": 315000
+  },
+  "applies_to": [
+    "first_attempt",
+    "retake",
+    "grade_improvement",
+    "free_elective"
+  ],
+  "qualification": "Định mức điều chỉnh cho năm học 2022–2023, không phải số tiền phải đóng hàng tháng. Không áp dụng suy diễn sang TT23, chương trình đặc thù hoặc sinh viên nước ngoài."
+}

@@ -87,6 +87,30 @@ def suggest_detailed(backend,q,evidence,bundle):
 def suggest(backend,q,evidence,bundle):
  return suggest_detailed(backend,q,evidence,bundle)[0]
 
+def novel_advice(advice,base):
+ # Filter sentence-level repetition before appending optional model advice.
+ # Use normalized phrase and ordered token overlap, not a semantic verifier.
+ def canon(x):
+  x=norm(x)
+  for _ in range(3):
+   x=re.sub(r'^(?:goi y them cua em|co co the tham khao|co nen|co co the|co can|em de xuat co|em de xuat)\s+', '', x)
+  return x
+ def segments(x):
+  return [part.strip() for part in re.split(r'(?<=[.!?;])\s+|\n+',x) if part.strip()]
+ def bigrams(x):
+  t=x.split();return set(zip(t,t[1:]))
+ full=norm(base);old=[canon(x) for x in segments(base)];keep=[]
+ for part in segments(advice):
+  key=canon(part);pairs=bigrams(key)
+  repeated=len(key)>15 and key in full
+  if not repeated and len(pairs)>=5:
+   for prior in old:
+    bp=bigrams(prior)
+    if bp and len(pairs&bp)/len(pairs)>=0.85 and len(pairs&bp)/len(bp)>=0.55:
+     repeated=True;break
+  if not repeated and len(key.split())>=3:keep.append(part)
+ return ' '.join(keep).strip() or None
+
 def present(original,backend,q,pred,bundle):
  # Keep exact facts, all clauses and existing roadmaps; the SLM adds proposals.
  # Do not make a second model call for known conflicts, calculations or tables.
@@ -108,8 +132,7 @@ def present(original,backend,q,pred,bundle):
   return {**base,'narrative_attempts':1,'narrative_diagnostics':[reason or 'unknown']}
 
  # Do not claim natural synthesis when the model merely repeats an existing action.
- a_norm=norm(a).strip(' .!:;')
- a_norm=re.sub(r'^co (?:nen|co the|can) ', '', a_norm)
- if len(a_norm)>15 and a_norm in norm(base['predicted_answer']):
+ a=novel_advice(a,base['predicted_answer'])
+ if not a:
   return {**base,'narrative_attempts':1,'narrative_diagnostics':['duplicate_advice']}
  return {**base,'predicted_answer':voice(base['predicted_answer'])+'\n\nGợi ý thêm của em (đề xuất để cô cân nhắc): '+a,'presentation_mode':'SLM_ADVISOR','model_name':MODEL,'inference_source':'local_slm_advisor','narrative_attempts':1,'narrative_diagnostics':[],'latency_ms':base.get('latency_ms',0)+(time.monotonic()-start)*1000}

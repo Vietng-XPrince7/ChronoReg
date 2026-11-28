@@ -1,0 +1,40 @@
+{
+  "schema": "chronoreg-advisor-calendar-source-v1",
+  "research_dataset_modified": false,
+  "sources": [
+    {
+      "period": "2024-2025",
+      "doc_id": "uet-advisor-calendar-2024-2025",
+      "pdf": "Ke_hoach_hoc_tap_2024.pdf",
+      "markdown": "Ke_hoach_hoc_tap_2024.md",
+      "pdf_sha256": "4dd28212f7739880d6a0d00c37a9fa77ab3aa76e64ad845dae0edbf1eecec7b2",
+      "markdown_sha256": "645f64e037a3acbfcb190c8844043876803f42ef2bf0fcd05423cc54914fb812",
+      "scope": {
+        "main_1": "K65, K66, K67, K68 và các nhóm ngành K69 nêu trong bảng trang 1",
+        "main_2": "K66, K67, K68 và các nhóm ngành K69 nêu trong bảng trang 2",
+        "summer": "K66, K67, K68, K69"
+      },
+      "source_url": "https://uet.vnu.edu.vn/ke-hoach-hoc-tap-bac-dai-hoc-nam-hoc-2024-2025/",
+      "qualification": "Bản PDF người dùng cung cấp không có chữ ký số; số và ngày ban hành để trống. Chỉ tham chiếu kế hoạch trong bản này, không khẳng định hiệu lực hay bản cuối.",
+      "review_scope": "semester_interval_only",
+      "original_uploaded_filename": "Ke-hoach-hoc-tap-nam-hoc-2024-2025 (1).pdf"
+    },
+    {
+      "period": "2025-2026",
+      "doc_id": "uet-advisor-calendar-2025-2026",
+      "pdf": "Ke_hoach_hoc_tap_2025.pdf",
+      "markdown": "Ke_hoach_hoc_tap_2025.md",
+      "pdf_sha256": "ea2fb0fd4f1289681c3289ec24fbf39f3d903ad30ad755b869b6e4a0060f0dd3",
+      "markdown_sha256": "62c7be47e6f34ff867c5903ddb947eda32ea9aff22cd09e5d3936c796776728b",
+      "scope": {
+        "main_1": "K66–K69 và hai nhóm ngành K70 theo bảng trang 1",
+        "main_2": "K66, K67, K68, K69, K70",
+        "summer": "K66, K67, K68, K69"
+      },
+      "source_url": "https://handbook.uet.vnu.edu.vn/K%E1%BA%BF%20ho%E1%BA%A1ch%20h%E1%BB%8Dc%20t%E1%BA%ADp%202025-2026.pdf",
+      "qualification": "Bản PDF người dùng cung cấp có số 1588/KH-ĐHCN ngày 01/08/2025 trong lớp văn bản; chữ ký cuối bao phủ toàn bộ PDF và hợp lệ về mật mã theo pdfsig, chứng thư hết hạn tại thời điểm kiểm tra. Không xác nhận thay đổi sau khi công bố.",
+      "review_scope": "semester_interval_only",
+      "original_uploaded_filename": "KH04_2025-2026.pdf"
+    }
+  ]
+}

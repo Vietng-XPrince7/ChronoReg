@@ -1,0 +1,1052 @@
+{
+  "schema": "chronoreg-scoped-source-review-v1",
+  "purpose": "Product only; no research corpus/hold ledger mutation; verified public factual columns, not official legal approval",
+  "records": [
+    {
+      "id": "cntt_2022_2024",
+      "kind": "curriculum",
+      "title": "CTĐT Công nghệ thông tin QH-2022–2024",
+      "source_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-thong-tin-10/",
+      "scope_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-thong-tin-4/",
+      "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_cua_chuong_trinh_dao_tao_cntt_2022_2024.md",
+      "source_sha": "46f225e304b2eab9da55eae289de37f6853ac1b70d27a4067994f79a92055fec",
+      "cohorts": [
+        2022,
+        2023,
+        2024
+      ],
+      "total": 136,
+      "blocks": {
+        "Chung": 26,
+        "Theo lĩnh vực": 19,
+        "Theo khối ngành": 10,
+        "Theo nhóm ngành": 30,
+        "Ngành": 51
+      },
+      "thesis": 7,
+      "rows": {
+        "PHI1006": {
+          "credits": 3,
+          "prerequisites": []
+        },
+        "PEC1008": {
+          "credits": 2,
+          "prerequisites": [
+            "PHI1006"
+          ]
+        },
+        "PHI1002": {
+          "credits": 2,
+          "prerequisites": []
+        },
+        "HIS1001": {
+          "credits": 2,
+          "prerequisites": []
+        },
+        "POL1001": {
+          "credits": 2,
+          "prerequisites": []
+        },
+        "FLF1107": {
+          "credits": 5,
+          "prerequisites": []
+        },
+        "FLF1108": {
+          "credits": 5,
+          "prerequisites": []
+        },
+        "THL1057": {
+          "credits": 2,
+          "prerequisites": []
+        },
+        "INT1009": {
+          "credits": 3,
+          "prerequisites": []
+        },
+        "MAT1093": {
+          "credits": 4,
+          "prerequisites": []
+        },
+        "MAT1041": {
+          "credits": 4,
+          "prerequisites": []
+        },
+        "MAT1042": {
+          "credits": 4,
+          "prerequisites": [
+            "MAT1041"
+          ]
+        },
+        "EPN1095": {
+          "credits": 2,
+          "prerequisites": []
+        },
+        "EPN1096": {
+          "credits": 2,
+          "prerequisites": [
+            "EPN1095"
+          ]
+        },
+        "INT1008": {
+          "credits": 3,
+          "prerequisites": []
+        },
+        "ELT2035": {
+          "credits": 3,
+          "prerequisites": [
+            "MAT1041"
+          ]
+        },
+        "INT2210": {
+          "credits": 4,
+          "prerequisites": [
+            "INT1008"
+          ]
+        },
+        "MAT1101": {
+          "credits": 3,
+          "prerequisites": [
+            "MAT1041"
+          ]
+        },
+        "INT2215": {
+          "credits": 4,
+          "prerequisites": [
+            "INT1008"
+          ]
+        },
+        "INT1050": {
+          "credits": 4,
+          "prerequisites": []
+        },
+        "INT2212": {
+          "credits": 4,
+          "prerequisites": [
+            "INT1008"
+          ]
+        },
+        "INT2211": {
+          "credits": 4,
+          "prerequisites": []
+        },
+        "INT2214": {
+          "credits": 4,
+          "prerequisites": [
+            "INT2212"
+          ]
+        },
+        "INT2213": {
+          "credits": 4,
+          "prerequisites": [
+            "INT1008"
+          ]
+        },
+        "INT2204": {
+          "credits": 3,
+          "prerequisites": [
+            "INT1008"
+          ]
+        },
+        "INT2208": {
+          "credits": 3,
+          "prerequisites": [
+            "INT1008"
+          ]
+        },
+        "INT3131": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2215"
+          ]
+        },
+        "INT3132": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2215"
+          ]
+        },
+        "INT3401": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2210"
+          ]
+        },
+        "INT3507": {
+          "credits": 3,
+          "prerequisites": [
+            "INT1009"
+          ]
+        },
+        "INT3508": {
+          "credits": 3,
+          "prerequisites": [
+            "INT1009"
+          ]
+        },
+        "INT3117": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2204"
+          ]
+        },
+        "INT3105": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2204"
+          ]
+        },
+        "INT3106": {
+          "credits": 3,
+          "prerequisites": [
+            "INT1050"
+          ]
+        },
+        "INT3108": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2212",
+            "INT2215"
+          ]
+        },
+        "INT3109": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2208"
+          ]
+        },
+        "INT3111": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2208"
+          ]
+        },
+        "INT3115": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2204"
+          ]
+        },
+        "INT3120": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2204"
+          ]
+        },
+        "INT3306": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2204",
+            "INT2211"
+          ]
+        },
+        "INT3110": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2204"
+          ]
+        },
+        "INT3202": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2211"
+          ]
+        },
+        "INT3209": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2211"
+          ]
+        },
+        "INT3225": {
+          "credits": 4,
+          "prerequisites": [
+            "INT2211"
+          ]
+        },
+        "INT3229": {
+          "credits": 4,
+          "prerequisites": [
+            "INT2211"
+          ]
+        },
+        "INT3230": {
+          "credits": 4,
+          "prerequisites": [
+            "INT1050"
+          ]
+        },
+        "INT3228": {
+          "credits": 4,
+          "prerequisites": [
+            "MAT1101"
+          ]
+        },
+        "INT2020": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2211"
+          ]
+        },
+        "INT3505": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2204"
+          ]
+        },
+        "INT3506": {
+          "credits": 3,
+          "prerequisites": [
+            "INT1009"
+          ]
+        },
+        "INT3501": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2211"
+          ]
+        },
+        "INT3301": {
+          "credits": 3,
+          "prerequisites": [
+            "INT1008"
+          ]
+        },
+        "INT3303": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2213"
+          ]
+        },
+        "INT3304": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2213"
+          ]
+        },
+        "INT3305": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2213"
+          ]
+        },
+        "INT3307": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2213"
+          ]
+        },
+        "INT3319": {
+          "credits": 3,
+          "prerequisites": [
+            "INT1008"
+          ]
+        },
+        "INT3310": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2213"
+          ]
+        },
+        "INT3323": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2204",
+            "INT2213"
+          ]
+        },
+        "INT3404": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2210"
+          ]
+        },
+        "INT3423": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2215"
+          ]
+        },
+        "INT3422": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2215"
+          ]
+        },
+        "INT3402": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2210"
+          ]
+        },
+        "INT3405": {
+          "credits": 3,
+          "prerequisites": [
+            "MAT1101"
+          ]
+        },
+        "INT3406": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2210"
+          ]
+        },
+        "UET1002": {
+          "credits": 2,
+          "prerequisites": []
+        },
+        "INT3418": {
+          "credits": 3,
+          "prerequisites": [
+            "INT2210"
+          ]
+        },
+        "INT3102": {
+          "credits": 3,
+          "prerequisites": [
+            "MAT1042",
+            "MAT1093"
+          ]
+        },
+        "INT3103": {
+          "credits": 3,
+          "prerequisites": [
+            "INT1050"
+          ]
+        },
+        "INT4050": {
+          "credits": 7,
+          "prerequisites": []
+        },
+        "INT3509": {
+          "credits": 4,
+          "prerequisites": []
+        }
+      },
+      "review_scope": "Total, block credits, thesis credits, coded-course credits and prerequisite columns; exclude group-selection rules and official registration decisions.",
+      "review_status": "approved_for_scoped_advisor_reference",
+      "review_date": "2026-11-27"
+    },
+    {
+      "id": "cntt_2025_2026",
+      "kind": "curriculum",
+      "title": "CTĐT Công nghệ thông tin QH-2025 trở đi (đối chiếu QH-2025 và QH-2026)",
+      "source_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-thong-tin-13/",
+      "scope_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-cong-nghe-thong-tin-4/",
+      "source_path": "data/raw/uet/curricula/tuan_2022_2026/original/noi_dung_cua_chuong_trinh_dao_tao_cntt_2025_tro_di.md",
+      "source_sha": "a352d04ee34bf429e076ffa2df99eee6a95c7bda9c356c7d4160f0427eb6dd57",
+      "cohorts": [
+        2025,
+        2026
+      ],
+      "total": 135,
+      "blocks": {
+        "Đại cương": 56,
+        "Chuyên nghiệp": 63,
+        "Bổ trợ": 3,
+        "Thực tập và tốt nghiệp": 13
+      },
+      "thesis": 10,
+      "rows": {
+        "PHI1006": {
+          "credits": 3,
+          "prerequisites": []
+        },
+        "PEC1008": {
+          "credits": 2,
+          "prerequisites": [
+            "PHI1006"
+          ]
+        },
+        "HIS1001": {
+          "credits": 2,
+          "prerequisites": []
+        },
+        "POL1001": {
+          "credits": 2,
+          "prerequisites": []
+        },
+        "PHI1002": {
+          "credits": 2,
+          "prerequisites": []
+        },
+        "FLF1107": {
+          "credits": 5,
+          "prerequisites": []
+        },
+        "VNU1001": {
+          "credits": 3,
+          "prerequisites": []
+        },
+        "THL1057": {
+          "credits": 2,
+          "prerequisites": []
+        },
+        "UET.MAT1053": {
+          "credits": 5,
+          "prerequisites": []
+        },
+        "UET.MAT1050": {
+          "credits": 5,
+          "prerequisites": []
+        },
+        "UET.MAT1051": {
+          "credits": 5,
+          "prerequisites": [
+            "UET.MAT1050"
+          ]
+        },
+        "UET.PHY1095": {
+          "credits": 3,
+          "prerequisites": []
+        },
+        "UET.PHY1096": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.PHY1095"
+          ]
+        },
+        "UET.COM1050": {
+          "credits": 5,
+          "prerequisites": []
+        },
+        "UET.MAT1052": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.MAT1050"
+          ]
+        },
+        "UET.CS1058": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.COM1050"
+          ]
+        },
+        "UET.MAT1057": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.MAT1053"
+          ]
+        },
+        "UET.CS2043": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.COM1050"
+          ]
+        },
+        "UET.IS2099": {
+          "credits": 3,
+          "prerequisites": []
+        },
+        "UET.CN2042": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.COM1050"
+          ]
+        },
+        "UET.CS2045": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS2043"
+          ]
+        },
+        "UET.CS2046": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS1058"
+          ]
+        },
+        "UET.IS2100": {
+          "credits": 3,
+          "prerequisites": []
+        },
+        "UET.CE2021": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.COM1050"
+          ]
+        },
+        "UET.CS3136": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.COM1050",
+            "UET.MAT1052"
+          ]
+        },
+        "UET.MAT2044": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS1058",
+            "UET.MAT1057"
+          ]
+        },
+        "UET.IT3291": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS2045"
+          ]
+        },
+        "UET.IT3294": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS2043"
+          ]
+        },
+        "UET.CS3138": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.IT3296"
+          ]
+        },
+        "UET.IT3296": {
+          "credits": 3,
+          "prerequisites": [
+            "VNU1001"
+          ]
+        },
+        "UET.CE2020": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.COM1050"
+          ]
+        },
+        "UET.CS2047": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS1058"
+          ]
+        },
+        "UET.IT3289": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS2043"
+          ]
+        },
+        "UET.IT3290": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS2045"
+          ]
+        },
+        "UET.IT3292": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.IT3291"
+          ]
+        },
+        "UET.IT3297": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS2045"
+          ]
+        },
+        "UET.IT3298": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS2043"
+          ]
+        },
+        "UET.CS3152": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS2045"
+          ]
+        },
+        "UET.IT3293": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS2045"
+          ]
+        },
+        "UET.IT3295": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.MAT1057"
+          ]
+        },
+        "UET.CS3144": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.MAT1051",
+            "UET.MAT1053"
+          ]
+        },
+        "UET.CS3142": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS1058"
+          ]
+        },
+        "UET.AI3056": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS3136"
+          ]
+        },
+        "UET.CS3150": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS1058"
+          ]
+        },
+        "UET.CS3151": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS2045"
+          ]
+        },
+        "UET.IS3278": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.IS2099",
+            "UET.MAT1052"
+          ]
+        },
+        "UET.CS3143": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS2043"
+          ]
+        },
+        "UET.IS3276": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.IS3278"
+          ]
+        },
+        "UET.IS3281": {
+          "credits": 3,
+          "prerequisites": []
+        },
+        "UET.IS3283": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.IS2099"
+          ]
+        },
+        "UET.IS3286": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.IS2099",
+            "UET.MAT1052"
+          ]
+        },
+        "UET.CN3124": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CN2042"
+          ]
+        },
+        "UET.CN3125": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CN2042"
+          ]
+        },
+        "UET.CN3134": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CN2042"
+          ]
+        },
+        "UET.CN3135": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CN2042"
+          ]
+        },
+        "UET.CS3145": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CN2042",
+            "UET.COM1050"
+          ]
+        },
+        "UET.CS4301": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.COM1050"
+          ]
+        },
+        "UET.CS4022": {
+          "credits": 3,
+          "prerequisites": [
+            "UET.CS3138"
+          ]
+        },
+        "UET.CS4023": {
+          "credits": 10,
+          "prerequisites": [
+            "UET.CS3138"
+          ]
+        },
+        "UET.CS4024": {
+          "credits": 4,
+          "prerequisites": [
+            "UET.CS3138"
+          ]
+        }
+      },
+      "review_scope": "Official web table overrides truncated OCR prerequisite codes; no automatic old/new course equivalence; bounded to project cohorts.",
+      "review_status": "approved_for_scoped_advisor_reference",
+      "review_date": "2026-11-27"
+    },
+    {
+      "id": "research_uet_2025",
+      "kind": "research",
+      "title": "Thông báo số 1 – NCKH cấp Trường 2025–2026",
+      "source_url": "https://www.fit.uet.vnu.edu.vn/wp-content/uploads/2026/01/Signed.Signed.Signed.2025.10.-TB1-TrienkhaicongtacSVNCKH-2026.pdf",
+      "source_path": "data/raw/uet/markdown/2025/NCKH_thong_bao_cap_truong_2025.md",
+      "source_sha": "7a1d8b1169324b04c682aed4fe7be436bcdd063904c5b59b57cacfdd24596e60",
+      "year": "2025-2026",
+      "facts": {
+        "unit_report_before": "31/03/2026",
+        "poster_video_before": "22/04/2026",
+        "poster_exhibit": "24/04–04/05/2026",
+        "conference_planned": "05/05/2026"
+      },
+      "review_scope": "Public PDF pages 1–2 visually checked; plan only; no general student registration deadline; no legal determination of QĐ 447/3079.",
+      "review_status": "approved_for_scoped_advisor_reference",
+      "review_date": "2026-11-27"
+    },
+    {
+      "id": "research_ai_2025",
+      "kind": "research",
+      "title": "Hội nghị NCKH Viện TTNT 2025–2026",
+      "source_url": "https://uet.edu.vn/thong-bao-ve-hoat-dong-sinh-vien-nghien-cuu-khoa-hoc-nam-hoc-2025-2026/",
+      "source_path": "data/raw/uet/markdown/2025/NCKH_hoi_nghi_vien_TTNT_2025.md",
+      "source_sha": "d733e767e7c5f81c0e397c2b4460a9bc826913968b7f954964ad32cb201b340a",
+      "year": "2025-2026",
+      "facts": {
+        "registration_window": "01/02–25/02/2026",
+        "contact_registration_deadline": "15/02/2026",
+        "report_date": "05/03/2026",
+        "conference": "23–27/03/2026"
+      },
+      "review_scope": "Both conflicting registration milestones retained; source is institute notice not university-wide.",
+      "review_status": "approved_for_scoped_advisor_reference",
+      "review_date": "2026-11-27"
+    },
+    {
+      "id": "scholarship_rates_2025",
+      "kind": "scholarship_rates",
+      "title": "Định mức KKHT 2025–2026",
+      "source_url": "https://uet.edu.vn/quy-dinh-muc-hoc-bong-khuyen-khich-hoc-tap-cho-sinh-vien-dai-hoc-he-chinh-quy-trong-nam-hoc-2025-2026/",
+      "source_path": "data/raw/uet/markdown/2025/Quy_dinh_muc_hoc_bong_2025.md",
+      "source_sha": "46c665cb743b7723af594dd780fdad7b1b90004a8737f4f3f50734e1311fe26b",
+      "year": "2025-2026",
+      "rates": [
+        [
+          2050000,
+          1950000,
+          1850000
+        ],
+        [
+          2200000,
+          2100000,
+          2000000
+        ],
+        [
+          2700000,
+          2600000,
+          2500000
+        ],
+        [
+          3200000,
+          3100000,
+          3000000
+        ],
+        [
+          3600000,
+          3500000,
+          3400000
+        ],
+        [
+          4100000,
+          4000000,
+          3900000
+        ],
+        [
+          3700000,
+          3600000,
+          3500000
+        ],
+        [
+          4200000,
+          4100000,
+          4000000
+        ]
+      ],
+      "review_scope": "All eight rate rows compared; monthly rate is not an award entitlement.",
+      "review_status": "approved_for_scoped_advisor_reference",
+      "review_date": "2026-11-27"
+    },
+    {
+      "id": "scholarship_award_2025",
+      "kind": "scholarship_award",
+      "title": "Cấp KKHT HKI 2025–2026 (thông báo ngày 04/12/2025)",
+      "source_url": "https://uet.edu.vn/cap-hoc-bong-khuyen-khich-hoc-tap-trong-hoc-ky-i-nam-hoc-2025-2026-cho-sinh-vien/",
+      "year": "2025-2026",
+      "facts": {
+        "award_semester": "I",
+        "assessment_period": "HKII và kỳ phụ 2024–2025",
+        "minimum_credits": 15,
+        "standard_learning": "Khá",
+        "standard_conduct": "Khá",
+        "clc_cntt_learning": "Giỏi",
+        "clc_cntt_conduct": "Tốt",
+        "fund_pct": 8
+      },
+      "review_scope": "Public award notice conditions only, not list of recipients; no personal data downloaded; no inference for other periods.",
+      "review_status": "approved_for_scoped_advisor_reference",
+      "review_date": "2026-11-27"
+    },
+    {
+      "id": "khmt_2022_2024",
+      "kind": "curriculum_summary",
+      "title": "CTĐT Khoa học máy tính QH-2022–2024",
+      "source_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-khoa-hoc-may-tinh-21/",
+      "cohort_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-khoa-hoc-may-tinh-4-2/",
+      "cohorts": [
+        2022,
+        2023,
+        2024
+      ],
+      "program": "Khoa học máy tính",
+      "total": 136,
+      "thesis": 7,
+      "review_scope": "Official UET cohort index linked content; total credits and thesis only where unambiguous; no course rows or registration decisions.",
+      "review_status": "approved_for_scoped_advisor_reference",
+      "review_date": "2026-11-27"
+    },
+    {
+      "id": "khmt_2025_2026",
+      "kind": "curriculum_summary",
+      "title": "CTĐT Khoa học máy tính QH-2025–2026",
+      "source_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-khoa-hoc-may-tinh-30/",
+      "cohort_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-khoa-hoc-may-tinh-4-2/",
+      "cohorts": [
+        2025,
+        2026
+      ],
+      "program": "Khoa học máy tính",
+      "total": 135,
+      "thesis": 10,
+      "review_scope": "Official UET cohort index linked content; total credits and thesis only where unambiguous; no course rows or registration decisions.",
+      "review_status": "approved_for_scoped_advisor_reference",
+      "review_date": "2026-11-27"
+    },
+    {
+      "id": "httt_2022_2024",
+      "kind": "curriculum_summary",
+      "title": "CTĐT Hệ thống thông tin QH-2022–2024",
+      "source_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thong-thong-tin-21/",
+      "cohort_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thong-thong-tin-4-2/",
+      "cohorts": [
+        2022,
+        2023,
+        2024
+      ],
+      "program": "Hệ thống thông tin",
+      "total": 136,
+      "thesis": 7,
+      "review_scope": "Official UET cohort index linked content; total credits and thesis only where unambiguous; no course rows or registration decisions.",
+      "review_status": "approved_for_scoped_advisor_reference",
+      "review_date": "2026-11-27"
+    },
+    {
+      "id": "httt_2025_2026",
+      "kind": "curriculum_summary",
+      "title": "CTĐT Hệ thống thông tin QH-2025–2026",
+      "source_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thong-thong-tin-30/",
+      "cohort_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-thong-thong-tin-4-2/",
+      "cohorts": [
+        2025,
+        2026
+      ],
+      "program": "Hệ thống thông tin",
+      "total": 135,
+      "thesis": 10,
+      "review_scope": "Official UET cohort index linked content; total credits and thesis only where unambiguous; no course rows or registration decisions.",
+      "review_status": "approved_for_scoped_advisor_reference",
+      "review_date": "2026-11-27"
+    },
+    {
+      "id": "ktmt_2022_2024",
+      "kind": "curriculum_summary",
+      "title": "CTĐT Kỹ thuật máy tính QH-2022–2024",
+      "source_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-may-tinh-10/",
+      "cohort_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-may-tinh-4/",
+      "cohorts": [
+        2022,
+        2023,
+        2024
+      ],
+      "program": "Kỹ thuật máy tính",
+      "total": 150,
+      "thesis": null,
+      "review_scope": "Official UET cohort index linked content; total credits and thesis only where unambiguous; no course rows or registration decisions.",
+      "review_status": "approved_for_scoped_advisor_reference",
+      "review_date": "2026-11-27"
+    },
+    {
+      "id": "ktmt_2025_2026",
+      "kind": "curriculum_summary",
+      "title": "CTĐT Kỹ thuật máy tính QH-2025–2026",
+      "source_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-may-tinh-13/",
+      "cohort_index_url": "https://uet.edu.vn/chuong-trinh-dao-tao-nganh-ky-thuat-may-tinh-4/",
+      "cohorts": [
+        2025,
+        2026
+      ],
+      "program": "Kỹ thuật máy tính",
+      "total": 150,
+      "thesis": 10,
+      "review_scope": "Official UET cohort index linked content; total credits and thesis only where unambiguous; no course rows or registration decisions.",
+      "review_status": "approved_for_scoped_advisor_reference",
+      "review_date": "2026-11-27"
+    },
+    {
+      "id": "scholarship_rates_2026",
+      "kind": "scholarship_rates",
+      "title": "Định mức KKHT 2026–2027",
+      "source_url": "https://uet.edu.vn/quy-dinh-muc-hoc-bong-khuyen-khich-hoc-tap-cho-sinh-vien-dai-hoc-he-chinh-quy-trong-nam-hoc-2026-2027/",
+      "year": "2026-2027",
+      "published_date": "2026-11-25",
+      "rates": [
+        [
+          2350000,
+          2250000,
+          2150000
+        ],
+        [
+          2900000,
+          2800000,
+          2700000
+        ],
+        [
+          3400000,
+          3300000,
+          3200000
+        ],
+        [
+          3800000,
+          3700000,
+          3600000
+        ],
+        [
+          3700000,
+          3600000,
+          3500000
+        ],
+        [
+          4600000,
+          4500000,
+          4400000
+        ]
+      ],
+      "review_scope": "Six published HTML table rows, Article 1; regular undergraduate, within standard duration; TT23 row limited to QH-2022 MMT&TTDL; no award entitlement. Snapshot transcribed from official web page on 2026-11-27, not a signed PDF.",
+      "review_status": "approved_for_scoped_advisor_reference",
+      "review_date": "2026-11-27"
+    }
+  ]
+}

@@ -62,7 +62,9 @@ class LocalTests(unittest.TestCase):
     if r.risk_tier=='RED':return {'routing':{'risk_tier':'RED'},'metadata':{'engine_mode':'RED'},'answer':'blocked'}
     engine=req.force_engine if req.force_engine not in (None,'auto') else r.selected_engine
     if engine=='continual_lora':return s._run_web_lora(req.question)
-    pred=s._run_rag_engine(req.question,engine,advisor_bundle={'category':'REGULATION'})
+    roster={'class_short':'K69-CNTT1','cohort':'QH-2024 (K69)','students':[{'student_id':'24000001','full_name':'Demo A','gpa_semester':1.4,'owed_credits':7,'drl':68},{'student_id':'24000002','full_name':'Demo B','gpa_semester':3.5,'owed_credits':0,'drl':90}], 'courses':[]}
+    bundle={'category':'STUDENT_STATUS','student_id':req.mssv,'entities':{'mssv':req.mssv},'roster_obj':roster} if req.mssv else {'category':'REGULATION'}
+    pred=s._run_rag_engine(req.question,engine,advisor_bundle=bundle)
     return {'question':req.question,'answer':pred['predicted_answer'],'metadata':s._build_metadata([],pred['latency_ms'],pred=pred)}
    s._build_chat_response=lambda q,r,e,p:{'answer':p['predicted_answer'],'metadata':s._build_metadata([],p['latency_ms'],pred=p)}
    calls=[]
@@ -73,4 +75,16 @@ class LocalTests(unittest.TestCase):
     r=client.post('/api/chat',json={'question':'Thời hạn giấy xác nhận sinh viên?'}).json();self.assertEqual(r['metadata']['engine_mode'],'SLM_KNOWLEDGE_ACCESS');self.assertIn('14 ngày',r['answer']);self.assertEqual(len(calls),1)
     self.assertEqual(client.post('/api/chat',json={'question':'Xin ngoại lệ'}).json()['routing']['risk_tier'],'RED');self.assertEqual(len(calls),1)
     self.assertEqual(client.post('/api/advisor/chat',json={'question':'Thời hạn giấy xác nhận sinh viên?','force_engine':'continual_lora'}).json()['metadata']['engine_mode'],'LORA_UNAVAILABLE');self.assertEqual(len(calls),1)
+    # Actual portable wrapper and Auto endpoint, not a direct conversation-only fixture.
+    def ask(q,token=None,sid=None):
+     response=client.post('/api/advisor/chat',json={'question':q,'force_engine':'auto','context_token':token,'mssv':sid});self.assertEqual(response.status_code,200);return response.json()
+    seed=ask('Em hãy phân tích toàn diện tình hình học tập của sinh viên 24000001.',sid='24000001');self.assertTrue(seed['context_token']);self.assertEqual(seed['metadata']['advisor_intent'],'student_review')
+    a=ask('Nếu cô gặp riêng sinh viên này, cô nên nói gì?',seed['context_token']);self.assertTrue(a['context_token']);self.assertEqual(a['metadata']['advisor_intent'],'meeting_preparation')
+    b=ask('Nếu em này vừa đi làm vừa học, cô nên hỗ trợ thế nào?',a['context_token']);self.assertIn('lịch ca',b['answer']);self.assertTrue(b['context_token'])
+    c=ask('Chỉ cho cô 2 câu hỏi',b['context_token']);self.assertEqual(c['answer'].count('• '),2);self.assertIn('lịch ca',c['answer'])
+    d=ask('Em ấy không còn đi làm nữa.',b['context_token']);self.assertIn('đính chính',d['answer']);self.assertNotIn('lịch ca',ask('Trong buổi gặp đó cô nên hỏi gì?',d['context_token'])['answer'])
+    other=ask('Cô nên hỏi gì khi gặp riêng sinh viên này?',b['context_token'],sid='24000002');self.assertIn('Demo B',other['answer']);self.assertNotIn('lịch ca',other['answer']);self.assertNotIn('Demo A',other['answer'])
+    self.assertEqual(ask('Trong buổi gặp đó cô nên hỏi gì?')['metadata']['engine_mode'],'CONTEXT_CLARIFICATION')
+    self.assertIsNone(ask('Xin ngoại lệ',b['context_token'])['context_token'])
+
 if __name__=='__main__':unittest.main()

@@ -48,6 +48,29 @@ def make_answer(original,key,model):
 def unavailable(*a,**k):
     return {'predicted_answer':'Chế độ LoRA thuần cần trọng số đã huấn luyện. Bản portable không chứa trọng số LoRA đã huấn luyện; hãy chọn Auto để dùng trợ lý hoặc chạy bản 7B thực nghiệm trên máy đã có model.','engine_mode':'LORA_UNAVAILABLE','inference_source':'unavailable','model_name':None,'source_label':'LoRA thuần không khả dụng — portable','cited_doc_ids':[],'latency_ms':0,'is_advisor_composite':True,'quality_qualified':False}
 
+def product_copy(data):
+    m=data.get('metadata') or {}
+    if m.get('engine_mode') not in ('ADVISOR_WORKFLOW','ADVISOR_PLAN'):
+        return data
+    # The currently bundled roster is generated sample data, not an official record.
+    # Keep that provenance in metadata and the UI, not in every sentence.
+    if m.get('advisor_category') in ('STUDENT_STATUS','CLASS_STATS','COURSE_TREND') or 'scope_check' in (m.get('workflow_tools') or []):
+        m['roster_provenance']='sample_roster'
+        m['roster_provenance_label']='Hồ sơ mẫu, chưa phải bảng điểm chính thức'
+    answer=data.get('answer')
+    if isinstance(answer,str):
+        for old,new in (
+            ('Hồ sơ demo','Hồ sơ đang mở'),('hồ sơ demo đang mở','hồ sơ đang mở'),
+            ('hồ sơ demo','hồ sơ'),('dữ liệu demo','dữ liệu hiện có'),
+            ('danh mục demo','danh mục học phần hiện có'),('ngành demo','ngành trong hồ sơ'),
+            ('Đây là kế hoạch tự học thử, không phải lịch mở lớp hay cam kết kết quả.', 'Việc đăng ký học phần cần căn cứ lịch mở lớp và điều kiện thực tế.'),
+        ):
+            answer=answer.replace(old,new)
+        data['answer']=answer
+    if m.get('source_label')=='Hồ sơ demo + quy tắc tư vấn (không phải LoRA thuần)':
+        m['source_label']='Hồ sơ đang mở và công cụ học vụ'
+    return data
+
 def fix_response(data,profile):
     if not isinstance(data,dict):return data
     for v in data.values():
@@ -81,21 +104,23 @@ def install(s,root,key='',model='gemini-2.5-flash',slm_url=None):
     run_live.answer=make_answer(run_live.answer,key,model)
     # Keep year followup behavior for Gemini answers, without relabeling output.
     original_next=conversation.next_context
-    def next_context(q,r):
+    def next_context(q,r,prior=None):
         if (r.get('metadata') or {}).get('engine_mode')=='GEMINI_KNOWLEDGE_ACCESS':
             r={**r,'metadata':{**r['metadata'],'engine_mode':'LORA_KNOWLEDGE_ACCESS'}}
-        return original_next(q,r)
+        return original_next(q,r,prior)
     conversation.next_context=next_context
     if slm_url:
         from local_slm import shim,MODEL
         import slm_advisor
         local=shim(slm_url);old_answer=run_live.answer;old_present=run_live.present
+        s._advisor_task_backend=local
         def local_answer(index,backend,q):
             r=slm_advisor.knowledge_with_source(old_answer,index,local,q)
             # Internal v12 mode retained for context/source metadata, relabeled at API boundary.
             return r
         run_live.answer=local_answer
         run_live.present=lambda backend,q,pred,bundle=None:slm_advisor.present(old_present,local,q,pred,bundle)
+    s._semantic_pilot=bool(slm_url and not key and os.environ.get('CHRONOREG_SEMANTIC_PILOT')=='1')
     idx=run_live.install(s,root);b=s.llm_backend
     b._make_client=disabled_client;b.check_ollama_health=lambda **kw:{**OFFLINE,'base_model':None,'lora_model':None,'ollama_url':None,'deployment_profile':profile}
     s._run_web_lora=unavailable
@@ -117,10 +142,21 @@ def install(s,root,key='',model='gemini-2.5-flash',slm_url=None):
                 if getattr(req,'force_engine',None)=='continual_lora' and s._router.route_decision(req.question).risk_tier!='RED':
                     return JSONResponse(content={'question':req.question,'answer':unavailable()['predicted_answer'],'routing':{'selected_engine':'continual_lora','actual_engine_used':'continual_lora','risk_tier':'GREEN','detected_signals':[],'routing_reason':'Không có trọng số LoRA trong bản portable'},'metadata':{'engine_mode':'LORA_UNAVAILABLE','source_label':unavailable()['source_label'],'inference_source':'unavailable','model_name':None,'latency_ms':0,'deployment_profile':profile},'context_token':None})
                 result=_old(req);data=json.loads(result.body) if hasattr(result,'body') else result
-                return JSONResponse(content=fix_response(data,profile))
+                data=fix_response(data,profile)
+                meta=data.get('metadata') or {}
+                if getattr(req,'experience',None)=='advisor' and getattr(req,'force_engine',None) in (None,'auto'):
+                    product_copy(data)
+                if getattr(req,'experience',None)=='advisor' and getattr(req,'force_engine',None) in (None,'auto'):
+                    reviewed=[x for x in (meta.get('advisor_sources') or []) if isinstance(x,dict) and x.get('status')=='reviewed_scoped' and x.get('review_id','').startswith('cntt_')]
+                    if len(reviewed)==1:
+                        meta['curriculum_review_scope']=reviewed[0]['review_scope']
+                        meta['curriculum_source_url']=reviewed[0]['source_url']
+                return JSONResponse(content=data)
             dep.call=wrapped
         elif path=='/api/knowledge/status':
-            dep.call=lambda:{**idx.stats(),'product_version':'15.0' if slm_url else '12.0','deployment_profile':profile,'model':model if key or slm_url else None,'mode':'portable_advisor','pure_lora_available':False}
+            from calendar_source import pack_status
+            from reviewed_sources import status as reviewed_status
+            dep.call=lambda:{**idx.stats(),'product_version':'15.0' if slm_url else '12.0','deployment_profile':profile,'model':model if key or slm_url else None,'mode':'portable_advisor','pure_lora_available':False,'intelligence_revision':'2.0.0-pilot','grounded_pilot':os.environ.get('CHRONOREG_GROUNDED_PILOT')=='1','chat_streaming':True,'semantic_pilot':s._semantic_pilot,'calendar_pack':pack_status(root),'scoped_source_review':reviewed_status(root)}
         elif path=='/api/answer-v2' and 'POST' in methods:
             dep.call=lambda req:JSONResponse(status_code=503,content={'detail':'Experimental dispatch not enabled in portable profile; use /api/advisor/chat.'})
         elif path=='/' and 'GET' in methods:
@@ -132,13 +168,25 @@ def install(s,root,key='',model='gemini-2.5-flash',slm_url=None):
                 html=html.replace("m.engine_mode === 'LORA_KNOWLEDGE_ACCESS' ? 'Knowledge Access'", "m.engine_mode === 'GEMINI_KNOWLEDGE_ACCESS' ? 'Gemini + Knowledge Access' : m.engine_mode === 'LORA_KNOWLEDGE_ACCESS' ? 'Knowledge Access'")
                 note='Portable — không cần Ollama/model. '+('Gemini đã bật cho tài liệu công khai; không nhập dữ liệu cá nhân vào câu hỏi cloud.' if key else 'Không LLM: tra cứu, tư vấn theo quy tắc, roadmap, mô phỏng và hội thoại giới hạn.')+' LoRA thuần không khả dụng.'
                 if slm_url:
-                    note='ChronoReg Academic Advisor — SLM CPU + kho tri thức + công cụ học vụ. Dữ liệu xử lý cục bộ. LoRA thuần giữ riêng cho thực nghiệm.'
+                    note='ChronoReg Academic Advisor — Hỗ trợ học tập và tra cứu quy chế. Xử lý cục bộ. Nguồn hồ sơ: dữ liệu mẫu.'
                     html=html.replace("m.engine_mode === 'GEMINI_KNOWLEDGE_ACCESS' ?", "m.presentation_mode === 'SLM_ADVISOR_PRIORITY' ? 'SLM chọn ưu tiên' : m.presentation_mode === 'SLM_ADVISOR' ? 'Academic Advisor (SLM)' : m.engine_mode === 'SLM_KNOWLEDGE_ACCESS' ? 'SLM + Knowledge Access' : m.engine_mode === 'GEMINI_KNOWLEDGE_ACCESS' ?")
                     html=html.replace("if (src === 'gemini_public_knowledge')", "if (src === 'local_slm_advisor' || src === 'local_slm_knowledge' || src === 'local_slm_priority') return 'SLM cục bộ';\n      if (src === 'gemini_public_knowledge')")
                     html=html.replace('Thầy/cô','Cô').replace('thầy/cô','cô')
-                html=html.replace('<body>','<body><div style="padding:8px 14px;background:#eee;color:#222;font-size:12px">'+note+'</div>',1)
+                html=html.replace('6 tình huống cố vấn mẫu','Gợi ý tư vấn').replace('Đang tải kịch bản mẫu...','Đang tải gợi ý...').replace('Kịch bản mẫu','Gợi ý').replace('chọn một tình huống mẫu ở cột phải','chọn một gợi ý ở cột phải')
+                html=html.replace('id="btnRegenerateRoster"', 'id="btnRegenerateRoster" style="display:none"').replace('Tạo lại điểm ngẫu nhiên','Tạo lại hồ sơ mẫu')
+                html=html.replace('<body>','<body><div style="padding:8px 14px;background:#eee;color:#222;font-size:12px">'+note+' &nbsp; <a href="/advisor/workspace" style="color:#214b76;font-weight:600">Công việc cố vấn →</a></div>',1)
+                from stream_chat import patch_page
+                from advisor_view import patch_advisor_view
+                html=patch_advisor_view(patch_page(html))
+                html=html.replace('currentEngineMode = mode;', "currentEngineMode = mode; const regen = document.getElementById('btnRegenerateRoster'); if (regen) regen.style.display = mode === 'auto' ? 'none' : '';",1)
                 return HTMLResponse(html)
             dep.call=page
+    from stream_chat import install_stream
+    advisor_route=next(r for r in s.app.routes if getattr(r,'path',None)=='/api/advisor/chat' and 'POST' in getattr(r,'methods',set()))
+    install_stream(s.app, advisor_route.dependant.call)
+    if callable(getattr(s,'_get_active_roster',None)):
+        from advisor_workspace import install_workspace
+        install_workspace(s.app,s._get_active_roster,root)
     return idx
 
 def main():

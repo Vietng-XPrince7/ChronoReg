@@ -9,12 +9,14 @@ from workflow import run_workflow
 from presentation import present
 from whatif import simulate
 from conversation import add_conversation
+from intelligence import dispatch as advisor_dispatch
 AUTO=ContextVar('chronoreg_product_auto', default=False)
 
 def install(s,root):
     if getattr(s, "_chronoreg_product_installed", False):
         raise RuntimeError("Do not stack ChronoReg overlays; start a fresh process")
     index=Index(root)
+    s._advisor_evidence_index=index
     original=s._run_rag_engine
     # Insert broad knowledge search behind existing source-table and clause handlers.
     def fallback(question,mode,advisor_bundle=None):
@@ -31,6 +33,9 @@ def install(s,root):
     install_v5(s,root)
     source_rag=s._run_rag_engine
     def composed(question,mode,advisor_bundle=None):
+        if AUTO.get() and mode=='chrono_rag':
+            decided=advisor_dispatch(question,advisor_bundle,root,getattr(s,'_advisor_task_backend',None))
+            if decided is not None:return decided
         pred=source_rag(question,mode,advisor_bundle=advisor_bundle)
         if AUTO.get() and mode=='chrono_rag':
             return present(s.llm_backend,question,pred,advisor_bundle)
@@ -52,7 +57,7 @@ def install(s,root):
             return {'engine_mode':'ADVISOR_SIMULATION','inference_source':'deterministic_calculator','source_type':'hypothetical_calculation','source_label':'Tính toán từ giả định do người dùng nhập (không phải LoRA thuần)','model_name':None,'latency_ms':round(latency_ms,2),'engine_note':'Không dùng GPA học kỳ thay CPA; không xác nhận điều kiện học vụ.','quality_qualified':False,'simulation':p['simulation']}
         if p.get('engine_mode') in ('ADVISOR_PLAN','ADVISOR_WORKFLOW'):
             sources=p.get('advisor_sources',[]);first=sources[0] if sources else {}
-            return {'doc_id':None,'doc_title':Path(first['source_path']).name if first else None,'effective_year':None,'sha256_short':first.get('sha256','')[:8] or None,'source_type':'advisor_plan','source_label':'Hồ sơ demo + quy tắc tư vấn (không phải LoRA thuần)','inference_source':p.get('inference_source','deterministic_advisor_plan'),'engine_mode':p['engine_mode'],'workflow_tools':p.get('workflow_tools',[]),'advisor_report':p.get('advisor_report'),'model_name':None,'latency_ms':round(latency_ms,2),'engine_note':'Đề xuất từ hồ sơ đang chọn, không xác nhận điều kiện chính thức.','quality_qualified':False,'roadmap':p.get('roadmap',[]),'advisor_sources':sources,'advisor_category':p.get('advisor_category'),'advisor_entities':p.get('advisor_entities')}
+            return {'doc_id':None,'doc_title':Path(first['source_path']).name if first else None,'effective_year':None,'sha256_short':first.get('sha256','')[:8] or None,'source_type':'advisor_plan','source_label':'Hồ sơ demo + quy tắc tư vấn (không phải LoRA thuần)','inference_source':p.get('inference_source','deterministic_advisor_plan'),'engine_mode':p['engine_mode'],'workflow_tools':p.get('workflow_tools',[]),'advisor_report':p.get('advisor_report'),'model_name':p.get('model_name'),'latency_ms':round(latency_ms,2),'engine_note':'Đề xuất từ hồ sơ đang chọn, không xác nhận điều kiện chính thức.','quality_qualified':False,'roadmap':p.get('roadmap',[]),'advisor_sources':sources,'advisor_category':p.get('advisor_category'),'advisor_entities':p.get('advisor_entities')}
         if 'knowledge_sources' in p:
             sources=p['knowledge_sources'];model=p.get('model_name')
             return {'doc_id':sources[0]['doc_id'] or None if sources else None,'doc_title':Path(sources[0]['path']).name if sources else None,'effective_year':None,'sha256_short':sources[0]['sha256'][:8] if sources else None,'source_type':'knowledge_access','source_label':'LoRA 7B + Knowledge Access' if model else 'Knowledge Access — trích nguồn','inference_source':p['inference_source'],'engine_mode':p['engine_mode'],'model_name':model,'latency_ms':round(latency_ms,2),'engine_note':'Không phải LoRA thuần; kiểm tra số liệu không chứng nhận sự đúng đắn hay hiệu lực.','quality_qualified':False,'knowledge_sources':sources,'advisor_category':p.get('advisor_category'),'advisor_entities':p.get('advisor_entities')}
@@ -60,6 +65,8 @@ def install(s,root):
     def presentation_meta(cited_doc_ids,latency_ms,engine_note=None,actual_engine='chrono_rag',pred=None):
         p=pred or {}
         m=meta(cited_doc_ids,latency_ms,engine_note,actual_engine=actual_engine,pred=p)
+        for key in ('advisor_intent','planner_source','advisor_compact'):
+            if key in p:m[key]=p[key]
         if p.get('presentation_mode'):
             m['presentation_mode']=p['presentation_mode']
             m['advisor_evidence']=p.get('advisor_evidence','')
@@ -103,7 +110,7 @@ def install(s,root):
             request_type=r.dependant.body_params[0].type_
             break
     if not found:raise RuntimeError('No /api/chat route')
-    add_conversation(s,wrapped,request_type)
+    add_conversation(s,wrapped,request_type,root)
     # UI overlay only: accurately label actual engines without editing Viet's tracked UI.
     ui=Path(root)/'studenthub_ui/index.html'
     if ui.is_file():
@@ -111,7 +118,7 @@ def install(s,root):
         html=ui.read_text(encoding='utf-8').replace('LoRA 3B','LoRA 7B').replace('Chrono-RAG 3B','Chrono-RAG 7B').replace('Ollama 3B','Ollama 7B').replace('mô hình 3B','mô hình 7B')
         html=html.replace('escapeHtml(engineLabel(actualEngine, riskTier))', "escapeHtml((m.presentation_mode === 'LORA_ADVISOR_NARRATIVE' || m.presentation_mode === 'LORA_ADVISOR_PRIORITY') ? 'LoRA 7B Advisor' : m.engine_mode === 'LORA_KNOWLEDGE_ACCESS' ? 'LoRA 7B + Knowledge Access' : m.engine_mode === 'ADVISOR_SIMULATION' ? 'Advisor — mô phỏng CPA' : m.engine_mode === 'ADVISOR_WORKFLOW' ? 'Advisor — công cụ cố vấn' : m.engine_mode === 'ADVISOR_PLAN' ? 'Advisor — hồ sơ và lộ trình' : m.engine_mode === 'KNOWLEDGE_EXCERPTS' ? 'Knowledge Access (trích nguồn)' : engineLabel(actualEngine, riskTier))")
         html=html.replace("if (src === 'ollama_local')", "if (src === 'ollama_local_advisor') return 'LoRA 7B + bằng chứng';\n      if (src === 'ollama_local_knowledge') return 'Ollama LoRA 7B + nguồn';\n      if (src === 'deterministic_calculator') return 'Công cụ tính CPA';\n      if (src === 'deterministic_advisor_plan') return 'Phân tích hồ sơ';\n      if (src === 'knowledge_excerpts') return 'Trích nguồn';\n      if (src === 'ollama_local')")
-        html=html.replace("      document.getElementById('chatList').appendChild(card);", """      if (Array.isArray(m.roadmap) && m.roadmap.length) {
+        html=html.replace("      document.getElementById('chatList').appendChild(card);", """      if (!m.advisor_compact && Array.isArray(m.roadmap) && m.roadmap.length) {
         const roadmap = document.createElement('section');
         roadmap.setAttribute('aria-label', 'Lộ trình tư vấn');
         roadmap.style.cssText = 'margin:12px 16px;padding:12px 14px;border-left:2px solid #58766c;display:grid;gap:12px';

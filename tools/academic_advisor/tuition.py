@@ -110,6 +110,7 @@ def lookup_tuition(root,question):
     lines=[f'Định mức học phí UET – ĐHQGHN năm học {y}-{y+1}, {labels[g]}, khóa QH-{c}:',f'• Phạm vi dòng nguồn: {row[1]}.']
     if y==2024 and g=='standard' and c<=2021:lines.append('• Điều 1: áp dụng chương trình chuẩn/CLC ngành CNTT, các khóa từ 2021 trở về trước.')
     for label,val in zip(h[2:],row[2:]):
+        if g in ('standard','tt23','dm') and re.search(r'\b(?:cac don vi dao tao truc thuoc|don vi dao tao khac)\b',norm(label)):continue
         if re.fullmatch(r'\d{1,3}(?:\.\d{3})+',val): lines.append(f'• {label}: {val} đồng.')
         elif val=='-':lines.append(f'• {label}: văn bản không ghi mức.')
         elif val.startswith('Theo Quyết định số'):lines.append(f'• {label}: {val} (cần tra văn bản được dẫn chiếu).')
@@ -117,3 +118,44 @@ def lookup_tuition(root,question):
     if y==2026 and g in ('master','phd') and c>=2025:lines.append('• Ghi chú nguồn: khóa từ QH-2025 còn áp dụng Quyết định 248/QĐ-ĐHCN ngày 10/02/2025.')
     lines.append('Đây là định mức theo đơn vị ghi trong văn bản, không phải lịch thu tiền hay số tiền thực tế phải nộp trong một kỳ.')
     return {'answer':'\n'.join(lines),'year':y,'path':rel,'sha256':sha,'normalized_sha256':normalized,'row_count':1,'table_kind':'tuition_rate'}
+
+
+def lookup_units(root,year,cohort,example=False):
+    """Report source units without claiming the student's program or amount.
+    Only the documented QH-2023/2024 rows are supported here. Other cohorts
+    continue through the exact row adapter. Never substitute an inferred rate.
+    """
+    if cohort not in (2023,2024) or year not in SOURCES or cohort>year:return None
+    tables,rel,sha,normalized=read_table(root,year)
+    pairs=[select_row(tables,year,cohort,g,None) for g in ('standard','dm')]
+    if any(not p for p in pairs):return None
+    # Read populated cells, not just headers. A dash is not an applicable rate;
+    # a separate VNU-unit column is outside ordinary UET undergraduate scope.
+    labels=[]
+    for h,row in pairs:
+        if len(h)!=len(row) or len(h)<4:raise ValueError('Tuition column alignment error')
+        if year==2024 and str(cohort) not in row[1]:raise ValueError('Tuition cohort mismatch')
+        columns=[]; referenced=False
+        for label,value in zip(h[2:],row[2:]):
+            if re.search(r'\b(?:cac don vi dao tao truc thuoc|don vi dao tao khac)\b',norm(label)):continue
+            if value.strip() in ('','-','–','—'):continue
+            if norm(value).startswith('theo quyet dinh'):
+                referenced=True;continue
+            if not re.fullmatch(r'\d{1,3}(?:\.\d{3})+|\d+',value.strip()):raise ValueError('Unrecognized tuition cell')
+            if 'dong' not in norm(label):raise ValueError('Unknown fee unit')
+            columns.append(label)
+        if not columns:return None
+        labels.append((columns,referenced))
+    intro=f'Dạ cô, theo bảng định mức năm học {year}-{year+1} đối với khóa QH-{cohort}:'
+    if example:intro='Dạ cô, nếu đang hỏi năm nhập học, '+intro.removeprefix('Dạ cô, ')
+    lines=[intro]
+    if labels[0]==labels[1]:
+        lines+=['CTĐT chuẩn/CLC ghi trong bảng và ĐMKTKT:']+['• '+x+'.' for x in labels[0][0]]
+        if labels[0][1]:lines.append('Một cột dẫn chiếu quyết định khác; cần đối chiếu văn bản đó.')
+    else:
+        for title,(columns,referenced) in zip(('CTĐT chuẩn/CLC ghi trong bảng','CTĐT ĐMKTKT'),labels):
+            lines.append(title+':');lines+=['• '+x+'.' for x in columns]
+            if referenced:lines.append('Một cột dẫn chiếu quyết định khác; cần đối chiếu văn bản đó.')
+    lines+=['Chỉ liệt kê đơn vị của ô có mức ghi trong dòng đối chiếu, không phải lịch thu tiền thực tế. Không tự lấy mức của tân sinh viên khóa khác. Muốn xác định số tiền, cần đối chiếu loại chương trình và đúng dòng áp dụng.']
+    if example:lines.append('Nếu cô hỏi năm học khác, cần đối chiếu văn bản năm học đó.')
+    return {'answer':'\n'.join(lines),'year':year,'path':rel,'sha256':sha,'normalized_sha256':normalized,'row_count':2,'table_kind':'tuition_units'}

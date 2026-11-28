@@ -35,6 +35,12 @@ class AdvisorTests(unittest.TestCase):
     def test_version_and_conflict(self):
         idx=Index(self.root);b=Backend();q='Thông báo hoạt động nghiên cứu khoa học cấp Viện TTNT năm học 2025-2026 có nội dung gì?'
         hits=idx.search(q);self.assertTrue(hits);self.assertTrue(all('2024' not in c.path for c in hits));r=answer(idx,b,q);self.assertEqual(r['engine_mode'],'KNOWLEDGE_EXCERPTS');self.assertIn('15/02/2026',r['predicted_answer']);self.assertIn('25/02/2026',r['predicted_answer']);self.assertFalse(b.calls)
+    def test_conflicting_notice_overview_fixture(self):
+        with tempfile.TemporaryDirectory() as folder:
+            d=Path(folder)/'data/raw/uet/markdown/2025';d.mkdir(parents=True)
+            (d/'NCKH_hoi_nghi_vien_TTNT_2025.md').write_text('# Thông báo hoạt động sinh viên nghiên cứu khoa học cấp Viện TTNT\n\n## Kế hoạch triển khai\n| Hoạt động | Thời gian |\n| Đăng ký | 01/02–25/02/2026 |\n**Chú ý về hai mốc khác nhau trong nguồn:** đăng ký chậm nhất ngày 15/02/2026. Giữ nguyên cả hai mốc, không tự quyết định mốc nào thay thế mốc nào.\n',encoding='utf8')
+            b=Backend();idx=Index(folder);q='Thông báo hoạt động nghiên cứu khoa học cấp Viện TTNT năm học 2025-2026 có nội dung gì?';r=answer(idx,b,q)
+            self.assertEqual(r['engine_mode'],'KNOWLEDGE_EXCERPTS');self.assertIn('15/02/2026',r['predicted_answer']);self.assertIn('25/02/2026',r['predicted_answer']);self.assertFalse(b.calls)
     def test_missing_year(self):
         idx=Index(self.root);self.assertFalse(idx.search('Nghiên cứu khoa học cấp Viện TTNT năm học 2027-2028'))
 
