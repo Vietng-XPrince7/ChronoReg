@@ -99,13 +99,18 @@ def add_conversation(s, dispatch, request_type, root=None):
     state=Context()
     from reference_knowledge import ReferenceLibrary
     reference_library=ReferenceLibrary(root) if root is not None else None
-    from fastapi.responses import JSONResponse
+    from fastapi.responses import JSONResponse as RawJSONResponse
     def unpack(response):
         return json.loads(response.body) if hasattr(response,'body') else dict(response)
     @s.app.post('/api/advisor/chat')
     def conversation(req:AdvisorChatRequest):
         auto=req.force_engine in (None,'auto')
         raw=req.question.strip()
+        def JSONResponse(*,content):
+            if auto and req.experience=='advisor':
+                from advisor_quality_gate import finalize
+                content=finalize(content,raw)
+            return RawJSONResponse(content=content)
         def call(q,sid):return unpack(dispatch(request_type(question=q,force_engine=req.force_engine,mssv=sid)))
         # Never reinterpret explicit experiment modes or RED queries.
         risk=s._router.route_decision(raw)
@@ -174,7 +179,17 @@ def add_conversation(s, dispatch, request_type, root=None):
             from advisor_public_guard import route as public_guard_route
             from advisor_pdf_reference import route as pdf_reference_route
             from advisor_course_reference import route as course_reference_route
-            continued=course_reference_route(root,raw,prior) if not req.mssv and not classified_id and auto and risk.risk_tier!='RED' else None
+            continued=None
+            if not req.mssv and not classified_id and auto and risk.risk_tier!='RED':
+                from advisor_fact_application import route as fact_application
+                try:continued=fact_application(root,raw,prior)
+                except (OSError,ValueError,KeyError,TypeError,AttributeError,IndexError):continued=None
+            if continued is None:
+                continued=course_reference_route(root,raw,prior) if not req.mssv and not classified_id and auto and risk.risk_tier!='RED' else None
+            if continued is None and not req.mssv and not classified_id and auto and risk.risk_tier!='RED':
+                from advisor_quality_gate import public_policy, aliases
+                try:continued=public_policy(root,raw,prior) or aliases(root,raw,prior)
+                except (OSError,ValueError,KeyError,TypeError,AttributeError):continued=None
             if continued is None and not req.mssv and not classified_id and auto and risk.risk_tier!='RED':
                 from advisor_release_counsel import route as release_counsel_route
                 continued=release_counsel_route(root,raw,prior)
