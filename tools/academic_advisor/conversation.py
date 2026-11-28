@@ -97,6 +97,8 @@ def next_context(question,result,prior=None):
 
 def add_conversation(s, dispatch, request_type, root=None):
     state=Context()
+    from reference_knowledge import ReferenceLibrary
+    reference_library=ReferenceLibrary(root) if root is not None else None
     from fastapi.responses import JSONResponse
     def unpack(response):
         return json.loads(response.body) if hasattr(response,'body') else dict(response)
@@ -165,6 +167,81 @@ def add_conversation(s, dispatch, request_type, root=None):
         if hasattr(s,'_router') and hasattr(s._router,'classify_query') and hasattr(s,'_get_active_roster'):
             _,entities=s._router.classify_query(raw,roster=s._get_active_roster(),mssv=req.mssv)
             classified_id=(entities or {}).get('mssv')
+        # Signed, scope-checked transitions and public table requests, before model fallback.
+        if product and root is not None and callable(getattr(s,'_get_active_roster',None)):
+            from advisor_continuity import route as continuity_route
+            from admission_multiyear import route as admissions_history_route
+            from advisor_public_guard import route as public_guard_route
+            from advisor_pdf_reference import route as pdf_reference_route
+            from advisor_course_reference import route as course_reference_route
+            continued=course_reference_route(root,raw,prior) if not req.mssv and not classified_id and auto and risk.risk_tier!='RED' else None
+            if continued is None and not req.mssv and not classified_id and auto and risk.risk_tier!='RED':
+                from advisor_release_counsel import route as release_counsel_route
+                continued=release_counsel_route(root,raw,prior)
+            if continued is None:
+                continued=pdf_reference_route(root,raw,prior) if not req.mssv and not classified_id and auto and risk.risk_tier!='RED' else None
+            if continued is None:
+                continued=public_guard_route(root,raw,prior) if not req.mssv and not classified_id and auto and risk.risk_tier!='RED' else None
+            if continued is None:
+                continued=admissions_history_route(raw,root) if not req.mssv and not classified_id and auto and risk.risk_tier!='RED' else None
+            if continued is None:
+                continued=continuity_route(raw,prior,req.mssv,classified_id,s._get_active_roster(),root)
+            if continued is None and not req.mssv and not classified_id and auto and risk.risk_tier!='RED':
+                from advisor_source_precision import route as public_precision_route
+                continued=public_precision_route(root,raw,prior)
+                if continued is None:
+                    from advisor_public_fast import route as public_fast_route
+                    continued=public_fast_route(root,raw,prior)
+                if continued is None:
+                    from advisor_public_sections import route as public_sections_route
+                    continued=public_sections_route(root,raw,prior)
+            if continued is not None:
+                r,data=continued;r['question']=raw;r['routing']['risk_tier']=risk.risk_tier
+                r['metadata']['advisor_experience']=True
+                r['context_resolution']={'kind':'scoped_continuity','original_question':raw,'effective_question':raw}
+                r['context_token']=issue_context(data,r)
+                return JSONResponse(content=r)
+        # Repair high-confidence advising intent before generic evidence retrieval.
+        if product and root is not None and callable(getattr(s,'_get_active_roster',None)):
+            from experience_transfer import route as transfer_route
+            repaired=transfer_route(raw,prior,req.mssv,classified_id,s._get_active_roster(),root)
+            if repaired is not None:
+                r,data=repaired;r['question']=raw;r['routing']['risk_tier']=risk.risk_tier
+                r['metadata']['advisor_experience']=True
+                r['context_resolution']={'kind':'experience_transfer','original_question':raw,'effective_question':raw}
+                r['context_token']=issue_context(data,r)
+                return JSONResponse(content=r)
+            # Exact graduation-rule questions already have a source-bound tool.
+            # Prefer it to the generic semantic planner, without weakening its guards.
+            from quality_routes import route as rank_route,RANK
+            n=norm(raw)
+            if not req.mssv and not classified_id and (RANK.search(n) and re.search(r'\b(?:bang (?:dung )?5|dung bang 5)\b',n) or (prior.get('kind')=='advisor_task' and prior.get('topic')=='rank')):
+                ranked=rank_route(raw,prior,None,None,s._get_active_roster(),root)
+                if ranked is not None and ranked[1].get('topic')=='rank':
+                    r,data=ranked;r['question']=raw;r['routing']['risk_tier']=risk.risk_tier
+                    r['metadata']['advisor_experience']=True
+                    r['context_resolution']={'kind':'rank_reference','original_question':raw,'effective_question':raw}
+                    r['context_token']=issue_context(data,r)
+                    return JSONResponse(content=r)
+        # Product-only scoped public notice and hypothetical CPA continuation.
+        # No inherited identity, RED override, or research-path changes.
+        if product and root is not None and not req.mssv and not classified_id:
+            from experience_routes import route as experience_route
+            # YELLOW is a comparison/temporal signal, not an exception. Only a
+            # signed, typed hypothetical CPA context may use this narrow delta path.
+            # RED and forced modes have already returned; explicit/classified IDs excluded.
+            from experience_routes import cpa_route
+            if risk.risk_tier=='YELLOW' and prior.get('kind')=='advisor_experience_cpa':
+                experienced=cpa_route(raw,prior,delta_only=True)
+                if experienced is None:experienced=experience_route(raw,prior,root,allow_calculation=False)
+            else:
+                experienced=experience_route(raw,prior,root,allow_calculation=risk.risk_tier=='GREEN')
+            if experienced is not None:
+                r,data=experienced;r['question']=raw;r['routing']['risk_tier']=risk.risk_tier
+                r['metadata']['advisor_experience']=True
+                r['context_resolution']={'kind':'scoped_experience','original_question':raw,'effective_question':raw}
+                r['context_token']=issue_context(data,r)
+                return JSONResponse(content=r)
         if root is not None and callable(getattr(s,'_get_active_roster',None)):
             if product:
                 if os.environ.get('CHRONOREG_GROUNDED_PILOT')=='1':
@@ -203,6 +280,14 @@ def add_conversation(s, dispatch, request_type, root=None):
                     return JSONResponse(content=r)
                 from advisor_composer import clarify
                 missing=clarify(raw,prior) if not req.mssv and not classified_id else None
+                if missing and reference_library is not None and re.search(r'\b20\d{2}\b|\bqh[- ]?20\d{2}\b|\bk(?:6[7-9]|7[01])\b',norm(raw)):
+                    ref=reference_library.route(raw,prior)
+                    if ref is not None:
+                        r,data=ref;r['question']=raw;r['routing']['risk_tier']=risk.risk_tier
+                        r['metadata']['advisor_experience']=True
+                        r['context_resolution']={'kind':'corpus_reference','original_question':raw,'effective_question':raw}
+                        r['context_token']=issue_context(data,r)
+                        return JSONResponse(content=r)
                 if missing:
                     from quality_routes import response
                     r=response(missing,'advisor_clarification');r['question']=raw;r['routing']['risk_tier']=risk.risk_tier
@@ -266,6 +351,15 @@ def add_conversation(s, dispatch, request_type, root=None):
                 r=response('Dạ cô, em chưa xác minh được đoạn quy chế đủ để trả lời yêu cầu này trong QĐ 3626. Nếu cô biết điều hoặc khoản liên quan, em có thể đối chiếu trực tiếp; em không tự thay bằng văn bản khác.','advisor_clarification')
                 r['question']=raw;r['routing']['risk_tier']=risk.risk_tier
                 r['metadata']['advisor_experience']=True;r['context_token']=None
+                return JSONResponse(content=r)
+        # Product-only access to raw UET reference material. Does not change publication status.
+        if auto and product and risk.risk_tier!='RED' and reference_library is not None and not req.mssv and not classified_id:
+            reference=reference_library.route(raw,prior)
+            if reference is not None:
+                r,data=reference;r['question']=raw;r['routing']['risk_tier']=risk.risk_tier
+                r['metadata']['advisor_experience']=True
+                r['context_resolution']={'kind':'corpus_reference','original_question':raw,'effective_question':raw}
+                r['context_token']=issue_context(data,r)
                 return JSONResponse(content=r)
         q,sid,kind=resolve(raw,req.mssv,prior,classified_id)
         if kind.startswith('clarify_'):

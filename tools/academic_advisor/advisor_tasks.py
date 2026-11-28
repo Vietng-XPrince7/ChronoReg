@@ -26,7 +26,7 @@ def ask(text,old=None):return response('Dạ cô, '+text,'advisor_clarification'
 
 def withdrawal(q,n,prior,root,explicit,classified):
     old=prior if prior.get('kind')=='advisor_agent' and prior.get('topic')=='withdrawal' else {}
-    initial=bool(WITHDRAW.search(n) and re.search(r'\b(?:thoi diem|thoi han|bao lau|khi nao|cham nhat|han|den ngay)\b',n))
+    initial=bool(WITHDRAW.search(n) and re.search(r'\b(?:thoi diem|thoi han|bao lau|khi nao|cham nhat|han|den ngay|quy trinh|thu tuc|hau qua|dieu kien)\b',n))
     follow=bool(old and (re.fullmatch(r'(?:con|the|vay|neu)?\s*(?:hoc )?ky (?:phu|he|chinh)(?: thi sao| the nao)?',n) or re.search(r'\b(?:van ban do|quy dinh do|dieu khoan do|quyet dinh do)\b',n) and re.search(r'\b(?:k\d{2}|khoa|hieu luc|ap dung)\b',n)))
     if not (initial or follow) or explicit or classified:return None
     if EXCLUDE.search(n) or re.search(r'\b(?:5115|3079|quy che cu|quy che moi|lich dang ky|ngay cu the)\b',n):return None
@@ -40,6 +40,14 @@ def withdrawal(q,n,prior,root,explicit,classified):
     if re.search(r'\b(?:2026|202[7-9]|202[01])\b',n):return ask('cần xác minh hiệu lực văn bản ở năm đang hỏi trước khi áp dụng.',new)
     instruments=re.findall(r'\b(?:qd|quyet dinh) (\d+)\b',n)
     if any(x!='3626' for x in instruments):return None
+    broad=initial and bool(re.search(r'\b(?:quy trinh|thu tuc|hau qua|dieu kien|can chu y)\b',n))
+    if broad:
+        from presentation import withdrawal_summary
+        full=pinned(root,'Điều 23 QĐ 3626')
+        if full:
+            summary=withdrawal_summary(q,full['answer'])
+            if summary:return source_response(summary.replace('Thầy/cô','Cô'),'withdrawal',full),new
+        return ask('chưa xác minh đủ toàn bộ Điều 23 để hướng dẫn quy trình và hậu quả; cần đối chiếu văn bản gốc.',new)
     c=pinned(root,'Điều 23 khoản 2 QĐ 3626')
     if not c:return ask('chưa xác minh được điều khoản rút học phần đúng nguồn.',new)
     m=re.search(r'Việc rút bớt học phần chỉ được chấp nhận trong (\d+) tuần kể từ đầu học kỳ chính, (\d+) tuần kể từ đầu học kỳ phụ',c['answer'],re.I)

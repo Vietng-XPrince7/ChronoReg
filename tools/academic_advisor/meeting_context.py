@@ -26,7 +26,7 @@ def update_topics(question, previous=()):
     for k,pat in PATTERNS.items():
         for m in re.finditer(r'\b(?:'+pat+r')\b',q):
             touched=True
-            if NEGATIVE.search(q[max(0,m.start()-30):m.start()]):topics.discard(k)
+            if NEGATIVE.search(q[max(0,m.start()-30):m.start()]) or re.search(r'\b(?:chua noi|chua xac nhan|chua chia se|khong khang dinh)(?: la| rang| ve viec)?\s+$',q[max(0,m.start()-50):m.start()]):topics.discard(k)
             else:topics.add(k)
     return sorted(topics),touched
 

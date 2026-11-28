@@ -1,0 +1,28 @@
+{
+  "status": "public_notice_summary_not_current_procedure_certification",
+  "retrieved_date": "2026-11-28",
+  "documents": [
+    {
+      "doc_id": "advisor-uet-language-1011-notice-2023",
+      "date": "2023-03-24",
+      "url": "https://uet.vnu.edu.vn/su-dung-huong-dan-chuc-dao-tao-cac-hoc-phan-ngoai-ngu-va-xac-dinh-chuan-dau-ra-tai-dhqghn/",
+      "cohort_from": 2022,
+      "facts": [
+        "Theo thông báo về Hướng dẫn 1011, trong thời gian đào tạo có thể nộp bản sao công chứng văn bằng hoặc chứng chỉ còn giá trị sử dụng.",
+        "Sau đợt đầu khóa, minh chứng hợp lệ chỉ được xét công nhận chuẩn đầu ra; không miễn học, miễn thi hoặc quy đổi điểm học phần.",
+        "Cần đối chiếu yêu cầu CTĐT, loại chứng chỉ và cơ sở cấp với các phụ lục 2, 3 của Hướng dẫn 1011."
+      ]
+    },
+    {
+      "doc_id": "advisor-uet-language-k69-notice-2024",
+      "date": "2024-08-30",
+      "url": "https://uet-test.uet.edu.vn/mien-hoc-mien-thi-va-chuyen-doi-diem-cac-hoc-phan-ngoai-ngu-cho-sinh-vien-khoa-k69/",
+      "cohort_from": 2024,
+      "cohort_to": 2024,
+      "facts": [
+        "Đợt nộp minh chứng đầu khóa K69 được thông báo từ 24/08/2024 đến 24/09/2024; có biểu mẫu riêng cho đợt này.",
+        "Phòng Đào tạo là đơn vị hỗ trợ khi gặp vướng mắc."
+      ]
+    }
+  ]
+}

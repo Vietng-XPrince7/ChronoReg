@@ -29,9 +29,16 @@ def simulate(question):
         return {'answer':reason+'\n\nĐể mô phỏng, thầy/cô có thể nhập:\n'+EXAMPLE+'\nHoặc: '+GOAL_EXAMPLE+'\nChỉ dùng CPA tích lũy độc lập và số tín chỉ thực sự được tính vào CPA, không dùng GPA học kỳ thay CPA.', 'status':'needs_inputs','inputs':{}}
     # Goal phrase contains CPA too: remove it before parsing current CPA.
     goals=re.findall(GOAL,question,re.I); rest=re.sub(GOAL,'',question,flags=re.I)
+    # Natural sentence forms: CPA X with N credits; next semester M credits at GPA Y.
+    alternatives={
+        'earned': r'\b(?:cpa|gpa tích lũy|điểm trung bình tích lũy|điểm trung bình chung tích lũy)\s*(?:hiện tại|ban đầu)?\s*[:=]?\s*[+-]?\d{1,3}(?:[.,]\d{1,2})?\s+(?:với|trên)\s+'+NUM+r'\s*(?:tín chỉ|tc)\b',
+        'new': r'\b(?:kỳ tới|học kỳ tới|kỳ sau|học kỳ sau|kỳ mới)\s+(?:học|tích lũy)\s+'+NUM+r'\s*(?:tín chỉ|tc)\b',
+        'gpa': r'\b(?:kỳ tới|học kỳ tới|kỳ sau|học kỳ sau|kỳ mới)\s+(?:học|tích lũy)\s+[+-]?\d{1,3}(?:[.,]\d{1,2})?\s*(?:tín chỉ|tc)\s+(?:và\s+)?(?:đạt|có)\s+gpa\s*[:=]?\s*'+NUM,
+    }
     values={}
     for key,pattern in FIELDS.items():
         matches=re.findall(pattern,rest,re.I)
+        if key in alternatives:matches+=re.findall(alternatives[key],rest,re.I)
         if len(matches)>1:return incomplete('Có nhiều giá trị cho cùng một trường. Hãy nhập một kịch bản tại một thời điểm.')
         if matches:values[key]=Decimal(matches[0].replace(',','.'))
     if len(goals)>1:return incomplete('Có nhiều CPA mục tiêu; vui lòng chọn một mục tiêu.')

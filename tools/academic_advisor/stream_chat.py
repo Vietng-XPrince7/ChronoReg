@@ -11,7 +11,7 @@ def line(event, **data):
     return json.dumps({'event':event, **data}, ensure_ascii=False, separators=(',', ':'))+'\n'
 
 
-def install_stream(app, handler, *, interval=0.035, heartbeat=2.0):
+def install_stream(app, handler, *, interval=0.008, heartbeat=1.0):
     @app.post('/api/advisor/chat/stream')
     async def stream(req: AdvisorChatRequest):
         async def events():
@@ -28,7 +28,7 @@ def install_stream(app, handler, *, interval=0.035, heartbeat=2.0):
                 if not isinstance(data,dict) or not isinstance(data.get('answer'),str):
                     yield line('error',message='Phản hồi không hợp lệ.');return
                 # Bound animation overhead even for long source excerpts.
-                answer=data['answer']; size=max(12,math.ceil(len(answer)/45))
+                answer=data['answer']; size=max(12,math.ceil(len(answer)/12))
                 for i in range(0,len(answer),size):
                     yield line('delta',text=answer[i:i+size])
                     if interval and i+size<len(answer):await asyncio.sleep(interval)

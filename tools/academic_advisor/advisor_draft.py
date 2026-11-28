@@ -68,6 +68,14 @@ def route(q,n,prior,explicit,classified,roster):
         full=('Các em thân mến,\n\nCô mời các em tham gia buổi trao đổi về tình hình học tập và kế hoạch hỗ trợ. Thời gian, địa điểm sẽ được thông báo sau.' if public else 'Chào em,\n\nCô mời em tham gia buổi trao đổi về tình hình học tập để thống nhất phương án hỗ trợ phù hợp. Em vui lòng phản hồi thời gian có thể tham gia.\n\nTrân trọng,\nCô')
         brief=('Cô mời các em trao đổi về tình hình học tập. Thời gian sẽ được thông báo sau.' if public else 'Cô mời em trao đổi về tình hình học tập. Em vui lòng phản hồi thời gian thuận tiện.')
     if prepare and not public:full+='\nEm có thể chuẩn bị một câu hỏi muốn trao đổi trước buổi gặp.';brief+=' Em chuẩn bị một câu hỏi nhé.'
+    # Public draft revisions preserve the invitation and the private channel.
+    # Repeated brevity requests are meaningful, not a reset to the same template.
+    shorten=bool(re.search(r'\b(?:rut gon|ngan hon|viet ngan|ngan gon)\b',n))
+    if public and (short or re.search(r'\b(?:thong bao|loi nhan|tin nhan) ngan\b',n)):
+        short=True
+        brief='Các em thân mến, cô mời các em trao đổi về việc học. Vấn đề riêng, các em nhắn cô nhé.'
+        if edit and shorten and carry.get('short'):
+            brief='Các em thân mến, cô mời trao đổi học tập; việc riêng, các em nhắn cô nhé.'
     candidates=[brief] if short else [full,brief]
     body=next((x for x in candidates if len(x.split())<=limit),None)
     if body is None:return fail('giới hạn từ chưa đủ để giữ ý lời mời; cô có thể tăng giới hạn.',carry)

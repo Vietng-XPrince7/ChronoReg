@@ -52,6 +52,7 @@ def route(question,prior,explicit,classified,roster,root):
     # Explicit or contextual regulatory question, never attach personal data.
     rank=bool(RANK.search(n) and re.search(r'\b(?:thi lai|hoc lai|truot|rot|diem f|ky luat|co bi|co phai|phan tram)\b',n))
     rank_follow=topic=='rank' and follow and bool(re.search(r'\b(?:phan tram|5|khoa|qh|k7[0-9]|k6[5-9]|nguong|bang|vuot)\b',n))
+    rank_follow=rank_follow or bool(topic=='rank' and re.fullmatch(r'(?:quy dinh|quy che|dieu khoan) (?:do|nay) co ap dung cho (?:sinh vien )?k(?:6[5-9]|7[0-9])(?: khong)?',n))
     load=bool(LOAD.search(n) and 'tin chi' in n and re.search(r'\b(?:gpa|diem trung binh)\b',n) and not RETAKE.search(n))
     load_follow=topic=='load' and follow and bool(re.search(r'\b(?:gpa|tich luy|ky phu|ky he|hoc he|ky chinh|nguong|tin chi)\b',n))
     if not sid and not re.search(r'\b(?:sinh vien nao|em nao|nhung ai|danh sach|thong ke|toan lop|ca lop)\b',n) and (rank or rank_follow or load or load_follow):
@@ -70,6 +71,8 @@ def route(question,prior,explicit,classified,roster,root):
             if not a:return response('Dạ cô, em chưa có điều khoản đủ căn cứ để kết luận về hạ hạng tốt nghiệp. Cần đối chiếu đúng khóa và văn bản được phép sử dụng.','policy_unavailable'),new
             if re.search(r'\bbang (?:dung )?5\b|\bdung bang 5\b',n):
                 a='Dạ cô, đúng bằng 5% không thỏa điều kiện vượt quá 5% tại khoản 7 Điều 47. Vẫn phải xem hạng tốt nghiệp dự kiến và tình trạng kỷ luật; chỉ áp dụng nếu Quyết định 3626/QĐ-ĐHQGHN đúng với khóa đang xét.'
+            elif topic=='rank' and re.fullmatch(r'(?:neu vay thi |vay |the thi )?(?:chi can |cu )?(?:truot|rot)(?: mot mon| 1 mon)? (?:la |thi )?(?:bi )?ha (?:bang|hang|loai)(?: tot nghiep)?(?: a| ha| khong| sao)?',n):
+                a='Dạ cô, không ạ. Trượt môn không đồng nghĩa với hạ hạng. Theo khoản 7 Điều 47 QĐ 3626, nếu thuộc hạng Giỏi hoặc Xuất sắc, tổng tín chỉ phải học lại vượt quá 5% toàn chương trình hoặc bị kỷ luật từ mức cảnh cáo trở lên mới bị hạ một hạng. Cần đối chiếu đúng quy chế của khóa tuyển sinh.'
             elif 'thi lai' in n:a='Dạ cô, không phải cứ thi lại là hạ hạng. Cần phân biệt thi lại với học phần phải học lại; điều khoản tính tổng tín chỉ phải học lại, không chỉ số môn thi lại.\n\n'+a
             if not a.startswith('Dạ cô'):a='Dạ cô, '+a[0].lower()+a[1:]
             return source_response(a,'rank',c),new

@@ -78,7 +78,7 @@ def route(q,p,explicit,classified,roster,root):
     if action is None and not ids and old.get('action')=='policy_lookup' and re.search(r'\b(?:tro lai hoc|hoc tro lai|hoc tiep)\b',n) and re.search(r'\b(?:han|moc|truoc|khi nao)\b',n):action='policy_lookup'
     if action is None and old and not re.search(r'\b(?:hoc lai|hoc phi|hoc bong|soan|viet|email|tin nhan|ca lop|tin chi|tc|nghi chu nhat|cach ngay|khong tu hoc|khong lap|khong can lap|dung lap|tru ngay|chi hoc vao|lich thi|lich mo lop)\b',n) and not re.search(r'\b[A-Z]{3}\d{4}\b',q):
         if re.search(r'\b(?:tu hoc|tu on|on tap|lich on)\b',n) and re.search(r'\b\d{1,3}\s*phut\b',n) and re.search(r'\b(?:mot tuan|bay ngay|7 ngay)\b',n):action='study_plan'
-        elif old.get('action')=='study_plan' and re.search(r'\b(?:can cu|dau hieu|ket qua|danh gia|theo doi|giam do kho|quyet dinh tiep)\b',n) and re.search(r'\b(?:ke hoach|phuong an|dot thu|cuoi tuan|tuan sau)\b',n) and not re.search(r'\b(?:doi thanh|dieu chinh|tang len|giam con|lap lai|so sanh)\b',n):action='study_review'
+        elif old.get('action')=='study_plan' and re.search(r'\b(?:can cu|dau hieu|ket qua|danh gia|theo doi|giam do kho|quyet dinh tiep|dua vao dau|hieu qua|tien bo|tieu chi|do luong)\b',n) and re.search(r'\b(?:ke hoach|phuong an|dot thu|cuoi tuan|tuan sau)\b',n) and not re.search(r'\b(?:doi thanh|dieu chinh|tang len|giam con|lap lai|so sanh)\b',n):action='study_review'
     if not action:return None
     try:
         a=grounded({'action':action},q,old);act=a['action'];args=a['args']

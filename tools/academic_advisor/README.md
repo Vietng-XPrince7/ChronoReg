@@ -1,3 +1,31 @@
+# ChronoReg Academic Advisor — 2.0.0 release candidate
+
+A local academic-advising product for UET: scoped public references, demo student records, bounded conversation, and evidence-based counseling. Research modes (versioned RAG and continual LoRA) remain separate; Advisor Auto is a hybrid product, not a pure LoRA evaluation.
+
+## Start
+
+Clone or pull the approved release branch, enter the repository root and run:
+
+- Windows CMD or PowerShell: `tools\academic_advisor\start-advisor.cmd` (PowerShell: ` .\tools\academic_advisor\start-advisor.cmd`).
+- Ubuntu 24.04+ x86-64: `bash tools/academic_advisor/start-advisor.sh`.
+
+Open http://127.0.0.1:8765. See [TEAM_START.md](TEAM_START.md) for dependencies, installation permissions, supported platforms and limited profiles. Internet is required on first run. No CUDA or API key is required for the local profile. Actual fresh-machine installation is not certified yet.
+
+## Knowledge and student-data boundaries
+
+- Academic year, cohort, source edition, and program are separate scopes. Source holds and owner exclusions take precedence; no automatic equivalence or legal-effect determination from filenames.
+- Public reference excerpts can be provisional. An explicit no-prerequisite or not-applicable field is a valid value. Blank fields are not automatically errors, and a dash or damaged table is not silently interpreted as a fact.
+- Current source hashes and exclusion metadata are checked before reference use. The application must be restarted after adding source files not reflected in the catalog; source updates may require review before use.
+- Student data is demo-only. Plans and hypothetical GPA calculations are advisory, not official eligibility or registration decisions. Public notices are drafts; no message is sent.
+
+## Release verification
+
+Run the full unit suite from the repository root in the launcher-created venv, then start the server and run the demo smoke probe in a second terminal. Review answer wording and sources; a technical test is not proof of semantic accuracy. See TEAM_START.md for commands. The previous 581-test report predates this patch. The release candidate is not yet certified on the final live server or fresh teammate machines.
+
+## Historical development notes
+
+The sections below document earlier overlays and experiments. Their installation instructions, version numbers, and historical test counts are not current release instructions.
+
 # ChronoReg LoRA-powered Academic Advisor — v12.0
 
 Single cumulative local overlay for ChronoReg main 27b26f2. Stop v11 before starting v12. No retraining, additional model, or dependency. Keep both existing Ollama 7B models. No tracked repository file is modified by this overlay.
