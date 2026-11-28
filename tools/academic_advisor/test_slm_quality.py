@@ -1,4 +1,4 @@
-import json,os,unittest
+import json,os,unittest,tempfile
 from pathlib import Path
 from types import SimpleNamespace
 from knowledge import Index
@@ -17,10 +17,27 @@ def model(*responses):
  return SimpleNamespace(lora_model='model',ollama_url='local',ollama_timeout=1,_make_client=lambda *a,**kw:(SimpleNamespace(post=post),False)),calls
 class QualityTests(unittest.TestCase):
  def test_course_exact(self):
-  idx=Index(ROOT);r=course_credits(idx,'Học phần EPN2062 trong chương trình Kỹ thuật vật lý QH-2022 có bao nhiêu tín chỉ?')
-  self.assertIn('EPN2062 – Vật lý chất rắn có 3 tín chỉ',r['predicted_answer']);self.assertIn('chưa được xác nhận',r['predicted_answer']);self.assertEqual(r['engine_mode'],'SOURCE_COURSE_ROW')
-  self.assertIsNone(course_credits(idx,'EPN2062 ngành CNTT QH-2022 có bao nhiêu tín chỉ?'))
-  self.assertIsNone(course_credits(idx,'EPN2062 ngành Vật lý kỹ thuật có bao nhiêu tín chỉ?'))
+  # A synthetic allowed table tests extraction independently of the real catalogue's review status.
+  with tempfile.TemporaryDirectory() as folder:
+   root=Path(folder);p=root/'data/raw/uet/markdown/curricula/fixture-QH-2022-to-2024.md';p.parent.mkdir(parents=True)
+   p.write_text('# Kỹ thuật vật lý\n\n| STT | Mã học phần | Tên học phần | Số tín chỉ |\n| --- | --- | --- | --- |\n| 1 | EPN2062 | Vật lý chất rắn | 3 |\n',encoding='utf8')
+   q='Học phần EPN2062 trong chương trình Kỹ thuật vật lý QH-2022 có bao nhiêu tín chỉ?'
+   idx=Index(root);r=course_credits(idx,q)
+   self.assertIsNotNone(r);self.assertIn('EPN2062 – Vật lý chất rắn có 3 tín chỉ',r['predicted_answer']);self.assertIn('chưa được xác nhận',r['predicted_answer']);self.assertEqual(r['engine_mode'],'SOURCE_COURSE_ROW')
+   self.assertIsNone(course_credits(idx,'EPN2062 ngành CNTT QH-2022 có bao nhiêu tín chỉ?'))
+   self.assertIsNone(course_credits(idx,'EPN2062 ngành Vật lý kỹ thuật có bao nhiêu tín chỉ?'))
+   p.write_text('---\nretrieval_eligible: false\n---\n'+p.read_text(encoding='utf8'),encoding='utf8')
+   self.assertIsNone(course_credits(Index(root),q))
+ def test_real_course_review_gate(self):
+  idx=Index(ROOT);rel='data/raw/uet/markdown/curricula/uet-curriculum-engineering-physics-QH-2022-to-2024.md'
+  matches=[i for i in idx.inventory if i['path']==rel]
+  if not matches:self.skipTest('Original engineering physics source absent')
+  self.assertEqual(len(matches),1)
+  q='Học phần EPN2062 trong chương trình Kỹ thuật vật lý QH-2022 có bao nhiêu tín chỉ?'
+  if matches[0]['status'] in ('held','review_pending','metadata_only'):
+   self.assertFalse(any(c.path==rel for c in idx.chunks));self.assertIsNone(course_credits(idx,q))
+  else:
+   r=course_credits(idx,q);self.assertIsNotNone(r);self.assertIn('EPN2062 – Vật lý chất rắn có 3 tín chỉ',r['predicted_answer']);self.assertEqual(r['engine_mode'],'SOURCE_COURSE_ROW')
  def pred(self):return {'engine_mode':'SOURCE_CLAUSE','predicted_answer':lookup_regulation(ROOT,Q)['answer'],'latency_ms':0}
  def test_free_advice(self):
   b,c=model({'advice':'Cô nên cùng sinh viên rà lại các học phần đã học lại.'});r=present(source_present,b,Q,self.pred(),{});self.assertEqual(r['presentation_mode'],'SLM_ADVISOR');self.assertIn('5%',r['predicted_answer']);self.assertEqual(len(c),1)

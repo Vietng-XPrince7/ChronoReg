@@ -1,0 +1,1 @@
+Product-only calendar source pack. Original uploaded PDFs and layout-preserving text; semester headings checked against pages 1–2. No automatic promotion to the research reviewed corpus or LoRA pool. Do not infer actual teaching dates from semester boundaries. The 2024 PDF is unsigned. Use after operator review; original files retained.

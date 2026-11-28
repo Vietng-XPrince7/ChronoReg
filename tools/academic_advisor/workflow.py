@@ -48,7 +48,13 @@ def screening(students):
         sid=str(s.get('student_id') or s.get('mssv') or '')
         if not sid or counts[sid]!=1:duplicates+=1;continue
         tier,flags,missing=signals(s);groups[tier].append((sid,str(s.get('full_name') or 'Sinh viên'),flags,missing))
-    for v in groups.values():v.sort(key=lambda x:(-len(x[2]),x[0]))
+    # Explicit, auditable triage within each tier: known debt first (descending),
+    # then lower semester GPA, then lower conduct score; missing is not zero.
+    by_id={str(s.get('student_id') or s.get('mssv') or ''):s for s in students}
+    def priority(x):
+        st=by_id[x[0]];o=valid(st.get('owed_credits'),0,1000);g=valid(st.get('gpa_semester'),0,4);d=valid(st.get('drl'),0,100)
+        return (o is None,-o if o is not None else 0,g is None,g if g is not None else 0,d is None,d if d is not None else 0,x[0])
+    for v in groups.values():v.sort(key=priority)
     return groups,duplicates
 
 def debt_rows(st,courses):

@@ -57,6 +57,20 @@ def split_text(text):
         else:buf.append(line);size+=len(line)+1
     if buf: yield heading,'\n'.join(buf)
 
+def pending_retrieval(rel,body):
+    """Keep unapproved curriculum archives and explicit opt-outs out of live RAG.
+
+    Archive is provenance, not a published course catalogue. A later reviewed
+    source must be admitted through a separate, hash-bound publication review;
+    an edited filename or a lone true flag is not sufficient.
+    """
+    if rel.startswith(('data/raw/uet/curricula/tuan_2022_2026/',
+                       'data/raw/uet/markdown/curricula/tuan_2022_2026/')):
+        return True
+    # Only parse a leading front-matter block, never commands in document text.
+    m=re.match(r'\A---[ \t]*\r?\n(.*?)\r?\n---[ \t]*(?:\r?\n|$)',body,flags=re.S)
+    return bool(m and re.search(r'(?im)^\s*retrieval_eligible\s*:\s*["\']?false["\']?\s*(?:#.*)?$',m[1]))
+
 class Index:
     def __init__(self,root):
         self.root=Path(root).resolve();root=self.root;self.chunks=[];self.errors=[];self.inventory=[];self.postings=defaultdict(dict);self.lengths=[]
@@ -68,16 +82,20 @@ class Index:
         for rel in cat:
             try: paths.add(safe(root,rel))
             except ValueError:self.errors.append(rel+': invalid path')
-        seen=set(); by_sha={}
+        seen=set(); by_sha={}; candidates=[]; pending_hashes=set()
         for p in sorted(paths):
             try:
                 p=p.resolve();rel=p.relative_to(root).as_posix();raw=p.read_bytes();sha=hashlib.sha256(raw).hexdigest();body=raw.decode('utf-8-sig')
             except (OSError,UnicodeError,ValueError) as exc:self.errors.append(str(p)+': '+str(exc));continue
             # Source cards are metadata rather than curriculum content; still inventory them.
-            if '/source_cards/' in rel: self.inventory.append({'path':rel,'status':'metadata_only','sha256':sha});continue
+            if '/source_cards/' in rel or p.name.casefold() in ('readme.md','changelog.md','contributing.md'): self.inventory.append({'path':rel,'status':'metadata_only','sha256':sha});continue
             canon=hashlib.sha256(body.replace('\r\n','\n').encode()).hexdigest();c=cat.get(rel,{})
+            if pending_retrieval(rel,body) or c.get('retrieval_eligible') is False:pending_hashes.add(canon)
+            candidates.append((rel,sha,body,canon,c))
+        for rel,sha,body,canon,c in candidates:
             held=sha in self.hold_sha or canon in self.hold_sha or c.get('doc_id') in self.hold_ids
-            status='held' if held else 'unreviewed';self.inventory.append({'path':rel,'status':status,'sha256':sha})
+            status='held' if held else 'review_pending' if canon in pending_hashes else 'unreviewed';self.inventory.append({'path':rel,'status':status,'sha256':sha})
+            if status=='review_pending':continue
             by_sha[sha]=(rel,sha);by_sha[canon]=(rel,sha)
             if canon in seen or held:continue
             seen.add(canon)
@@ -115,7 +133,7 @@ class Index:
             for w,n in tf.items():self.postings[w][i]=n
         self.avg=sum(self.lengths)/max(1,len(self.lengths)) or 1
     def stats(self):
-        return {'files':len(self.inventory),'chunks':len(self.chunks),'reviewed_chunks':sum(c.status=='reviewed' for c in self.chunks),'errors':self.errors,'metadata_only':sum(r['status']=='metadata_only' for r in self.inventory),'held':sum(r['status']=='held' for r in self.inventory)}
+        return {'files':len(self.inventory),'chunks':len(self.chunks),'reviewed_chunks':sum(c.status=='reviewed' for c in self.chunks),'errors':self.errors,'metadata_only':sum(r['status']=='metadata_only' for r in self.inventory),'held':sum(r['status']=='held' for r in self.inventory),'review_pending':sum(r['status']=='review_pending' for r in self.inventory)}
     def search(self,q,k=5):
         ts=set(tokens(q));scores=defaultdict(float);n=len(self.chunks)
         # cohort is separate from question's academic year
@@ -132,6 +150,13 @@ class Index:
         if re.search(r'\b(?:vien ttnt|vien tri tue nhan tao)\b',norm(q)):unit=('ttnt','tri tue nhan tao')
         for i,score in scores.items():
             c=self.chunks[i]
+            conflicting_dates=('hai moc khac nhau' in norm(c.text) or 'khong tu quyet dinh moc nao thay the' in norm(c.text))
+            unit_overview=bool(unit and re.search(r'\b(?:nghien cuu khoa hoc|nckh)\b',norm(q)) and re.search(r'\b(?:noi dung|ke hoach|trien khai|thong bao)\b',norm(q)))
+            if conflicting_dates:
+                if not (unit_overview or re.search(r'\b(?:han|moc|ngay|thoi gian|khi nao|lich)\b',norm(q))):continue
+                # A named unit's notice overview must retain conflicting deadlines,
+                # rather than silently prefer metadata or one date in a schedule.
+                if unit_overview:score*=3
             if grad and grad_cohort:
                 # Do not present the 2022 framework as applicable to a different cohort.
                 want=2026 if re.search(r'2026|k71',grad_cohort[0]) else None
@@ -210,6 +235,10 @@ def structured_synthesis(backend,question,selected,qyears):
         # Reject obviously unrelated answers: at least one informative content token
         # must occur in the selected passage. This is deliberately not a truth guarantee.
         if not set(tokens(a)).intersection(tokens(support)):return None,[],['unrelated_answer']
+        if re.search(r'\b(?:em|toi) da (?:gui|dat lich|luu|xac nhan|cap nhat|thuc hien|tao lich)\b',norm(a)):return None,[],['unsupported_action_claim']
+        meaningful=lambda t:{x for x in tokens(t) if ' ' not in x and len(x)>2 and not x.isdigit() and x not in {'giup','muon','nen','biet','nhan','xem','dung','can','nay','do','duoc','vay','con','gio','chi','tren','trong','theo','thong','tin'}}
+        terms=meaningful(question)
+        if terms and len(terms & meaningful(support))<min(2,len(terms)):return None,[],['unrelated_question_evidence']
         return a,sources,[]
     except (ValueError,KeyError,TypeError):return None,[],['invalid_structured_response']
     except Exception as exc:return None,[],['client_'+type(exc).__name__]

@@ -1,0 +1,56 @@
+{
+  "schema": "chronoreg-advisor-tuition-review-v1",
+  "research_dataset_modified": false,
+  "originals": [
+    {
+      "file": "tt23.pdf",
+      "sha256": "4be30ca7fe8a1768c4655448d097e3d0420db3e7678c54d5e97d2e9a6e67f662",
+      "original_filename": "Quy-dinh-Muc-thu-hoc-phi-dao-tao-dai-hoc-CT-CLC-TT-23-nam-hoc-2022-2023-1 (1).pdf",
+      "status": "scope_unresolved",
+      "retrieval_eligible": false,
+      "related_official_source_url": "https://uet.edu.vn/wp-content/uploads/2022/05/Quy-dinh-Muc-thu-hoc-phi-dao-tao-dai-hoc-CT-CLC-TT-23-nam-hoc-2022-2023.pdf",
+      "provenance": "operator-uploaded PDF; URL refers to related source, not independently byte-matched"
+    },
+    {
+      "file": "postgraduate_extended.pdf",
+      "sha256": "c16bee446e4656afc4f051cd5afa85eb59a17656072e8aaff0a6407af0549cb3",
+      "original_filename": "Quy-dinh-dinh-muc-hoc-phi-dao-tao-Sau-dai-hoc-trong-thoi-gian-keo-dai-1 (1).pdf",
+      "status": "historical_formula_separate_scope",
+      "retrieval_eligible": false,
+      "related_official_source_url": "https://uet.edu.vn/quy-dinh-dinh-muc-hoc-phi-dao-tao-sau-dai-hoc-trong-thoi-gian-keo-dai/",
+      "provenance": "operator-uploaded PDF; URL refers to related source, not independently byte-matched"
+    },
+    {
+      "file": "postgraduate_original.pdf",
+      "sha256": "ef5074a920501bbc60431e35867085845b868150cd53e7d339d05dde5fdbebef",
+      "original_filename": "Quy-dinh-dinh-muc-hoc-phi-dao-tao-Sau-dai-hoc-nam-hoc-2022-2023-1 (1).pdf",
+      "status": "adjusted_later",
+      "retrieval_eligible": false,
+      "related_official_source_url": "https://uet.edu.vn/wp-content/uploads/2022/05/Quy-dinh-dinh-muc-hoc-phi-dao-tao-Sau-dai-hoc-nam-hoc-2022-2023.pdf",
+      "provenance": "operator-uploaded PDF; URL refers to related source, not independently byte-matched"
+    },
+    {
+      "file": "undergraduate_original.pdf",
+      "sha256": "53828bcaa23af77fee30a126f5833bb63aa6d2d1a7a8cee7143e41b0cead638e",
+      "original_filename": "Quy-dinh-dinh-muc-hoc-phi-dao-tao-dai-hoc-nam-hoc-2022-2023-1 (1).pdf",
+      "status": "adjusted_later",
+      "retrieval_eligible": false,
+      "related_official_source_url": "https://uet.vnu.edu.vn/wp-content/uploads/2022/05/Quy-dinh-dinh-muc-hoc-phi-dao-tao-dai-hoc-nam-hoc-2022-2023.pdf",
+      "provenance": "operator-uploaded PDF; URL refers to related source, not independently byte-matched"
+    }
+  ],
+  "review_records": [
+    {
+      "file": "adjustment_2022_pg_review.json",
+      "sha256": "a31ed6cccd76c2994ede86a6acedc8347930a4128e48758aef46e6f421ec1244"
+    },
+    {
+      "file": "provisional_2023_review.json",
+      "sha256": "5d3ecf0be47cd8010902103418fae70dc047a3e053873c5f246c4ffed93a1d9a"
+    },
+    {
+      "file": "adjustment_2022_ug.json",
+      "sha256": "a25cb5cd2ba15900877b42efd7559c83c10b5c7053bc4c0037a8678895f73971"
+    }
+  ]
+}

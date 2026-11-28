@@ -7,8 +7,8 @@ def build_report(roster, *, groups=None, duplicate_records=0, student=None, flag
     title = 'Phiếu tư vấn cá nhân — BẢN NHÁP RIÊNG TƯ' if individual else 'Báo cáo hỗ trợ học tập của lớp — BẢN NHÁP TỔNG HỢP'
     scope = str(roster.get('class_short') or roster.get('class_id') or 'chưa xác định')
     lines = [title, f'Lớp: {scope} | Khóa: {roster.get("cohort") or "chưa xác định"}',
-             f'Kỳ trong hồ sơ demo: {roster.get("semester") or "chưa xác định"}',
-             'Căn cứ: hồ sơ demo đang mở, không thay thế bảng điểm hoặc quyết định chính thức.', '']
+             f'Kỳ học: {roster.get("semester") or "chưa xác định"}',
+             'Nguồn: hồ sơ mẫu đang mở; đối chiếu bảng điểm chính thức trước khi sử dụng.', '']
     actions = []
     def add(owner, action, check, checkpoint):
         actions.append({'owner':owner,'action':action,'completion_check':check,'checkpoint':checkpoint})

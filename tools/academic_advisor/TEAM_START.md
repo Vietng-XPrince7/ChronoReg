@@ -1,3 +1,27 @@
+# Academic Advisor 2.0.0 — one-command startup
+
+From the repository root after cloning or pulling main:
+
+**Windows (CMD or PowerShell):**
+
+```bat
+.\tools\academic_advisor\start-advisor.cmd
+```
+
+**Ubuntu 24.04+ (x86-64):**
+
+```bash
+bash tools/academic_advisor/start-advisor.sh
+```
+
+The launcher checks for Python 3.11+ and Ollama, installs missing prerequisites via Windows Package Manager or Ubuntu apt and the official Ollama installer, creates the isolated venv, installs the existing pinned application dependencies, starts Ollama if needed, pulls the required planner only if absent, probes it, verifies the pinned base GGUF and starts the advisor. Both orchestration flags are enabled automatically in the full local profile. No CUDA or API key required. Open http://127.0.0.1:8765 (browser opens automatically when available). Ctrl+C stops the advisor and processes owned by the launcher; independently running services remain running.
+
+First launch needs Internet, a working package manager, installation permission (Windows App Installer / Ubuntu sudo), and sufficient disk/RAM. Recommended 16 GB RAM and at least 15 GB free disk; model sizes and installation requirements can vary. Ubuntu 22.04 requires a separately available Python 3.11+; other platforms are not certified. Existing installations and model tags are reused; the registry tag is not an immutable model hash. No forced upgrades, policy changes or silent offline fallback. If a prerequisite or probe fails, fix the displayed error and rerun. `--offline` / `-Offline` and `--gemini` / `-Gemini` are explicitly limited profiles, not the accepted local profile. `--no-browser` / `-NoBrowser` can be used for headless startup. Windows options use PowerShell syntax, Ubuntu options use long CLI flags.
+
+The roster is sample data, not an official student information system. Research modes and source holds remain separate. The launcher's actual cross-platform fresh-machine installation must be verified before claiming universal compatibility.
+
+## Historical deployment notes (superseded where startup differs)
+
 # ChronoReg Academic Advisor — portable SLM profile (13.0)
 
 ## Windows x64
@@ -44,3 +68,17 @@ The exact pinned team-original CNTT 2022–2024 table is used only for the match
 
 ## Advisor workflows 1.2 — actionable draft reports
 In Auto, ask `Lập báo cáo tư vấn cho lớp cô và kế hoạch hành động.` or select a student and ask `Lập phiếu tư vấn cho em này và kế hoạch hành động.` Reports include scoped findings, proposed owners, checkpoints and completion checks. Class report exports are aggregate only; an individual report is private and contains only the selected student. The optional TXT download is performed locally in the browser on a click. Nothing is sent, scheduled or marked complete. Suggested checkpoints are not official deadlines. Existing SLM and other modes are unchanged. The new report workflow is deterministic, not evidence of model generation.
+
+## Advisor Intelligence 1.0 — answer quality
+This update targets the Advisor Auto conversation only, based on the eight-turn manual review. It separates direct legal questions from class analytics, uses the verified Article 21/23 limits for explicit semester-GPA cases, and does not apply the main-semester limit to summer terms. The new local task planner resolves explicit review, class priorities, course-history and strategy goals; on ambiguous in-scope open requests, the SLM may select one of a limited set of goal IDs. It cannot choose student IDs or create new tool parameters. Scoped tools compute facts, prerequisite candidates, and action plans. The system does not infer official eligibility or current graduation risk from stale demo data. Unreviewed curricula remain provisional. Numeric/source checks do not establish semantic correctness. The old RAG/LoRA research dispatch and model/runtime are unchanged. Auto mode suppresses duplicate roadmap panels only for the new compact goal responses.
+
+From the repository root, with the local-SLM server running, run `python tools/academic_advisor/smoke_intelligence.py --full` (all tests, old workflow suite and 12 focused live cases). Add `--show-demo` only for the demo roster to print the actual answer text for manual quality review. The earlier Handoff Gate pins the previous release and is not valid for this revised manifest. A passing focused suite is not a blind benchmark or proof of unrestricted tool calling.
+
+### Advisor Intelligence 1.1
+Scope rejection precedes record task planning; same-tier triage is by known debt descending, then semester GPA ascending and conduct score ascending (not official risk). Improvement and graduation strategies are distinct. Comprehensive individual review compares hypothetical 6 and 12 retake-credit caps without claiming a registration limit or optimal plan. Run `python tools/academic_advisor/smoke_intelligence.py --full --show-demo` against the restarted local-SLM server.
+
+### Intelligence 1.3 — adaptive counseling
+The local SLM may choose the meeting-preparation tool for ambiguous scoped support requests, then draft one or two open questions and select one bounded support action. No raw roster or numerical student facts are sent to the planner; the existing facts and scope checks remain authoritative. Model failure falls back to deterministic counseling. The live probe reports REVIEW if no valid model contribution is received. This is a focused acceptance check, not a blind benchmark.
+
+### Intelligence 1.4 — focused counseling and exact candidate planning
+Auto conversation retains coarse hypothetical counseling topics in signed, short-lived context (not encrypted, not a record or verified fact). Explicit corrections remove topics; a change of student, a fresh tab, or a non-advisor mode does not carry them over. Focused follow-ups and requested question counts avoid repeating the intake. The local SLM remains bounded and malformed advisor-to-student questions are rejected. Candidate prerequisite plans use exact minimum-round search for up to 12 reachable, matched courses; larger cases retain the safe heuristic. Excluded courses, provisional curriculum status, unknown course offerings and official load restrictions remain unchanged. No new model, external API or data changes. The focused test suite and the live smoke are regression checks; do not treat them as blinded evaluation.
