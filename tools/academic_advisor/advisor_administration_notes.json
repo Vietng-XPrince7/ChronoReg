@@ -1,0 +1,25 @@
+{
+  "schema": "advisor-public-notes-v1",
+  "qualification": "MANUALLY_SUMMARIZED_PUBLIC_WEB_REFERENCES_NOT_FULL_SNAPSHOTS",
+  "review_date": "2026-11-28",
+  "records": [
+    {
+      "id": "uet-training-office-2017-archive",
+      "source_urls": [
+        "https://uet.vnu.edu.vn/phong-dao-tao/"
+      ],
+      "published": "2017-08-23",
+      "scope": "Bài viết lưu trữ, không chứng minh phân công hiện hành",
+      "answer": "theo bài giới thiệu Phòng Đào tạo UET ngày 23/08/2017, phòng hỗ trợ Hiệu trưởng trong các nhóm công việc: xây dựng và quản lý chương trình đào tạo; lập và giám sát kế hoạch đào tạo; tổ chức tuyển sinh, tư vấn và xử lý hồ sơ xét tuyển; triển khai đào tạo các bậc học và công tác bảo đảm chất lượng giáo dục. Đây là mô tả trong bài lưu trữ, chưa xác minh cơ cấu hay phân công hiện hành."
+    },
+    {
+      "id": "uet-enrollment-qh2026",
+      "source_urls": [
+        "https://fepn.uet.vnu.edu.vn/tin-tuc/thu-tuc-nhap-hoc-vao-truong-dai-hoc-cong-nghe-dhqghn-danh-cho-tan-sinh-vien-khoa-qh-2026.html",
+        "https://tuyensinh.uet.vnu.edu.vn/uncategorized/huong-dan-nhap-hoc-va-nop-minh-chung-xet-tuyen-dhcq-nam-2026/"
+      ],
+      "scope": "Đại học chính quy QH-2026, thông báo lịch sử; không xác nhận gia hạn hoặc tình trạng cá nhân",
+      "answer": "theo hướng dẫn nhập học QH-2026 của UET, cần phân biệt hai việc:\n\n1. Xác nhận nhập học trên hệ thống của Bộ GD&ĐT: https://thisinh.thitotnghiepthpt.edu.vn/ trước 17:00 ngày 21/08/2026 theo thông báo. Kiểm tra email tuyển sinh để nhận tài khoản UET.\n2. Đăng ký tài khoản và khai thông tin trên StudentHub theo kế hoạch 14–17/08/2026. Thông báo cập nhật của cổng tuyển sinh UET yêu cầu nộp minh chứng xét tuyển trực tuyến từ 15/08 đến 03/09/2026, tại StudentHub → Thông tin đào tạo → Thông tin cá nhân → Minh chứng xét tuyển. Giấy tờ tùy phương thức trúng tuyển.\n\nCác mốc trên thuộc đợt 2026, không phải hướng dẫn cho khóa khác hoặc xác nhận còn mở cổng. Xem thông báo đầy đủ và email của trường để biết lịch hoàn tất hồ sơ, khoản tạm thu và nhập học trực tiếp; bản đối chiếu này chưa xác minh toàn bộ các bước đó."
+    }
+  ]
+}

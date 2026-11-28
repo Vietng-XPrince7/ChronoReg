@@ -69,12 +69,12 @@ def research(root,q):
     if y not in RESEARCH or not re.search(r'\b(?:nckh|svnckh|nghien cuu khoa hoc)\b',n):return None
     if not re.search(r'\b(?:khoa cntt|khoa cong nghe thong tin)\b' if y==2023 else r'\b(?:vien ttnt|vien tri tue nhan tao|vien ai)\b',n):return None
     if re.search(r'\b(?:cap truong|mien|diem thuong|thay the|quy doi|bao cao gom|mau bao cao|email|lien he|thanh vien|so sanh|tat ca cac khoa|tat ca cac vien)\b',n):return None
-    if not re.search(r'\b(?:lich|ke hoach|thoi gian|han|ngay nao|khi nao|moc|ngay may)\b',n):return None
+    if not re.search(r'\b(?:lich|ke hoach|thoi gian|han|ngay nao|khi nao|moc|ngay may|ngay to chuc|dien ra ngay)\b',n):return None
     if y==2023 and re.search(r'\b(?:vien ttnt|vien ai|vien tri tue nhan tao)\b',n):return None
     if y!=2023 and re.search(r'\b(?:khoa cntt|khoa cong nghe thong tin)\b',n):return None
     # Return complete schedule only for explicit scoped timeline questions, rather than a partial date selected incorrectly.
     a=source(root,'r'+str(y)); label='Khoa CNTT' if y==2023 else 'Viện Trí tuệ nhân tạo'
-    lines=[f'theo bản lưu kế hoạch {label}, năm học {y}–{y+1} (đối chiếu bản PDF):','','| Thời gian | Công việc | Trang |','|---|---|---:|']
+    lines=[f'theo bản lưu kế hoạch nghiên cứu khoa học (NCKH) {label}, năm học {y}–{y+1} (đối chiếu bản PDF):','','| Thời gian | Công việc | Trang |','|---|---|---:|']
     lines.extend(f'| {d} | {task} | {p} |' for d,task,p in RESEARCH[y])
     if y==2025:lines.append('\n**Mâu thuẫn trong nguồn:** bảng trang 1 ghi đăng ký 01/02–25/02/2026, nhưng chú ý trang 2 ghi chậm nhất **15/02/2026**. Cần xác nhận với Viện; không khẳng định một hạn duy nhất.')
     lines.append('\nĐây là lịch trong bản lưu, không xác nhận thay đổi sau công bố hoặc lịch cấp Trường.')
